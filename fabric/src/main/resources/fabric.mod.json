@@ -8,7 +8,9 @@
 		"Panda Mods/The Panda Oliver"
   ],
   "contact": {
-  },
+		"issues": "https://github.com/PandaDap2006/PandaLib/issues",
+		"sources": "https://github.com/PandaDap2006/PandaLib"
+	},
   "license": "MIT",
   "environment": "*",
   "entrypoints": {

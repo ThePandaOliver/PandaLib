@@ -1,6 +1,8 @@
 modLoader = "javafml"
 loaderVersion = "[46,)"
 license = "MIT"
+issueTrackerURL="https://github.com/PandaDap2006/PandaLib/issues"
+showAsResourcePack=false
 
 [[mods]]
 modId = "pandalib"

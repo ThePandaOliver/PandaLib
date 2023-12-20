@@ -1,0 +1,33 @@
+modLoader = "javafml"
+loaderVersion = "[46,)"
+license = "MIT"
+
+[[mods]]
+modId = "pandalib"
+version = "${version}"
+displayName = "PandaLib"
+authors = "Panda Mods/The Panda Oliver"
+description = '''
+A library with my own Config API and Entity/Block Entity renderer.
+'''
+
+[[dependencies.pandalib]]
+modId = "forge"
+mandatory = true
+versionRange = "[46,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.pandalib]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[1.20,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.pandalib]]
+modId = "architectury"
+mandatory = true
+versionRange = "[9.1.12,)"
+ordering = "AFTER"
+side = "BOTH"

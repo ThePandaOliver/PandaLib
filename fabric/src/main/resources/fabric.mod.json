@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "id": "pandalib",
+  "version": "${version}",
+  "name": "PandaLib",
+  "description": "A library with my own Config API and Entity/Block Entity renderer.",
+  "authors": [
+		"Panda Mods/The Panda Oliver"
+  ],
+  "contact": {
+  },
+  "license": "MIT",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+			"me.pandalib.fabric.PandaLibFabric"
+    ]
+  },
+  "mixins": [
+		"pandalib.mixins.json",
+    "pandalib-common.mixins.json"
+  ],
+  "depends": {
+    "fabric": "*",
+    "fabric-api": "*",
+    "minecraft": ">=1.20",
+    "architectury": ">=9.1.12"
+  }
+}

@@ -1,6 +1,6 @@
-package me.pandalib.forge;
+package me.pandamods.pandalib.forge;
 
-import me.pandalib.PandaLibExpectPlatform;
+import me.pandamods.pandalib.PandaLibExpectPlatform;
 import net.minecraftforge.fml.loading.FMLPaths;
 
 import java.nio.file.Path;

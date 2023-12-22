@@ -1,6 +1,6 @@
-package me.pandalib.fabric;
+package me.pandamods.pandalib.fabric;
 
-import me.pandalib.PandaLibExpectPlatform;
+import me.pandamods.pandalib.PandaLibExpectPlatform;
 import net.fabricmc.loader.api.FabricLoader;
 
 import java.nio.file.Path;

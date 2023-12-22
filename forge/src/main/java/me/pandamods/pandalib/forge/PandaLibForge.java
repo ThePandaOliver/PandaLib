@@ -1,7 +1,7 @@
-package me.pandalib.forge;
+package me.pandamods.pandalib.forge;
 
 import dev.architectury.platform.forge.EventBuses;
-import me.pandalib.PandaLib;
+import me.pandamods.pandalib.PandaLib;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 

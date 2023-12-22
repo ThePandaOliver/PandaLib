@@ -1,6 +1,6 @@
-package me.pandalib.fabric;
+package me.pandamods.pandalib.fabric;
 
-import me.pandalib.PandaLib;
+import me.pandamods.pandalib.PandaLib;
 import net.fabricmc.api.ModInitializer;
 
 public class PandaLibFabric implements ModInitializer {

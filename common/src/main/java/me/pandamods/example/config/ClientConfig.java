@@ -2,7 +2,6 @@ package me.pandamods.example.config;
 
 import me.pandamods.example.PandaLibExample;
 import me.pandamods.pandalib.PandaLib;
-import me.pandamods.pandalib.client.config.screen.annotations.ConfigGui;
 import me.pandamods.pandalib.config.Config;
 
 @Config(modId = PandaLib.MOD_ID, name = "client", parentDirectory = PandaLibExample.MOD_ID)

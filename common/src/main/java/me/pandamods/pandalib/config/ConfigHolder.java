@@ -74,10 +74,10 @@ public class ConfigHolder<T> {
 	}
 
 	public void resetToDefault() {
-		this.config = getDefault();
+		this.config = getNewDefault();
 	}
 
-	public T getDefault() {
+	public T getNewDefault() {
 		return ClassUtils.constructUnsafely(configClass);
 	}
 }

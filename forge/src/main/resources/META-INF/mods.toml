@@ -9,6 +9,7 @@ modId = "pandalib"
 version = "${version}"
 displayName = "PandaLib"
 authors = "Panda Mods/The Panda Oliver"
+logoFile = "icon.png"
 description = '''
 A library with my own Config API and Entity/Block Entity renderer.
 '''

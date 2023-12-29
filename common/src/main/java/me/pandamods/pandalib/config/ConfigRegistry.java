@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 public class ConfigRegistry {
 	public static Map<Class<?>, ConfigHolder<?>> registeredConfigs = new HashMap<>();
@@ -23,5 +24,20 @@ public class ConfigRegistry {
 		ConfigHolder<T> holder = new ConfigHolder<>(configClass, config);
 		registeredConfigs.put(configClass, holder);
 		return holder;
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <T> ConfigHolder<T> getConfig(Class<T> configClass) {
+		return (ConfigHolder<T>) registeredConfigs.get(configClass);
+	}
+
+	public static Map<Class<?>, ConfigHolder<?>> getConfigs() {
+		return registeredConfigs;
+	}
+
+	public static Map<Class<?>, ConfigHolder<?>> getConfigs(String modId) {
+		return registeredConfigs.entrySet().stream()
+				.filter(entry -> entry.getValue().getDefinition().modId().equals(modId))
+				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 	}
 }

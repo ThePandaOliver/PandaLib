@@ -1,6 +1,7 @@
 package me.pandamods.pandalib.forge;
 
 import me.pandamods.pandalib.PandaLibExpectPlatform;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.fml.loading.FMLPaths;
 
 import java.nio.file.Path;

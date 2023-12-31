@@ -10,6 +10,5 @@ public class PandaLibExample {
 	public static ConfigHolder<ClientConfig> CLIENT_CONFIG = ConfigRegistry.register(ClientConfig.class);
     
     public static void init() {
-		System.out.println(CLIENT_CONFIG.get().exampleBoolean);
 	}
 }

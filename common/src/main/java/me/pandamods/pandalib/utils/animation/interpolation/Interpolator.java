@@ -13,10 +13,10 @@ public abstract class Interpolator<T> {
 	private T min;
 	private T max;
 
-	public Interpolator(float maxTime, T startingValue, T min, T max) {
+	public Interpolator(float maxTime, T startingValue, T max) {
 		this.maxTime = maxTime;
 		this.value = startingValue;
-		this.min = min;
+		this.min = startingValue;
 		this.max = max;
 	}
 

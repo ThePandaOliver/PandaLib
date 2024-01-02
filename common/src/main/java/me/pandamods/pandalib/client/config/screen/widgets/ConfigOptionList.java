@@ -5,6 +5,7 @@ import me.pandamods.pandalib.client.config.ConfigOptionWidgetProvider;
 import me.pandamods.pandalib.client.screen.PandaLibScreen;
 import me.pandamods.pandalib.client.screen.widgets.ScrollableWidget;
 import me.pandamods.pandalib.client.screen.widgets.Widget;
+import me.pandamods.pandalib.config.Config;
 import me.pandamods.pandalib.config.ConfigHolder;
 import me.pandamods.pandalib.utils.animation.interpolation.FloatInterpolator;
 import me.pandamods.pandalib.utils.animation.interpolation.Vector2Interpolator;
@@ -15,15 +16,16 @@ import org.joml.Vector2i;
 
 import java.awt.*;
 import java.lang.reflect.Field;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 public class ConfigOptionList extends ScrollableWidget {
 	private final ConfigHolder<?> configHolder;
 	private final Class<?> configClass;
 	private final Field[] fields;
 
-	private final Map<Field, ConfigOptionWidget> optionWidgets = new LinkedHashMap<>();
+//	private final Map<Field, ConfigOptionWidget<?>> optionWidgets = new LinkedHashMap<>();
+	private final Map<String, Map<Field, ConfigOptionWidget<?>>> optionWidgetCategories = new HashMap<>();
+	private String currentCategory = "default";
 
 	private final FloatInterpolator highlightInterpolation;
 	private final Vector2Interpolator minHighlightInterpolation;
@@ -37,10 +39,17 @@ public class ConfigOptionList extends ScrollableWidget {
 		this.fields = configClass.getDeclaredFields();
 
 		for (Field field : fields) {
-			ConfigOptionWidgetProvider widgetProvider = ConfigGuiRegistry.getByClass(field.getType());
-			if (widgetProvider != null) {
-				optionWidgets.put(field, widgetProvider.create(screen, this, new ConfigOptionWidget.Data(field, configHolder)));
-			}
+			Optional<ConfigOptionWidgetProvider> widgetProvider = ConfigGuiRegistry.getByClass(field.getType());
+			widgetProvider.ifPresent(provider -> {
+				ConfigOptionWidget<?> widget = provider.create(screen, this, new ConfigOptionWidget.Data(field, configHolder));
+				Config.Gui.Category category = field.getAnnotation(Config.Gui.Category.class);
+				if (category != null) {
+					addToCategory(category.value(), field, widget);
+				} else {
+					addToCategory("default", field, widget);
+				}
+//				optionWidgets.put(field, provider.create(screen, this, new ConfigOptionWidget.Data(field, configHolder)))
+			});
 		}
 
 		float interpolationTime = .2f;
@@ -53,14 +62,31 @@ public class ConfigOptionList extends ScrollableWidget {
 		);
 	}
 
-	public Map<Field, ConfigOptionWidget> getOptions() {
-		return optionWidgets;
+	private void addToCategory(String name, Field field, ConfigOptionWidget<?> configOptionWidget) {
+		optionWidgetCategories.putIfAbsent(name, new LinkedHashMap<>());
+		optionWidgetCategories.get(name).put(field, configOptionWidget);
+	}
+
+	public Map<Field, ConfigOptionWidget<?>> getOptions() {
+		return this.optionWidgetCategories.getOrDefault(this.currentCategory, new HashMap<>());
+	}
+
+	public void setCategory(String category) {
+		this.currentCategory = category;
+	}
+
+	public String getCategory() {
+		return currentCategory;
+	}
+
+	public Set<String> getCategories() {
+		return optionWidgetCategories.keySet();
 	}
 
 	@Override
 	public void init() {
 		listHeight = 0;
-		for (ConfigOptionWidget widget : this.optionWidgets.values()) {
+		for (ConfigOptionWidget<?> widget : this.getOptions().values()) {
 			widget.setBounds(0, listHeight, this.getWidth(), widget.getHeight());
 			this.addWidget(widget);
 			listHeight += widget.getHeight();
@@ -76,20 +102,20 @@ public class ConfigOptionList extends ScrollableWidget {
 	}
 
 	public void renderHighlight(GuiGraphics guiGraphics, double mouseX, double mouseY) {
-		ConfigOptionWidget widget = this.getHoveredOption(mouseX, mouseY);
+		ConfigOptionWidget<?> widget = this.getHoveredOption(mouseX, mouseY);
 		minHighlightInterpolation.update();
 		maxHighlightInterpolation.update();
 		if (widget != null) {
 			highlightInterpolation.update();
 
-			minHighlightInterpolation.setTarget(new Vector2f(widget.getMinX(), widget.getMinY() + getScrollDistanceFloat()));
-			maxHighlightInterpolation.setTarget(new Vector2f(widget.getMaxX(), widget.getMaxY() + getScrollDistanceFloat()));
+			minHighlightInterpolation.setTarget(new Vector2f(widget.getMinX(), widget.getMinY() + getScrollDistanceYFloat()));
+			maxHighlightInterpolation.setTarget(new Vector2f(widget.getMaxX(), widget.getMaxY() + getScrollDistanceYFloat()));
 		}  else {
 			highlightInterpolation.updateReverse();
 		}
 
-		Vector2i minHighlightVector = new Vector2i(minHighlightInterpolation.getValue().sub(0, getScrollDistanceFloat()), RoundingMode.TRUNCATE);
-		Vector2i maxHighlightVector = new Vector2i(maxHighlightInterpolation.getValue().sub(0, getScrollDistanceFloat()), RoundingMode.TRUNCATE);
+		Vector2i minHighlightVector = new Vector2i(minHighlightInterpolation.getValue().sub(0, getScrollDistanceYFloat()), RoundingMode.TRUNCATE);
+		Vector2i maxHighlightVector = new Vector2i(maxHighlightInterpolation.getValue().sub(0, getScrollDistanceYFloat()), RoundingMode.TRUNCATE);
 
 		int alpha = (int) (50 * highlightInterpolation.getValue());
 		int shadingOffset = 75;
@@ -109,17 +135,22 @@ public class ConfigOptionList extends ScrollableWidget {
 				highlightBottom.getRGB());
 	}
 
-	public ConfigOptionWidget getHoveredOption(double mouseX, double mouseY) {
+	public ConfigOptionWidget<?> getHoveredOption(double mouseX, double mouseY) {
 		if (!this.isMouseOver(mouseX, mouseY)) {
 			return null;
 		}
-		return optionWidgets.values().stream()
+		return getOptions().values().stream()
 				.filter(widget -> widget.isMouseOver(mouseX, mouseY))
 				.findFirst().orElse(null);
 	}
 
 	@Override
-	public int getMaxScrollDistance() {
+	public int getMaxScrollDistanceX() {
+		return 0;
+	}
+
+	@Override
+	public int getMaxScrollDistanceY() {
 		return listHeight;
 	}
 }

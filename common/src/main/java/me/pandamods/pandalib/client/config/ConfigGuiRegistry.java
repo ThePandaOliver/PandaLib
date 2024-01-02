@@ -4,8 +4,10 @@ import me.pandamods.pandalib.client.config.screen.widgets.ConfigOptionWidget;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 
 @Environment(EnvType.CLIENT)
@@ -16,7 +18,7 @@ public class ConfigGuiRegistry {
 		registeredWidgetByClass.put(type, widgetProvider);
 	}
 
-	public static ConfigOptionWidgetProvider getByClass(Class<?> type) {
-		return registeredWidgetByClass.get(type);
+	public static Optional<ConfigOptionWidgetProvider> getByClass(Class<?> type) {
+		return Optional.ofNullable(registeredWidgetByClass.get(type));
 	}
 }

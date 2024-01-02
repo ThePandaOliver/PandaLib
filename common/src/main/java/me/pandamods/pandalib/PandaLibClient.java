@@ -12,5 +12,6 @@ public class PandaLibClient {
 	public static void init() {
 		ConfigGuiRegistry.registerByClass(String.class, StringOptionWidget::new);
 		ConfigGuiRegistry.registerByClass(boolean.class, BooleanOptionWidget::new);
+		ConfigGuiRegistry.registerByClass(Boolean.class, BooleanOptionWidget::new);
 	}
 }

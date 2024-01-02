@@ -95,4 +95,17 @@ public abstract class PandaLibScreen extends Screen implements WidgetImpl {
 	public final List<? extends GuiEventListener> children() {
 		return super.children();
 	}
+
+	@Override
+	public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
+		if (super.mouseDragged(mouseX, mouseY, button, dragX, dragY))
+			return true;
+
+		for (Widget widget : this.widgets()) {
+			if (widget.isMouseOver(mouseX, mouseY)) {
+				return widget.mouseDragged(mouseX, mouseY, button, dragX, dragY);
+			}
+		}
+		return false;
+	}
 }

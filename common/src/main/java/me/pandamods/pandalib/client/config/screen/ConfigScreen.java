@@ -12,7 +12,6 @@ import net.minecraft.client.gui.layouts.GridLayout;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 
-import java.awt.*;
 import java.util.Map;
 
 public class ConfigScreen extends PandaLibScreen {
@@ -54,7 +53,7 @@ public class ConfigScreen extends PandaLibScreen {
 	@Override
 	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
 		super.render(guiGraphics, mouseX, mouseY, partialTick);
-		guiGraphics.drawCenteredString(this.font, this.getTitle(), width / 2, (40 - font.lineHeight) / 2, Color.white.getRGB());
+//		guiGraphics.drawCenteredString(this.font, this.getTitle(), width / 2, (40 - font.lineHeight) / 2, Color.white.getRGB());
 	}
 
 	private void save() {
@@ -65,11 +64,11 @@ public class ConfigScreen extends PandaLibScreen {
 
 	private void reset() {
 		this.optionListWidget.getOptions().forEach((field, widget) -> {
-			try {
-				widget.load(field.get(this.configHolder.getNewDefault()));
-			} catch (IllegalAccessException e) {
-				throw new RuntimeException(e);
-			}
+//			try {
+//				widget.load(field.get(this.configHolder.getNewDefault()));
+//			} catch (IllegalAccessException e) {
+//				throw new RuntimeException(e);
+//			}
 		});
 	}
 

@@ -30,6 +30,7 @@ public abstract class Widget implements WidgetImpl, GuiEventListener, Narratable
 
 	private boolean hovered = false;
 	private boolean focused = false;
+	private boolean dragged = false;
 
 	protected final Minecraft minecraft;
 	protected final Window window;
@@ -96,7 +97,7 @@ public abstract class Widget implements WidgetImpl, GuiEventListener, Narratable
 		return screen.addWidget(widget);
 	}
 
-	public <T extends GuiEventListener & NarratableEntry> T addWidget(T listener) {
+	protected <T extends GuiEventListener & NarratableEntry> T addWidget(T listener) {
 		children.add(listener);
 		return screen.addWidget(listener);
 	}
@@ -114,6 +115,11 @@ public abstract class Widget implements WidgetImpl, GuiEventListener, Narratable
 		children.clear();
 		widgets.forEach(Widget::clearWidgets);
 		widgets.clear();
+	}
+
+	protected void rebuildWidgets() {
+		this.clearWidgets();
+		this.init();
 	}
 
 	@Override
@@ -229,5 +235,23 @@ public abstract class Widget implements WidgetImpl, GuiEventListener, Narratable
 
 	public boolean isVisible() {
 		return true;
+	}
+
+	public boolean isDragged() {
+		return dragged;
+	}
+
+	public void setDragged(boolean dragged) {
+		this.dragged = dragged;
+	}
+
+	@Override
+	public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
+		for (Widget widget : this.widgets()) {
+			if (widget.isMouseOver(mouseX, mouseY)) {
+				return widget.mouseDragged(mouseX, mouseY, button, dragX, dragY);
+			}
+		}
+		return false;
 	}
 }

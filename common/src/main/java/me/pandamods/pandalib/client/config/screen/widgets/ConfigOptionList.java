@@ -24,7 +24,7 @@ public class ConfigOptionList extends ScrollableWidget {
 	private final Field[] fields;
 
 //	private final Map<Field, ConfigOptionWidget<?>> optionWidgets = new LinkedHashMap<>();
-	private final Map<String, Map<Field, ConfigOptionWidget<?>>> optionWidgetCategories = new HashMap<>();
+	private final Map<String, Map<Field, ConfigOptionWidget>> optionWidgetCategories = new HashMap<>();
 	private String currentCategory = "default";
 
 	private final FloatInterpolator highlightInterpolation;
@@ -41,7 +41,7 @@ public class ConfigOptionList extends ScrollableWidget {
 		for (Field field : fields) {
 			Optional<ConfigOptionWidgetProvider> widgetProvider = ConfigGuiRegistry.getByClass(field.getType());
 			widgetProvider.ifPresent(provider -> {
-				ConfigOptionWidget<?> widget = provider.create(screen, this, new ConfigOptionWidget.Data(field, configHolder));
+				ConfigOptionWidget widget = provider.create(screen, this, new ConfigOptionWidget.Data(field, configHolder));
 				Config.Gui.Category category = field.getAnnotation(Config.Gui.Category.class);
 				if (category != null) {
 					addToCategory(category.value(), field, widget);
@@ -62,12 +62,12 @@ public class ConfigOptionList extends ScrollableWidget {
 		);
 	}
 
-	private void addToCategory(String name, Field field, ConfigOptionWidget<?> configOptionWidget) {
+	private void addToCategory(String name, Field field, ConfigOptionWidget configOptionWidget) {
 		optionWidgetCategories.putIfAbsent(name, new LinkedHashMap<>());
 		optionWidgetCategories.get(name).put(field, configOptionWidget);
 	}
 
-	public Map<Field, ConfigOptionWidget<?>> getOptions() {
+	public Map<Field, ConfigOptionWidget> getOptions() {
 		return this.optionWidgetCategories.getOrDefault(this.currentCategory, new HashMap<>());
 	}
 
@@ -86,7 +86,7 @@ public class ConfigOptionList extends ScrollableWidget {
 	@Override
 	public void init() {
 		listHeight = 0;
-		for (ConfigOptionWidget<?> widget : this.getOptions().values()) {
+		for (ConfigOptionWidget widget : this.getOptions().values()) {
 			widget.setBounds(0, listHeight, this.getWidth(), widget.getHeight());
 			this.addWidget(widget);
 			listHeight += widget.getHeight();
@@ -102,7 +102,7 @@ public class ConfigOptionList extends ScrollableWidget {
 	}
 
 	public void renderHighlight(GuiGraphics guiGraphics, double mouseX, double mouseY) {
-		ConfigOptionWidget<?> widget = this.getHoveredOption(mouseX, mouseY);
+		ConfigOptionWidget widget = this.getHoveredOption(mouseX, mouseY);
 		minHighlightInterpolation.update();
 		maxHighlightInterpolation.update();
 		if (widget != null) {
@@ -135,7 +135,7 @@ public class ConfigOptionList extends ScrollableWidget {
 				highlightBottom.getRGB());
 	}
 
-	public ConfigOptionWidget<?> getHoveredOption(double mouseX, double mouseY) {
+	public ConfigOptionWidget getHoveredOption(double mouseX, double mouseY) {
 		if (!this.isMouseOver(mouseX, mouseY)) {
 			return null;
 		}

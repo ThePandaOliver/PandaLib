@@ -9,7 +9,7 @@ import net.minecraft.network.chat.Component;
 
 import java.awt.*;
 
-public class StringOptionWidget extends ConfigOptionWidget<String> {
+public class StringOptionWidget extends ConfigOptionWidget {
 	private EditBox textField = null;
 
 	public StringOptionWidget(PandaLibScreen screen, Widget parent, Data data) {
@@ -46,7 +46,7 @@ public class StringOptionWidget extends ConfigOptionWidget<String> {
 	}
 
 	@Override
-	public void load(String string) {
-		this.textField.setValue(string);
+	public void load() {
+		this.textField.setValue(option.getAsString());
 	}
 }

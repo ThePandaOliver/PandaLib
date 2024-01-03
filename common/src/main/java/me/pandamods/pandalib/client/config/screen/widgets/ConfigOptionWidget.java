@@ -11,14 +11,14 @@ import net.minecraft.network.chat.Component;
 import java.awt.*;
 import java.lang.reflect.Field;
 
-public abstract class ConfigOptionWidget<T> extends Widget {
-	protected final Option<T> option;
+public abstract class ConfigOptionWidget extends Widget {
+	protected final Option option;
 	protected final ConfigHolder<?> configHolder;
 	protected final Component title;
 
 	public ConfigOptionWidget(PandaLibScreen screen, Widget parent, Data data) {
 		super(screen, parent);
-		this.option = new Option<>(data.field, data.configHolder.get());
+		this.option = new Option(data.field, data.configHolder.get());
 		this.configHolder = data.configHolder;
 
 		Config definition = configHolder.getDefinition();
@@ -35,7 +35,7 @@ public abstract class ConfigOptionWidget<T> extends Widget {
 	@Override
 	public void init() {
 		super.init();
-		load(option.get());
+		load();
 	}
 
 	public void renderName(GuiGraphics guiGraphics) {
@@ -49,7 +49,7 @@ public abstract class ConfigOptionWidget<T> extends Widget {
 	}
 
 	public abstract void save();
-	public abstract void load(T t);
+	public abstract void load();
 
 	public record Data(Field field, ConfigHolder<?> configHolder) {}
 }

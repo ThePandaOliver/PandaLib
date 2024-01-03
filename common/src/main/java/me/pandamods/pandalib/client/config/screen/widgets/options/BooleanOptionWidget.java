@@ -9,7 +9,7 @@ import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 
-public class BooleanOptionWidget extends ConfigOptionWidget<Boolean> {
+public class BooleanOptionWidget extends ConfigOptionWidget {
 	private final ToggleButton button;
 
 	public BooleanOptionWidget(PandaLibScreen screen, Widget parent, Data data) {
@@ -45,8 +45,8 @@ public class BooleanOptionWidget extends ConfigOptionWidget<Boolean> {
 	}
 
 	@Override
-	public void load(Boolean aBoolean) {
-		this.button.setValue(aBoolean);
+	public void load() {
+		this.button.setValue(option.getAsBoolean());
 	}
 
 	static class ToggleButton extends AbstractButton {

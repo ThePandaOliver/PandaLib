@@ -38,6 +38,10 @@ allprojects {
 
     repositories {
         maven { url = uri("https://maven.terraformersmc.com/releases/") }
+        maven {
+            name = 'ParchmentMC'
+            url = 'https://maven.parchmentmc.org'
+        }
     }
 
     tasks.withType(JavaCompile) {

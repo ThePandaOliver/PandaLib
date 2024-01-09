@@ -31,6 +31,11 @@ public class ConfigRegistry {
 		return (ConfigHolder<T>) registeredConfigs.get(configClass);
 	}
 
+	public static Optional<ConfigHolder<?>> getConfig(ResourceLocation resourceLocation) {
+		return registeredConfigs.values().stream()
+				.filter(configHolder -> configHolder.resourceLocation().equals(resourceLocation)).findFirst();
+	}
+
 	public static Map<Class<?>, ConfigHolder<?>> getConfigs() {
 		return registeredConfigs;
 	}

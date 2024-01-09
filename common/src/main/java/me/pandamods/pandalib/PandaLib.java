@@ -1,7 +1,8 @@
 package me.pandamods.pandalib;
 
 import com.mojang.logging.LogUtils;
-import me.pandamods.example.PandaLibExample;
+import me.pandamods.pandalib.event.EventHandler;
+import me.pandamods.pandalib.network.PacketHandler;
 import org.slf4j.Logger;
 
 public class PandaLib {
@@ -9,6 +10,7 @@ public class PandaLib {
 	public static final Logger LOGGER = LogUtils.getLogger();
     
     public static void init() {
-		PandaLibExample.init();
+		PacketHandler.init();
+		EventHandler.init();
     }
 }

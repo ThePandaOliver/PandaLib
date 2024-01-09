@@ -1,15 +1,11 @@
 package me.pandamods.pandalib.client.config.screen.widgets;
 
-import me.pandamods.pandalib.client.config.ConfigGuiRegistry;
-import me.pandamods.pandalib.client.config.ConfigOptionWidgetProvider;
-import me.pandamods.pandalib.client.screen.PandaLibScreen;
 import me.pandamods.pandalib.client.screen.widgets.ScrollableWidget;
-import me.pandamods.pandalib.client.screen.widgets.Widget;
-import me.pandamods.pandalib.config.Config;
-import me.pandamods.pandalib.config.ConfigHolder;
+import me.pandamods.pandalib.client.screen.widgets.WidgetImpl;
 import me.pandamods.pandalib.utils.animation.interpolation.FloatInterpolator;
 import me.pandamods.pandalib.utils.animation.interpolation.Vector2Interpolator;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.worldselection.CreateWorldScreen;
 import org.joml.RoundingMode;
 import org.joml.Vector2f;
 import org.joml.Vector2i;
@@ -18,40 +14,29 @@ import java.awt.*;
 import java.lang.reflect.Field;
 import java.util.*;
 
-public class ConfigOptionList extends ScrollableWidget {
-	private final ConfigHolder<?> configHolder;
-	private final Class<?> configClass;
-	private final Field[] fields;
+public class ConfigEntryList extends ScrollableWidget {
+	private Map<Field, ConfigEntry> options;
 
-//	private final Map<Field, ConfigOptionWidget<?>> optionWidgets = new LinkedHashMap<>();
-	private final Map<String, Map<Field, ConfigOptionWidget>> optionWidgetCategories = new HashMap<>();
-	private String currentCategory = "default";
-
-	private final FloatInterpolator highlightInterpolation;
-	private final Vector2Interpolator minHighlightInterpolation;
-	private final Vector2Interpolator maxHighlightInterpolation;
+	private FloatInterpolator highlightInterpolation;
+	private Vector2Interpolator minHighlightInterpolation;
+	private Vector2Interpolator maxHighlightInterpolation;
 	private int listHeight = 0;
 
-	public ConfigOptionList(PandaLibScreen screen, Widget parent, ConfigHolder<?> configHolder) {
-		super(screen, parent);
-		this.configHolder = configHolder;
-		this.configClass = configHolder.getConfigClass();
-		this.fields = configClass.getDeclaredFields();
+	public ConfigEntryList(WidgetImpl parent) {
+		super(parent);
+	}
 
-		for (Field field : fields) {
-			Optional<ConfigOptionWidgetProvider> widgetProvider = ConfigGuiRegistry.getByClass(field.getType());
-			widgetProvider.ifPresent(provider -> {
-				ConfigOptionWidget widget = provider.create(screen, this, new ConfigOptionWidget.Data(field, configHolder));
-				Config.Gui.Category category = field.getAnnotation(Config.Gui.Category.class);
-				if (category != null) {
-					addToCategory(category.value(), field, widget);
-				} else {
-					addToCategory("default", field, widget);
-				}
-//				optionWidgets.put(field, provider.create(screen, this, new ConfigOptionWidget.Data(field, configHolder)))
-			});
-		}
+	public void setOptions(Map<Field, ConfigEntry> options) {
+		this.options = options;
+		this.rebuildWidgets();
+	}
 
+	public Map<Field, ConfigEntry> getOptions() {
+		return options;
+	}
+
+	@Override
+	public void initWidget() {
 		float interpolationTime = .2f;
 		highlightInterpolation = new FloatInterpolator(interpolationTime, 0f, 1f);
 		minHighlightInterpolation = new Vector2Interpolator(interpolationTime, new Vector2f(0, 0), new Vector2f(0, 0));
@@ -60,39 +45,13 @@ public class ConfigOptionList extends ScrollableWidget {
 				new Vector2f(window.getGuiScaledWidth(), 0),
 				new Vector2f(window.getGuiScaledWidth(), 0)
 		);
-	}
 
-	private void addToCategory(String name, Field field, ConfigOptionWidget configOptionWidget) {
-		optionWidgetCategories.putIfAbsent(name, new LinkedHashMap<>());
-		optionWidgetCategories.get(name).put(field, configOptionWidget);
-	}
-
-	public Map<Field, ConfigOptionWidget> getOptions() {
-		return this.optionWidgetCategories.getOrDefault(this.currentCategory, new HashMap<>());
-	}
-
-	public void setCategory(String category) {
-		this.currentCategory = category;
-	}
-
-	public String getCategory() {
-		return currentCategory;
-	}
-
-	public Set<String> getCategories() {
-		return optionWidgetCategories.keySet();
-	}
-
-	@Override
-	public void init() {
-		listHeight = 0;
-		for (ConfigOptionWidget widget : this.getOptions().values()) {
-			widget.setBounds(0, listHeight, this.getWidth(), widget.getHeight());
-			this.addWidget(widget);
-			listHeight += widget.getHeight();
+		this.listHeight = 0;
+		for (ConfigEntry option : getOptions().values()) {
+			option.setBounds(0, listHeight, this.getWidth(), option.getHeight());
+			this.addWidget(option);
+			listHeight += option.getHeight();
 		}
-
-		super.init();
 	}
 
 	@Override
@@ -101,8 +60,14 @@ public class ConfigOptionList extends ScrollableWidget {
 		super.renderWidget(guiGraphics, mouseX, mouseY, partialTick);
 	}
 
+	@Override
+	public void renderWidgetOverlay(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+		guiGraphics.blit(CreateWorldScreen.FOOTER_SEPERATOR, getX(), getMaxY(),
+				0.0F, 0.0F, getWidth(), 2, 32, 2);
+	}
+
 	public void renderHighlight(GuiGraphics guiGraphics, double mouseX, double mouseY) {
-		ConfigOptionWidget widget = this.getHoveredOption(mouseX, mouseY);
+		ConfigEntry widget = this.getHoveredOption(mouseX, mouseY);
 		minHighlightInterpolation.update();
 		maxHighlightInterpolation.update();
 		if (widget != null) {
@@ -135,7 +100,7 @@ public class ConfigOptionList extends ScrollableWidget {
 				highlightBottom.getRGB());
 	}
 
-	public ConfigOptionWidget getHoveredOption(double mouseX, double mouseY) {
+	public ConfigEntry getHoveredOption(double mouseX, double mouseY) {
 		if (!this.isMouseOver(mouseX, mouseY)) {
 			return null;
 		}

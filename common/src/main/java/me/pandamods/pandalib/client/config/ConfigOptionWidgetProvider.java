@@ -1,14 +1,12 @@
 package me.pandamods.pandalib.client.config;
 
-import me.pandamods.pandalib.client.config.screen.widgets.ConfigOptionWidget;
+import me.pandamods.pandalib.client.config.screen.ConfigScreen;
+import me.pandamods.pandalib.client.config.screen.widgets.ConfigEntry;
+import me.pandamods.pandalib.client.config.screen.widgets.ConfigEntryList;
 import me.pandamods.pandalib.client.screen.PandaLibScreen;
 import me.pandamods.pandalib.client.screen.widgets.Widget;
-import me.pandamods.pandalib.config.ConfigHolder;
-import net.minecraft.client.gui.screens.Screen;
-import org.jetbrains.annotations.Nullable;
-
-import java.lang.reflect.Field;
+import me.pandamods.pandalib.client.screen.widgets.WidgetImpl;
 
 public interface ConfigOptionWidgetProvider {
-	ConfigOptionWidget create(PandaLibScreen screen, Widget parent, ConfigOptionWidget.Data data);
+	ConfigEntry create(WidgetImpl parent, ConfigEntry.Data data);
 }

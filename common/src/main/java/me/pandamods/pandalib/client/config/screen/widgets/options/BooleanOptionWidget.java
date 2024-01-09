@@ -1,19 +1,20 @@
 package me.pandamods.pandalib.client.config.screen.widgets.options;
 
-import me.pandamods.pandalib.client.config.screen.widgets.ConfigOptionWidget;
-import me.pandamods.pandalib.client.screen.PandaLibScreen;
-import me.pandamods.pandalib.client.screen.widgets.Widget;
+import me.pandamods.pandalib.client.config.screen.ConfigScreen;
+import me.pandamods.pandalib.client.config.screen.widgets.ConfigEntryList;
+import me.pandamods.pandalib.client.config.screen.widgets.GenericConfigEntry;
+import me.pandamods.pandalib.client.screen.widgets.WidgetImpl;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 
-public class BooleanOptionWidget extends ConfigOptionWidget {
+public class BooleanOptionWidget extends GenericConfigEntry {
 	private final ToggleButton button;
 
-	public BooleanOptionWidget(PandaLibScreen screen, Widget parent, Data data) {
-		super(screen, parent, data);
+	public BooleanOptionWidget(WidgetImpl parent, Data data) {
+		super(parent, data);
 
 		int height = 20;
 		int width = 100;
@@ -22,21 +23,27 @@ public class BooleanOptionWidget extends ConfigOptionWidget {
 
 
 	@Override
-	public void init() {
-		this.addRenderableWidget(this.button);
+	public void initWidget() {
+		this.addElement(this.button);
 
-		super.init();
+		super.initWidget();
 	}
 
 	@Override
 	public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-		button.setPosition(getMaxX() - button.getWidth() - 10, getY() + (getHeight() - button.getHeight()) / 2);
+//		button.setPosition(getMaxX() - button.getWidth() - 10 - getRightPadding(), getY() + (getHeight() - button.getHeight()) / 2);
 		super.renderWidget(guiGraphics, mouseX, mouseY, partialTick);
 	}
 
 	@Override
-	public int getHeight() {
-		return 40;
+	public boolean canReset() {
+//		return getOption().getDefaultAsBoolean() != button.getValue();
+		return false;
+	}
+
+	@Override
+	public boolean canUndo() {
+		return getOption().getAsBoolean() != button.getValue();
 	}
 
 	@Override
@@ -47,6 +54,11 @@ public class BooleanOptionWidget extends ConfigOptionWidget {
 	@Override
 	public void load() {
 		this.button.setValue(option.getAsBoolean());
+	}
+
+	@Override
+	public void reset() {
+//		this.button.setValue(option.getDefaultAsBoolean());
 	}
 
 	static class ToggleButton extends AbstractButton {

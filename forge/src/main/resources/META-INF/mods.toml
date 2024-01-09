@@ -11,7 +11,7 @@ displayName = "PandaLib"
 authors = "Panda Mods/The Panda Oliver"
 logoFile = "icon.png"
 description = '''
-A library with my own Config API and Entity/Block Entity renderer.
+A multi purpose library with a Config API, Modal and Animation API, Menu API and a bit of utility code.
 '''
 
 [[dependencies.pandalib]]

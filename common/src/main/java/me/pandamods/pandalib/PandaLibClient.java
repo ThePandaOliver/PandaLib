@@ -1,9 +1,9 @@
 package me.pandamods.pandalib;
 
 import me.pandamods.pandalib.client.config.ConfigGuiRegistry;
-import me.pandamods.pandalib.client.config.screen.widgets.ConfigOptionWidget;
 import me.pandamods.pandalib.client.config.screen.widgets.options.BooleanOptionWidget;
 import me.pandamods.pandalib.client.config.screen.widgets.options.StringOptionWidget;
+import me.pandamods.pandalib.config.Config;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 

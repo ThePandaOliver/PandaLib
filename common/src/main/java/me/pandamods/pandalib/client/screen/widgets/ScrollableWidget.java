@@ -17,8 +17,8 @@ public abstract class ScrollableWidget extends Widget {
 	private double scrollDistanceX = 0;
 	private double scrollDistanceY = 0;
 
-	protected ScrollableWidget(PandaLibScreen screen, Widget parent) {
-		super(screen, parent);
+	public ScrollableWidget(WidgetImpl parent) {
+		super(parent);
 	}
 
 	public abstract int getMaxScrollDistanceX();

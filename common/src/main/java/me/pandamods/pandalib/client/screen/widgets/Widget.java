@@ -13,15 +13,13 @@ import net.minecraft.client.gui.narration.NarrationElementOutput;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 
 public abstract class Widget implements WidgetImpl, GuiEventListener, NarratableEntry {
 	private final List<Widget> widgets = new ArrayList<>();
 	private final List<GuiEventListener> children = new ArrayList<>();
 	private final List<Renderable> renderables = new ArrayList<>();
 	private final List<Renderable> renderablesCull = new ArrayList<>();
-	private final PandaLibScreen screen;
-	private final Widget parent;
+	private final WidgetImpl parent;
 
 	private int x = 0;
 	private int y = 0;
@@ -31,17 +29,23 @@ public abstract class Widget implements WidgetImpl, GuiEventListener, Narratable
 	private boolean hovered = false;
 	private boolean focused = false;
 	private boolean dragged = false;
+	private boolean active = true;
+	private boolean childrenActive = true;
+	private boolean initialized = false;
 
 	protected final Minecraft minecraft;
 	protected final Window window;
 	protected final Font font;
+	private final PandaLibScreen screen;
 
-	public Widget(PandaLibScreen screen, Widget parent) {
+	public Widget(WidgetImpl parent) {
 		this.minecraft = Minecraft.getInstance();
 		this.window = minecraft.getWindow();
 		this.font = minecraft.font;
-		this.screen = screen;
 		this.parent = parent;
+		if (parent instanceof PandaLibScreen pandaLibScreen) this.screen = pandaLibScreen;
+		else if (parent instanceof Widget widget) this.screen = widget.getScreen();
+		else this.screen = null;
 	}
 
 	public final void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
@@ -73,7 +77,17 @@ public abstract class Widget implements WidgetImpl, GuiEventListener, Narratable
 	}
 
 	public void init() {
-		this.widgets().forEach(Widget::init);
+		if (isActive()) {
+			initWidget();
+			this.widgets().forEach(Widget::init);
+			initialized = true;
+		}
+	}
+
+	public void initWidget() {}
+
+	public boolean isInitialized() {
+		return initialized;
 	}
 
 	protected <T extends Renderable> T addRenderableOnly(T renderable) {
@@ -94,12 +108,12 @@ public abstract class Widget implements WidgetImpl, GuiEventListener, Narratable
 
 	protected <T extends GuiEventListener & Renderable & NarratableEntry> T addRenderableWidget(T widget, boolean cull) {
 		addRenderableOnly(widget, cull);
-		return screen.addWidget(widget);
+		return getScreen().addWidget(widget);
 	}
 
 	protected <T extends GuiEventListener & NarratableEntry> T addWidget(T listener) {
 		children.add(listener);
-		return screen.addWidget(listener);
+		return getScreen().addWidget(listener);
 	}
 
 	protected Widget addWidget(Widget widget) {
@@ -108,18 +122,29 @@ public abstract class Widget implements WidgetImpl, GuiEventListener, Narratable
 		return widget;
 	}
 
+	protected void removeWidget(GuiEventListener listener) {
+		getScreen().removeWidget(listener);
+		children.remove(listener);
+	}
+
 	public void clearWidgets() {
 		renderablesCull.clear();
 		renderables.clear();
-		children.forEach(screen.children()::remove);
+		children.forEach(getScreen()::removeWidget);
 		children.clear();
 		widgets.forEach(Widget::clearWidgets);
 		widgets.clear();
 	}
 
 	protected void rebuildWidgets() {
-		this.clearWidgets();
-		this.init();
+		if (isInitialized()) {
+			this.clearWidgets();
+			this.init();
+		}
+	}
+
+	public List<GuiEventListener> children() {
+		return children;
 	}
 
 	@Override
@@ -132,6 +157,32 @@ public abstract class Widget implements WidgetImpl, GuiEventListener, Narratable
 		return this.focused;
 	}
 
+	public void setActive(boolean active) {
+		this.active = active;
+		updateActive();
+	}
+
+	protected void updateActive() {
+		this.rebuildWidgets();
+		widgets().forEach(Widget::updateActive);
+	}
+
+	@Override
+	public boolean isActive() {
+		if (parent instanceof Widget widget)
+			return active && widget.isChildrenActive() && widget.isActive();
+		return active;
+	}
+
+	public void setChildrenActive(boolean active) {
+		this.active = active;
+		updateActive();
+	}
+
+	public boolean isChildrenActive() {
+		return true;
+	}
+
 	@Override
 	public NarrationPriority narrationPriority() {
 		return NarrationPriority.FOCUSED;
@@ -141,87 +192,56 @@ public abstract class Widget implements WidgetImpl, GuiEventListener, Narratable
 	public void updateNarration(NarrationElementOutput narrationElementOutput) {
 	}
 
+	@Override
 	public void setX(int x) {
 		this.x = x;
 	}
 
+	@Override
 	public int getX() {
 		if (this.parent != null)
 			return x + parent.getX() + parent.getChildX();
 		return x;
 	}
 
-	public int getChildX() {
-		return 0;
-	}
-
+	@Override
 	public void setY(int y) {
 		this.y = y;
 	}
 
+	@Override
 	public int getY() {
 		if (this.parent != null)
 			return y + parent.getY() + parent.getChildY();
 		return y;
 	}
 
-	public int getChildY() {
-		return 0;
-	}
-
+	@Override
 	public void setWidth(int width) {
 		this.width = width;
 	}
 
+	@Override
 	public int getWidth() {
 		return width;
 	}
 
+	@Override
 	public void setHeight(int height) {
 		this.height = height;
 	}
 
+	@Override
 	public int getHeight() {
 		return height;
 	}
 
-	public final int getMinX() {
-		return this.getX();
-	}
-
-	public final int getMinY() {
-		return this.getY();
-	}
-
-	public final int getMaxX() {
-		return this.getX() + this.getWidth();
-	}
-
-	public final int getMaxY() {
-		return this.getY() + this.getHeight();
-	}
-
 	public PandaLibScreen getScreen() {
-		return screen;
+		return this.screen;
 	}
 
-	public Widget getParentWidget() {
+	public WidgetImpl getParent() {
 		return parent;
-	}
-
-	public void setPosition(int x, int y) {
-		this.setX(x);
-		this.setY(y);
-	}
-
-	public void setSize(int width, int height) {
-		this.setWidth(width);
-		this.setHeight(height);
-	}
-
-	public void setBounds(int minX, int minY, int maxX, int maxY) {
-		this.setPosition(minX, minY);
-		this.setSize(maxX - minX, maxY - minY);
 	}
 
 	@Override
@@ -234,6 +254,7 @@ public abstract class Widget implements WidgetImpl, GuiEventListener, Narratable
 	}
 
 	public boolean isVisible() {
+//		return isActive() && getMinX() > 0 && getMinY() > 0 && getMaxX() < window.getWidth() && getMaxY() < window.getHeight();
 		return true;
 	}
 

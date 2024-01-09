@@ -1,9 +1,9 @@
 package me.pandamods.pandalib.client.screen;
 
 import com.mojang.blaze3d.platform.Window;
+import com.mojang.datafixers.types.Func;
 import me.pandamods.pandalib.client.screen.widgets.Widget;
 import me.pandamods.pandalib.client.screen.widgets.WidgetImpl;
-import me.pandamods.pandalib.config.ConfigHolder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Renderable;
@@ -11,14 +11,15 @@ import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 public abstract class PandaLibScreen extends Screen implements WidgetImpl {
 	private final Screen parent;
-	private final Window window;
+	public final Window window;
 
 	private final List<Widget> widgets = new ArrayList<>();
 
@@ -81,6 +82,11 @@ public abstract class PandaLibScreen extends Screen implements WidgetImpl {
 	}
 
 	@Override
+	public void removeWidget(GuiEventListener listener) {
+		super.removeWidget(listener);
+	}
+
+	@Override
 	protected void clearWidgets() {
 		widgets.forEach(Widget::clearWidgets);
 		widgets.clear();
@@ -97,15 +103,34 @@ public abstract class PandaLibScreen extends Screen implements WidgetImpl {
 	}
 
 	@Override
-	public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
-		if (super.mouseDragged(mouseX, mouseY, button, dragX, dragY))
-			return true;
+	public final void setX(int x) {}
 
-		for (Widget widget : this.widgets()) {
-			if (widget.isMouseOver(mouseX, mouseY)) {
-				return widget.mouseDragged(mouseX, mouseY, button, dragX, dragY);
-			}
-		}
-		return false;
+	@Override
+	public final int getX() {
+		return 0;
+	}
+
+	@Override
+	public final void setY(int y) {}
+
+	@Override
+	public final int getY() {
+		return 0;
+	}
+
+	@Override
+	public final void setWidth(int width) {}
+
+	@Override
+	public final int getWidth() {
+		return this.width;
+	}
+
+	@Override
+	public final void setHeight(int height) {}
+
+	@Override
+	public final int getHeight() {
+		return this.height;
 	}
 }

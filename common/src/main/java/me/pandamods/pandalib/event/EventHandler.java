@@ -1,6 +1,8 @@
 package me.pandamods.pandalib.event;
 
+import dev.architectury.event.EventResult;
 import dev.architectury.event.events.common.PlayerEvent;
+import me.pandamods.pandalib.PandaLib;
 import me.pandamods.pandalib.network.ConfigPacket;
 import net.minecraft.server.level.ServerPlayer;
 
@@ -10,7 +12,6 @@ public class EventHandler {
 	}
 
 	private static void onPlayerJoin(ServerPlayer serverPlayer) {
-		ConfigPacket.requestConfigsFromPlayer(serverPlayer);
 		ConfigPacket.sendToPlayer(serverPlayer);
 	}
 }

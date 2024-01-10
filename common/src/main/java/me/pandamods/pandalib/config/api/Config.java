@@ -1,4 +1,4 @@
-package me.pandamods.pandalib.config;
+package me.pandamods.pandalib.config.api;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

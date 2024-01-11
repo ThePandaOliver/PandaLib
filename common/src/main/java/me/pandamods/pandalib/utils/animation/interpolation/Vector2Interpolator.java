@@ -4,8 +4,8 @@ import org.joml.Math;
 import org.joml.Vector2f;
 
 public class Vector2Interpolator extends Interpolator<Vector2f> {
-	public Vector2Interpolator(float maxTime, Vector2f startingValue, Vector2f max) {
-		super(maxTime, startingValue, max);
+	public Vector2Interpolator(Vector2f value) {
+		super(value);
 	}
 
 	@Override
@@ -15,6 +15,6 @@ public class Vector2Interpolator extends Interpolator<Vector2f> {
 
 	@Override
 	public Vector2f getValue() {
-		return new Vector2f(super.getValue());
+		return super.getValue();
 	}
 }

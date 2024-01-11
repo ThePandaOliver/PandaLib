@@ -10,19 +10,16 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelManager;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.BlockDestructionProgress;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.SortedSet;
+import java.util.*;
 
 public class RenderUtils {
-	public static final BlockRenderDispatcher blockRenderer = Minecraft.getInstance().getBlockRenderer();
-
 	public static void renderBlock(PoseStack poseStack, BlockState blockState, BlockPos blockPos,
 								   Level level, VertexConsumer vertexConsumer, int lightColor, int overlay) {
 		render(poseStack, blockState, blockPos, level, vertexConsumer, lightColor, overlay);
@@ -44,16 +41,12 @@ public class RenderUtils {
 		return Minecraft.getInstance().getDeltaFrameTime() / 20;
 	}
 
-	public static List<ResourceLocation> getBlockTextures(BlockState blockState) {
+	public static Set<ResourceLocation> getBlockTextures(BlockState blockState, Direction direction) {
 		ModelManager manager = Minecraft.getInstance().getModelManager();
 		BakedModel model = manager.getBlockModelShaper().getBlockModel(blockState);
-		List<BakedQuad> quads = model.getQuads(null, null, RandomSource.create());
-		List<ResourceLocation> textures = new ArrayList<>();
-		for (BakedQuad quad : quads) {
-			if (!textures.contains(quad.getSprite().contents().name())) {
-				textures.add(quad.getSprite().contents().name());
-			}
-		}
+		List<BakedQuad> quads = model.getQuads(blockState, direction, RandomSource.create());
+		Set<ResourceLocation> textures = new HashSet<>();
+		quads.forEach(bakedQuad -> textures.add(bakedQuad.getSprite().contents().name()));
 		return textures;
 	}
 }

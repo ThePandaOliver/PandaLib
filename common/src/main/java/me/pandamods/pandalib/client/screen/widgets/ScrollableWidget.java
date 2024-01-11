@@ -1,19 +1,15 @@
 package me.pandamods.pandalib.client.screen.widgets;
 
-import me.pandamods.pandalib.client.screen.PandaLibScreen;
 import me.pandamods.pandalib.utils.animation.interpolation.FloatInterpolator;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.world.entity.Display;
 import org.joml.Math;
-import org.lwjgl.glfw.GLFW;
 
 import java.awt.*;
-import java.awt.event.MouseEvent;
 
 public abstract class ScrollableWidget extends Widget {
-	private final FloatInterpolator scrollXInterpolator = new FloatInterpolator(.1f, 0f, 0f);
-	private final FloatInterpolator scrollYInterpolator = new FloatInterpolator(.1f, 0f, 0f);
+	private final FloatInterpolator scrollXInterpolator = new FloatInterpolator(0f);
+	private final FloatInterpolator scrollYInterpolator = new FloatInterpolator(0f);
 	private double scrollDistanceX = 0;
 	private double scrollDistanceY = 0;
 
@@ -27,49 +23,39 @@ public abstract class ScrollableWidget extends Widget {
 	public boolean shouldShowScrollBarX() {
 		return this.getMaxScrollDistanceX() > this.getWidth();
 	}
-
 	public boolean shouldShowScrollBarY() {
 		return this.getMaxScrollDistanceY() > this.getHeight();
 	}
 
 	public double getScrollDistanceXDouble() {
-		return this.scrollXInterpolator.getValue().doubleValue();
+		return this.scrollXInterpolator.getAsDouble();
 	}
-
 	public float getScrollDistanceXFloat() {
-		return this.scrollXInterpolator.getValue();
+		return this.scrollXInterpolator.getAsFloat();
 	}
-
 	public int getScrollDistanceXInt() {
-		return this.scrollXInterpolator.getValue().intValue();
+		return this.scrollXInterpolator.getAsInt();
 	}
-
 	public double getScrollDistanceYDouble() {
-		return this.scrollYInterpolator.getValue().doubleValue();
+		return this.scrollYInterpolator.getAsDouble();
 	}
-
 	public float getScrollDistanceYFloat() {
-		return this.scrollYInterpolator.getValue();
+		return this.scrollYInterpolator.getAsFloat();
 	}
-
 	public int getScrollDistanceYInt() {
-		return this.scrollYInterpolator.getValue().intValue();
+		return this.scrollYInterpolator.getAsInt();
 	}
 
-	public int getScrollBarHeightY() {
+	public int getScrollBarLengthY() {
 		int height = (int) ((double) this.getHeight() / ((double) this.getMaxScrollDistanceY() / (double) this.getHeight()));
 		return Math.clamp(20, this.getHeight(), height);
 	}
 
-	public double getScrollBarWidthY() {
+	public double getScrollBarWidth() {
 		return 3;
 	}
 
-	public double getScrollBarHeightX() {
-		return 3;
-	}
-
-	public int getScrollBarWidthX() {
+	public int getScrollBarLengthX() {
 		int width = (int) ((double) this.getWidth() / ((double) this.getMaxScrollDistanceX() / (double) this.getWidth()));
 		return Math.clamp(20, this.getWidth(), width);
 
@@ -82,25 +68,25 @@ public abstract class ScrollableWidget extends Widget {
 
 		super.renderWidget(guiGraphics, mouseX, mouseY, partialTick);
 		if (shouldShowScrollBarX())
-			renderScrollBarX(guiGraphics, (int) (this.getMaxY() - getScrollBarHeightX()), this.getMaxY());
+			renderScrollBarX(guiGraphics, (int) (this.getMaxY() - getScrollBarWidth()), this.getMaxY());
 		if (shouldShowScrollBarY())
-			renderScrollBarY(guiGraphics, (int) (this.getMaxX() - getScrollBarWidthY()), this.getMaxX());
+			renderScrollBarY(guiGraphics, (int) (this.getMaxX() - getScrollBarWidth()), this.getMaxX());
 	}
 
 	private void renderScrollBarX(GuiGraphics guiGraphics, int minY, int maxY) {
-		double x = this.getX() + (this.getWidth() - this.getScrollBarWidthX()) *
+		double x = this.getX() + (this.getWidth() - this.getScrollBarLengthX()) *
 				(this.getScrollDistanceXDouble() / (this.getMaxScrollDistanceX() - this.getWidth()));
 		int minX = (int) x;
-		int maxX = (int) x + this.getScrollBarWidthX();
+		int maxX = (int) x + this.getScrollBarLengthX();
 
 		renderScrollBar(guiGraphics, minX, minY, maxX, maxY);
 	}
 
 	private void renderScrollBarY(GuiGraphics guiGraphics, int minX, int maxX) {
-		double y = this.getY() + (this.getHeight() - this.getScrollBarHeightY()) *
+		double y = this.getY() + (this.getHeight() - this.getScrollBarLengthY()) *
 				(this.getScrollDistanceYDouble() / (this.getMaxScrollDistanceY() - this.getHeight()));
 		int minY = (int) y;
-		int maxY = (int) y + this.getScrollBarHeightY();
+		int maxY = (int) y + this.getScrollBarLengthY();
 
 		renderScrollBar(guiGraphics, minX, minY, maxX, maxY);
 	}
@@ -152,8 +138,8 @@ public abstract class ScrollableWidget extends Widget {
 			scrollDistanceX -= dragX;
 			scrollDistanceY -= dragY;
 			updateScroll();
-			this.scrollXInterpolator.setBounds((float) scrollDistanceX, (float) scrollDistanceX);
-			this.scrollYInterpolator.setBounds((float) scrollDistanceY, (float) scrollDistanceY);
+			this.scrollXInterpolator.setTime(this.scrollXInterpolator.getDuration());
+			this.scrollYInterpolator.setTime(this.scrollXInterpolator.getDuration());
 			return true;
 		}
 		return false;

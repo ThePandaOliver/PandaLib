@@ -6,7 +6,9 @@ import com.google.gson.JsonObject;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import me.pandamods.pandalib.PandaLib;
 import me.pandamods.pandalib.utils.gsonadapter.QuaternionfTypeAdapter;
+import me.pandamods.pandalib.utils.gsonadapter.Vector2fTypeAdapter;
 import me.pandamods.pandalib.utils.gsonadapter.Vector3fTypeAdapter;
+import me.pandamods.pandalib.utils.gsonadapter.Vector4fTypeAdapter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
@@ -16,7 +18,9 @@ import net.minecraft.util.GsonHelper;
 import net.minecraft.util.profiling.ProfilerFiller;
 import org.apache.commons.io.IOUtils;
 import org.joml.Quaternionf;
+import org.joml.Vector2f;
 import org.joml.Vector3f;
+import org.joml.Vector4f;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -33,6 +37,7 @@ public class Resources {
 	private static final String SUPPORTED_ANIMATION_VERSION = "0.2";
 
 	public static final Gson GSON = new GsonBuilder()
+			.registerTypeAdapter(Vector2f.class, new Vector2fTypeAdapter())
 			.registerTypeAdapter(Vector3f.class, new Vector3fTypeAdapter())
 			.registerTypeAdapter(Quaternionf.class, new QuaternionfTypeAdapter())
 			.create();

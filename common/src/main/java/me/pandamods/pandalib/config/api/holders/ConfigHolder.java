@@ -3,20 +3,20 @@ package me.pandamods.pandalib.config.api.holders;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import dev.architectury.platform.Platform;
-import dev.architectury.utils.Env;
-import me.pandamods.pandalib.PandaLib;
 import me.pandamods.pandalib.config.api.Config;
+import me.pandamods.pandalib.config.api.ConfigData;
 import me.pandamods.pandalib.utils.ClassUtils;
 import net.minecraft.resources.ResourceLocation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-public class ConfigHolder<T> {
-	public static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
-
-	private T serverConfig = null;
+public class ConfigHolder<T extends ConfigData> {
+	public final Logger logger;
+	private final Gson gson;
 
 	private final Class<T> configClass;
 	private final Config definition;
@@ -28,14 +28,18 @@ public class ConfigHolder<T> {
 	public ConfigHolder(Class<T> configClass, Config config) {
 		this.configClass = configClass;
 		this.definition = config;
+		this.logger = LoggerFactory.getLogger(config.modId() + " | Config");
+		this.gson = getNewDefault().buildGson(new GsonBuilder()).setPrettyPrinting().create();
 
 		this.resourceLocation = new ResourceLocation(config.modId(), config.name());
 		this.synchronize = config.synchronize();
 		this.configPacketId = new ResourceLocation(config.modId(), "config_packet");
 
-		if (this.load()) {
-			this.save();
-		}
+		this.load();
+	}
+
+	public Gson getGson() {
+		return gson;
 	}
 
 	public Class<T> getConfigClass() {
@@ -57,9 +61,11 @@ public class ConfigHolder<T> {
 		try {
 			Files.createDirectories(configPath.getParent());
 			BufferedWriter writer = Files.newBufferedWriter(configPath);
-			GSON.toJson(config, writer);
+			this.getGson().toJson(config, writer);
 			writer.close();
+			logger.info("successfully saved config '{}'", name());
 		} catch (IOException e) {
+			logger.info("Failed to save config '{}'", name());
 			throw new RuntimeException(e);
 		}
 	}
@@ -68,15 +74,16 @@ public class ConfigHolder<T> {
 		Path configPath = getConfigPath();
 		if (Files.exists(configPath)) {
 			try (BufferedReader reader = Files.newBufferedReader(configPath)) {
-				this.config = GSON.fromJson(reader, configClass);
+				this.config = this.getGson().fromJson(reader, configClass);
 			} catch (IOException e) {
-				PandaLib.LOGGER.error("Failed to load config '{}', using default!", configClass, e);
+				logger.error("Failed to load config '{}', using default", name(), e);
 				resetToDefault();
 				return false;
 			}
 		} else {
 			resetToDefault();
 		}
+		logger.info("successfully loaded config '{}'", name());
 		return true;
 	}
 
@@ -90,6 +97,10 @@ public class ConfigHolder<T> {
 
 	public ResourceLocation resourceLocation() {
 		return resourceLocation;
+	}
+
+	public String name() {
+		return getDefinition().name();
 	}
 
 	public T get() {

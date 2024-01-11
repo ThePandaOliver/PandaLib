@@ -8,16 +8,12 @@ import java.util.function.Supplier;
 
 public abstract class Interpolator<T> {
 	private float time = 0;
-	private final float maxTime;
-	private T value;
-	private T min;
-	private T max;
+	private float duration = 1;
+	private T previous = null;
+	private T next;
 
-	public Interpolator(float maxTime, T startingValue, T max) {
-		this.maxTime = maxTime;
-		this.value = startingValue;
-		this.min = startingValue;
-		this.max = max;
+	public Interpolator(T value) {
+		this.next = value;
 	}
 
 	public final void update() {
@@ -30,43 +26,47 @@ public abstract class Interpolator<T> {
 
 	public final void update(float multiplier) {
 		time += RenderUtils.getDeltaSeconds() * multiplier;
-		time = Math.clamp(0, maxTime, time);
-
-		value = this.lerp(time / maxTime, min, max);
+		time = Math.clamp(0, duration, time);
 	}
 
 	public abstract T lerp(float time, T min, T max);
 
-	public float getTime() {
-		return time;
+	protected T getValue() {
+		if (previous == null) return next;
+		return this.lerp(time / duration, previous, next);
 	}
 
-	public T getValue() {
-		return value;
-	}
-
-	public final void setTarget(T target) {
-		if (!equals(max, target)) {
+	@SuppressWarnings("unchecked")
+	public final <E extends Interpolator<T>> E setTarget(T next) {
+		if (!equals(this.next, next)) {
 			this.time = 0;
-			this.min = this.value;
-			this.max = target;
+			this.previous = this.getValue();
+			this.next = next;
 		}
+		return (E) this;
 	}
 
 	public boolean equals(T a, T b) {
 		return a.equals(b);
 	}
 
-	public void setMin(T min) {
-		this.min = min;
+	@SuppressWarnings("unchecked")
+	public <E extends Interpolator<T>> E setTime(float time) {
+		this.time = time;
+		return (E) this;
 	}
 
-	public void setMax(T max) {
-		this.max = max;
+	public float getTime() {
+		return time;
 	}
 
-	public void setBounds(T min, T max) {
-		this.min = min;
-		this.max = max;
+	@SuppressWarnings("unchecked")
+	public <E extends Interpolator<T>> E setDuration(float duration) {
+		this.duration = duration;
+		return (E) this;
+	}
+
+	public float getDuration() {
+		return duration;
 	}
 }

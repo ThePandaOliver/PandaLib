@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import dev.architectury.platform.Platform;
 import dev.architectury.utils.Env;
 import me.pandamods.pandalib.config.api.Config;
+import me.pandamods.pandalib.config.api.ConfigData;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -12,7 +13,7 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 
-public class ClientConfigHolder<T> extends ConfigHolder<T> {
+public class ClientConfigHolder<T extends ConfigData> extends ConfigHolder<T> {
 	public static final EntityDataAccessor<CompoundTag> PLAYER_CLIENT_CONFIGS =
 			SynchedEntityData.defineId(Player.class, EntityDataSerializers.COMPOUND_TAG);
 
@@ -38,7 +39,7 @@ public class ClientConfigHolder<T> extends ConfigHolder<T> {
 	public T getClient(Player player) {
 		CompoundTag compoundTag = player.getEntityData().get(PLAYER_CLIENT_CONFIGS);
 		if (compoundTag.contains(resourceLocation().toString()))
-			return GSON.fromJson(new String(compoundTag.getByteArray(resourceLocation().toString())), getConfigClass());
+			return this.getGson().fromJson(new String(compoundTag.getByteArray(resourceLocation().toString())), getConfigClass());
 		return get();
 	}
 

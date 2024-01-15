@@ -10,9 +10,7 @@ version = "${version}"
 displayName = "PandaLib"
 authors = "Panda Mods/The Panda Oliver"
 logoFile = "icon.png"
-description = '''
-A multi purpose library with a Config API, Modal and Animation API, Menu API and a bit of utility code.
-'''
+description = "A multi purpose library with a Config API, Model and Animation API, Menu API and a bit of utility code."
 
 [[dependencies.pandalib]]
 modId = "forge"

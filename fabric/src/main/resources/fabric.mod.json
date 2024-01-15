@@ -3,7 +3,7 @@
   "id": "pandalib",
   "version": "${version}",
   "name": "PandaLib",
-  "description": "A multi purpose library with a Config API, Modal and Animation API, Menu API and a bit of utility code.",
+  "description": "A multi purpose library with a Config API, Model and Animation API, Menu API and a bit of utility code.",
   "authors": [
 		"Panda Mods/The Panda Oliver"
   ],
@@ -19,7 +19,7 @@
 			"me.pandamods.pandalib.fabric.PandaLibFabric"
     ],
 		"client": [
-			"me.pandamods.pandalib.fabric.PandaLibClientFabric"
+			"me.pandamods.pandalib.fabric.PandaLibFabricClient"
 		],
 		"modmenu": [
 			"me.pandamods.pandalib.fabric.PandaLibModMenuIntegration"

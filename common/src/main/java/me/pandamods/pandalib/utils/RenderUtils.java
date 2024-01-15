@@ -4,7 +4,9 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.SheetedDecalTextureGenerator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
+import net.minecraft.client.renderer.block.ModelBlockRenderer;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelBakery;
@@ -14,27 +16,43 @@ import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.BlockDestructionProgress;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.*;
 
 public class RenderUtils {
 	public static void renderBlock(PoseStack poseStack, BlockState blockState, BlockPos blockPos,
-								   Level level, VertexConsumer vertexConsumer, int lightColor, int overlay) {
-		render(poseStack, blockState, blockPos, level, vertexConsumer, lightColor, overlay);
+								   LevelAccessor level, VertexConsumer vertexConsumer, int overlay) {
+		tesselate(level, blockState, blockPos, poseStack, vertexConsumer, level.getRandom(), overlay);
 	}
 
-	private static void render(PoseStack poseStack, BlockState blockState, BlockPos blockPos,
-								   Level level, VertexConsumer vertexConsumer, int lightColor, int overlay) {
-		BakedModel bakedModel = Minecraft.getInstance().getBlockRenderer().getBlockModel(blockState);
-		int color = Minecraft.getInstance().getBlockColors().getColor(blockState, level, blockPos, 0);
-		float red = (float)(color >> 16 & 0xFF) / 255.0f;
-		float green = (float)(color >> 8 & 0xFF) / 255.0f;
-		float blue = (float)(color & 0xFF) / 255.0f;
+	private static void tesselate(BlockAndTintGetter level, BlockState blockState, BlockPos blockPos, PoseStack poseStack,
+						  VertexConsumer vertexConsumer, RandomSource random, int packedOverlay) {
+		BlockRenderDispatcher blockRenderDispatcher = Minecraft.getInstance().getBlockRenderer();
+		ModelBlockRenderer blockRenderer = blockRenderDispatcher.getModelRenderer();
+		long seed = blockState.getSeed(blockPos);
+		BakedModel model = blockRenderDispatcher.getBlockModel(blockState);
 
-		Minecraft.getInstance().getBlockRenderer().getModelRenderer().renderModel(poseStack.last(),
-				vertexConsumer, blockState, bakedModel, red, green, blue, lightColor, overlay);
+		BitSet bitSet = new BitSet(3);
+		BlockPos.MutableBlockPos mutableBlockPos = blockPos.mutable();
+		for (Direction direction : Direction.values()) {
+			random.setSeed(seed);
+			List<BakedQuad> quads = model.getQuads(blockState, direction, random);
+			if (quads.isEmpty()) continue;
+			mutableBlockPos.setWithOffset(blockPos, direction);
+			int lightColor = LevelRenderer.getLightColor(level, blockState, blockPos);
+			blockRenderer.renderModelFaceFlat(level, blockState, blockPos, lightColor, packedOverlay, false,
+					poseStack, vertexConsumer, quads, bitSet);
+		}
+		random.setSeed(seed);
+		List<BakedQuad> quads = model.getQuads(blockState, null, random);
+		if (!quads.isEmpty()) {
+			blockRenderer.renderModelFaceFlat(level, blockState, blockPos, -1, packedOverlay, true,
+					poseStack, vertexConsumer, quads, bitSet);
+		}
 	}
 
 	public static float getDeltaSeconds() {

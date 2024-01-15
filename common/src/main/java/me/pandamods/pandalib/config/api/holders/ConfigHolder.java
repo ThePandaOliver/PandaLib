@@ -82,6 +82,7 @@ public class ConfigHolder<T extends ConfigData> {
 			}
 		} else {
 			resetToDefault();
+			save();
 		}
 		logger.info("successfully loaded config '{}'", name());
 		return true;

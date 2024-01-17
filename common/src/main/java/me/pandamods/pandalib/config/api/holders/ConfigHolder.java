@@ -2,6 +2,7 @@ package me.pandamods.pandalib.config.api.holders;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import dev.architectury.platform.Platform;
 import me.pandamods.pandalib.config.api.Config;
 import me.pandamods.pandalib.config.api.ConfigData;
@@ -57,15 +58,16 @@ public class ConfigHolder<T extends ConfigData> {
 	}
 
 	public void save() {
+		this.config.onSave();
 		Path configPath = getConfigPath();
 		try {
 			Files.createDirectories(configPath.getParent());
 			BufferedWriter writer = Files.newBufferedWriter(configPath);
 			this.getGson().toJson(config, writer);
 			writer.close();
-			logger.info("successfully saved config '{}'", name());
+			this.logger.info("successfully saved config '{}'", name());
 		} catch (IOException e) {
-			logger.info("Failed to save config '{}'", name());
+			this.logger.info("Failed to save config '{}'", name());
 			throw new RuntimeException(e);
 		}
 	}
@@ -74,9 +76,11 @@ public class ConfigHolder<T extends ConfigData> {
 		Path configPath = getConfigPath();
 		if (Files.exists(configPath)) {
 			try (BufferedReader reader = Files.newBufferedReader(configPath)) {
-				this.config = this.getGson().fromJson(reader, configClass);
+				JsonObject jsonObject = this.getGson().fromJson(reader, JsonObject.class);
+				this.config = this.getGson().fromJson(jsonObject, configClass);
+				this.config.onLoad(jsonObject);
 			} catch (IOException e) {
-				logger.error("Failed to load config '{}', using default", name(), e);
+				this.logger.error("Failed to load config '{}', using default", name(), e);
 				resetToDefault();
 				return false;
 			}
@@ -84,7 +88,7 @@ public class ConfigHolder<T extends ConfigData> {
 			resetToDefault();
 			save();
 		}
-		logger.info("successfully loaded config '{}'", name());
+		this.logger.info("successfully loaded config '{}'", name());
 		return true;
 	}
 

@@ -2,6 +2,7 @@ package me.pandamods.pandalib.config.api;
 
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
+import me.pandamods.pandalib.config.api.holders.ConfigHolder;
 import me.pandamods.pandalib.utils.gsonadapter.QuaternionfTypeAdapter;
 import me.pandamods.pandalib.utils.gsonadapter.Vector2fTypeAdapter;
 import me.pandamods.pandalib.utils.gsonadapter.Vector3fTypeAdapter;
@@ -12,8 +13,8 @@ import org.joml.Vector3f;
 import org.joml.Vector4f;
 
 public interface ConfigData {
-	default void onLoad(JsonObject configJson) {}
-	default void onSave() {}
+	default <T extends ConfigData> void onLoad(ConfigHolder<T> configHolder, JsonObject configJson) {}
+	default <T extends ConfigData> void onSave(ConfigHolder<T> configHolder) {}
 
 	default GsonBuilder buildGson(GsonBuilder builder) {
 		return builder

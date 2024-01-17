@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import dev.architectury.platform.Platform;
+import me.pandamods.pandalib.PandaLibPlatform;
 import me.pandamods.pandalib.config.api.Config;
 import me.pandamods.pandalib.config.api.ConfigData;
 import me.pandamods.pandalib.utils.ClassUtils;
@@ -52,13 +53,13 @@ public class ConfigHolder<T extends ConfigData> {
 	}
 
 	public Path getConfigPath() {
-		Path path = Platform.getConfigFolder();
+		Path path = PandaLibPlatform.getConfigDirectory();
 		if (!definition.parentDirectory().isBlank()) path = path.resolve(definition.parentDirectory());
 		return path.resolve(definition.name() + ".json");
 	}
 
 	public void save() {
-		this.config.onSave();
+		this.config.onSave(this);
 		Path configPath = getConfigPath();
 		try {
 			Files.createDirectories(configPath.getParent());
@@ -78,7 +79,7 @@ public class ConfigHolder<T extends ConfigData> {
 			try (BufferedReader reader = Files.newBufferedReader(configPath)) {
 				JsonObject jsonObject = this.getGson().fromJson(reader, JsonObject.class);
 				this.config = this.getGson().fromJson(jsonObject, configClass);
-				this.config.onLoad(jsonObject);
+				this.config.onLoad(this, jsonObject);
 			} catch (IOException e) {
 				this.logger.error("Failed to load config '{}', using default", name(), e);
 				resetToDefault();

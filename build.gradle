@@ -32,7 +32,7 @@ allprojects {
         archivesName = archives_base_name
     }
 
-    version = mod_version + "-mc" + minecraft_version + "-" + project.name
+    version = mod_version
     group = maven_group
 
     repositories {
@@ -43,12 +43,20 @@ allprojects {
         }
     }
 
-    tasks.withType(JavaCompile) {
-        options.encoding = "UTF-8"
-        options.release = 17
-    }
+	processResources {
+		inputs.property "version", project.version
 
-    java {
+		filesMatching(["fabric.mod.json", "META-INF/mods.toml", "pack.mcmeta"]) {
+			expand "version": project.version
+		}
+	}
+
+	tasks.withType(JavaCompile).configureEach {
+		options.encoding = "UTF-8"
+		options.release = 17
+	}
+
+	java {
         withSourcesJar()
     }
 }

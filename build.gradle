@@ -16,7 +16,10 @@ subprojects {
 
     dependencies {
         minecraft "com.mojang:minecraft:${rootProject.minecraft_version}"
-        mappings loom.officialMojangMappings()
+        mappings loom.layered() {
+            officialMojangMappings()
+            parchment("org.parchmentmc.data:parchment-${rootProject.parchment_version}@zip")
+        }
     }
 }
 
@@ -26,22 +29,34 @@ allprojects {
     apply plugin: "maven-publish"
 
     base {
-        archivesName = rootProject.archives_base_name
+        archivesName = archives_base_name
     }
 
-    version = rootProject.mod_version
-    group = rootProject.maven_group
+    version = mod_version
+    group = maven_group
 
     repositories {
         maven { url = uri("https://maven.terraformersmc.com/releases/") }
+        maven {
+            name = 'ParchmentMC'
+            url = 'https://maven.parchmentmc.org'
+        }
     }
 
-    tasks.withType(JavaCompile) {
-        options.encoding = "UTF-8"
-        options.release = 17
-    }
+	processResources {
+		inputs.property "version", project.version
 
-    java {
+		filesMatching(["fabric.mod.json", "META-INF/mods.toml", "pack.mcmeta"]) {
+			expand "version": project.version
+		}
+	}
+
+	tasks.withType(JavaCompile).configureEach {
+		options.encoding = "UTF-8"
+		options.release = 17
+	}
+
+	java {
         withSourcesJar()
     }
 }

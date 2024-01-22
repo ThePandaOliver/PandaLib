@@ -31,12 +31,12 @@ public class VectorUtils {
 		return stack;
 	}
 
-	public static String betterPrint(Vector3f vector) {
+	public static String readablePrint(Vector3f vector) {
 		DecimalFormat decimalFormat = new DecimalFormat("#.###");
 		return "(" + decimalFormat.format(vector.x) + " " + decimalFormat.format(vector.y) + " " + decimalFormat.format(vector.z) + ")";
 	}
 
-	public static String betterPrintEuler(Vector3f vector) {
+	public static String readablePrintEuler(Vector3f vector) {
 		DecimalFormat decimalFormat = new DecimalFormat("#.###");
 		return "(" +
 				decimalFormat.format(Math.toDegrees(vector.x)) + " " +

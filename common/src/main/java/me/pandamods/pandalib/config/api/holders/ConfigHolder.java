@@ -4,10 +4,11 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import dev.architectury.platform.Platform;
-import me.pandamods.pandalib.PandaLibPlatform;
+import me.pandamods.pandalib.client.screen.api.ConfigScreen;
 import me.pandamods.pandalib.config.api.Config;
 import me.pandamods.pandalib.config.api.ConfigData;
 import me.pandamods.pandalib.utils.ClassUtils;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.resources.ResourceLocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,7 +38,9 @@ public class ConfigHolder<T extends ConfigData> {
 		this.synchronize = config.synchronize();
 		this.configPacketId = new ResourceLocation(config.modId(), "config_packet");
 
-		this.load();
+		if (this.load()) {
+			save();
+		}
 	}
 
 	public Gson getGson() {
@@ -53,7 +56,7 @@ public class ConfigHolder<T extends ConfigData> {
 	}
 
 	public Path getConfigPath() {
-		Path path = PandaLibPlatform.getConfigDirectory();
+		Path path = Platform.getConfigFolder();
 		if (!definition.parentDirectory().isBlank()) path = path.resolve(definition.parentDirectory());
 		return path.resolve(definition.name() + ".json");
 	}
@@ -111,5 +114,9 @@ public class ConfigHolder<T extends ConfigData> {
 
 	public T get() {
 		return config;
+	}
+
+	public Screen createScreen(Screen parent) {
+		return new ConfigScreen(parent, this, get(), getNewDefault());
 	}
 }

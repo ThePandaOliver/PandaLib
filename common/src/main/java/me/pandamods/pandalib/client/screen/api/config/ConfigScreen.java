@@ -1,12 +1,12 @@
-package me.pandamods.pandalib.client.screen.api;
+package me.pandamods.pandalib.client.screen.api.config;
 
+import me.pandamods.pandalib.client.screen.api.PLScreen;
 import me.pandamods.pandalib.config.api.holders.ConfigHolder;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.controls.KeyBindsList;
 import net.minecraft.network.chat.Component;
 
-public class ConfigScreen extends Screen {
+public class ConfigScreen extends PLScreen {
 	private final Screen parent;
 	private final ConfigHolder<?> configHolder;
 	private final Object config;

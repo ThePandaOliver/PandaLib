@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import dev.architectury.platform.Platform;
-import me.pandamods.pandalib.client.screen.api.ConfigScreen;
+import me.pandamods.pandalib.client.screen.api.config.ConfigScreen;
 import me.pandamods.pandalib.config.api.Config;
 import me.pandamods.pandalib.config.api.ConfigData;
 import me.pandamods.pandalib.utils.ClassUtils;

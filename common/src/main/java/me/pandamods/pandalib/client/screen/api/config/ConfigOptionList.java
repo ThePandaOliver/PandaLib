@@ -1,11 +1,10 @@
-package me.pandamods.pandalib.client.screen.api;
+package me.pandamods.pandalib.client.screen.api.config;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ContainerObjectSelectionList;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 
 import java.awt.*;
@@ -34,13 +33,13 @@ public class ConfigOptionList extends ContainerObjectSelectionList<ConfigOptionL
 		@Override
 		public void render(GuiGraphics guiGraphics, int index, int top, int left, int width, int height, int mouseX, int mouseY,
 						   boolean hovering, float partialTick) {
-			renderName(guiGraphics);
+			renderName(guiGraphics, top, left, width, height);
 		}
 
 		protected void renderName(GuiGraphics guiGraphics, int top, int left, int width, int height) {
 			Font font = this.minecraft.font;
 			Component name = Component.translatable(getName() + ".title");
-			guiGraphics.drawString(font, name, (height - font.lineHeight) / 2, left, Color.white.getRGB());
+			guiGraphics.drawString(font, name, left + 2, (height - font.lineHeight) / 2, Color.white.getRGB());
 		}
 
 		protected String getName() {

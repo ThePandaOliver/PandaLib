@@ -8,4 +8,6 @@ import me.pandamods.pandalib.config.api.ConfigType;
 @Config(name = "client_test", modId = PandaLib.MOD_ID, synchronize = true)
 public class TestClientConfig implements ConfigData {
 	public String testString = "";
+	public String testString2 = "";
+	public String testString3s = "";
 }

@@ -6,6 +6,8 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 
+import java.awt.*;
+
 public class ConfigScreen extends PLScreen {
 	private final Screen parent;
 	private final ConfigHolder<?> configHolder;
@@ -19,18 +21,22 @@ public class ConfigScreen extends PLScreen {
 		this.configHolder = configHolder;
 		this.config = config;
 		this.defaultConfig = defaultConfig;
+
+		this.optionsList = new ConfigOptionList(this, configHolder, config, defaultConfig);
 	}
 
 	@Override
 	protected void init() {
-		this.optionsList = new ConfigOptionList(this, this.minecraft);
-		this.addRenderableWidget(optionsList);
+		this.addWidgetPanel(optionsList);
+		super.init();
 	}
 
 	@Override
 	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
 		this.renderBackground(guiGraphics);
 		super.render(guiGraphics, mouseX, mouseY, partialTick);
+		guiGraphics.drawCenteredString(font, Component.translatable("config." + configHolder.getDefinition().modId() + ".title"),
+				width / 2, 10, Color.white.getRGB());
 	}
 
 	@Override

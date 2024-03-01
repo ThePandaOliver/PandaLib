@@ -3,6 +3,7 @@ package me.pandamods.pandalib.utils.animation.interpolation;
 import me.pandamods.pandalib.utils.RenderUtils;
 import org.joml.Math;
 
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -11,6 +12,7 @@ public abstract class Interpolator<T> {
 	private float duration = 1;
 	private T previous = null;
 	private T next;
+	private boolean skipFirst = false;
 
 	public Interpolator(T value) {
 		this.next = value;
@@ -31,7 +33,7 @@ public abstract class Interpolator<T> {
 
 	public abstract T lerp(float time, T min, T max);
 
-	protected T getValue() {
+	public T getValue() {
 		if (previous == null) return next;
 		return this.lerp(time / duration, previous, next);
 	}
@@ -39,15 +41,17 @@ public abstract class Interpolator<T> {
 	@SuppressWarnings("unchecked")
 	public final <E extends Interpolator<T>> E setTarget(T next) {
 		if (!equals(this.next, next)) {
-			this.time = 0;
-			this.previous = this.getValue();
+			T value = this.getValue();
+			boolean shouldSkip = skipFirst && this.previous == null;
+			this.time = shouldSkip ? 1 : 0;
+			this.previous = value;
 			this.next = next;
 		}
 		return (E) this;
 	}
 
 	public boolean equals(T a, T b) {
-		return a.equals(b);
+		return Objects.equals(a, b);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -68,5 +72,11 @@ public abstract class Interpolator<T> {
 
 	public float getDuration() {
 		return duration;
+	}
+
+	@SuppressWarnings("unchecked")
+	public <E extends Interpolator<T>> E skipFirst() {
+		this.skipFirst = true;
+		return (E) this;
 	}
 }

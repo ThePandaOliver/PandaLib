@@ -7,8 +7,7 @@ public interface WidgetHolder {
 	List<Widget> widgets();
 
 	default void onMouseMove(double mouseX, double mouseY) {
-//		widgets().stream().filter(Widget::isHovered).forEach(widget -> widget.mouseMoved(mouseX, mouseY));
-//		widgets().forEach(widget -> System.out.println(widget.isHovered()));
+		widgets().stream().filter(Widget::isHovered).forEach(widget -> widget.mouseMoved(mouseX, mouseY));
 	}
 
 	default boolean onMouseClick(double mouseX, double mouseY, int button) {

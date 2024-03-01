@@ -9,5 +9,5 @@ import me.pandamods.pandalib.config.api.ConfigType;
 public class TestClientConfig implements ConfigData {
 	public String testString = "";
 	public String testString2 = "";
-	public String testString3s = "";
+	public String testString3 = "";
 }

@@ -4,7 +4,8 @@ import me.pandamods.pandalib.client.screen.api.PLScreen;
 import me.pandamods.pandalib.client.screen.api.Widget;
 import me.pandamods.pandalib.config.api.Config;
 import me.pandamods.pandalib.config.api.holders.ConfigHolder;
-import me.pandamods.pandalib.utils.animation.interpolation.FloatInterpolator;
+import me.pandamods.pandalib.utils.GuiUtils;
+import me.pandamods.pandalib.utils.animation.interpolation.NumberInterpolator;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.narration.NarratedElementType;
@@ -20,13 +21,13 @@ import java.util.Optional;
 public class ConfigOptionList extends Widget {
 	private final Map<Field, OptionEntry> options = new HashMap<>();
 
-	private FloatInterpolator hoveredPositionInterpolator = new FloatInterpolator(0);
-	private boolean hoveringOption = false;
+	private final NumberInterpolator hoveredAlphaInterpolator = new NumberInterpolator(0).setDuration(1f);
+	private final NumberInterpolator hoveredPositionInterpolator = new NumberInterpolator(0).setDuration(0.25f).skipFirst();
+	private final NumberInterpolator hoveredSizeInterpolator = new NumberInterpolator(0).setDuration(0.25f).skipFirst();
+	private OptionEntry hoveredOption;
 
 	public ConfigOptionList(PLScreen screen, ConfigHolder<?> configHolder, Object config, Object defaultConfig) {
 		super(screen);
-
-		hoveredPositionInterpolator.setDuration(3);
 
 		Class<?> configClass = config.getClass();
 		Config definition = configHolder.getDefinition();
@@ -40,7 +41,7 @@ public class ConfigOptionList extends Widget {
 		setPosition(0, 20);
 		setScale(minecraft.getWindow().getGuiScaledWidth(), minecraft.getWindow().getGuiScaledHeight() - 60);
 
-		int oy = getLocalY();
+		int oy = 0;
 		for (OptionEntry entry : options.values()) {
 			entry.setY(oy);
 			oy += entry.height();
@@ -51,26 +52,34 @@ public class ConfigOptionList extends Widget {
 	}
 
 	@Override
-	protected void renderWidget(GuiGraphics guiGraphics, float partialTick) {
-		guiGraphics.fill(minX(), minY(), maxX(), maxY(), new Color(0, 0, 0, 125).getRGB());
+	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+		GuiUtils.drawColor(guiGraphics, getX(), getY(), width(), height(), new Color(0, 0, 0, 75));
+
 		hoveredPositionInterpolator.update();
-		guiGraphics.pose().pushPose();
-		guiGraphics.pose().translate(0, hoveredPositionInterpolator.getAsDouble(), 0);
-		guiGraphics.fill(minX(), 0, maxX(), 5, new Color(255, 255, 255, 125).getRGB());
-		guiGraphics.pose().popPose();
-		super.renderWidget(guiGraphics, partialTick);
+		hoveredSizeInterpolator.update();
+		hoveredAlphaInterpolator.update();
+
+		hoveredAlphaInterpolator.setTarget(hoveredOption != null && hoveredOption.isHovered() ? 75 : 0);
+		int alpha = hoveredAlphaInterpolator.getAsInt();
+		if (alpha != 0) {
+			int y = this.getY() + hoveredPositionInterpolator.getAsInt();
+			int height = hoveredSizeInterpolator.getAsInt();
+			GuiUtils.drawColor(guiGraphics, getX(), y, width(), 2, new Color(175, 175, 175, alpha));
+			GuiUtils.drawColor(guiGraphics, getX(), y+2, width(), height-4, new Color(255, 255, 255, alpha));
+			GuiUtils.drawColor(guiGraphics, getX(), y+height-2, width(), 2, new Color(75, 75, 75, alpha));
+		}
+		super.render(guiGraphics, mouseX, mouseY, partialTick);
 	}
 
 	@Override
 	public void onMouseMove(double mouseX, double mouseY) {
 		super.onMouseMove(mouseX, mouseY);
-//		findHoveredEntry().ifPresentOrElse(
-//				optionEntry -> {
-//					System.out.println(optionEntry.getTitle().getString());
-//					hoveredPositionInterpolator.setTarget(optionEntry.getLocalY());
-//					hoveringOption = true;
-//				},
-//				() -> hoveringOption = false);
+		findHoveredEntry().ifPresentOrElse(
+				optionEntry -> {
+					hoveredOption = optionEntry;
+					hoveredPositionInterpolator.setTarget(optionEntry.getLocalY());
+					hoveredSizeInterpolator.setTarget(optionEntry.height());
+				}, () -> hoveredOption = null);
 	}
 
 	@Override
@@ -98,8 +107,8 @@ public class ConfigOptionList extends Widget {
 		}
 
 		@Override
-		protected void renderWidget(GuiGraphics guiGraphics, float partialTick) {
-			super.renderWidget(guiGraphics, partialTick);
+		public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+			super.render(guiGraphics, mouseX, mouseY, partialTick);
 			renderName(guiGraphics, getX(), getY(), height());
 		}
 

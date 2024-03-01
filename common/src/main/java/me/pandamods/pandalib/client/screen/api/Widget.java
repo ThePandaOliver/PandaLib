@@ -21,7 +21,8 @@ public abstract class Widget implements Renderable, UIElement, WidgetHolder, Gui
 	private int y = 0;
 	private int width = 0;
 	private int height = 0;
-	private boolean focused;
+	private boolean hovered = false;
+	private boolean focused = false;
 
 	@Override
 	public NarrationPriority narrationPriority() {
@@ -47,12 +48,9 @@ public abstract class Widget implements Renderable, UIElement, WidgetHolder, Gui
 	}
 
 	@Override
-	public final void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-		renderWidget(guiGraphics, partialTick);
-	}
-
-	protected void renderWidget(GuiGraphics guiGraphics, float partialTick) {
-		renderables.forEach(renderable -> renderable.render(guiGraphics, (int) getMouseX(), (int) getMouseY(), partialTick));
+	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+		hovered = this.isMouseOver(mouseX, mouseY);
+		renderables.forEach(renderable -> renderable.render(guiGraphics, mouseX, mouseY, partialTick));
 	}
 
 	protected <T extends Renderable> T addRenderableOnly(T renderable) {
@@ -80,18 +78,6 @@ public abstract class Widget implements Renderable, UIElement, WidgetHolder, Gui
 		widgets.forEach(Widget::clearWidgets);
 		renderables.clear();
 		widgets.clear();
-	}
-
-	public double getMouseX() {
-		if (parent() != null)
-			return parent().getMouseX();
-		return minecraft.mouseHandler.xpos();
-	}
-
-	public double getMouseY() {
-		if (parent() != null)
-			return parent().getMouseY();
-		return minecraft.mouseHandler.ypos();
 	}
 
 	@Override
@@ -150,7 +136,12 @@ public abstract class Widget implements Renderable, UIElement, WidgetHolder, Gui
 	}
 
 	public boolean isHovered() {
-		return minX() <= getMouseX() && minY() <= getMouseY() && maxX() >= getMouseX() && maxY() >= getMouseY();
+		return hovered;
+	}
+
+	@Override
+	public boolean isMouseOver(double mouseX, double mouseY) {
+		return minX() <= mouseX && minY() <= mouseY && maxX() >= mouseX && maxY() >= mouseY;
 	}
 
 	@Override

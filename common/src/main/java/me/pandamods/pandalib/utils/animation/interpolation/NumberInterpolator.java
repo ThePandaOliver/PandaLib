@@ -2,8 +2,8 @@ package me.pandamods.pandalib.utils.animation.interpolation;
 
 import org.joml.Math;
 
-public class FloatInterpolator extends Interpolator<Number> {
-	public FloatInterpolator(Number value) {
+public class NumberInterpolator extends Interpolator<Number> {
+	public NumberInterpolator(Number value) {
 		super(value);
 	}
 

@@ -9,7 +9,7 @@ import net.minecraft.client.gui.narration.NarratableEntry;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Widget implements Renderable, UIElement, WidgetHolder, GuiEventListener, NarratableEntry {
+public abstract class Widget implements Renderable, UIElement, WidgetHolder, GuiEventListener {
 	public final PLScreen screen;
 	private final Widget parent;
 	public final Minecraft minecraft;
@@ -23,11 +23,6 @@ public abstract class Widget implements Renderable, UIElement, WidgetHolder, Gui
 	private int height = 0;
 	private boolean hovered = false;
 	private boolean focused = false;
-
-	@Override
-	public NarrationPriority narrationPriority() {
-		return NarrationPriority.FOCUSED;
-	}
 
 	public Widget(Widget parent) {
 		this(parent.screen, parent);
@@ -74,7 +69,7 @@ public abstract class Widget implements Renderable, UIElement, WidgetHolder, Gui
 		return widget;
 	}
 
-	void clearWidgets() {
+	protected void clearWidgets() {
 		widgets.forEach(Widget::clearWidgets);
 		renderables.clear();
 		widgets.clear();

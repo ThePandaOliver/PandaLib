@@ -24,47 +24,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import java.util.*;
 
 public class RenderUtils {
-	public static void renderBlock(PoseStack poseStack, BlockState blockState, BlockPos blockPos,
-								   LevelAccessor level, VertexConsumer vertexConsumer, int overlay) {
-		tesselate(level, blockState, blockPos, poseStack, vertexConsumer, level.getRandom(), overlay);
-	}
-
-	private static void tesselate(BlockAndTintGetter level, BlockState blockState, BlockPos blockPos, PoseStack poseStack,
-						  VertexConsumer vertexConsumer, RandomSource random, int packedOverlay) {
-		BlockRenderDispatcher blockRenderDispatcher = Minecraft.getInstance().getBlockRenderer();
-		ModelBlockRenderer blockRenderer = blockRenderDispatcher.getModelRenderer();
-		long seed = blockState.getSeed(blockPos);
-		BakedModel model = blockRenderDispatcher.getBlockModel(blockState);
-
-		BitSet bitSet = new BitSet(3);
-		BlockPos.MutableBlockPos mutableBlockPos = blockPos.mutable();
-		for (Direction direction : Direction.values()) {
-			random.setSeed(seed);
-			List<BakedQuad> quads = model.getQuads(blockState, direction, random);
-			if (quads.isEmpty()) continue;
-			mutableBlockPos.setWithOffset(blockPos, direction);
-			int lightColor = LevelRenderer.getLightColor(level, blockState, blockPos);
-			blockRenderer.renderModelFaceFlat(level, blockState, blockPos, lightColor, packedOverlay, false,
-					poseStack, vertexConsumer, quads, bitSet);
-		}
-		random.setSeed(seed);
-		List<BakedQuad> quads = model.getQuads(blockState, null, random);
-		if (!quads.isEmpty()) {
-			blockRenderer.renderModelFaceFlat(level, blockState, blockPos, -1, packedOverlay, true,
-					poseStack, vertexConsumer, quads, bitSet);
-		}
-	}
-
 	public static float getDeltaSeconds() {
 		return Minecraft.getInstance().getDeltaFrameTime() / 20;
-	}
-
-	public static Set<ResourceLocation> getBlockTextures(BlockState blockState, Direction direction) {
-		ModelManager manager = Minecraft.getInstance().getModelManager();
-		BakedModel model = manager.getBlockModelShaper().getBlockModel(blockState);
-		List<BakedQuad> quads = model.getQuads(blockState, direction, RandomSource.create());
-		Set<ResourceLocation> textures = new HashSet<>();
-		quads.forEach(bakedQuad -> textures.add(bakedQuad.getSprite().contents().name()));
-		return textures;
 	}
 }

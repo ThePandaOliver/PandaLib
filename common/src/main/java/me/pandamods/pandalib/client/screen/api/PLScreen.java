@@ -1,7 +1,5 @@
 package me.pandamods.pandalib.client.screen.api;
 
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.screens.Screen;
@@ -11,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class PLScreen extends Screen implements WidgetHolder {
-	private List<Widget> widgets = new ArrayList<>();
+	private List<WidgetImpl> widgetImpls = new ArrayList<>();
 
 	protected PLScreen(Component title) {
 		super(title);
@@ -19,13 +17,13 @@ public abstract class PLScreen extends Screen implements WidgetHolder {
 
 	@Override
 	protected void init() {
-		widgets.forEach(Widget::init);
+		widgetImpls.forEach(WidgetImpl::init);
 	}
 
 	@Override
 	protected void clearWidgets() {
-		widgets.forEach(Widget::clearWidgets);
-		widgets.clear();
+		widgetImpls.forEach(WidgetImpl::clearWidgets);
+		widgetImpls.clear();
 		super.clearWidgets();
 	}
 
@@ -39,15 +37,15 @@ public abstract class PLScreen extends Screen implements WidgetHolder {
 		return super.addWidget(listener);
 	}
 
-	protected <T extends Widget> T addWidgetPanel(T widget) {
+	protected <T extends WidgetImpl> T addWidgetPanel(T widget) {
 		addRenderableOnly(widget);
-		widgets.add(widget);
+		widgetImpls.add(widget);
 		return widget;
 	}
 
 	@Override
-	public List<Widget> widgets() {
-		return widgets;
+	public List<WidgetImpl> widgets() {
+		return widgetImpls;
 	}
 
 	@Override

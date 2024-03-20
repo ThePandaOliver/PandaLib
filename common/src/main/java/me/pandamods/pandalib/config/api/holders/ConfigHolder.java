@@ -114,8 +114,4 @@ public class ConfigHolder<T extends ConfigData> {
 	public T get() {
 		return config;
 	}
-
-	public Screen createScreen(Screen parent) {
-		return new ConfigScreen(parent, this, get(), getNewDefault());
-	}
 }

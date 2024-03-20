@@ -4,10 +4,11 @@ import com.terraformersmc.modmenu.api.ConfigScreenFactory;
 import com.terraformersmc.modmenu.api.ModMenuApi;
 import me.pandamods.pandalib.PandaLib;
 import me.pandamods.test.PandaLibTest;
+import me.pandamods.test.client.screen.TestClientConfigScreen;
 
 public class PandaLibModMenuIntegration implements ModMenuApi {
 	@Override
 	public ConfigScreenFactory<?> getModConfigScreenFactory() {
-		return screen -> PandaLibTest.CLIENT_CONFIG.createScreen(screen);
+		return TestClientConfigScreen::new;
 	}
 }

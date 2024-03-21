@@ -34,12 +34,14 @@ public abstract class PLScreen extends Screen implements WidgetHolder {
 
 	@Override
 	protected <T extends GuiEventListener & NarratableEntry> T addWidget(T listener) {
+		if (listener instanceof WidgetImpl widget) widget.setScreen(this);
 		return super.addWidget(listener);
 	}
 
 	protected <T extends WidgetImpl> T addWidgetPanel(T widget) {
 		addRenderableOnly(widget);
 		widgetImpls.add(widget);
+		widget.setScreen(this);
 		return widget;
 	}
 

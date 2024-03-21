@@ -1,34 +1,40 @@
 package me.pandamods.pandalib.client.screen.api;
 
-public interface UIElement {
-	WidgetImpl parent();
+import me.pandamods.pandalib.client.screen.api.widgets.buttons.PLAbstractButton;
 
-	int getLocalX();
-	int getLocalY();
+public interface UIElement {
+	PLScreen getScreen();
+	void setScreen(PLScreen screen);
+
+	WidgetImpl getParent();
+	void setParent(WidgetImpl parent);
+
+	int getX();
+	int getY();
 	int width();
 	int height();
 
-	default int getX() {
-		if (parent() != null)
-			return getLocalX() + parent().getX();
-		return getLocalX();
+	default int x() {
+		if (getParent() != null)
+			return getX() + getParent().x();
+		return getX();
 	}
-	default int getY() {
-		if (parent() != null)
-			return getLocalY() + parent().getY();
-		return getLocalY();
+	default int y() {
+		if (getParent() != null)
+			return getY() + getParent().y();
+		return getY();
 	}
 
 	default int minX() {
-		return getX();
+		return x();
 	}
 	default int minY() {
-		return getY();
+		return y();
 	}
 	default int maxX() {
-		return getX() + width();
+		return x() + width();
 	}
 	default int maxY() {
-		return getY() + height();
+		return y() + height();
 	}
 }

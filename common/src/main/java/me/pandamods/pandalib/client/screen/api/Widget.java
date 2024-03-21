@@ -6,18 +6,6 @@ public abstract class Widget extends WidgetImpl {
 	private int width = 0;
 	private int height = 0;
 
-	public Widget(WidgetImpl parent) {
-		super(parent);
-	}
-
-	public Widget(PLScreen screen) {
-		super(screen);
-	}
-
-	public Widget(PLScreen screen, WidgetImpl parent) {
-		super(screen, parent);
-	}
-
 	public void setX(int x) {
 		this.x = x;
 	}

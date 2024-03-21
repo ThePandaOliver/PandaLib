@@ -10,8 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class WidgetImpl implements Renderable, UIElement, WidgetHolder, GuiEventListener {
-	public final PLScreen screen;
-	private final WidgetImpl parent;
+	private PLScreen screen;
+	private WidgetImpl parent;
 	public final Minecraft minecraft;
 
 	protected List<Renderable> renderables = new ArrayList<>();
@@ -20,17 +20,7 @@ public abstract class WidgetImpl implements Renderable, UIElement, WidgetHolder,
 	private boolean hovered = false;
 	private boolean focused = false;
 
-	public WidgetImpl(WidgetImpl parent) {
-		this(parent.screen, parent);
-	}
-
-	public WidgetImpl(PLScreen screen) {
-		this(screen, null);
-	}
-
-	public WidgetImpl(PLScreen screen, WidgetImpl parent) {
-		this.screen = screen;
-		this.parent = parent;
+	public WidgetImpl() {
 		this.minecraft = Minecraft.getInstance();
 	}
 
@@ -42,6 +32,22 @@ public abstract class WidgetImpl implements Renderable, UIElement, WidgetHolder,
 	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
 		hovered = this.isMouseOver(mouseX, mouseY);
 		renderables.forEach(renderable -> renderable.render(guiGraphics, mouseX, mouseY, partialTick));
+	}
+
+	@Override
+	public PLScreen getScreen() {
+		return screen;
+	}
+
+	@Override
+	public void setScreen(PLScreen screen) {
+		this.screen = screen;
+	}
+
+	@Override
+	public void setParent(WidgetImpl parent) {
+		this.parent = parent;
+		if (this.parent.getScreen() != null) this.screen = this.parent.getScreen();
 	}
 
 	protected <T extends Renderable> T addRenderableOnly(T renderable) {
@@ -56,12 +62,14 @@ public abstract class WidgetImpl implements Renderable, UIElement, WidgetHolder,
 	}
 
 	protected <T extends GuiEventListener & NarratableEntry> T addWidget(T listener) {
+		if (listener instanceof UIElement uiElement) uiElement.setParent(this);
 		return screen.addWidget(listener);
 	}
 
 	protected <T extends WidgetImpl> T addWidgetPanel(T widget) {
 		widgetImpls.add(widget);
 		renderables.add(widget);
+		widget.setParent(this);
 		return widget;
 	}
 
@@ -72,7 +80,7 @@ public abstract class WidgetImpl implements Renderable, UIElement, WidgetHolder,
 	}
 
 	@Override
-	public WidgetImpl parent() {
+	public WidgetImpl getParent() {
 		return parent;
 	}
 

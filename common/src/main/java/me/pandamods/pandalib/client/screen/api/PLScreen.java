@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class PLScreen extends Screen implements WidgetHolder {
-	private List<WidgetImpl> widgetImpls = new ArrayList<>();
+	private List<Widget> widgets = new ArrayList<>();
 
 	protected PLScreen(Component title) {
 		super(title);
@@ -17,13 +17,13 @@ public abstract class PLScreen extends Screen implements WidgetHolder {
 
 	@Override
 	protected void init() {
-		widgetImpls.forEach(WidgetImpl::init);
+		widgets.forEach(Widget::init);
 	}
 
 	@Override
 	protected void clearWidgets() {
-		widgetImpls.forEach(WidgetImpl::clearWidgets);
-		widgetImpls.clear();
+		widgets.forEach(Widget::clearWidgets);
+		widgets.clear();
 		super.clearWidgets();
 	}
 
@@ -34,20 +34,20 @@ public abstract class PLScreen extends Screen implements WidgetHolder {
 
 	@Override
 	protected <T extends GuiEventListener & NarratableEntry> T addWidget(T listener) {
-		if (listener instanceof WidgetImpl widget) widget.setScreen(this);
+		if (listener instanceof Widget widget) widget.setScreen(this);
 		return super.addWidget(listener);
 	}
 
-	protected <T extends WidgetImpl> T addWidgetPanel(T widget) {
+	protected <T extends Widget> T addWidgetPanel(T widget) {
 		addRenderableOnly(widget);
-		widgetImpls.add(widget);
+		widgets.add(widget);
 		widget.setScreen(this);
 		return widget;
 	}
 
 	@Override
-	public List<WidgetImpl> widgets() {
-		return widgetImpls;
+	public List<Widget> widgets() {
+		return widgets;
 	}
 
 	@Override

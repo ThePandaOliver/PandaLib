@@ -1,6 +1,6 @@
 package me.pandamods.pandalib.client.screen.api.config;
 
-import me.pandamods.pandalib.client.screen.api.WidgetImpl;
+import me.pandamods.pandalib.client.screen.api.Widget;
 import me.pandamods.pandalib.client.screen.api.widgets.buttons.AbstractToggleButton;
 import me.pandamods.pandalib.utils.animation.interpolation.NumberInterpolator;
 import net.minecraft.client.gui.Font;
@@ -9,7 +9,7 @@ import net.minecraft.network.chat.Component;
 
 import java.awt.*;
 
-public class ConfigCategoryList extends WidgetImpl {
+public class ConfigCategoryList extends Widget {
 	public static final int COLLAPSED_SIZE = 24;
 	public static final int OPEN_SIZE = 100;
 
@@ -41,12 +41,12 @@ public class ConfigCategoryList extends WidgetImpl {
 	}
 
 	@Override
-	public int getX() {
+	public int localX() {
 		return 0;
 	}
 
 	@Override
-	public int getY() {
+	public int localY() {
 		return 0;
 	}
 

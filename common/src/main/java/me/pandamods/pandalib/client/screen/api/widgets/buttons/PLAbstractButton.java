@@ -2,26 +2,25 @@ package me.pandamods.pandalib.client.screen.api.widgets.buttons;
 
 import me.pandamods.pandalib.client.screen.api.PLScreen;
 import me.pandamods.pandalib.client.screen.api.UIElement;
-import me.pandamods.pandalib.client.screen.api.WidgetImpl;
+import me.pandamods.pandalib.client.screen.api.Widget;
 import net.minecraft.client.gui.components.AbstractButton;
-import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
 
 public abstract class PLAbstractButton extends AbstractButton implements UIElement {
 	private PLScreen screen;
-	private WidgetImpl parent;
+	private Widget parent;
 
 	public PLAbstractButton(int x, int y, int height, int width, Component component) {
 		super(x, y, height, width, component);
 	}
 
 	@Override
-	public WidgetImpl getParent() {
+	public Widget getParent() {
 		return parent;
 	}
 
 	@Override
-	public void setParent(WidgetImpl parent) {
+	public void setParent(Widget parent) {
 		this.parent = parent;
 	}
 
@@ -37,11 +36,11 @@ public abstract class PLAbstractButton extends AbstractButton implements UIEleme
 
 	@Override
 	public int width() {
-		return getWidth();
+		return width();
 	}
 
 	@Override
 	public int height() {
-		return getHeight();
+		return height();
 	}
 }

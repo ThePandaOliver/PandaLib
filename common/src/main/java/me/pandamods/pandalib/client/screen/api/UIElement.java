@@ -1,40 +1,57 @@
 package me.pandamods.pandalib.client.screen.api;
 
-import me.pandamods.pandalib.client.screen.api.widgets.buttons.PLAbstractButton;
-
 public interface UIElement {
-	PLScreen getScreen();
-	void setScreen(PLScreen screen);
+	Widget getParent();
+	void setParent(Widget parent);
 
-	WidgetImpl getParent();
-	void setParent(WidgetImpl parent);
-
-	int getX();
-	int getY();
+	int localX();
+	int localY();
 	int width();
 	int height();
 
-	default int x() {
+	default int globalX() {
 		if (getParent() != null)
-			return getX() + getParent().x();
-		return getX();
+			return localX() + getParent().globalX();
+		return localX();
 	}
-	default int y() {
+	default int globalY() {
 		if (getParent() != null)
-			return getY() + getParent().y();
-		return getY();
+			return localY() + getParent().globalY();
+		return localY();
 	}
 
 	default int minX() {
-		return x();
+		return globalX();
 	}
 	default int minY() {
-		return y();
+		return globalY();
 	}
 	default int maxX() {
-		return x() + width();
+		return globalX() + width();
 	}
 	default int maxY() {
-		return y() + height();
+		return globalY() + height();
+	}
+
+	void setX(int x);
+	void setY(int y);
+	void setWidth(int width);
+	void setHeight(int height);
+
+	default void setPosition(int x, int y) {
+		setX(x);
+		setY(y);
+	}
+
+	default void setSize(int width, int height) {
+		setWidth(width);
+		setHeight(height);
+	}
+
+	default void setBounds(int minX, int minY, int maxX, int maxY) {
+		setX(minX);
+		setY(minY);
+		setWidth(maxX - minX);
+		setHeight(maxY - minY);
 	}
 }

@@ -11,8 +11,8 @@ import net.minecraft.network.chat.Component;
 public class AbstractToggleButton extends PLAbstractButton {
 	public boolean state;
 
-	public AbstractToggleButton(int x, int y, int height, int width, boolean state, Component component) {
-		super(x, y, height, width, component);
+	public AbstractToggleButton(int x, int y, int width, int height, boolean state, Component component) {
+		super(x, y, width, height, component);
 		this.state = state;
 	}
 

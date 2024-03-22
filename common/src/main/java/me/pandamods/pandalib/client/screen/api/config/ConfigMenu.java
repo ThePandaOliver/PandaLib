@@ -17,7 +17,7 @@ public class ConfigMenu extends PLScreen {
 
 	@Override
 	protected void init() {
-		this.addWidgetPanel(categoryList);
+		this.addElement(categoryList);
 		super.init();
 	}
 

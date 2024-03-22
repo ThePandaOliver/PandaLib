@@ -1,15 +1,16 @@
 package me.pandamods.pandalib.client.screen.api.config;
 
-import me.pandamods.pandalib.client.screen.api.Widget;
+import me.pandamods.pandalib.client.screen.api.Division;
 import me.pandamods.pandalib.client.screen.api.widgets.buttons.AbstractToggleButton;
 import me.pandamods.pandalib.utils.animation.interpolation.NumberInterpolator;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
 
 import java.awt.*;
 
-public class ConfigCategoryList extends Widget {
+public class ConfigCategoryList extends Division {
 	public static final int COLLAPSED_SIZE = 24;
 	public static final int OPEN_SIZE = 100;
 
@@ -26,7 +27,7 @@ public class ConfigCategoryList extends Widget {
 
 	@Override
 	protected void init() {
-		this.addRenderableWidget(menuButton);
+		this.addElement(menuButton);
 		super.init();
 	}
 
@@ -41,23 +42,26 @@ public class ConfigCategoryList extends Widget {
 	}
 
 	@Override
-	public int localX() {
+	public void updateNarration(NarrationElementOutput narrationElementOutput) {}
+
+	@Override
+	public int getX() {
 		return 0;
 	}
 
 	@Override
-	public int localY() {
+	public int getY() {
 		return 0;
 	}
 
 	@Override
-	public int width() {
+	public int getWidth() {
 		return widthInterpolator.getAsInt();
 	}
 
 	@Override
-	public int height() {
-		return this.getScreen().height;
+	public int getHeight() {
+		return getParent().getHeight();
 	}
 
 	public static class MenuButton extends AbstractToggleButton {

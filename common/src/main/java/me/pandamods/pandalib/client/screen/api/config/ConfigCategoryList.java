@@ -36,6 +36,7 @@ public class ConfigCategoryList extends Division {
 		widthInterpolator.setTarget(menuButton.state ? OPEN_SIZE : COLLAPSED_SIZE);
 		widthInterpolator.update();
 		menuButton.setX(widthInterpolator.getAsInt() - 22);
+
 		guiGraphics.fill(maxX(), minY(), maxX() + 1, maxY(), MENU_DRAW_EDGE_COLOR);
 		guiGraphics.fill(maxX() + 1, minY(), maxX() + 2, maxY(), MENU_DRAW_EDGE_HIGHLIGHT_COLOR);
 		super.render(guiGraphics, mouseX, mouseY, partialTick);
@@ -43,16 +44,6 @@ public class ConfigCategoryList extends Division {
 
 	@Override
 	public void updateNarration(NarrationElementOutput narrationElementOutput) {}
-
-	@Override
-	public int getX() {
-		return 0;
-	}
-
-	@Override
-	public int getY() {
-		return 0;
-	}
 
 	@Override
 	public int getWidth() {

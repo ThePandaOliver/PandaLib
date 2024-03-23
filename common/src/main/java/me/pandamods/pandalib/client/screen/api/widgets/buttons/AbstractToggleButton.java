@@ -2,11 +2,13 @@ package me.pandamods.pandalib.client.screen.api.widgets.buttons;
 
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.narration.NarratedElementType;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 
 public class AbstractToggleButton extends PLAbstractButton {
 	public boolean state;
@@ -23,8 +25,13 @@ public class AbstractToggleButton extends PLAbstractButton {
 
 	@Override
 	protected void updateWidgetNarration(NarrationElementOutput narrationElementOutput) {
-		narrationElementOutput.add(NarratedElementType.TITLE, this.getMessage());
-		narrationElementOutput.add(NarratedElementType.TITLE, state ? CommonComponents.OPTION_ON : CommonComponents.OPTION_OFF);
+		this.defaultButtonNarrationText(narrationElementOutput);
+	}
+
+	@Override
+	protected MutableComponent createNarrationMessage() {
+		return AbstractWidget.wrapDefaultNarrationMessage(this.getMessage().copy()
+				.append(": ").append(state ? CommonComponents.OPTION_ON : CommonComponents.OPTION_OFF));
 	}
 
 	@Override

@@ -9,7 +9,5 @@ import net.fabricmc.api.Environment;
 
 @Environment(EnvType.CLIENT)
 public class PandaLibClientTest {
-	public static void init() {
-
-	}
+	public static void init() {}
 }

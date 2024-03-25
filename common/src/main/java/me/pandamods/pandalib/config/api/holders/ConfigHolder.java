@@ -61,12 +61,13 @@ public class ConfigHolder<T extends ConfigData> {
 	}
 
 	public void save() {
-		this.config.onSave(this);
+		JsonObject jsonObject = this.getGson().toJsonTree(this.config).getAsJsonObject();
+		this.config.onSave(this, jsonObject);
 		Path configPath = getConfigPath();
 		try {
 			Files.createDirectories(configPath.getParent());
 			BufferedWriter writer = Files.newBufferedWriter(configPath);
-			this.getGson().toJson(config, writer);
+			this.getGson().toJson(jsonObject, writer);
 			writer.close();
 			this.logger.info("successfully saved config '{}'", name());
 		} catch (IOException e) {
@@ -80,8 +81,8 @@ public class ConfigHolder<T extends ConfigData> {
 		if (Files.exists(configPath)) {
 			try (BufferedReader reader = Files.newBufferedReader(configPath)) {
 				JsonObject jsonObject = this.getGson().fromJson(reader, JsonObject.class);
-				this.config = this.getGson().fromJson(jsonObject, configClass);
 				this.config.onLoad(this, jsonObject);
+				this.config = this.getGson().fromJson(jsonObject, configClass);
 			} catch (IOException e) {
 				this.logger.error("Failed to load config '{}', using default", name(), e);
 				resetToDefault();

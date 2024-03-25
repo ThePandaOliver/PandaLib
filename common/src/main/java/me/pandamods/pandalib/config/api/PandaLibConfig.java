@@ -7,51 +7,46 @@ import net.minecraft.resources.ResourceLocation;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class ConfigRegistry {
-	public static Map<Class<?>, ConfigHolder<?>> registeredConfigs = new HashMap<>();
+public class PandaLibConfig {
+	public static Map<Class<?>, ConfigHolder<?>> holders = new HashMap<>();
 
 	public static <T extends ConfigData, E extends ConfigHolder<T>> E register(Class<T> configClass, ConfigHolderProvider<T, E> provider) {
-		if (registeredConfigs.containsKey(configClass))
+		if (holders.containsKey(configClass))
 			throw new RuntimeException(String.format("Config %s is already registered", configClass));
 
 		Config config = configClass.getAnnotation(Config.class);
 		if (config == null)
-			throw new RuntimeException(String.format("The annotation @Config is not present on %s", configClass));
+			throw new RuntimeException(String.format("%s is not annotated with @Config", configClass));
 
 		E holder = provider.provide(configClass, config);
-		registeredConfigs.put(configClass, holder);
+		holders.put(configClass, holder);
 		return holder;
 	}
 
 	public static <T extends ConfigData> ClientConfigHolder<T> registerClient(Class<T> configClass) {
-		return ConfigRegistry.<T, ClientConfigHolder<T>>register(configClass, ClientConfigHolder::new);
+		return PandaLibConfig.<T, ClientConfigHolder<T>>register(configClass, ClientConfigHolder::new);
 	}
 
 
 	public static <T extends ConfigData> CommonConfigHolder<T> registerCommon(Class<T> configClass) {
-		return ConfigRegistry.<T, CommonConfigHolder<T>>register(configClass, CommonConfigHolder::new);
-	}
-
-
-	@SuppressWarnings("unchecked")
-	public static <T extends ConfigData> ConfigHolder<T> getConfig(Class<T> configClass) {
-		return (ConfigHolder<T>) registeredConfigs.get(configClass);
+		return PandaLibConfig.<T, CommonConfigHolder<T>>register(configClass, CommonConfigHolder::new);
 	}
 
 	public static Optional<ConfigHolder<?>> getConfig(ResourceLocation resourceLocation) {
-		return registeredConfigs.values().stream()
+		return holders.values().stream()
 				.filter(configHolder -> configHolder.resourceLocation().equals(resourceLocation)).findFirst();
 	}
 
 	public static Map<Class<?>, ConfigHolder<?>> getConfigs() {
-		return registeredConfigs;
+		return holders;
 	}
 
 	public static Map<Class<?>, ConfigHolder<?>> getConfigs(String modId) {
-		return registeredConfigs.entrySet().stream()
+		return holders.entrySet().stream()
 				.filter(entry -> entry.getValue().getDefinition().modId().equals(modId))
 				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 	}

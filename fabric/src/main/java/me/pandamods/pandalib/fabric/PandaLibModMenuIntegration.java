@@ -9,6 +9,6 @@ import me.pandamods.test.client.screen.TestClientConfigScreen;
 public class PandaLibModMenuIntegration implements ModMenuApi {
 	@Override
 	public ConfigScreenFactory<?> getModConfigScreenFactory() {
-		return TestClientConfigScreen::new;
+		return null;
 	}
 }

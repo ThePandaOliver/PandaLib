@@ -1,7 +1,7 @@
 package me.pandamods.test;
 
 import dev.architectury.platform.Platform;
-import me.pandamods.pandalib.config.api.ConfigRegistry;
+import me.pandamods.pandalib.config.api.PandaLibConfig;
 import me.pandamods.pandalib.config.api.holders.ClientConfigHolder;
 import me.pandamods.pandalib.config.api.holders.CommonConfigHolder;
 import me.pandamods.test.config.TestClientConfig;
@@ -15,17 +15,15 @@ public class PandaLibTest {
 
 	static {
 		if (shouldInit()) {
-			CLIENT_CONFIG = ConfigRegistry.registerClient(TestClientConfig.class);
-			COMMON_CONFIG = ConfigRegistry.registerCommon(TestCommonConfig.class);
+			CLIENT_CONFIG = PandaLibConfig.registerClient(TestClientConfig.class);
+			COMMON_CONFIG = PandaLibConfig.registerCommon(TestCommonConfig.class);
 		} else {
 			CLIENT_CONFIG = null;
 			COMMON_CONFIG = null;
 		}
 	}
 
-    public static void init() {
-
-    }
+    public static void init() {}
 
 	public static boolean shouldInit() {
 		return Platform.isDevelopmentEnvironment() && SHOULD_INIT;

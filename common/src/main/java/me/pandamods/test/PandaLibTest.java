@@ -1,9 +1,9 @@
 package me.pandamods.test;
 
 import dev.architectury.platform.Platform;
-import me.pandamods.pandalib.config.api.PandaLibConfig;
-import me.pandamods.pandalib.config.api.holders.ClientConfigHolder;
-import me.pandamods.pandalib.config.api.holders.CommonConfigHolder;
+import me.pandamods.pandalib.api.config.PandaLibConfig;
+import me.pandamods.pandalib.api.config.holders.ClientConfigHolder;
+import me.pandamods.pandalib.api.config.holders.CommonConfigHolder;
 import me.pandamods.test.config.TestClientConfig;
 import me.pandamods.test.config.TestCommonConfig;
 

@@ -1,7 +1,7 @@
 package me.pandamods.pandalib;
 
-import me.pandamods.pandalib.event.EventHandlerClient;
-import me.pandamods.pandalib.network.PacketHandlerClient;
+import me.pandamods.pandalib.core.event.EventHandlerClient;
+import me.pandamods.pandalib.core.network.PacketHandlerClient;
 import me.pandamods.test.PandaLibClientTest;
 import me.pandamods.test.PandaLibTest;
 import net.fabricmc.api.EnvType;

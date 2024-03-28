@@ -36,7 +36,6 @@ allprojects {
     group = maven_group
 
     repositories {
-        maven { url "https://maven.shedaniel.me/" }
         maven { url = uri("https://maven.terraformersmc.com/releases/") }
         maven {
             name = 'ParchmentMC'

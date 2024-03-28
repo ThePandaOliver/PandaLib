@@ -1,9 +1,8 @@
 package me.pandamods.pandalib;
 
 import com.mojang.logging.LogUtils;
-import dev.architectury.platform.Platform;
-import me.pandamods.pandalib.event.EventHandler;
-import me.pandamods.pandalib.network.PacketHandler;
+import me.pandamods.pandalib.core.event.EventHandler;
+import me.pandamods.pandalib.core.network.PacketHandler;
 import me.pandamods.test.PandaLibTest;
 import org.slf4j.Logger;
 

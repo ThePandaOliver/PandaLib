@@ -12,7 +12,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class PandaLibConfig {
-	public static Map<Class<?>, ConfigHolder<?>> holders = new HashMap<>();
+	public static Map<Class<? extends ConfigData>, ConfigHolder<? extends ConfigData>> holders = new HashMap<>();
 
 	public static <T extends ConfigData, E extends ConfigHolder<T>> E register(Class<T> configClass, ConfigHolderProvider<T, E> provider) {
 		if (holders.containsKey(configClass))
@@ -35,13 +35,18 @@ public class PandaLibConfig {
 		return PandaLibConfig.<T, CommonConfigHolder<T>>register(configClass, CommonConfigHolder::new);
 	}
 
-	public static Optional<ConfigHolder<?>> getConfig(ResourceLocation resourceLocation) {
+	public static Optional<ConfigHolder<? extends ConfigData>> getConfig(ResourceLocation resourceLocation) {
 		return holders.values().stream()
 				.filter(configHolder -> configHolder.resourceLocation().equals(resourceLocation)).findFirst();
 	}
 
-	public static Map<Class<?>, ConfigHolder<?>> getConfigs() {
+	public static Map<Class<? extends ConfigData>, ConfigHolder<? extends ConfigData>> getConfigs() {
 		return holders;
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <T extends ConfigData> ConfigHolder<T> getConfig(Class<T> config) {
+		return (ConfigHolder<T>) holders.get(config);
 	}
 
 	public static Map<Class<?>, ConfigHolder<?>> getConfigs(String modId) {

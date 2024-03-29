@@ -1,19 +1,18 @@
 package me.pandamods.pandalib.api.client.screen.widget;
 
 import me.pandamods.pandalib.api.client.screen.Element;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.Renderable;
-import net.minecraft.client.gui.components.events.GuiEventListener;
-import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.screens.Screen;
+
+import java.util.Optional;
 
 public class AbstractElement implements Element {
 	private Screen screen;
+	private Element parent;
 
-	private int x;
-	private int y;
-	private int width;
-	private int height;
+	protected int x;
+	protected int y;
+	protected int width;
+	protected int height;
 
 	private boolean focused = false;
 	private boolean hovered = false;
@@ -26,6 +25,16 @@ public class AbstractElement implements Element {
 	@Override
 	public void setScreen(Screen screen) {
 		this.screen = screen;
+	}
+
+	@Override
+	public Optional<Element> getParent() {
+		return Optional.ofNullable(this.parent);
+	}
+
+	@Override
+	public void setParent(Element parent) {
+		this.parent = parent;
 	}
 
 	@Override
@@ -46,26 +55,6 @@ public class AbstractElement implements Element {
 	@Override
 	public int getHeight() {
 		return this.height;
-	}
-
-	@Override
-	public void setX(int x) {
-		this.x = x;
-	}
-
-	@Override
-	public void setY(int y) {
-		this.y = y;
-	}
-
-	@Override
-	public void setWidth(int width) {
-		this.width = width;
-	}
-
-	@Override
-	public void setHeight(int height) {
-		this.height = height;
 	}
 
 	@Override

@@ -1,15 +1,13 @@
 package me.pandamods.pandalib.api.client.screen.config;
 
 import me.pandamods.pandalib.api.client.screen.ElementHolder;
-import me.pandamods.pandalib.api.client.screen.widget.buttons.AbstractToggleButton;
-import me.pandamods.pandalib.core.utils.animation.interpolation.NumberInterpolator;
-import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.narration.NarrationElementOutput;
-import net.minecraft.network.chat.Component;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class ConfigCategoryList extends ElementHolder {
 	public static final int COLLAPSED_SIZE = 24;
@@ -18,9 +16,10 @@ public class ConfigCategoryList extends ElementHolder {
 	private static final int MENU_DRAW_EDGE_COLOR = new Color(0, 0, 0, 150).getRGB();
 	private static final int MENU_DRAW_EDGE_HIGHLIGHT_COLOR = new Color(100, 100, 100, 150).getRGB();
 
-	private final ConfigMenu configMenu;
+	private final ConfigMenu<?> configMenu;
+	public final Set<AbstractConfigCategory> categories = new HashSet<>();
 
-	public ConfigCategoryList(ConfigMenu configMenu) {
+	public ConfigCategoryList(ConfigMenu<?> configMenu) {
 		this.configMenu = configMenu;
 	}
 

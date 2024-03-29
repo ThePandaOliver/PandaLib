@@ -1,16 +1,21 @@
 package me.pandamods.pandalib.api.client.screen;
 
 import me.pandamods.pandalib.api.client.screen.widget.AbstractElement;
+import net.minecraft.client.gui.ComponentPath;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
-public class ElementHolder extends AbstractElement implements Renderable {
+public abstract class ElementHolder extends AbstractElement implements Renderable {
+	private final List<GuiEventListener> children = new ArrayList<>();
+	private final List<NarratableEntry> narratables = new ArrayList<>();
 	private final List<Element> elements = new ArrayList<>();
 	private final List<ElementHolder> holders = new ArrayList<>();
 	private final List<Renderable> renderables = new ArrayList<>();
@@ -18,13 +23,17 @@ public class ElementHolder extends AbstractElement implements Renderable {
 
 	protected <T extends Element> T addElement(T element) {
 		element.setScreen(this.getScreen());
+		element.setParent(this);
 		elements.add(element);
 		this.eventListeners.add(element);
+		this.children.add(element);
 		if (element.isFocusable())
 			ScreenHooks.getChildren(this.getScreen()).add(element);
 
-		if (element instanceof NarratableEntry narratableEntry)
+		if (element instanceof NarratableEntry narratableEntry) {
 			ScreenHooks.getNarratables(this.getScreen()).add(narratableEntry);
+			this.narratables.add(narratableEntry);
+		}
 
 		if (element instanceof Renderable renderable)
 			this.renderables.add(renderable);
@@ -45,7 +54,9 @@ public class ElementHolder extends AbstractElement implements Renderable {
 	}
 
 	protected <T extends GuiEventListener & NarratableEntry> T addWidget(T listener) {
+		this.children.add(listener);
 		ScreenHooks.getChildren(this.getScreen()).add(listener);
+		this.narratables.add(listener);
 		ScreenHooks.getNarratables(this.getScreen()).add(listener);
 		this.eventListeners.add(listener);
 		return listener;
@@ -58,14 +69,36 @@ public class ElementHolder extends AbstractElement implements Renderable {
 		if (listener instanceof Renderable)
 			this.renderables.remove(listener);
 
-		if (listener instanceof NarratableEntry)
+		if (listener instanceof NarratableEntry) {
 			ScreenHooks.getNarratables(this.getScreen()).remove(listener);
+			this.narratables.remove(listener);
+		}
 
 		if (listener instanceof ElementHolder)
 			this.holders.remove(listener);
 
 		this.eventListeners.add(listener);
 		ScreenHooks.getChildren(this.getScreen()).remove(listener);
+		this.children.remove(listener);
+	}
+
+	protected void clearWidgets() {
+		this.renderables.clear();
+		ScreenHooks.getChildren(this.getScreen()).removeAll(this.children);
+		ScreenHooks.getNarratables(this.getScreen()).removeAll(this.narratables);
+		this.children.clear();
+		this.narratables.clear();
+		this.eventListeners.clear();
+		this.elements.clear();
+		this.holders.forEach(ElementHolder::clearWidgets);
+		this.holders.clear();
+	}
+
+	protected void rebuildWidgets() {
+		this.clearWidgets();
+		if (Objects.equals(this.getScreen().getFocused(), this))
+			this.getScreen().clearFocus();
+		this.init();
 	}
 
 	@Override
@@ -107,6 +140,7 @@ public class ElementHolder extends AbstractElement implements Renderable {
 		mouseY -= this.getY();
 		for (GuiEventListener eventListener : this.eventListeners) {
 			if (eventListener.isMouseOver(mouseX, mouseY)) {
+				this.getScreen().setFocused(eventListener);
 				return eventListener.mouseClicked(mouseX, mouseY, button);
 			}
 		}

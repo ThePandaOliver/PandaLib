@@ -111,6 +111,10 @@ public class ConfigHolder<T extends ConfigData> {
 		return getDefinition().name();
 	}
 
+	public String modID() {
+		return getDefinition().modId();
+	}
+
 	public T get() {
 		return config;
 	}

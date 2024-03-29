@@ -22,6 +22,7 @@ public abstract class PLScreen extends Screen {
 
 	protected <T extends Element> T addElement(T element) {
 		element.setScreen(this);
+		element.setParent(null);
 		elements.add(element);
 		this.eventListeners.add(element);
 		if (element.isFocusable())
@@ -56,6 +57,20 @@ public abstract class PLScreen extends Screen {
 	}
 
 	@Override
+	protected void clearWidgets() {
+		super.clearWidgets();
+		this.eventListeners.clear();
+		this.elements.clear();
+		this.holders.forEach(ElementHolder::clearWidgets);
+		this.holders.clear();
+	}
+
+	@Override
+	protected void rebuildWidgets() {
+		super.rebuildWidgets();
+	}
+
+	@Override
 	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
 		for (Renderable renderable : renderables) {
 			renderable.render(guiGraphics, mouseX, mouseY, partialTick);
@@ -86,6 +101,7 @@ public abstract class PLScreen extends Screen {
 	public boolean mouseClicked(double mouseX, double mouseY, int button) {
 		for (GuiEventListener eventListener : this.eventListeners) {
 			if (eventListener.isMouseOver(mouseX, mouseY)) {
+				this.setFocused(eventListener);
 				return eventListener.mouseClicked(mouseX, mouseY, button);
 			}
 		}

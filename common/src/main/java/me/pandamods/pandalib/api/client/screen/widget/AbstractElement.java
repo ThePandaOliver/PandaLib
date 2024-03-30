@@ -9,10 +9,10 @@ public class AbstractElement implements Element {
 	private Screen screen;
 	private Element parent;
 
-	protected int x;
-	protected int y;
-	protected int width;
-	protected int height;
+	protected int x = 0;
+	protected int y = 0;
+	protected int width = 0;
+	protected int height = 0;
 
 	private boolean focused = false;
 	private boolean hovered = false;

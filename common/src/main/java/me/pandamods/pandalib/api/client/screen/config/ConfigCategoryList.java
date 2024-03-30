@@ -2,12 +2,13 @@ package me.pandamods.pandalib.api.client.screen.config;
 
 import me.pandamods.pandalib.api.client.screen.ElementHolder;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractButton;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.network.chat.Component;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.*;
 import java.util.List;
-import java.util.Set;
 
 public class ConfigCategoryList extends ElementHolder {
 	public static final int COLLAPSED_SIZE = 24;
@@ -25,6 +26,10 @@ public class ConfigCategoryList extends ElementHolder {
 
 	@Override
 	protected void init() {
+		int i = 0;
+		for (AbstractConfigCategory category : categories) {
+			this.addRenderableWidget(new Button(0, 22 * i++, this.width, 20, category));
+		}
 		super.init();
 	}
 
@@ -43,5 +48,29 @@ public class ConfigCategoryList extends ElementHolder {
 	@Override
 	public int getHeight() {
 		return this.configMenu.height;
+	}
+
+	public class Button extends AbstractButton {
+		private final AbstractConfigCategory category;
+
+		public Button(int x, int y, int width, int height, AbstractConfigCategory category) {
+			super(x, y, width, height, category.getName());
+			this.category = category;
+		}
+
+		@Override
+		public void onPress() {
+			ConfigCategoryList.this.configMenu.setCategory(category);
+		}
+
+		@Override
+		protected void updateWidgetNarration(NarrationElementOutput narrationElementOutput) {
+			this.defaultButtonNarrationText(narrationElementOutput);
+		}
+
+		@Override
+		public boolean isActive() {
+			return Objects.equals(ConfigCategoryList.this.configMenu.getCategory(), category);
+		}
 	}
 }

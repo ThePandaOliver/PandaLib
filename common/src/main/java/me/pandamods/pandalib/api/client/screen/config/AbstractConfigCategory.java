@@ -1,8 +1,9 @@
 package me.pandamods.pandalib.api.client.screen.config;
 
 import me.pandamods.pandalib.api.client.screen.ElementHolder;
+import net.minecraft.network.chat.Component;
 
-public class AbstractConfigCategory extends ElementHolder {
+public abstract class AbstractConfigCategory extends ElementHolder {
 	@Override
 	public int getX() {
 		return ConfigCategoryList.OPEN_SIZE;
@@ -17,4 +18,6 @@ public class AbstractConfigCategory extends ElementHolder {
 	public int getHeight() {
 		return this.getScreen().height;
 	}
+
+	public abstract Component getName();
 }

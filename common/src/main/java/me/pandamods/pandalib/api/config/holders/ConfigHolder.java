@@ -4,25 +4,35 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import dev.architectury.platform.Platform;
+import me.pandamods.pandalib.api.client.screen.config.option.ConfigOption;
 import me.pandamods.pandalib.api.config.Config;
 import me.pandamods.pandalib.api.config.ConfigData;
 import me.pandamods.pandalib.core.utils.ClassUtils;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.resources.ResourceLocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
 
 public class ConfigHolder<T extends ConfigData> {
 	public final Logger logger;
 	private final Gson gson;
 
+	@Environment(EnvType.CLIENT)
+	private final Map<Function<Field, Boolean>, ConfigOption<T>> widgets = new HashMap<>();
+
 	private final Class<T> configClass;
 	private final Config definition;
 	private final ResourceLocation resourceLocation;
-	private final ResourceLocation configPacketId;
 	private final boolean synchronize;
 	private T config;
 
@@ -34,7 +44,6 @@ public class ConfigHolder<T extends ConfigData> {
 
 		this.resourceLocation = new ResourceLocation(config.modId(), config.name());
 		this.synchronize = config.synchronize();
-		this.configPacketId = new ResourceLocation(config.modId(), "config_packet");
 
 		if (this.load()) {
 			save();
@@ -51,6 +60,10 @@ public class ConfigHolder<T extends ConfigData> {
 
 	public Config getDefinition() {
 		return definition;
+	}
+
+	public boolean shouldSynchronize() {
+		return synchronize;
 	}
 
 	public Path getConfigPath() {
@@ -117,5 +130,22 @@ public class ConfigHolder<T extends ConfigData> {
 
 	public T get() {
 		return config;
+	}
+
+	@Environment(EnvType.CLIENT)
+	public void registerGui(ConfigOption<T> widget, Function<Field, Boolean> prediction) {
+		this.widgets.put(prediction, widget);
+	}
+
+	@Environment(EnvType.CLIENT)
+	public void registerGuiByType(ConfigOption<T> widget, Class<?>... types) {
+		for (Class<?> type : types) {
+			this.registerGui(widget, field -> field.getType().equals(type));
+		}
+	}
+
+	@Environment(EnvType.CLIENT)
+	public <U extends Annotation> void registerGuiByAnnotation(ConfigOption<T> widget, Class<U> annotation) {
+		this.registerGui(widget, field -> field.getAnnotation(annotation) != null);
 	}
 }

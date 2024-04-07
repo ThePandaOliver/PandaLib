@@ -12,7 +12,7 @@ import net.minecraft.resources.ResourceLocation;
 public class ConfigPacketClient {
 	public static void sendToServer() {
 		PandaLibConfig.getConfigs().values().stream()
-				.filter(configHolder -> configHolder instanceof ClientConfigHolder<?> && configHolder.getDefinition().synchronize())
+				.filter(configHolder -> configHolder instanceof ClientConfigHolder<?> && configHolder.shouldSynchronize())
 				.forEach(configHolder -> {
 					configHolder.logger.info("Sending server client config's");
 					FriendlyByteBuf byteBuf = new FriendlyByteBuf(Unpooled.buffer());

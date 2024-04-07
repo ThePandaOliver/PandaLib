@@ -9,15 +9,17 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
-public abstract class ConfigOption<T, R extends ConfigData> extends ElementHolder {
-	private final Component name;
-	private final Function<R, T> load;
-	private final BiConsumer<R, T> save;
-	private final Function<R, T> loadDefault;
+public abstract class ConfigOption<T> extends ElementHolder {
+	public final Component name;
+	public final Supplier<T> load;
+	public final Consumer<T> save;
+	public final Supplier<T> loadDefault;
 
-	public ConfigOption(Component name, Function<R, T> load, BiConsumer<R, T> save, Function<R, T> loadDefault) {
+	public ConfigOption(Component name, Supplier<T> load, Consumer<T> save, Supplier<T> loadDefault) {
 		this.name = name;
 		this.load = load;
 		this.save = save;

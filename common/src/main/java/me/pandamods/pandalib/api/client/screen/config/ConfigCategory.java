@@ -7,11 +7,11 @@ import net.minecraft.network.chat.Component;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ConfigCategory<T extends ConfigData> extends AbstractConfigCategory {
+public class ConfigCategory extends AbstractConfigCategory {
 	private final Component name;
-	private final List<ConfigOption<?, T>> options;
+	private final List<ConfigOption<?>> options;
 
-	public ConfigCategory(Component name, List<ConfigOption<?, T>> options) {
+	public ConfigCategory(Component name, List<ConfigOption<?>> options) {
 		this.name = name;
 		this.options = options;
 	}
@@ -24,7 +24,7 @@ public class ConfigCategory<T extends ConfigData> extends AbstractConfigCategory
 	@Override
 	protected void init() {
 		int y = 0;
-		for (ConfigOption<?, T> option : this.options) {
+		for (ConfigOption<?> option : this.options) {
 			option.setY(y);
 			this.addElement(option);
 			y += option.getHeight();
@@ -32,24 +32,24 @@ public class ConfigCategory<T extends ConfigData> extends AbstractConfigCategory
 		super.init();
 	}
 
-	public static <T extends ConfigData> Builder<T> builder(Component name) {
-		return new Builder<>(name);
+	public static Builder builder(Component name) {
+		return new Builder(name);
 	}
 
-	public static class Builder<T extends ConfigData> {
+	public static class Builder {
 		private final Component name;
-		private final List<ConfigOption<?, T>> options = new ArrayList<>();
+		private final List<ConfigOption<?>> options = new ArrayList<>();
 
 		public Builder(Component name) {
 			this.name = name;
 		}
 
-		public void addOption(ConfigOption<?, T> configOption) {
+		public void addOption(ConfigOption<?> configOption) {
 			this.options.add(configOption);
 		}
 
-		public ConfigCategory<T> build() {
-			return new ConfigCategory<>(this.name, this.options);
+		public ConfigCategory build() {
+			return new ConfigCategory(this.name, this.options);
 		}
 	}
 }

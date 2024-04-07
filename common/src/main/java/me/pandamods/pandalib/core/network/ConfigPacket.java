@@ -13,7 +13,7 @@ import net.minecraft.server.level.ServerPlayer;
 public class ConfigPacket {
 	public static void sendToPlayer(ServerPlayer serverPlayer) {
 		PandaLibConfig.getConfigs().values().stream()
-				.filter(configHolder -> configHolder instanceof CommonConfigHolder<?> && configHolder.getDefinition().synchronize())
+				.filter(configHolder -> configHolder instanceof CommonConfigHolder<?> && configHolder.shouldSynchronize())
 				.forEach(configHolder -> {
 					configHolder.logger.info("Sending {} server config's", serverPlayer.getDisplayName().getString());
 					FriendlyByteBuf byteBuf = new FriendlyByteBuf(Unpooled.buffer());

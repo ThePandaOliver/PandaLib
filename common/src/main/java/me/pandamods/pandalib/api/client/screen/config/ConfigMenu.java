@@ -78,7 +78,7 @@ public class ConfigMenu<T extends ConfigData> extends PLScreen {
 			return this;
 		}
 
-		public Builder<T> registerCategories(Collection<AbstractConfigCategory> categories) {
+		public Builder<T> registerCategories(Collection<? extends AbstractConfigCategory> categories) {
 			this.categories.addAll(categories);
 			return this;
 		}

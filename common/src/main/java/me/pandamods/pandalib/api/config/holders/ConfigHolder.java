@@ -4,20 +4,16 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import dev.architectury.platform.Platform;
-import me.pandamods.pandalib.api.client.screen.config.AbstractConfigCategory;
-import me.pandamods.pandalib.api.client.screen.config.ConfigCategory;
-import me.pandamods.pandalib.api.client.screen.config.ConfigMenu;
-import me.pandamods.pandalib.api.client.screen.config.OptionWidgetProvider;
+import me.pandamods.pandalib.api.client.screen.config.*;
 import me.pandamods.pandalib.api.client.screen.config.option.StringOption;
 import me.pandamods.pandalib.api.config.Config;
 import me.pandamods.pandalib.api.config.ConfigData;
 import me.pandamods.pandalib.core.utils.ClassUtils;
 import me.pandamods.pandalib.core.utils.PriorityMap;
-import me.pandamods.test.config.TestClientConfig;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -90,9 +86,9 @@ public class ConfigHolder<T extends ConfigData> {
 			BufferedWriter writer = Files.newBufferedWriter(configPath);
 			this.getGson().toJson(jsonObject, writer);
 			writer.close();
-			this.logger.info("successfully saved config '{}'", name());
+			this.logger.info("successfully saved config '{}'", definition.name());
 		} catch (IOException e) {
-			this.logger.info("Failed to save config '{}'", name());
+			this.logger.info("Failed to save config '{}'", definition.name());
 			throw new RuntimeException(e);
 		}
 	}
@@ -105,7 +101,7 @@ public class ConfigHolder<T extends ConfigData> {
 				this.config = this.getGson().fromJson(jsonObject, configClass);
 				this.config.onLoad(this, jsonObject);
 			} catch (IOException e) {
-				this.logger.error("Failed to load config '{}', using default", name(), e);
+				this.logger.error("Failed to load config '{}', using default", definition.name(), e);
 				resetToDefault();
 				return false;
 			}
@@ -113,7 +109,7 @@ public class ConfigHolder<T extends ConfigData> {
 			resetToDefault();
 			save();
 		}
-		this.logger.info("successfully loaded config '{}'", name());
+		this.logger.info("successfully loaded config '{}'", definition.name());
 		return true;
 	}
 
@@ -129,8 +125,8 @@ public class ConfigHolder<T extends ConfigData> {
 		return resourceLocation;
 	}
 
-	public String name() {
-		return getDefinition().name();
+	public MutableComponent getName() {
+		return Component.translatable(String.format("config.%s.%s", resourceLocation.getNamespace(), resourceLocation.getPath()));
 	}
 
 	public String modID() {
@@ -169,12 +165,6 @@ public class ConfigHolder<T extends ConfigData> {
 	@Environment(EnvType.CLIENT)
 	public ConfigMenu.Builder<T> buildScreen() {
 		ConfigMenu.Builder<T> builder = ConfigMenu.builder(configClass);
-		Map<String, AbstractConfigCategory> categories = new HashMap<>();
-
-		for (Field field : get().getClass().getFields()) {
-
-		}
-
-		return builder.registerCategories(categories.values());
+		return builder.registerCategories(registerClassedOption(this.get()).values().stream().map(ConfigCategory.Builder::build).toList());
 	}
 }

@@ -4,12 +4,20 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import dev.architectury.platform.Platform;
-import me.pandamods.pandalib.api.client.screen.config.option.ConfigOption;
+import me.pandamods.pandalib.api.client.screen.config.AbstractConfigCategory;
+import me.pandamods.pandalib.api.client.screen.config.ConfigCategory;
+import me.pandamods.pandalib.api.client.screen.config.ConfigMenu;
+import me.pandamods.pandalib.api.client.screen.config.OptionWidgetProvider;
+import me.pandamods.pandalib.api.client.screen.config.option.StringOption;
 import me.pandamods.pandalib.api.config.Config;
 import me.pandamods.pandalib.api.config.ConfigData;
 import me.pandamods.pandalib.core.utils.ClassUtils;
+import me.pandamods.pandalib.core.utils.PriorityMap;
+import me.pandamods.test.config.TestClientConfig;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,8 +27,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 
 public class ConfigHolder<T extends ConfigData> {
@@ -28,7 +35,7 @@ public class ConfigHolder<T extends ConfigData> {
 	private final Gson gson;
 
 	@Environment(EnvType.CLIENT)
-	private final Map<Function<Field, Boolean>, ConfigOption<T>> widgets = new HashMap<>();
+	private final PriorityMap<Function<Field, Boolean>, OptionWidgetProvider<?>> widgetProviders = new PriorityMap<>();
 
 	private final Class<T> configClass;
 	private final Config definition;
@@ -48,6 +55,8 @@ public class ConfigHolder<T extends ConfigData> {
 		if (this.load()) {
 			save();
 		}
+
+		registerGuiByType(0, StringOption::new, String.class);
 	}
 
 	public Gson getGson() {
@@ -133,19 +142,39 @@ public class ConfigHolder<T extends ConfigData> {
 	}
 
 	@Environment(EnvType.CLIENT)
-	public void registerGui(ConfigOption<T> widget, Function<Field, Boolean> prediction) {
-		this.widgets.put(prediction, widget);
+	public <Y> void registerGui(int priority, OptionWidgetProvider<Y> provider, Function<Field, Boolean> prediction) {
+		this.widgetProviders.put(priority, prediction, provider);
 	}
 
 	@Environment(EnvType.CLIENT)
-	public void registerGuiByType(ConfigOption<T> widget, Class<?>... types) {
+	public <Y> void registerGuiByType(int priority, OptionWidgetProvider<Y> provider, Class<?>... types) {
 		for (Class<?> type : types) {
-			this.registerGui(widget, field -> field.getType().equals(type));
+			this.registerGui(priority, provider, field -> field.getType().equals(type));
 		}
 	}
 
 	@Environment(EnvType.CLIENT)
-	public <U extends Annotation> void registerGuiByAnnotation(ConfigOption<T> widget, Class<U> annotation) {
-		this.registerGui(widget, field -> field.getAnnotation(annotation) != null);
+	public <U extends Annotation, Y> void registerGuiByAnnotation(int priority, OptionWidgetProvider<Y> provider, Class<U> annotation) {
+		this.registerGui(priority, provider, field -> field.getAnnotation(annotation) != null);
+	}
+
+	@Environment(EnvType.CLIENT)
+	public Optional<OptionWidgetProvider<?>> getGui(Field field) {
+		for (Map.Entry<Function<Field, Boolean>, OptionWidgetProvider<?>> entry : this.widgetProviders.entrySet()) {
+			if (entry.getKey().apply(field)) return Optional.of(entry.getValue());
+		}
+		return Optional.empty();
+	}
+
+	@Environment(EnvType.CLIENT)
+	public ConfigMenu.Builder<T> buildScreen() {
+		ConfigMenu.Builder<T> builder = ConfigMenu.builder(configClass);
+		Map<String, AbstractConfigCategory> categories = new HashMap<>();
+
+		for (Field field : get().getClass().getFields()) {
+
+		}
+
+		return builder.registerCategories(categories.values());
 	}
 }

@@ -1,6 +1,7 @@
 package me.pandamods.pandalib.api.client.screen.config;
 
 import me.pandamods.pandalib.api.client.screen.PLScreen;
+import me.pandamods.pandalib.api.config.Config;
 import me.pandamods.pandalib.api.config.ConfigData;
 import me.pandamods.pandalib.api.config.PandaLibConfig;
 import me.pandamods.pandalib.api.config.holders.ConfigHolder;
@@ -9,6 +10,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class ConfigMenu<T extends ConfigData> extends PLScreen {
@@ -52,18 +54,32 @@ public class ConfigMenu<T extends ConfigData> extends PLScreen {
 		this.minecraft.setScreen(parent);
 	}
 
+	public static <T extends ConfigData> Builder<T> builder(Class<T> config) {
+		return new Builder<>(config);
+	}
+
 	public static class Builder<T extends ConfigData> {
 		private final ConfigHolder<T> configHolder;
 		private final List<AbstractConfigCategory> categories = new ArrayList<>();
 		private Component title;
 
-		public Builder(Class<T> config) {
+		private Builder(Class<T> config) {
 			this.configHolder = PandaLibConfig.getConfig(config);
 			this.title = Component.translatable(String.format("gui.%s.config.%s.title", configHolder.modID(), configHolder.name()));
 		}
 
 		public Builder<T> registerCategory(AbstractConfigCategory category) {
 			this.categories.add(category);
+			return this;
+		}
+
+		public Builder<T> registerCategories(AbstractConfigCategory... categories) {
+			this.categories.addAll(List.of(categories));
+			return this;
+		}
+
+		public Builder<T> registerCategories(Collection<AbstractConfigCategory> categories) {
+			this.categories.addAll(categories);
 			return this;
 		}
 

@@ -62,10 +62,11 @@ public class ConfigMenu<T extends ConfigData> extends PLScreen {
 		private final ConfigHolder<T> configHolder;
 		private final List<AbstractConfigCategory> categories = new ArrayList<>();
 		private Component title;
+		private Screen parent;
 
 		private Builder(Class<T> config) {
 			this.configHolder = PandaLibConfig.getConfig(config);
-			this.title = Component.translatable(String.format("gui.%s.config.%s.title", configHolder.modID(), configHolder.name()));
+			this.title = configHolder.getName();
 		}
 
 		public Builder<T> registerCategory(AbstractConfigCategory category) {
@@ -83,12 +84,18 @@ public class ConfigMenu<T extends ConfigData> extends PLScreen {
 			return this;
 		}
 
-		public void setTitle(Component title) {
+		public Builder<T> setTitle(Component title) {
 			this.title = title;
+			return this;
 		}
 
-		public ConfigMenu<T> Build(Screen parent) {
-			return new ConfigMenu<T>(parent, this.title, configHolder, categories);
+		public Builder<T> setParent(Screen parent) {
+			this.parent = parent;
+			return this;
+		}
+
+		public ConfigMenu<T> Build() {
+			return new ConfigMenu<T>(this.parent, this.title, configHolder, categories);
 		}
 	}
 }

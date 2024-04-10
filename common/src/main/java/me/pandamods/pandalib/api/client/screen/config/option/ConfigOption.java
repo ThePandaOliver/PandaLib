@@ -29,7 +29,7 @@ public abstract class ConfigOption<T> extends ElementHolder {
 	@Override
 	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
 		Font font = Minecraft.getInstance().font;
-		guiGraphics.drawString(font, name, this.getX(), this.getY() + (this.getHeight() - font.lineHeight) / 2, 0xFFFFFF);
+		guiGraphics.drawString(font, name, this.getX() + 2, this.getY() + (this.getHeight() - font.lineHeight) / 2, 0xFFFFFF);
 
 		super.render(guiGraphics, mouseX, mouseY, partialTick);
 	}

@@ -1,37 +1,61 @@
 package me.pandamods.pandalib.api.client.screen.config.auto;
 
+import me.pandamods.pandalib.api.client.screen.config.Category;
+import me.pandamods.pandalib.api.client.screen.config.ConfigCategory;
+import me.pandamods.pandalib.api.client.screen.config.ConfigMenu;
 import me.pandamods.pandalib.api.config.ConfigData;
+import me.pandamods.pandalib.api.config.holders.ConfigHolder;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 
+import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Supplier;
 
 public class ConfigScreenProvider<T extends ConfigData> implements Supplier<Screen> {
-	@Override
-	public Screen get() {
-		return null;
+	private final Screen parent;
+	private final ConfigHolder<T> configHolder;
+	private final Map<String, ConfigCategory.Builder> categories = new HashMap<>();
+
+	public ConfigScreenProvider(Screen parent, ConfigHolder<T> configHolder) {
+		this.parent = parent;
+		this.configHolder = configHolder;
 	}
 
-	private ConfigCategory getOrCreateCategoryForField(
-			Field field,
-			ConfigBuilder screenBuilder,
-			Map<String, ResourceLocation> backgroundMap,
-			String baseI13n
-	) {
-		String categoryName = "default";
+	public ConfigMenu.Builder<T> getBuilder() {
+		T config = configHolder.get();
 
-		if (field.isAnnotationPresent(ConfigEntry.Category.class))
-			categoryName = field.getAnnotation(ConfigEntry.Category.class).value();
+		Component title = configHolder.getName();
+		ConfigMenu.Builder<T> builder = ConfigMenu.builder(configHolder.getConfigClass()).setTitle(title);
 
-		Component categoryKey = Component.translatable(categoryFunction.apply(baseI13n, categoryName));
+		for (Field field : config.getClass().getFields()) {
+			ConfigCategory.Builder categoryBuilder = getOrCreateCategory(field, title);
 
-		if (!screenBuilder.hasCategory(categoryKey)) {
-			ConfigCategory category = screenBuilder.getOrCreateCategory(categoryKey);
-			if (backgroundMap.containsKey(categoryName)) {
-				category.setCategoryBackground(backgroundMap.get(categoryName));
-			}
-			return category;
+			if (configHolder.getGui(field).isPresent())
+				categoryBuilder.addOption(configHolder.getGui(field).get()
+						.create(title.copy().append(String.format(".option.%s", field.getName())),
+								() -> null, object -> {}, () -> null));
 		}
+		return builder.registerCategories(categories.values().stream().map(ConfigCategory.Builder::build).toList()).setParent(parent);
+	}
 
-		return screenBuilder.getOrCreateCategory(categoryKey);
+	@Override
+	public Screen get() {
+		return getBuilder().Build();
+	}
+
+	private ConfigCategory.Builder getOrCreateCategory(Field field, Component baseName) {
+		String categoryKey = "default";
+		if (field.isAnnotationPresent(Category.class))
+			categoryKey = field.getAnnotation(Category.class).value();
+
+		Component categoryName = baseName.copy().append(String.format(".category.%s", categoryKey));
+		ConfigCategory.Builder categoryBuilder = categories.get(categoryKey);
+		if (categoryBuilder == null)
+			categories.put(categoryKey, categoryBuilder = ConfigCategory.builder(categoryName));
+
+		return categoryBuilder;
 	}
 }

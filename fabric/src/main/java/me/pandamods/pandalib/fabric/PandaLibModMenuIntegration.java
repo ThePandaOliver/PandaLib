@@ -14,6 +14,6 @@ public class PandaLibModMenuIntegration implements ModMenuApi {
 	@Override
 	public ConfigScreenFactory<?> getModConfigScreenFactory() {
 		ConfigHolder<TestClientConfig> configHolder = PandaLibConfig.getConfig(TestClientConfig.class);
-		return configHolder.buildScreen()::Build;
+		return screen -> configHolder.buildScreen(screen).Build();
 	}
 }

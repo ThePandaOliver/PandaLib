@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import dev.architectury.platform.Platform;
 import me.pandamods.pandalib.api.client.screen.config.*;
+import me.pandamods.pandalib.api.client.screen.config.auto.ConfigScreenProvider;
 import me.pandamods.pandalib.api.client.screen.config.option.StringOption;
 import me.pandamods.pandalib.api.config.Config;
 import me.pandamods.pandalib.api.config.ConfigData;
@@ -12,6 +13,7 @@ import me.pandamods.pandalib.core.utils.ClassUtils;
 import me.pandamods.pandalib.core.utils.PriorityMap;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -163,8 +165,7 @@ public class ConfigHolder<T extends ConfigData> {
 	}
 
 	@Environment(EnvType.CLIENT)
-	public ConfigMenu.Builder<T> buildScreen() {
-		ConfigMenu.Builder<T> builder = ConfigMenu.builder(configClass);
-		return builder.registerCategories(registerClassedOption(this.get()).values().stream().map(ConfigCategory.Builder::build).toList());
+	public ConfigMenu.Builder<T> buildScreen(Screen parent) {
+		return new ConfigScreenProvider<T>(parent, this).getBuilder();
 	}
 }

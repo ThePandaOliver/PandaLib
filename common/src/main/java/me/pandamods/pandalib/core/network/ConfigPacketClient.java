@@ -26,7 +26,7 @@ public class ConfigPacketClient {
 		ResourceLocation resourceLocation = buf.readResourceLocation();
 		PandaLibConfig.getConfig(resourceLocation).ifPresent(configHolder -> {
 			if (configHolder instanceof CommonConfigHolder<?> commonConfigHolder) {
-				configHolder.logger.info("Received config '{}' from server", configHolder.name());
+				configHolder.logger.info("Received config '{}' from server", configHolder.resourceLocation().toString());
 				byte[] configBytes = buf.readByteArray();
 				commonConfigHolder.setCommonConfig(configBytes);
 			}

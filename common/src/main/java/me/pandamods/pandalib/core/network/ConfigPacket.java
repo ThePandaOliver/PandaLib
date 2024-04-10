@@ -27,7 +27,8 @@ public class ConfigPacket {
 		ResourceLocation resourceLocation = buf.readResourceLocation();
 		PandaLibConfig.getConfig(resourceLocation).ifPresent(configHolder -> {
 			if (configHolder instanceof ClientConfigHolder<?> clientConfigHolder) {
-				configHolder.logger.info("Received config '{}' from {}", configHolder.name(), context.getPlayer().getDisplayName().getString());
+				configHolder.logger.info("Received config '{}' from {}",
+						configHolder.resourceLocation().toString(), context.getPlayer().getDisplayName().getString());
 				byte[] configBytes = buf.readByteArray();
 				context.getPlayer().pandaLib$setConfig(resourceLocation, configBytes);
 			}

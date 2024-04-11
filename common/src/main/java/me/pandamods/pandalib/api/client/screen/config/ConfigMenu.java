@@ -6,7 +6,11 @@ import me.pandamods.pandalib.api.config.ConfigData;
 import me.pandamods.pandalib.api.config.PandaLibConfig;
 import me.pandamods.pandalib.api.config.holders.ConfigHolder;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.layouts.FrameLayout;
+import net.minecraft.client.gui.layouts.GridLayout;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 
 import java.util.ArrayList;
@@ -25,13 +29,36 @@ public class ConfigMenu<T extends ConfigData> extends PLScreen {
 		this.configHolder = configHolder;
 		this.category = categories.get(0);
 		this.categoryList.categories.addAll(categories);
+
+		this.load();
 	}
 
 	@Override
 	protected void init() {
 		this.addElement(this.categoryList);
 		this.addElement(this.category);
+
+		GridLayout gridLayout = new GridLayout();
+		gridLayout.defaultCellSetting().paddingHorizontal(5).paddingBottom(4).alignHorizontallyCenter();
+		GridLayout.RowHelper rowHelper = gridLayout.createRowHelper(2);
+
+		rowHelper.addChild(Button.builder(CommonComponents.GUI_DONE, button -> this.save()).build());
+		rowHelper.addChild(Button.builder(CommonComponents.GUI_CANCEL, button -> this.onClose()).build());
+
+		gridLayout.arrangeElements();
+		FrameLayout.alignInRectangle(gridLayout, 0, this.height - 50, this.width, this.height, 0.5F, 0.0F);
+		gridLayout.visitWidgets(this::addRenderableWidget);
 		super.init();
+	}
+
+	private void save() {
+		this.categoryList.categories.forEach(AbstractConfigCategory::save);
+		configHolder.save();
+		this.onClose();
+	}
+
+	private void load() {
+		this.categoryList.categories.forEach(AbstractConfigCategory::load);
 	}
 
 	public void setCategory(AbstractConfigCategory category) {

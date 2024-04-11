@@ -32,6 +32,21 @@ public class ConfigCategory extends AbstractConfigCategory {
 		super.init();
 	}
 
+	@Override
+	public void save() {
+		this.options.forEach(ConfigOption::save);
+	}
+
+	@Override
+	public void load() {
+		this.options.forEach(ConfigOption::load);
+	}
+
+	@Override
+	public void reset() {
+		this.options.forEach(ConfigOption::reset);
+	}
+
 	public static Builder builder(Component name) {
 		return new Builder(name);
 	}

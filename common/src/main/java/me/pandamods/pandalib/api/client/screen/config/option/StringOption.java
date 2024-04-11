@@ -11,18 +11,28 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class StringOption extends ConfigOption<String> {
-	private EditBox inputField = null;
+	private EditBox inputField;
 
 	public StringOption(Component name, Supplier<String> load, Consumer<String> save, Supplier<String> loadDefault) {
 		super(name, load, save, loadDefault);
+		inputField = new EditBox(this.minecraft.font, 0, 0, 100, 16, name);
+	}
+
+	@Override
+	protected void setValue(String value) {
+		inputField.setValue(value);
+	}
+
+	@Override
+	protected String getValue() {
+		return inputField.getValue();
 	}
 
 	@Override
 	protected void init() {
 		int x = this.getWidth() - 100 - 4;
 		int y = (this.getHeight() - 16) / 2;
-		EditBox inputField = new EditBox(this.minecraft.font, x, y, 100, 16, this.inputField, Component.empty());
-		inputField.setValue(this.load.get());
+		inputField = new EditBox(this.minecraft.font, x, y, 100, 16, inputField, this.name);
 		this.addRenderableWidget(inputField);
 
 		super.init();

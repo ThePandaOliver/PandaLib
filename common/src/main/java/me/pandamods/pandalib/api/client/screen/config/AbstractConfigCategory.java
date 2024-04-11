@@ -20,4 +20,8 @@ public abstract class AbstractConfigCategory extends ElementHolder {
 	}
 
 	public abstract Component getName();
+
+	public abstract void save();
+	public abstract void load();
+	public abstract void reset();
 }

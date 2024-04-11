@@ -5,6 +5,7 @@ import me.pandamods.pandalib.api.client.screen.config.ConfigCategory;
 import me.pandamods.pandalib.api.client.screen.config.ConfigMenu;
 import me.pandamods.pandalib.api.config.ConfigData;
 import me.pandamods.pandalib.api.config.holders.ConfigHolder;
+import me.pandamods.pandalib.core.utils.ClassUtils;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -26,6 +27,7 @@ public class ConfigScreenProvider<T extends ConfigData> implements Supplier<Scre
 
 	public ConfigMenu.Builder<T> getBuilder() {
 		T config = configHolder.get();
+		T defaultConfig = configHolder.getNewDefault();
 
 		Component title = configHolder.getName();
 		ConfigMenu.Builder<T> builder = ConfigMenu.builder(configHolder.getConfigClass()).setTitle(title);
@@ -36,7 +38,9 @@ public class ConfigScreenProvider<T extends ConfigData> implements Supplier<Scre
 			if (configHolder.getGui(field).isPresent())
 				categoryBuilder.addOption(configHolder.getGui(field).get()
 						.create(title.copy().append(String.format(".option.%s", field.getName())),
-								() -> null, object -> {}, () -> null));
+								() -> ClassUtils.getFieldUnsafely(config, field),
+								object -> ClassUtils.setFieldUnsafely(config, field, object),
+								() -> ClassUtils.getFieldUnsafely(defaultConfig, field)));
 		}
 		return builder.registerCategories(categories.values().stream().map(ConfigCategory.Builder::build).toList()).setParent(parent);
 	}

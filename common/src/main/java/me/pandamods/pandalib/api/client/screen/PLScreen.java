@@ -102,7 +102,8 @@ public abstract class PLScreen extends Screen {
 		for (GuiEventListener eventListener : this.eventListeners) {
 			if (eventListener.isMouseOver(mouseX, mouseY)) {
 				this.setFocused(eventListener);
-				return eventListener.mouseClicked(mouseX, mouseY, button);
+				if (eventListener.mouseClicked(mouseX, mouseY, button))
+					return true;
 			}
 		}
 		return false;
@@ -112,7 +113,8 @@ public abstract class PLScreen extends Screen {
 	public boolean mouseReleased(double mouseX, double mouseY, int button) {
 		for (GuiEventListener eventListener : this.eventListeners) {
 			if (eventListener.isMouseOver(mouseX, mouseY)) {
-				return eventListener.mouseReleased(mouseX, mouseY, button);
+				if (eventListener.mouseReleased(mouseX, mouseY, button))
+					return true;
 			}
 		}
 		return false;
@@ -122,7 +124,8 @@ public abstract class PLScreen extends Screen {
 	public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
 		for (GuiEventListener eventListener : this.eventListeners) {
 			if (eventListener.isMouseOver(mouseX, mouseY)) {
-				return eventListener.mouseDragged(mouseX, mouseY, button, dragX, dragY);
+				if (eventListener.mouseDragged(mouseX, mouseY, button, dragX, dragY))
+					return true;
 			}
 		}
 		return false;
@@ -132,7 +135,8 @@ public abstract class PLScreen extends Screen {
 	public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
 		for (GuiEventListener eventListener : this.eventListeners) {
 			if (eventListener.isMouseOver(mouseX, mouseY)) {
-				return eventListener.mouseScrolled(mouseX, mouseY, delta);
+				if (eventListener.mouseScrolled(mouseX, mouseY, delta))
+					return true;
 			}
 		}
 		return false;
@@ -143,7 +147,6 @@ public abstract class PLScreen extends Screen {
 		for (GuiEventListener eventListener : this.eventListeners) {
 			if (eventListener.isMouseOver(mouseX, mouseY)) {
 				eventListener.mouseMoved(mouseX, mouseY);
-				return;
 			}
 		}
 	}

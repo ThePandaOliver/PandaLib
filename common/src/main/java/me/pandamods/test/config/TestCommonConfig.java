@@ -1,7 +1,7 @@
 package me.pandamods.test.config;
 
 import me.pandamods.pandalib.PandaLib;
-import me.pandamods.pandalib.api.config.Config;
+import me.pandamods.pandalib.api.annotation.Config;
 import me.pandamods.pandalib.api.config.ConfigData;
 
 @Config(name = "common_test", modId = PandaLib.MOD_ID, synchronize = true)

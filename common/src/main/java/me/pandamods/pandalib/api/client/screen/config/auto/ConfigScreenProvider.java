@@ -1,14 +1,14 @@
 package me.pandamods.pandalib.api.client.screen.config.auto;
 
-import me.pandamods.pandalib.api.client.screen.config.Category;
+import me.pandamods.pandalib.api.annotation.Category;
 import me.pandamods.pandalib.api.client.screen.config.ConfigCategory;
 import me.pandamods.pandalib.api.client.screen.config.ConfigMenu;
+import me.pandamods.pandalib.api.client.screen.config.ConfigWidgetRegistry;
 import me.pandamods.pandalib.api.config.ConfigData;
 import me.pandamods.pandalib.api.config.holders.ConfigHolder;
 import me.pandamods.pandalib.core.utils.ClassUtils;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
@@ -35,8 +35,8 @@ public class ConfigScreenProvider<T extends ConfigData> implements Supplier<Scre
 		for (Field field : config.getClass().getFields()) {
 			ConfigCategory.Builder categoryBuilder = getOrCreateCategory(field, title);
 
-			if (configHolder.getGui(field).isPresent())
-				categoryBuilder.addOption(configHolder.getGui(field).get()
+			if (ConfigWidgetRegistry.getGui(field).isPresent())
+				categoryBuilder.addOption(ConfigWidgetRegistry.getGui(field).get()
 						.create(title.copy().append(String.format(".option.%s", field.getName())),
 								() -> ClassUtils.getFieldUnsafely(config, field),
 								object -> ClassUtils.setFieldUnsafely(config, field, object),

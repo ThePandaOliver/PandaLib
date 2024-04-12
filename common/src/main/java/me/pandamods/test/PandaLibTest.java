@@ -1,5 +1,7 @@
 package me.pandamods.test;
 
+import dev.architectury.event.EventResult;
+import dev.architectury.event.events.common.PlayerEvent;
 import dev.architectury.platform.Platform;
 import me.pandamods.pandalib.api.config.PandaLibConfig;
 import me.pandamods.pandalib.api.config.holders.ClientConfigHolder;
@@ -23,7 +25,12 @@ public class PandaLibTest {
 		}
 	}
 
-    public static void init() {}
+    public static void init() {
+		PlayerEvent.DROP_ITEM.register((player, entity) -> {
+			System.out.println(player.pandaLib$getConfig(CLIENT_CONFIG).text + "-test");
+			return EventResult.pass();
+		});
+	}
 
 	public static boolean shouldInit() {
 		return Platform.isDevelopmentEnvironment() && SHOULD_INIT;

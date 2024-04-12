@@ -1,8 +1,4 @@
-package me.pandamods.pandalib.api.config;
-
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import org.spongepowered.asm.mixin.Interface;
+package me.pandamods.pandalib.api.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

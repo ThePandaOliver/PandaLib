@@ -34,17 +34,19 @@ public abstract class PlayerMixin extends LivingEntity implements PlayerExtensio
 	}
 
 	@Override
-	public void pandaLib$setConfig(ResourceLocation resourceLocation, byte[] configBytes) {
+	public void pandaLib$setConfig(ResourceLocation resourceLocation, String configJson) {
 		CompoundTag compoundTag = this.getEntityData().get(PLAYER_CLIENT_CONFIGS);
-		compoundTag.putByteArray(resourceLocation.toString(), configBytes);
+		compoundTag.putString(resourceLocation.toString(), configJson);
 		this.getEntityData().set(PLAYER_CLIENT_CONFIGS, compoundTag);
 	}
 
 	@Override
 	public <T extends ConfigData> T pandaLib$getConfig(ConfigHolder<T> holder) {
 		CompoundTag compoundTag = this.getEntityData().get(PLAYER_CLIENT_CONFIGS);
-		if (compoundTag.contains(holder.resourceLocation().toString()))
-			return holder.getGson().fromJson(new String(compoundTag.getByteArray(holder.resourceLocation().toString())), holder.getConfigClass());
+		if (compoundTag.contains(holder.resourceLocation().toString())) {
+			T config = holder.getGson().fromJson(compoundTag.getString(holder.resourceLocation().toString()), holder.getConfigClass());
+			return config;
+		}
 		return holder.get();
 	}
 }

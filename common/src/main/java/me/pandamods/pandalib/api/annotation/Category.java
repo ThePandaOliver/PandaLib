@@ -1,4 +1,4 @@
-package me.pandamods.pandalib.api.client.screen.config;
+package me.pandamods.pandalib.api.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

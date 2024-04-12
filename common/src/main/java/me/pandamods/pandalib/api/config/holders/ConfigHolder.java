@@ -6,8 +6,7 @@ import com.google.gson.JsonObject;
 import dev.architectury.platform.Platform;
 import me.pandamods.pandalib.api.client.screen.config.*;
 import me.pandamods.pandalib.api.client.screen.config.auto.ConfigScreenProvider;
-import me.pandamods.pandalib.api.client.screen.config.option.StringOption;
-import me.pandamods.pandalib.api.config.Config;
+import me.pandamods.pandalib.api.annotation.Config;
 import me.pandamods.pandalib.api.config.ConfigData;
 import me.pandamods.pandalib.core.utils.ClassUtils;
 import me.pandamods.pandalib.core.utils.PriorityMap;
@@ -32,9 +31,6 @@ public class ConfigHolder<T extends ConfigData> {
 	public final Logger logger;
 	private final Gson gson;
 
-	@Environment(EnvType.CLIENT)
-	private final PriorityMap<Function<Field, Boolean>, OptionWidgetProvider<?>> widgetProviders = new PriorityMap<>();
-
 	private final Class<T> configClass;
 	private final Config definition;
 	private final ResourceLocation resourceLocation;
@@ -53,8 +49,6 @@ public class ConfigHolder<T extends ConfigData> {
 		if (this.load()) {
 			save();
 		}
-
-		registerGuiByType(0, StringOption::new, String.class);
 	}
 
 	public Gson getGson() {
@@ -137,31 +131,6 @@ public class ConfigHolder<T extends ConfigData> {
 
 	public T get() {
 		return config;
-	}
-
-	@Environment(EnvType.CLIENT)
-	public <Y> void registerGui(int priority, OptionWidgetProvider<Y> provider, Function<Field, Boolean> prediction) {
-		this.widgetProviders.put(priority, prediction, provider);
-	}
-
-	@Environment(EnvType.CLIENT)
-	public <Y> void registerGuiByType(int priority, OptionWidgetProvider<Y> provider, Class<?>... types) {
-		for (Class<?> type : types) {
-			this.registerGui(priority, provider, field -> field.getType().equals(type));
-		}
-	}
-
-	@Environment(EnvType.CLIENT)
-	public <U extends Annotation, Y> void registerGuiByAnnotation(int priority, OptionWidgetProvider<Y> provider, Class<U> annotation) {
-		this.registerGui(priority, provider, field -> field.getAnnotation(annotation) != null);
-	}
-
-	@Environment(EnvType.CLIENT)
-	public Optional<OptionWidgetProvider<?>> getGui(Field field) {
-		for (Map.Entry<Function<Field, Boolean>, OptionWidgetProvider<?>> entry : this.widgetProviders.entrySet()) {
-			if (entry.getKey().apply(field)) return Optional.of(entry.getValue());
-		}
-		return Optional.empty();
 	}
 
 	@Environment(EnvType.CLIENT)

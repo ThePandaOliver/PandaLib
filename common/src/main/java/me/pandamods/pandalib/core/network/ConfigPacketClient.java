@@ -17,7 +17,7 @@ public class ConfigPacketClient {
 					configHolder.logger.info("Sending server client config's");
 					FriendlyByteBuf byteBuf = new FriendlyByteBuf(Unpooled.buffer());
 					byteBuf.writeResourceLocation(new ResourceLocation(configHolder.getDefinition().modId(), configHolder.getDefinition().name()));
-					byteBuf.writeByteArray(new Gson().toJson(configHolder.get()).getBytes());
+					byteBuf.writeUtf(new Gson().toJson(configHolder.get()));
 					NetworkManager.sendToServer(PacketHandler.CONFIG_PACKET, byteBuf);
 				});
 	}
@@ -27,7 +27,7 @@ public class ConfigPacketClient {
 		PandaLibConfig.getConfig(resourceLocation).ifPresent(configHolder -> {
 			if (configHolder instanceof CommonConfigHolder<?> commonConfigHolder) {
 				configHolder.logger.info("Received config '{}' from server", configHolder.resourceLocation().toString());
-				byte[] configBytes = buf.readByteArray();
+				String configBytes = buf.readUtf();
 				commonConfigHolder.setCommonConfig(configBytes);
 			}
 		});

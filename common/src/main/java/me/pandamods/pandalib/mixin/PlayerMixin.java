@@ -22,7 +22,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class PlayerMixin extends LivingEntity implements PlayerExtension {
 	@Unique
 	private static final EntityDataAccessor<CompoundTag> PLAYER_CLIENT_CONFIGS =
-			SynchedEntityData.defineId(Player.class, EntityDataSerializers.COMPOUND_TAG);
+			SynchedEntityData.defineId(PlayerMixin.class, EntityDataSerializers.COMPOUND_TAG);
 
 	protected PlayerMixin(EntityType<? extends LivingEntity> entityType, Level level) {
 		super(entityType, level);
@@ -35,17 +35,16 @@ public abstract class PlayerMixin extends LivingEntity implements PlayerExtensio
 
 	@Override
 	public void pandaLib$setConfig(ResourceLocation resourceLocation, String configJson) {
-		CompoundTag compoundTag = this.getEntityData().get(PLAYER_CLIENT_CONFIGS);
-		compoundTag.putString(resourceLocation.toString(), configJson);
-		this.getEntityData().set(PLAYER_CLIENT_CONFIGS, compoundTag);
+		CompoundTag tag = this.getEntityData().get(PLAYER_CLIENT_CONFIGS);
+		tag.putString(resourceLocation.toString(), configJson);
+		this.getEntityData().set(PLAYER_CLIENT_CONFIGS, tag);
 	}
 
 	@Override
 	public <T extends ConfigData> T pandaLib$getConfig(ConfigHolder<T> holder) {
-		CompoundTag compoundTag = this.getEntityData().get(PLAYER_CLIENT_CONFIGS);
-		if (compoundTag.contains(holder.resourceLocation().toString())) {
-			T config = holder.getGson().fromJson(compoundTag.getString(holder.resourceLocation().toString()), holder.getConfigClass());
-			return config;
+		CompoundTag tag = this.getEntityData().get(PLAYER_CLIENT_CONFIGS);
+		if (tag.contains(holder.resourceLocation().toString())) {
+			return holder.getGson().fromJson(tag.getString(holder.resourceLocation().toString()), holder.getConfigClass());
 		}
 		return holder.get();
 	}

@@ -9,6 +9,8 @@ import me.pandamods.pandalib.api.config.holders.CommonConfigHolder;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 
+import java.nio.charset.StandardCharsets;
+
 public class ConfigPacketClient {
 	public static void sendToServer() {
 		PandaLibConfig.getConfigs().values().stream()
@@ -17,7 +19,7 @@ public class ConfigPacketClient {
 					configHolder.logger.info("Sending server client config's");
 					FriendlyByteBuf byteBuf = new FriendlyByteBuf(Unpooled.buffer());
 					byteBuf.writeResourceLocation(new ResourceLocation(configHolder.getDefinition().modId(), configHolder.getDefinition().name()));
-					byteBuf.writeUtf(configHolder.getGson().toJson(configHolder.get()));
+					byteBuf.writeByteArray(configHolder.getGson().toJson(configHolder.get()).getBytes(StandardCharsets.UTF_8));
 					NetworkManager.sendToServer(PacketHandler.CONFIG_PACKET, byteBuf);
 				});
 	}
@@ -27,8 +29,8 @@ public class ConfigPacketClient {
 		PandaLibConfig.getConfig(resourceLocation).ifPresent(configHolder -> {
 			if (configHolder instanceof CommonConfigHolder<?> commonConfigHolder) {
 				configHolder.logger.info("Received config '{}' from server", configHolder.resourceLocation().toString());
-				String configBytes = buf.readUtf();
-				commonConfigHolder.setCommonConfig(configBytes);
+				byte[] configBytes = buf.readByteArray();
+				commonConfigHolder.setCommonConfig(configHolder.getGson().fromJson(new String(configBytes), configHolder.getConfigClass()));
 			}
 		});
 	}

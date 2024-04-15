@@ -10,6 +10,8 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
+import java.nio.charset.StandardCharsets;
+
 public class ConfigPacket {
 	public static void sendToPlayer(ServerPlayer serverPlayer) {
 		PandaLibConfig.getConfigs().values().stream()
@@ -18,7 +20,7 @@ public class ConfigPacket {
 					configHolder.logger.info("Sending {} server config's", serverPlayer.getDisplayName().getString());
 					FriendlyByteBuf byteBuf = new FriendlyByteBuf(Unpooled.buffer());
 					byteBuf.writeResourceLocation(new ResourceLocation(configHolder.getDefinition().modId(), configHolder.getDefinition().name()));
-					byteBuf.writeUtf(configHolder.getGson().toJson(configHolder.get()));
+					byteBuf.writeByteArray(configHolder.getGson().toJson(configHolder.get()).getBytes(StandardCharsets.UTF_8));
 					NetworkManager.sendToPlayer(serverPlayer, PacketHandler.CONFIG_PACKET, byteBuf);
 				});
 	}
@@ -31,7 +33,8 @@ public class ConfigPacket {
 						configHolder.resourceLocation().toString(), context.getPlayer().getDisplayName().getString());
 //				String configJson = buf.readUtf();
 //				context.getPlayer().pandaLib$setConfig(resourceLocation, configJson);
-				clientConfigHolder.putConfig(context.getPlayer(), configHolder.getGson().fromJson(buf.readUtf(), configHolder.getConfigClass()));
+				clientConfigHolder.putConfig(context.getPlayer(),
+						configHolder.getGson().fromJson(new String(buf.readByteArray()), configHolder.getConfigClass()));
 			}
 		});
 	}

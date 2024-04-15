@@ -2,7 +2,7 @@ package me.pandamods.pandalib.api.config.holders;
 
 import dev.architectury.platform.Platform;
 import dev.architectury.utils.Env;
-import me.pandamods.pandalib.api.annotation.Config;
+import me.pandamods.pandalib.api.config.Config;
 import me.pandamods.pandalib.api.config.ConfigData;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;

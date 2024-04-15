@@ -1,6 +1,5 @@
 package me.pandamods.pandalib.api.config;
 
-import me.pandamods.pandalib.api.annotation.Config;
 import me.pandamods.pandalib.api.config.holders.ClientConfigHolder;
 import me.pandamods.pandalib.api.config.holders.CommonConfigHolder;
 import me.pandamods.pandalib.api.config.holders.ConfigHolder;

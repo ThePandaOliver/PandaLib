@@ -6,10 +6,9 @@ import com.google.gson.JsonObject;
 import dev.architectury.platform.Platform;
 import me.pandamods.pandalib.api.client.screen.config.*;
 import me.pandamods.pandalib.api.client.screen.config.auto.ConfigScreenProvider;
-import me.pandamods.pandalib.api.annotation.Config;
+import me.pandamods.pandalib.api.config.Config;
 import me.pandamods.pandalib.api.config.ConfigData;
 import me.pandamods.pandalib.core.utils.ClassUtils;
-import me.pandamods.pandalib.core.utils.PriorityMap;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.screens.Screen;
@@ -20,12 +19,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
-import java.util.function.Function;
 
 public class ConfigHolder<T extends ConfigData> {
 	public final Logger logger;

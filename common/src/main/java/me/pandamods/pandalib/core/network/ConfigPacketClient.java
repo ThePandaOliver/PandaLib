@@ -17,7 +17,7 @@ public class ConfigPacketClient {
 					configHolder.logger.info("Sending server client config's");
 					FriendlyByteBuf byteBuf = new FriendlyByteBuf(Unpooled.buffer());
 					byteBuf.writeResourceLocation(new ResourceLocation(configHolder.getDefinition().modId(), configHolder.getDefinition().name()));
-					byteBuf.writeUtf(new Gson().toJson(configHolder.get()));
+					byteBuf.writeUtf(configHolder.getGson().toJson(configHolder.get()));
 					NetworkManager.sendToServer(PacketHandler.CONFIG_PACKET, byteBuf);
 				});
 	}

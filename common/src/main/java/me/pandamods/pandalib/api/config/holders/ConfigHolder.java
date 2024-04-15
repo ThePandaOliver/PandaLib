@@ -82,7 +82,7 @@ public class ConfigHolder<T extends ConfigData> {
 			BufferedWriter writer = Files.newBufferedWriter(configPath);
 			this.getGson().toJson(jsonObject, writer);
 			writer.close();
-			this.logger.info("successfully saved config '{}'", definition.name());
+			this.logger.info("Successfully saved config '{}'", definition.name());
 		} catch (IOException e) {
 			this.logger.info("Failed to save config '{}'", definition.name());
 			throw new RuntimeException(e);
@@ -105,7 +105,7 @@ public class ConfigHolder<T extends ConfigData> {
 			resetToDefault();
 			save();
 		}
-		this.logger.info("successfully loaded config '{}'", definition.name());
+		this.logger.info("Successfully loaded config '{}'", definition.name());
 		return true;
 	}
 
@@ -113,6 +113,9 @@ public class ConfigHolder<T extends ConfigData> {
 		this.config = getNewDefault();
 	}
 
+	/**
+	 * @return Newly created class
+	 */
 	public T getNewDefault() {
 		return ClassUtils.constructUnsafely(configClass);
 	}
@@ -129,6 +132,9 @@ public class ConfigHolder<T extends ConfigData> {
 		return getDefinition().modId();
 	}
 
+	/**
+	 * @return Local config settings
+	 */
 	public T get() {
 		return config;
 	}

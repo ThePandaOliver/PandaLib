@@ -30,11 +30,6 @@ public class PandaLibTest {
 	}
 
     public static void init() {
-		ClientGuiEvent.SET_SCREEN.register(screen -> {
-			if (Minecraft.getInstance().player != null)
-				System.out.println(Minecraft.getInstance().player.pandaLib$getConfig(CLIENT_CONFIG).text + "-test");
-			return CompoundEventResult.pass();
-		});
 	}
 
 	public static boolean shouldInit() {

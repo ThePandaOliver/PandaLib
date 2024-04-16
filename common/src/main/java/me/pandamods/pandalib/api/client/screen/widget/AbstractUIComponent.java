@@ -1,16 +1,16 @@
 package me.pandamods.pandalib.api.client.screen.widget;
 
-import me.pandamods.pandalib.api.client.screen.Element;
+import me.pandamods.pandalib.api.client.screen.UIComponent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 
 import java.util.Optional;
 
-public class AbstractElement implements Element {
+public class AbstractUIComponent implements UIComponent {
 	public final Minecraft minecraft;
 
 	private Screen screen;
-	private Element parent;
+	private UIComponent parent;
 
 	protected int x = 0;
 	protected int y = 0;
@@ -20,7 +20,7 @@ public class AbstractElement implements Element {
 	private boolean focused = false;
 	private boolean hovered = false;
 
-	public AbstractElement() {
+	public AbstractUIComponent() {
 		this.minecraft = Minecraft.getInstance();
 	}
 
@@ -35,12 +35,12 @@ public class AbstractElement implements Element {
 	}
 
 	@Override
-	public Optional<Element> getParent() {
+	public Optional<UIComponent> getParent() {
 		return Optional.ofNullable(this.parent);
 	}
 
 	@Override
-	public void setParent(Element parent) {
+	public void setParent(UIComponent parent) {
 		this.parent = parent;
 	}
 

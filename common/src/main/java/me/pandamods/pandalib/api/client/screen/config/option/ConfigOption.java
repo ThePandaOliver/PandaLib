@@ -1,25 +1,21 @@
 package me.pandamods.pandalib.api.client.screen.config.option;
 
-import me.pandamods.pandalib.api.client.screen.Element;
-import me.pandamods.pandalib.api.client.screen.ElementHolder;
-import me.pandamods.pandalib.api.config.ConfigData;
+import me.pandamods.pandalib.api.client.screen.UIComponent;
+import me.pandamods.pandalib.api.client.screen.UIComponentHolder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.network.chat.Component;
 
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
-public abstract class ConfigOption<T> extends ElementHolder {
-	public final Component name;
+public abstract class ConfigOption<T> extends UIComponentHolder {
+	public final net.minecraft.network.chat.Component name;
 	protected final Supplier<T> load;
 	protected final Consumer<T> save;
 	protected final Supplier<T> loadDefault;
 
-	public ConfigOption(Component name, Supplier<T> load, Consumer<T> save, Supplier<T> loadDefault) {
+	public ConfigOption(net.minecraft.network.chat.Component name, Supplier<T> load, Consumer<T> save, Supplier<T> loadDefault) {
 		this.name = name;
 		this.load = load;
 		this.save = save;
@@ -45,7 +41,7 @@ public abstract class ConfigOption<T> extends ElementHolder {
 
 	@Override
 	public int getWidth() {
-		return this.getParent().map(Element::getWidth).orElse(0);
+		return this.getParent().map(UIComponent::getWidth).orElse(0);
 	}
 
 	@Override

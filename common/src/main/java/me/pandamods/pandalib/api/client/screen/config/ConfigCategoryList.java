@@ -1,16 +1,14 @@
 package me.pandamods.pandalib.api.client.screen.config;
 
-import me.pandamods.pandalib.api.client.screen.ElementHolder;
+import me.pandamods.pandalib.api.client.screen.UIComponentHolder;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
-import net.minecraft.network.chat.Component;
 
 import java.awt.*;
 import java.util.*;
-import java.util.List;
 
-public class ConfigCategoryList extends ElementHolder {
+public class ConfigCategoryList extends UIComponentHolder {
 	public static final int COLLAPSED_SIZE = 24;
 	public static final int OPEN_SIZE = 100;
 

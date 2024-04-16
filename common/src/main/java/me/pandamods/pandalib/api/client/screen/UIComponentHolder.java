@@ -1,34 +1,34 @@
 package me.pandamods.pandalib.api.client.screen;
 
-import me.pandamods.pandalib.api.client.screen.widget.AbstractElement;
-import net.minecraft.client.gui.ComponentPath;
+import me.pandamods.pandalib.api.client.screen.widget.AbstractUIComponent;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-public abstract class ElementHolder extends AbstractElement implements Renderable {
+public abstract class UIComponentHolder extends AbstractUIComponent implements Renderable {
 	private final List<GuiEventListener> children = new ArrayList<>();
 	private final List<NarratableEntry> narratables = new ArrayList<>();
-	private final List<Element> elements = new ArrayList<>();
-	private final List<ElementHolder> holders = new ArrayList<>();
+	private final List<UIComponent> UIComponents = new ArrayList<>();
+	private final List<UIComponentHolder> holders = new ArrayList<>();
 	private final List<Renderable> renderables = new ArrayList<>();
 	private final List<GuiEventListener> eventListeners = new ArrayList<>();
 
-	protected <T extends Element> T addElement(T element) {
-		element.setScreen(this.getScreen());
-		element.setParent(this);
-		elements.add(element);
-		this.eventListeners.add(element);
-		this.children.add(element);
-		if (element.isFocusable())
-			ScreenHooks.getChildren(this.getScreen()).add(element);
+	protected <T> T addElement(T element) {
+		if (element instanceof UIComponent UIComponent) {
+			UIComponent.setScreen(this.getScreen());
+			UIComponent.setParent(this);
+			UIComponents.add(UIComponent);
+			this.eventListeners.add(UIComponent);
+			this.children.add(UIComponent);
+			if (UIComponent.isFocusable())
+				ScreenHooks.getChildren(this.getScreen()).add(UIComponent);
+		}
 
 		if (element instanceof NarratableEntry narratableEntry) {
 			ScreenHooks.getNarratables(this.getScreen()).add(narratableEntry);
@@ -38,8 +38,8 @@ public abstract class ElementHolder extends AbstractElement implements Renderabl
 		if (element instanceof Renderable renderable)
 			this.renderables.add(renderable);
 
-		if (element instanceof ElementHolder elementHolder)
-			this.holders.add(elementHolder);
+		if (element instanceof UIComponentHolder componentHolder)
+			this.holders.add(componentHolder);
 		return element;
 	}
 
@@ -63,8 +63,8 @@ public abstract class ElementHolder extends AbstractElement implements Renderabl
 	}
 
 	protected void removeWidget(GuiEventListener listener) {
-		if (listener instanceof Element)
-			this.elements.remove(listener);
+		if (listener instanceof UIComponent)
+			this.UIComponents.remove(listener);
 
 		if (listener instanceof Renderable)
 			this.renderables.remove(listener);
@@ -74,7 +74,7 @@ public abstract class ElementHolder extends AbstractElement implements Renderabl
 			this.narratables.remove(listener);
 		}
 
-		if (listener instanceof ElementHolder)
+		if (listener instanceof UIComponentHolder)
 			this.holders.remove(listener);
 
 		this.eventListeners.add(listener);
@@ -89,8 +89,8 @@ public abstract class ElementHolder extends AbstractElement implements Renderabl
 		this.children.clear();
 		this.narratables.clear();
 		this.eventListeners.clear();
-		this.elements.clear();
-		this.holders.forEach(ElementHolder::clearWidgets);
+		this.UIComponents.clear();
+		this.holders.forEach(UIComponentHolder::clearWidgets);
 		this.holders.clear();
 	}
 
@@ -117,14 +117,14 @@ public abstract class ElementHolder extends AbstractElement implements Renderabl
 	}
 
 	protected void init() {
-		this.holders.forEach(ElementHolder::init);
+		this.holders.forEach(UIComponentHolder::init);
 	}
 
 	public Optional<GuiEventListener> getChildAt(double mouseX, double mouseY) {
 		for (GuiEventListener eventListener : this.eventListeners) {
 			if (eventListener.isMouseOver(mouseX, mouseY)) {
-				if (eventListener instanceof ElementHolder elementHolder) {
-					Optional<GuiEventListener> possibleChild = elementHolder.getChildAt(mouseX, mouseY);
+				if (eventListener instanceof UIComponentHolder componentHolder) {
+					Optional<GuiEventListener> possibleChild = componentHolder.getChildAt(mouseX, mouseY);
 					if (possibleChild.isPresent())
 						return possibleChild;
 				}

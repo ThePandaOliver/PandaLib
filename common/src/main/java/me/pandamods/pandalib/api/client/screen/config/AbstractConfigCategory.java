@@ -1,9 +1,9 @@
 package me.pandamods.pandalib.api.client.screen.config;
 
-import me.pandamods.pandalib.api.client.screen.ElementHolder;
+import me.pandamods.pandalib.api.client.screen.UIComponentHolder;
 import net.minecraft.network.chat.Component;
 
-public abstract class AbstractConfigCategory extends ElementHolder {
+public abstract class AbstractConfigCategory extends UIComponentHolder {
 	@Override
 	public int getX() {
 		return ConfigCategoryList.OPEN_SIZE;

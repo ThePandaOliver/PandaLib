@@ -36,12 +36,10 @@ public class ClientConfigHolder<T extends ConfigData> extends ConfigHolder<T> {
 	}
 
 	@SuppressWarnings("unchecked")
-	@Environment(EnvType.SERVER)
 	public <C extends ConfigData> void putConfig(Player player, C config) {
 		configs.put(player.getUUID(), (T) config);
 	}
 
-	@Environment(EnvType.SERVER)
 	public T getConfig(Player player) {
 		if (configs.containsKey(player.getUUID()))
 			return configs.get(player.getUUID());

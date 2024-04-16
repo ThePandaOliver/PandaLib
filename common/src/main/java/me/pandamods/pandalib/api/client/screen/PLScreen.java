@@ -5,38 +5,42 @@ import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.chat.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 public abstract class PLScreen extends Screen {
-	private final List<Element> elements = new ArrayList<>();
-	private final List<ElementHolder> holders = new ArrayList<>();
+	private final List<UIComponent> UIComponents = new ArrayList<>();
+	private final List<UIComponentHolder> holders = new ArrayList<>();
 	private final List<GuiEventListener> eventListeners = new ArrayList<>();
 
-	protected PLScreen(Component title) {
+	protected PLScreen(net.minecraft.network.chat.Component title) {
 		super(title);
 	}
 
-	protected <T extends Element> T addElement(T element) {
-		element.setScreen(this);
-		element.setParent(null);
-		elements.add(element);
-		this.eventListeners.add(element);
-		if (element.isFocusable())
-			ScreenHooks.getChildren(this).add(element);
+	protected <T> T addElement(T uiElement) {
+		if (uiElement instanceof UIComponent UIComponent) {
+			UIComponent.setScreen(this);
+			UIComponent.setParent(null);
+			UIComponents.add(UIComponent);
+			this.eventListeners.add(UIComponent);
+			this.children.add(UIComponent);
+			if (UIComponent.isFocusable())
+				ScreenHooks.getChildren(this).add(UIComponent);
+		}
 
-		if (element instanceof NarratableEntry narratableEntry)
+		if (uiElement instanceof NarratableEntry narratableEntry) {
 			ScreenHooks.getNarratables(this).add(narratableEntry);
+			this.narratables.add(narratableEntry);
+		}
 
-		if (element instanceof Renderable renderable)
-			ScreenHooks.getRenderables(this).add(renderable);
+		if (uiElement instanceof Renderable renderable)
+			this.renderables.add(renderable);
 
-		if (element instanceof ElementHolder elementHolder)
-			this.holders.add(elementHolder);
-		return element;
+		if (uiElement instanceof UIComponentHolder componentHolder)
+			this.holders.add(componentHolder);
+		return uiElement;
 	}
 
 	@Override
@@ -46,10 +50,10 @@ public abstract class PLScreen extends Screen {
 	}
 
 	protected void removeWidget(GuiEventListener listener) {
-		if (listener instanceof Element)
-			this.elements.remove(listener);
+		if (listener instanceof UIComponent)
+			this.UIComponents.remove(listener);
 
-		if (listener instanceof ElementHolder)
+		if (listener instanceof UIComponentHolder)
 			this.holders.remove(listener);
 
 		this.eventListeners.add(listener);
@@ -60,8 +64,8 @@ public abstract class PLScreen extends Screen {
 	protected void clearWidgets() {
 		super.clearWidgets();
 		this.eventListeners.clear();
-		this.elements.clear();
-		this.holders.forEach(ElementHolder::clearWidgets);
+		this.UIComponents.clear();
+		this.holders.forEach(UIComponentHolder::clearWidgets);
 		this.holders.clear();
 	}
 
@@ -79,15 +83,15 @@ public abstract class PLScreen extends Screen {
 
 	@Override
 	protected void init() {
-		this.holders.forEach(ElementHolder::init);
+		this.holders.forEach(UIComponentHolder::init);
 	}
 
 	@Override
 	public Optional<GuiEventListener> getChildAt(double mouseX, double mouseY) {
 		for (GuiEventListener eventListener : this.eventListeners) {
 			if (eventListener.isMouseOver(mouseX, mouseY)) {
-				if (eventListener instanceof ElementHolder elementHolder) {
-					Optional<GuiEventListener> possibleChild = elementHolder.getChildAt(mouseX, mouseY);
+				if (eventListener instanceof UIComponentHolder componentHolder) {
+					Optional<GuiEventListener> possibleChild = componentHolder.getChildAt(mouseX, mouseY);
 					if (possibleChild.isPresent())
 						return possibleChild;
 				}

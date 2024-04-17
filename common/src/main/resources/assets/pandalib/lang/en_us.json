@@ -1,2 +1,6 @@
 {
+	"gui.pandalib.save": "Save",
+	"gui.pandalib.cancel": "Cancel",
+	"gui.pandalib.reset": "Reset",
+	"gui.pandalib.accept": "Accept"
 }

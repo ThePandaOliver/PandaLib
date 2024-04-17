@@ -1,6 +1,5 @@
-package me.pandamods.pandalib.api.client.screen.component;
+package me.pandamods.pandalib.api.client.screen;
 
-import me.pandamods.pandalib.api.client.screen.ScreenHooks;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.GuiEventListener;

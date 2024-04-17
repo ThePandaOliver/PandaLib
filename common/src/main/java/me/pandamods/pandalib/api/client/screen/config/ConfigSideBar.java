@@ -1,13 +1,13 @@
 package me.pandamods.pandalib.api.client.screen.config;
 
-import me.pandamods.pandalib.api.client.screen.component.UIComponentHolder;
+import me.pandamods.pandalib.api.client.screen.UIComponentHolder;
+import me.pandamods.pandalib.api.utils.PLCommonComponents;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.layouts.FrameLayout;
 import net.minecraft.client.gui.layouts.GridLayout;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
-import net.minecraft.network.chat.CommonComponents;
 
 import java.awt.*;
 import java.util.*;
@@ -37,21 +37,21 @@ public class ConfigSideBar extends UIComponentHolder {
 		}
 
 		categoryGrid.arrangeElements();
-		FrameLayout.alignInRectangle(categoryGrid, 0, 0, this.getWidth(), this.getHeight() - 30, 0, 0);
+		FrameLayout.alignInRectangle(categoryGrid, 0, 0, this.getWidth(), this.getHeight() - 50, 0, 0);
 		categoryGrid.visitChildren(this::addElement);
 
 		GridLayout actionGrid = new GridLayout();
 		actionGrid.spacing(4).defaultCellSetting().alignVerticallyMiddle().alignHorizontallyCenter();
 
-		actionGrid.addChild(Button.builder(CommonComponents.GUI_DONE, button -> this.configMenu.save())
+		actionGrid.addChild(Button.builder(PLCommonComponents.SAVE, button -> this.configMenu.save())
 				.size(45, 20).build(), 0, 0);
-		actionGrid.addChild(Button.builder(CommonComponents.GUI_CANCEL, button -> this.configMenu.onClose())
+		actionGrid.addChild(Button.builder(PLCommonComponents.CANCEL, button -> this.configMenu.onClose())
 				.size(45, 20).build(), 0, 1);
-		actionGrid.addChild(Button.builder(CommonComponents.GUI_CANCEL, button -> this.configMenu.reset())
-				.size(45, 20).build(), 1, 0, 2, 1);
+		actionGrid.addChild(Button.builder(PLCommonComponents.RESET, button -> this.configMenu.reset())
+				.size(45*2+4, 20).build(), 1, 0, 1, 2);
 
 		actionGrid.arrangeElements();
-		FrameLayout.alignInRectangle(actionGrid, 0, this.getHeight() - 30, this.getWidth(), 30, 0.5f, 0);
+		FrameLayout.alignInRectangle(actionGrid, 0, this.getHeight() - 50, this.getWidth(), 50, 0.5f, 0.5f);
 		actionGrid.visitChildren(this::addElement);
 		super.init();
 	}

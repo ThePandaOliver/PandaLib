@@ -1,4 +1,4 @@
-package me.pandamods.pandalib.api.client.screen.component;
+package me.pandamods.pandalib.api.client.screen;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;

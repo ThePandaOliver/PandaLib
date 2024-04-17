@@ -1,21 +1,22 @@
 package me.pandamods.pandalib.api.client.screen.config.option;
 
-import me.pandamods.pandalib.api.client.screen.component.UIComponent;
-import me.pandamods.pandalib.api.client.screen.component.UIComponentHolder;
+import me.pandamods.pandalib.api.client.screen.UIComponent;
+import me.pandamods.pandalib.api.client.screen.UIComponentHolder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.Component;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public abstract class ConfigOption<T> extends UIComponentHolder {
-	public final net.minecraft.network.chat.Component name;
+	public final Component name;
 	protected final Supplier<T> load;
 	protected final Consumer<T> save;
 	protected final Supplier<T> loadDefault;
 
-	public ConfigOption(net.minecraft.network.chat.Component name, Supplier<T> load, Consumer<T> save, Supplier<T> loadDefault) {
+	public ConfigOption(Component name, Supplier<T> load, Consumer<T> save, Supplier<T> loadDefault) {
 		this.name = name;
 		this.load = load;
 		this.save = save;
@@ -25,7 +26,7 @@ public abstract class ConfigOption<T> extends UIComponentHolder {
 	@Override
 	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
 		Font font = Minecraft.getInstance().font;
-		guiGraphics.drawString(font, name, this.getX() + 2, this.getY() + (this.getHeight() - font.lineHeight) / 2, 0xFFFFFF);
+		guiGraphics.drawString(font, name, this.getX() + 5, this.getY() + (this.getHeight() - font.lineHeight) / 2, 0xFFFFFF);
 
 		super.render(guiGraphics, mouseX, mouseY, partialTick);
 	}

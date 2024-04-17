@@ -1,15 +1,12 @@
 package me.pandamods.pandalib.api.client.screen.config;
 
 import me.pandamods.pandalib.api.client.screen.PLScreen;
+import me.pandamods.pandalib.api.client.screen.popup.AlertPopup;
 import me.pandamods.pandalib.api.config.ConfigData;
 import me.pandamods.pandalib.api.config.PandaLibConfig;
 import me.pandamods.pandalib.api.config.holders.ConfigHolder;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.layouts.FrameLayout;
-import net.minecraft.client.gui.layouts.GridLayout;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 
 import java.util.ArrayList;
@@ -40,9 +37,11 @@ public class ConfigMenu<T extends ConfigData> extends PLScreen {
 	}
 
 	public void save() {
-		this.categoryList.categories.forEach(AbstractConfigCategory::save);
-		configHolder.save();
-		this.onClose();
+		this.minecraft.setScreen(new AlertPopup(this, Component.translatable("popup.pandalib.save"), List.of(), 450, 350, () -> {
+			this.categoryList.categories.forEach(AbstractConfigCategory::save);
+			configHolder.save();
+			this.onClose();
+		}));
 	}
 
 	public void load() {
@@ -50,7 +49,9 @@ public class ConfigMenu<T extends ConfigData> extends PLScreen {
 	}
 
 	public void reset() {
-		this.categoryList.categories.forEach(AbstractConfigCategory::reset);
+		this.minecraft.setScreen(new AlertPopup(this, Component.translatable("popup.pandalib.reset"), List.of(), 450, 350, () -> {
+			this.categoryList.categories.forEach(AbstractConfigCategory::reset);
+		}));
 	}
 
 	public void setCategory(AbstractConfigCategory category) {

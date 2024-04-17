@@ -1,4 +1,4 @@
-package me.pandamods.pandalib.api.client.screen;
+package me.pandamods.pandalib.api.client.screen.component;
 
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;

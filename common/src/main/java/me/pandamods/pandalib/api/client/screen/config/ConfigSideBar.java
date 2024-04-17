@@ -1,6 +1,6 @@
 package me.pandamods.pandalib.api.client.screen.config;
 
-import me.pandamods.pandalib.api.client.screen.UIComponentHolder;
+import me.pandamods.pandalib.api.client.screen.component.UIComponentHolder;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.components.Button;
@@ -47,6 +47,8 @@ public class ConfigSideBar extends UIComponentHolder {
 				.size(45, 20).build(), 0, 0);
 		actionGrid.addChild(Button.builder(CommonComponents.GUI_CANCEL, button -> this.configMenu.onClose())
 				.size(45, 20).build(), 0, 1);
+		actionGrid.addChild(Button.builder(CommonComponents.GUI_CANCEL, button -> this.configMenu.reset())
+				.size(45, 20).build(), 1, 0, 2, 1);
 
 		actionGrid.arrangeElements();
 		FrameLayout.alignInRectangle(actionGrid, 0, this.getHeight() - 30, this.getWidth(), 30, 0.5f, 0);

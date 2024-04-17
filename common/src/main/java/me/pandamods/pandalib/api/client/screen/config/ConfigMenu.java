@@ -49,6 +49,10 @@ public class ConfigMenu<T extends ConfigData> extends PLScreen {
 		this.categoryList.categories.forEach(AbstractConfigCategory::load);
 	}
 
+	public void reset() {
+		this.categoryList.categories.forEach(AbstractConfigCategory::reset);
+	}
+
 	public void setCategory(AbstractConfigCategory category) {
 		this.category = category;
 		this.rebuildWidgets();

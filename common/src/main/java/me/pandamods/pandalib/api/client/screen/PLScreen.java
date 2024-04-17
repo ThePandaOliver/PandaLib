@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 public abstract class PLScreen extends Screen {
-	private final List<UIComponent> UIComponents = new ArrayList<>();
+	private final List<UIComponent> uiComponents = new ArrayList<>();
 	private final List<UIComponentHolder> holders = new ArrayList<>();
 	private final List<GuiEventListener> eventListeners = new ArrayList<>();
 
@@ -19,28 +19,45 @@ public abstract class PLScreen extends Screen {
 		super(title);
 	}
 
-	protected <T> T addElement(T uiElement) {
-		if (uiElement instanceof UIComponent UIComponent) {
-			UIComponent.setScreen(this);
-			UIComponent.setParent(null);
-			UIComponents.add(UIComponent);
-			this.eventListeners.add(UIComponent);
-			this.children.add(UIComponent);
-			if (UIComponent.isFocusable())
-				ScreenHooks.getChildren(this).add(UIComponent);
-		}
+	protected <T> T addElement(T element) {
+		if (element instanceof UIComponent uiComponent) addComponent(uiComponent);
+		else {
+			if (element instanceof NarratableEntry narratableEntry) {
+				ScreenHooks.getNarratables(this).add(narratableEntry);
+				this.narratables.add(narratableEntry);
+			}
 
-		if (uiElement instanceof NarratableEntry narratableEntry) {
+			if (element instanceof GuiEventListener guiEventListener) {
+				this.eventListeners.add(guiEventListener);
+				this.children.add(guiEventListener);
+			}
+
+			if (element instanceof Renderable renderable)
+				this.renderables.add(renderable);
+		}
+		return element;
+	}
+
+	protected <T extends UIComponent> T addComponent(T uiComponent) {
+		uiComponent.setScreen(this);
+		uiComponent.setParent(null);
+		uiComponents.add(uiComponent);
+		this.eventListeners.add(uiComponent);
+		this.children.add(uiComponent);
+		if (uiComponent.isFocusable())
+			ScreenHooks.getChildren(this).add(uiComponent);
+
+		if (uiComponent instanceof NarratableEntry narratableEntry) {
 			ScreenHooks.getNarratables(this).add(narratableEntry);
 			this.narratables.add(narratableEntry);
 		}
 
-		if (uiElement instanceof Renderable renderable)
+		if (uiComponent instanceof Renderable renderable)
 			this.renderables.add(renderable);
 
-		if (uiElement instanceof UIComponentHolder componentHolder)
+		if (uiComponent instanceof UIComponentHolder componentHolder)
 			this.holders.add(componentHolder);
-		return uiElement;
+		return uiComponent;
 	}
 
 	@Override
@@ -51,7 +68,7 @@ public abstract class PLScreen extends Screen {
 
 	protected void removeWidget(GuiEventListener listener) {
 		if (listener instanceof UIComponent)
-			this.UIComponents.remove(listener);
+			this.uiComponents.remove(listener);
 
 		if (listener instanceof UIComponentHolder)
 			this.holders.remove(listener);
@@ -64,7 +81,7 @@ public abstract class PLScreen extends Screen {
 	protected void clearWidgets() {
 		super.clearWidgets();
 		this.eventListeners.clear();
-		this.UIComponents.clear();
+		this.uiComponents.clear();
 		this.holders.forEach(UIComponentHolder::clearWidgets);
 		this.holders.clear();
 	}
@@ -89,14 +106,8 @@ public abstract class PLScreen extends Screen {
 	@Override
 	public Optional<GuiEventListener> getChildAt(double mouseX, double mouseY) {
 		for (GuiEventListener eventListener : this.eventListeners) {
-			if (eventListener.isMouseOver(mouseX, mouseY)) {
-				if (eventListener instanceof UIComponentHolder componentHolder) {
-					Optional<GuiEventListener> possibleChild = componentHolder.getChildAt(mouseX, mouseY);
-					if (possibleChild.isPresent())
-						return possibleChild;
-				}
-				return Optional.of(eventListener);
-			}
+			if (!eventListener.isMouseOver(mouseX, mouseY)) continue;
+			return Optional.of(eventListener);
 		}
 		return Optional.empty();
 	}
@@ -105,8 +116,8 @@ public abstract class PLScreen extends Screen {
 	public boolean mouseClicked(double mouseX, double mouseY, int button) {
 		for (GuiEventListener eventListener : this.eventListeners) {
 			if (!eventListener.isMouseOver(mouseX, mouseY)) continue;
+			this.setFocused(eventListener);
 			if (eventListener.mouseClicked(mouseX, mouseY, button)) {
-				this.setFocused(eventListener);
 				return true;
 			}
 		}
@@ -115,38 +126,25 @@ public abstract class PLScreen extends Screen {
 
 	@Override
 	public boolean mouseReleased(double mouseX, double mouseY, int button) {
-		for (GuiEventListener eventListener : this.eventListeners) {
-			if (!eventListener.isMouseOver(mouseX, mouseY)) continue;
-			if (eventListener.mouseReleased(mouseX, mouseY, button))
-				return true;
-		}
-		return false;
+		return this.getChildAt(mouseX, mouseY)
+				.filter(guiEventListener -> guiEventListener.mouseReleased(mouseX, mouseY, button)).isPresent();
 	}
 
 	@Override
 	public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
-		for (GuiEventListener eventListener : this.eventListeners) {
-			if (!eventListener.isMouseOver(mouseX, mouseY)) continue;
-			if (eventListener.mouseDragged(mouseX, mouseY, button, dragX, dragY))
-				return true;
-		}
-		return false;
+		return this.getChildAt(mouseX, mouseY)
+				.filter(guiEventListener -> guiEventListener.mouseDragged(mouseX, mouseY, button, dragX, dragY)).isPresent();
 	}
 
 	@Override
 	public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
-		for (GuiEventListener eventListener : this.eventListeners) {
-			if (!eventListener.isMouseOver(mouseX, mouseY)) continue;
-			if (eventListener.mouseScrolled(mouseX, mouseY, delta))
-				return true;
-		}
-		return false;
+		return this.getChildAt(mouseX, mouseY)
+				.filter(guiEventListener -> guiEventListener.mouseScrolled(mouseX, mouseY, delta)).isPresent();
 	}
 
 	@Override
 	public void mouseMoved(double mouseX, double mouseY) {
 		for (GuiEventListener eventListener : this.eventListeners) {
-			if (!eventListener.isMouseOver(mouseX, mouseY)) continue;
 			eventListener.mouseMoved(mouseX, mouseY);
 		}
 	}

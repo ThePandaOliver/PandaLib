@@ -14,33 +14,50 @@ import java.util.Optional;
 public abstract class UIComponentHolder extends AbstractUIComponent implements Renderable {
 	private final List<GuiEventListener> children = new ArrayList<>();
 	private final List<NarratableEntry> narratables = new ArrayList<>();
-	private final List<UIComponent> UIComponents = new ArrayList<>();
+	private final List<UIComponent> uiComponents = new ArrayList<>();
 	private final List<UIComponentHolder> holders = new ArrayList<>();
 	private final List<Renderable> renderables = new ArrayList<>();
 	private final List<GuiEventListener> eventListeners = new ArrayList<>();
 
 	protected <T> T addElement(T element) {
-		if (element instanceof UIComponent UIComponent) {
-			UIComponent.setScreen(this.getScreen());
-			UIComponent.setParent(this);
-			UIComponents.add(UIComponent);
-			this.eventListeners.add(UIComponent);
-			this.children.add(UIComponent);
-			if (UIComponent.isFocusable())
-				ScreenHooks.getChildren(this.getScreen()).add(UIComponent);
-		}
+		if (element instanceof UIComponent uiComponent) addComponent(uiComponent);
+		else {
+			if (element instanceof NarratableEntry narratableEntry) {
+				ScreenHooks.getNarratables(this.getScreen()).add(narratableEntry);
+				this.narratables.add(narratableEntry);
+			}
 
-		if (element instanceof NarratableEntry narratableEntry) {
+			if (element instanceof GuiEventListener guiEventListener) {
+				this.eventListeners.add(guiEventListener);
+				this.children.add(guiEventListener);
+			}
+
+			if (element instanceof Renderable renderable)
+				this.renderables.add(renderable);
+		}
+		return element;
+	}
+
+	protected <T extends UIComponent> T addComponent(T uiComponent) {
+		uiComponent.setScreen(this.getScreen());
+		uiComponent.setParent(this);
+		uiComponents.add(uiComponent);
+		this.eventListeners.add(uiComponent);
+		this.children.add(uiComponent);
+		if (uiComponent.isFocusable())
+			ScreenHooks.getChildren(this.getScreen()).add(uiComponent);
+
+		if (uiComponent instanceof NarratableEntry narratableEntry) {
 			ScreenHooks.getNarratables(this.getScreen()).add(narratableEntry);
 			this.narratables.add(narratableEntry);
 		}
 
-		if (element instanceof Renderable renderable)
+		if (uiComponent instanceof Renderable renderable)
 			this.renderables.add(renderable);
 
-		if (element instanceof UIComponentHolder componentHolder)
+		if (uiComponent instanceof UIComponentHolder componentHolder)
 			this.holders.add(componentHolder);
-		return element;
+		return uiComponent;
 	}
 
 	protected <T extends GuiEventListener & Renderable & NarratableEntry> T addRenderableWidget(T widget) {
@@ -64,7 +81,7 @@ public abstract class UIComponentHolder extends AbstractUIComponent implements R
 
 	protected void removeWidget(GuiEventListener listener) {
 		if (listener instanceof UIComponent)
-			this.UIComponents.remove(listener);
+			this.uiComponents.remove(listener);
 
 		if (listener instanceof Renderable)
 			this.renderables.remove(listener);
@@ -89,7 +106,7 @@ public abstract class UIComponentHolder extends AbstractUIComponent implements R
 		this.children.clear();
 		this.narratables.clear();
 		this.eventListeners.clear();
-		this.UIComponents.clear();
+		this.uiComponents.clear();
 		this.holders.forEach(UIComponentHolder::clearWidgets);
 		this.holders.clear();
 	}
@@ -121,15 +138,11 @@ public abstract class UIComponentHolder extends AbstractUIComponent implements R
 	}
 
 	public Optional<GuiEventListener> getChildAt(double mouseX, double mouseY) {
+		mouseX -= this.getX();
+		mouseY -= this.getY();
 		for (GuiEventListener eventListener : this.eventListeners) {
-			if (eventListener.isMouseOver(mouseX, mouseY)) {
-				if (eventListener instanceof UIComponentHolder componentHolder) {
-					Optional<GuiEventListener> possibleChild = componentHolder.getChildAt(mouseX, mouseY);
-					if (possibleChild.isPresent())
-						return possibleChild;
-				}
-				return Optional.of(eventListener);
-			}
+			if (!eventListener.isMouseOver(mouseX, mouseY)) continue;
+			return Optional.of(eventListener);
 		}
 		return Optional.empty();
 	}
@@ -152,12 +165,10 @@ public abstract class UIComponentHolder extends AbstractUIComponent implements R
 	public boolean mouseReleased(double mouseX, double mouseY, int button) {
 		mouseX -= this.getX();
 		mouseY -= this.getY();
-		for (GuiEventListener eventListener : this.eventListeners) {
-			if (!eventListener.isMouseOver(mouseX, mouseY)) continue;
-			if (eventListener.mouseReleased(mouseX, mouseY, button))
-				return true;
-		}
-		return false;
+		double finalMouseX = mouseX;
+		double finalMouseY = mouseY;
+		return this.getChildAt(mouseX, mouseY)
+				.filter(guiEventListener -> guiEventListener.mouseReleased(finalMouseX, finalMouseY, button)).isPresent();
 	}
 
 	@Override
@@ -189,7 +200,6 @@ public abstract class UIComponentHolder extends AbstractUIComponent implements R
 		mouseX -= this.getX();
 		mouseY -= this.getY();
 		for (GuiEventListener eventListener : this.eventListeners) {
-			if (!eventListener.isMouseOver(mouseX, mouseY)) continue;
 			eventListener.mouseMoved(mouseX, mouseY);
 		}
 	}

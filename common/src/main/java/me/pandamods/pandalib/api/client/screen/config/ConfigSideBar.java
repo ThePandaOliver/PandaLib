@@ -3,12 +3,16 @@ package me.pandamods.pandalib.api.client.screen.config;
 import me.pandamods.pandalib.api.client.screen.UIComponentHolder;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractButton;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.layouts.FrameLayout;
+import net.minecraft.client.gui.layouts.GridLayout;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.network.chat.CommonComponents;
 
 import java.awt.*;
 import java.util.*;
 
-public class ConfigCategoryList extends UIComponentHolder {
+public class ConfigSideBar extends UIComponentHolder {
 	public static final int COLLAPSED_SIZE = 24;
 	public static final int OPEN_SIZE = 100;
 
@@ -18,16 +22,35 @@ public class ConfigCategoryList extends UIComponentHolder {
 	private final ConfigMenu<?> configMenu;
 	public final Set<AbstractConfigCategory> categories = new HashSet<>();
 
-	public ConfigCategoryList(ConfigMenu<?> configMenu) {
+	public ConfigSideBar(ConfigMenu<?> configMenu) {
 		this.configMenu = configMenu;
 	}
 
 	@Override
 	protected void init() {
+		GridLayout categoryGrid = new GridLayout();
+		categoryGrid.defaultCellSetting().alignHorizontallyCenter();
+
 		int i = 0;
 		for (AbstractConfigCategory category : categories) {
-			this.addRenderableWidget(new Button(0, 22 * i++, this.width, 20, category));
+			categoryGrid.addChild(new CategoryButton(0, 0, this.width - 2, 20, category), i++, 0);
 		}
+
+		categoryGrid.arrangeElements();
+		FrameLayout.alignInRectangle(categoryGrid, 0, 0, this.getWidth(), this.getHeight() - 30, 0, 0);
+		categoryGrid.visitChildren(this::addElement);
+
+		GridLayout actionGrid = new GridLayout();
+		actionGrid.spacing(4).defaultCellSetting().alignVerticallyMiddle().alignHorizontallyCenter();
+
+		actionGrid.addChild(Button.builder(CommonComponents.GUI_DONE, button -> this.configMenu.save())
+				.size(45, 20).build(), 0, 0);
+		actionGrid.addChild(Button.builder(CommonComponents.GUI_CANCEL, button -> this.configMenu.onClose())
+				.size(45, 20).build(), 0, 1);
+
+		actionGrid.arrangeElements();
+		FrameLayout.alignInRectangle(actionGrid, 0, this.getHeight() - 30, this.getWidth(), 30, 0.5f, 0);
+		actionGrid.visitChildren(this::addElement);
 		super.init();
 	}
 
@@ -48,17 +71,17 @@ public class ConfigCategoryList extends UIComponentHolder {
 		return this.configMenu.height;
 	}
 
-	public class Button extends AbstractButton {
+	public class CategoryButton extends AbstractButton {
 		private final AbstractConfigCategory category;
 
-		public Button(int x, int y, int width, int height, AbstractConfigCategory category) {
+		public CategoryButton(int x, int y, int width, int height, AbstractConfigCategory category) {
 			super(x, y, width, height, category.getName());
 			this.category = category;
 		}
 
 		@Override
 		public void onPress() {
-			ConfigCategoryList.this.configMenu.setCategory(category);
+			ConfigSideBar.this.configMenu.setCategory(category);
 		}
 
 		@Override
@@ -68,7 +91,7 @@ public class ConfigCategoryList extends UIComponentHolder {
 
 		@Override
 		public boolean isActive() {
-			return Objects.equals(ConfigCategoryList.this.configMenu.getCategory(), category);
+			return Objects.equals(ConfigSideBar.this.configMenu.getCategory(), category);
 		}
 	}
 }

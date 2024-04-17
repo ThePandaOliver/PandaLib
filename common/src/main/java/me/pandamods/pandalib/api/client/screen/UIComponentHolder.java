@@ -139,9 +139,10 @@ public abstract class UIComponentHolder extends AbstractUIComponent implements R
 		mouseX -= this.getX();
 		mouseY -= this.getY();
 		for (GuiEventListener eventListener : this.eventListeners) {
-			if (eventListener.isMouseOver(mouseX, mouseY)) {
-				this.getScreen().setFocused(eventListener);
-				return eventListener.mouseClicked(mouseX, mouseY, button);
+			if (!eventListener.isMouseOver(mouseX, mouseY)) continue;
+			this.getScreen().setFocused(eventListener);
+			if (eventListener.mouseClicked(mouseX, mouseY, button)) {
+				return true;
 			}
 		}
 		return false;
@@ -152,9 +153,9 @@ public abstract class UIComponentHolder extends AbstractUIComponent implements R
 		mouseX -= this.getX();
 		mouseY -= this.getY();
 		for (GuiEventListener eventListener : this.eventListeners) {
-			if (eventListener.isMouseOver(mouseX, mouseY)) {
-				return eventListener.mouseReleased(mouseX, mouseY, button);
-			}
+			if (!eventListener.isMouseOver(mouseX, mouseY)) continue;
+			if (eventListener.mouseReleased(mouseX, mouseY, button))
+				return true;
 		}
 		return false;
 	}
@@ -164,9 +165,9 @@ public abstract class UIComponentHolder extends AbstractUIComponent implements R
 		mouseX -= this.getX();
 		mouseY -= this.getY();
 		for (GuiEventListener eventListener : this.eventListeners) {
-			if (eventListener.isMouseOver(mouseX, mouseY)) {
-				return eventListener.mouseDragged(mouseX, mouseY, button, dragX, dragY);
-			}
+			if (!eventListener.isMouseOver(mouseX, mouseY)) continue;
+			if (eventListener.mouseDragged(mouseX, mouseY, button, dragX, dragY))
+				return true;
 		}
 		return false;
 	}
@@ -176,9 +177,9 @@ public abstract class UIComponentHolder extends AbstractUIComponent implements R
 		mouseX -= this.getX();
 		mouseY -= this.getY();
 		for (GuiEventListener eventListener : this.eventListeners) {
-			if (eventListener.isMouseOver(mouseX, mouseY)) {
-				return eventListener.mouseScrolled(mouseX, mouseY, delta);
-			}
+			if (!eventListener.isMouseOver(mouseX, mouseY)) continue;
+			if (eventListener.mouseScrolled(mouseX, mouseY, delta))
+				return true;
 		}
 		return false;
 	}
@@ -188,10 +189,8 @@ public abstract class UIComponentHolder extends AbstractUIComponent implements R
 		mouseX -= this.getX();
 		mouseY -= this.getY();
 		for (GuiEventListener eventListener : this.eventListeners) {
-			if (eventListener.isMouseOver(mouseX, mouseY)) {
-				eventListener.mouseMoved(mouseX, mouseY);
-				return;
-			}
+			if (!eventListener.isMouseOver(mouseX, mouseY)) continue;
+			eventListener.mouseMoved(mouseX, mouseY);
 		}
 	}
 }

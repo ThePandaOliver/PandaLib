@@ -104,10 +104,10 @@ public abstract class PLScreen extends Screen {
 	@Override
 	public boolean mouseClicked(double mouseX, double mouseY, int button) {
 		for (GuiEventListener eventListener : this.eventListeners) {
-			if (eventListener.isMouseOver(mouseX, mouseY)) {
+			if (!eventListener.isMouseOver(mouseX, mouseY)) continue;
+			if (eventListener.mouseClicked(mouseX, mouseY, button)) {
 				this.setFocused(eventListener);
-				if (eventListener.mouseClicked(mouseX, mouseY, button))
-					return true;
+				return true;
 			}
 		}
 		return false;
@@ -116,10 +116,9 @@ public abstract class PLScreen extends Screen {
 	@Override
 	public boolean mouseReleased(double mouseX, double mouseY, int button) {
 		for (GuiEventListener eventListener : this.eventListeners) {
-			if (eventListener.isMouseOver(mouseX, mouseY)) {
-				if (eventListener.mouseReleased(mouseX, mouseY, button))
-					return true;
-			}
+			if (!eventListener.isMouseOver(mouseX, mouseY)) continue;
+			if (eventListener.mouseReleased(mouseX, mouseY, button))
+				return true;
 		}
 		return false;
 	}
@@ -127,10 +126,9 @@ public abstract class PLScreen extends Screen {
 	@Override
 	public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
 		for (GuiEventListener eventListener : this.eventListeners) {
-			if (eventListener.isMouseOver(mouseX, mouseY)) {
-				if (eventListener.mouseDragged(mouseX, mouseY, button, dragX, dragY))
-					return true;
-			}
+			if (!eventListener.isMouseOver(mouseX, mouseY)) continue;
+			if (eventListener.mouseDragged(mouseX, mouseY, button, dragX, dragY))
+				return true;
 		}
 		return false;
 	}
@@ -138,10 +136,9 @@ public abstract class PLScreen extends Screen {
 	@Override
 	public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
 		for (GuiEventListener eventListener : this.eventListeners) {
-			if (eventListener.isMouseOver(mouseX, mouseY)) {
-				if (eventListener.mouseScrolled(mouseX, mouseY, delta))
-					return true;
-			}
+			if (!eventListener.isMouseOver(mouseX, mouseY)) continue;
+			if (eventListener.mouseScrolled(mouseX, mouseY, delta))
+				return true;
 		}
 		return false;
 	}
@@ -149,9 +146,8 @@ public abstract class PLScreen extends Screen {
 	@Override
 	public void mouseMoved(double mouseX, double mouseY) {
 		for (GuiEventListener eventListener : this.eventListeners) {
-			if (eventListener.isMouseOver(mouseX, mouseY)) {
-				eventListener.mouseMoved(mouseX, mouseY);
-			}
+			if (!eventListener.isMouseOver(mouseX, mouseY)) continue;
+			eventListener.mouseMoved(mouseX, mouseY);
 		}
 	}
 }

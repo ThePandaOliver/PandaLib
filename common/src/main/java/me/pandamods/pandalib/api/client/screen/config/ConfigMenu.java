@@ -18,7 +18,7 @@ import java.util.List;
 
 public class ConfigMenu<T extends ConfigData> extends PLScreen {
 	private final Screen parent;
-	private final ConfigCategoryList categoryList = new ConfigCategoryList(this);
+	private final ConfigSideBar categoryList = new ConfigSideBar(this);
 	private final ConfigHolder<T> configHolder;
 	private AbstractConfigCategory category;
 
@@ -36,27 +36,16 @@ public class ConfigMenu<T extends ConfigData> extends PLScreen {
 	protected void init() {
 		this.addElement(this.categoryList);
 		this.addElement(this.category);
-
-		GridLayout gridLayout = new GridLayout();
-		gridLayout.defaultCellSetting().paddingHorizontal(5).paddingBottom(4).alignHorizontallyCenter();
-		GridLayout.RowHelper rowHelper = gridLayout.createRowHelper(2);
-
-		rowHelper.addChild(Button.builder(CommonComponents.GUI_DONE, button -> this.save()).build());
-		rowHelper.addChild(Button.builder(CommonComponents.GUI_CANCEL, button -> this.onClose()).build());
-
-		gridLayout.arrangeElements();
-		FrameLayout.alignInRectangle(gridLayout, 0, this.height - 50, this.width, this.height, 0.5F, 0.0F);
-		gridLayout.visitWidgets(this::addRenderableWidget);
 		super.init();
 	}
 
-	private void save() {
+	public void save() {
 		this.categoryList.categories.forEach(AbstractConfigCategory::save);
 		configHolder.save();
 		this.onClose();
 	}
 
-	private void load() {
+	public void load() {
 		this.categoryList.categories.forEach(AbstractConfigCategory::load);
 	}
 

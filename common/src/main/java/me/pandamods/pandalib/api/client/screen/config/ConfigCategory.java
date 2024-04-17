@@ -1,8 +1,8 @@
 package me.pandamods.pandalib.api.client.screen.config;
 
 import me.pandamods.pandalib.api.client.screen.config.option.ConfigOption;
-import me.pandamods.pandalib.api.client.screen.grid.Grid;
-import me.pandamods.pandalib.api.config.ConfigData;
+import net.minecraft.client.gui.layouts.FrameLayout;
+import net.minecraft.client.gui.layouts.GridLayout;
 import net.minecraft.network.chat.Component;
 
 import java.util.ArrayList;
@@ -24,14 +24,17 @@ public class ConfigCategory extends AbstractConfigCategory {
 
 	@Override
 	protected void init() {
-		Grid grid = this.addElement(new Grid());
+		GridLayout gridLayout = new GridLayout();
+		gridLayout.defaultCellSetting().alignHorizontallyCenter();
+
 		int y = 0;
 		for (ConfigOption<?> option : this.options) {
-			grid.addChild(option, y++, 0);
-			option.setY(y);
-			this.addElement(option);
-			y += option.getHeight();
+			gridLayout.addChild(option, y++, 0);
 		}
+
+		gridLayout.arrangeElements();
+		FrameLayout.alignInRectangle(gridLayout, 0, 0, this.getWidth(), this.getHeight(), 0, 0);
+		gridLayout.visitChildren(this::addElement);
 		super.init();
 	}
 

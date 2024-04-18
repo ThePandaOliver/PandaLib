@@ -13,8 +13,7 @@ import java.awt.*;
 import java.util.*;
 
 public class ConfigSideBar extends UIComponentHolder {
-	public static final int COLLAPSED_SIZE = 24;
-	public static final int OPEN_SIZE = 100;
+	public static final int SIZE = 100;
 
 	private static final int MENU_DRAW_EDGE_COLOR = new Color(0, 0, 0, 150).getRGB();
 	private static final int MENU_DRAW_EDGE_HIGHLIGHT_COLOR = new Color(100, 100, 100, 150).getRGB();
@@ -65,7 +64,7 @@ public class ConfigSideBar extends UIComponentHolder {
 
 	@Override
 	public int getWidth() {
-		return OPEN_SIZE;
+		return SIZE;
 	}
 
 	@Override

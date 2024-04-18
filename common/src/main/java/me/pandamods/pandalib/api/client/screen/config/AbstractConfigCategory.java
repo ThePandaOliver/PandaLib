@@ -6,12 +6,12 @@ import net.minecraft.network.chat.Component;
 public abstract class AbstractConfigCategory extends UIComponentHolder {
 	@Override
 	public int getX() {
-		return ConfigSideBar.OPEN_SIZE;
+		return ConfigSideBar.SIZE;
 	}
 
 	@Override
 	public int getWidth() {
-		return this.getScreen().width - ConfigSideBar.OPEN_SIZE - 2;
+		return this.getScreen().width - ConfigSideBar.SIZE - 2;
 	}
 
 	@Override

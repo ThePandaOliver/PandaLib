@@ -20,7 +20,7 @@ public class ConfigPacket {
 					configHolder.logger.info("Sending {} server config's", serverPlayer.getDisplayName().getString());
 					FriendlyByteBuf byteBuf = new FriendlyByteBuf(Unpooled.buffer());
 					byteBuf.writeResourceLocation(new ResourceLocation(configHolder.getDefinition().modId(), configHolder.getDefinition().name()));
-					byteBuf.writeByteArray(configHolder.getGson().toJson(configHolder.get()).getBytes(StandardCharsets.UTF_8));
+					byteBuf.writeUtf(configHolder.getGson().toJson(configHolder.get()));
 					NetworkManager.sendToPlayer(serverPlayer, PacketHandler.CONFIG_PACKET, byteBuf);
 				});
 	}
@@ -31,10 +31,7 @@ public class ConfigPacket {
 			if (configHolder instanceof ClientConfigHolder<? extends ConfigData> clientConfigHolder) {
 				configHolder.logger.info("Received config '{}' from {}",
 						configHolder.resourceLocation().toString(), context.getPlayer().getDisplayName().getString());
-//				String configJson = buf.readUtf();
-//				context.getPlayer().pandaLib$setConfig(resourceLocation, configJson);
-				clientConfigHolder.putConfig(context.getPlayer(),
-						configHolder.getGson().fromJson(new String(buf.readByteArray()), configHolder.getConfigClass()));
+				context.getPlayer().pandaLib$setConfig(configHolder.getGson().fromJson(buf.readUtf(), configHolder.getConfigClass()));
 			}
 		});
 	}

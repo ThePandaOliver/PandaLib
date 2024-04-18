@@ -1,15 +1,26 @@
 package me.pandamods.pandalib.core.event;
 
+import dev.architectury.event.events.client.ClientPlayerEvent;
 import dev.architectury.event.events.common.PlayerEvent;
-import me.pandamods.pandalib.core.network.ConfigPacket;
+import dev.architectury.platform.Platform;
+import dev.architectury.utils.Env;
+import me.pandamods.pandalib.core.network.ConfigNetworking;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.server.level.ServerPlayer;
 
 public class EventHandler {
-	public static void init() {
-		PlayerEvent.PLAYER_JOIN.register(EventHandler::onPlayerJoin);
+	public static void Register() {
+		switch (Platform.getEnvironment()) {
+			case SERVER -> PlayerEvent.PLAYER_JOIN.register(EventHandler::onServerPlayerJoin);
+			case CLIENT -> ClientPlayerEvent.CLIENT_PLAYER_JOIN.register(EventHandler::onClientPlayerJoin);
+		}
 	}
 
-	private static void onPlayerJoin(ServerPlayer serverPlayer) {
-		ConfigPacket.sendToPlayer(serverPlayer);
+	private static void onServerPlayerJoin(ServerPlayer serverPlayer) {
+		ConfigNetworking.SyncCommonConfigs(serverPlayer);
+	}
+
+	private static void onClientPlayerJoin(LocalPlayer localPlayer) {
+		ConfigNetworking.SyncClientConfigs();
 	}
 }

@@ -20,9 +20,6 @@
     ],
 		"client": [
 			"me.pandamods.pandalib.fabric.PandaLibFabricClient"
-		],
-		"modmenu": [
-			"me.pandamods.pandalib.fabric.PandaLibModMenuIntegration"
 		]
   },
   "mixins": [

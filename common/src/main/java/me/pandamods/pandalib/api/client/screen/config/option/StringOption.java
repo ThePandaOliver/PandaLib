@@ -1,13 +1,10 @@
 package me.pandamods.pandalib.api.client.screen.config.option;
 
-import me.pandamods.pandalib.api.config.ConfigData;
-import net.minecraft.client.Minecraft;
+import me.pandamods.pandalib.api.utils.screen.PLGridLayout;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
 
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class StringOption extends ConfigOption<String> {
@@ -28,13 +25,16 @@ public class StringOption extends ConfigOption<String> {
 		return inputField.getValue();
 	}
 
+
 	@Override
 	protected void init() {
-		int x = this.getWidth() - 100 - 4;
-		int y = (this.getHeight() - 16) / 2;
-		inputField = new EditBox(this.minecraft.font, x, y, 100, 16, inputField, this.name);
-		this.addRenderableWidget(inputField);
+		PLGridLayout grid = new PLGridLayout().spacing(2);
+		grid.defaultCellSetting();
 
+		grid.addChild(inputField = new EditBox(this.minecraft.font, x, y, 100, 16, inputField, this.name), 0, 0);
+		addActionButtons(grid, 2);
+
+		grid.quickArrange(this::addElement, 0, 0, this.getWidth(), this.getHeight(), 1f, 0.5f);
 		super.init();
 	}
 }

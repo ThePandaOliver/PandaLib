@@ -3,8 +3,12 @@ package me.pandamods.pandalib.api.client.screen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.layouts.LayoutElement;
+import net.minecraft.client.gui.narration.NarratedElementType;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -20,6 +24,7 @@ public class AbstractUIComponent implements UIComponent, LayoutElement {
 	protected int width = 0;
 	protected int height = 0;
 
+	private boolean active = true;
 	private boolean focused = false;
 	private boolean hovered = false;
 
@@ -97,6 +102,14 @@ public class AbstractUIComponent implements UIComponent, LayoutElement {
 
 	public boolean isHoveredOrFocused() {
 		return isFocused() || isHovered();
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
+	}
+
+	public boolean isActive() {
+		return active;
 	}
 
 	@Override

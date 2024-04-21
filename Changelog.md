@@ -1,3 +1,3 @@
 ## Changelog 0.2.1 Beta
-#### Update:
-* Improved Client Config synchronization
+#### Bug Fixes:
+* Fixed Client configs not staying synchronized on server.

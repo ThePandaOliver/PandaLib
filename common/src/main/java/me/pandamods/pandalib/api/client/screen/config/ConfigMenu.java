@@ -145,14 +145,14 @@ public class ConfigMenu<T extends ConfigData> extends PLScreen {
 			categoryGrid.visitChildren(this::addElement);
 
 			GridLayout actionGrid = new GridLayout();
-			actionGrid.spacing(4).defaultCellSetting().alignVerticallyMiddle().alignHorizontallyCenter();
+			actionGrid.spacing(4).defaultCellSetting();
 
 			actionGrid.addChild(Button.builder(PLCommonComponents.SAVE, button -> ConfigMenu.this.save())
 					.size(45, 20).build(), 0, 0);
-			actionGrid.addChild(Button.builder(PLCommonComponents.CANCEL, button -> ConfigMenu.this.onClose())
-					.size(45, 20).build(), 0, 1);
 			actionGrid.addChild(Button.builder(PLCommonComponents.RESET, button -> ConfigMenu.this.reset())
-					.size(45*2+4, 20).build(), 1, 0, 1, 2);
+					.size(45, 20).build(), 0, 1);
+			actionGrid.addChild(Button.builder(PLCommonComponents.CANCEL, button -> ConfigMenu.this.onClose())
+					.size(94, 20).build(), 1, 0, 1, 2);
 
 			actionGrid.arrangeElements();
 			FrameLayout.alignInRectangle(actionGrid, 0, this.getHeight() - 50, this.getWidth(), 50, 0.5f, 0.5f);

@@ -8,4 +8,5 @@ public class PLCommonComponents {
 	public static final Component CANCEL = Component.translatable("gui.pandalib.cancel");
 	public static final Component RESET = Component.translatable("gui.pandalib.reset");
 	public static final Component ACCEPT = Component.translatable("gui.pandalib.accept");
+	public static final Component UNDO = Component.translatable("gui.pandalib.undo");
 }

@@ -1,6 +1,7 @@
 package me.pandamods.pandalib.api.client.screen.config;
 
 import me.pandamods.pandalib.api.client.screen.UIComponentHolder;
+import me.pandamods.pandalib.api.client.screen.config.menu.ConfigMenu;
 import net.minecraft.network.chat.Component;
 
 public abstract class AbstractConfigCategory extends UIComponentHolder {

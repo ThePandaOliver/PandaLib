@@ -1,6 +1,8 @@
-package me.pandamods.pandalib.api.client.screen.config;
+package me.pandamods.pandalib.api.client.screen.config.menu;
 
 import me.pandamods.pandalib.api.annotation.Category;
+import me.pandamods.pandalib.api.client.screen.config.ConfigCategory;
+import me.pandamods.pandalib.api.client.screen.config.ConfigGuiRegistry;
 import me.pandamods.pandalib.api.config.ConfigData;
 import me.pandamods.pandalib.api.config.holders.ConfigHolder;
 import me.pandamods.pandalib.core.utils.ClassUtils;
@@ -37,8 +39,8 @@ public class ConfigScreenProvider<T extends ConfigData> implements Supplier<Scre
 			ConfigCategory.Builder categoryBuilder = getOrCreateCategory(field, configHolder.getTranslatableName());
 
 			String name = String.format("%s.%s", baseName, field.getName());
-			if (ConfigWidgetRegistry.getGui(field).isPresent())
-				categoryBuilder.addOption(ConfigWidgetRegistry.getGui(field).get()
+			if (ConfigGuiRegistry.getGui(field).isPresent())
+				categoryBuilder.addOption(ConfigGuiRegistry.getGui(field).get()
 						.create(Component.translatable(name),
 								() -> ClassUtils.getFieldUnsafely(config, field),
 								object -> ClassUtils.setFieldUnsafely(config, field, object),

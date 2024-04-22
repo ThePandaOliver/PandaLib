@@ -1,12 +1,11 @@
 package me.pandamods.pandalib.api.client.screen.config.option;
 
 import me.pandamods.pandalib.PandaLib;
-import me.pandamods.pandalib.api.client.screen.UIComponent;
 import me.pandamods.pandalib.api.client.screen.UIComponentHolder;
 import me.pandamods.pandalib.api.client.screen.widget.IconButton;
 import me.pandamods.pandalib.api.utils.PLCommonComponents;
-import me.pandamods.pandalib.api.utils.screen.WidgetImage;
 import me.pandamods.pandalib.api.utils.screen.PLGridLayout;
+import me.pandamods.pandalib.api.utils.screen.WidgetImage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -51,36 +50,15 @@ public abstract class ConfigOption<T> extends UIComponentHolder {
 		super.render(guiGraphics, mouseX, mouseY, partialTick);
 	}
 
-	@Override
-	protected void init() {
-		super.init();
-	}
-
-	public void setY(int y) {
-		this.y = y;
-	}
-
-	@Override
-	public int getWidth() {
-		return this.getParent().map(UIComponent::getWidth).orElse(0);
-	}
-
-	@Override
-	public int getHeight() {
-		return 24;
-	}
-
 	protected abstract void setValue(T value);
 	protected abstract T getValue();
 
 	public void save() {
 		this.save.accept(this.getValue());
 	}
-
 	public void load() {
 		this.setValue(this.load.get());
 	}
-
 	public void reset() {
 		this.setValue(this.loadDefault.get());
 	}

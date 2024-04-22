@@ -1,7 +1,8 @@
-package me.pandamods.pandalib.api.client.screen.config;
+package me.pandamods.pandalib.api.client.screen.config.menu;
 
 import me.pandamods.pandalib.api.client.screen.PLScreen;
 import me.pandamods.pandalib.api.client.screen.UIComponentHolder;
+import me.pandamods.pandalib.api.client.screen.config.AbstractConfigCategory;
 import me.pandamods.pandalib.api.config.ConfigData;
 import me.pandamods.pandalib.api.config.PandaLibConfig;
 import me.pandamods.pandalib.api.config.holders.ConfigHolder;
@@ -193,11 +194,6 @@ public class ConfigMenu<T extends ConfigData> extends PLScreen {
 			@Override
 			protected void updateWidgetNarration(NarrationElementOutput narrationElementOutput) {
 				this.defaultButtonNarrationText(narrationElementOutput);
-			}
-
-			@Override
-			public void renderTexture(GuiGraphics guiGraphics, ResourceLocation texture, int x, int y, int uOffset, int vOffset, int textureDifference, int width, int height, int textureWidth, int textureHeight) {
-				super.renderTexture(guiGraphics, texture, x, y, uOffset, vOffset, textureDifference, width, height, textureWidth, textureHeight);
 			}
 
 			@Override

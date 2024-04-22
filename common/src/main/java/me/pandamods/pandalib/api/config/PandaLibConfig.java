@@ -55,6 +55,11 @@ public class PandaLibConfig {
 				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 	}
 
+	public static Screen getConfigScreen(String modID) {
+		return null;
+	}
+
+	
 	public static <T extends ConfigData> Screen getConfigScreen(Class<T> configClass) {
 		return null;
 	}

@@ -1,7 +1,7 @@
 package me.pandamods.pandalib.forge;
 
 import me.pandamods.pandalib.PandaLibClient;
-import me.pandamods.pandalib.api.client.screen.config.ConfigScreenProvider;
+import me.pandamods.pandalib.api.client.screen.config.menu.ConfigScreenProvider;
 import me.pandamods.test.PandaLibTest;
 import net.minecraftforge.client.ConfigScreenHandler;
 import net.minecraftforge.fml.ModLoadingContext;

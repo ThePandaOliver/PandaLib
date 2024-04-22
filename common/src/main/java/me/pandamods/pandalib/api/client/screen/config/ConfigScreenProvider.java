@@ -25,21 +25,25 @@ public class ConfigScreenProvider<T extends ConfigData> implements Supplier<Scre
 	public ConfigMenu.Builder<T> getBuilder() {
 		T config = configHolder.get();
 		T defaultConfig = configHolder.getNewDefault();
+		ConfigMenu.Builder<T> builder = ConfigMenu.builder(configHolder.getConfigClass()).setTitle(
+				Component.translatable(configHolder.getTranslatableName() + ".title"));
 
-		Component title = configHolder.getName();
-		ConfigMenu.Builder<T> builder = ConfigMenu.builder(configHolder.getConfigClass()).setTitle(title);
+		addOptions(config, defaultConfig, configHolder.getTranslatableName() + ".option");
+		return builder.registerCategories(categories.values().stream().map(ConfigCategory.Builder::build).toList()).setParent(parent);
+	}
 
+	private void addOptions(Object config, Object defaultConfig, String baseName) {
 		for (Field field : config.getClass().getFields()) {
-			ConfigCategory.Builder categoryBuilder = getOrCreateCategory(field, title);
+			ConfigCategory.Builder categoryBuilder = getOrCreateCategory(field, configHolder.getTranslatableName());
 
+			String name = String.format("%s.%s", baseName, field.getName());
 			if (ConfigWidgetRegistry.getGui(field).isPresent())
 				categoryBuilder.addOption(ConfigWidgetRegistry.getGui(field).get()
-						.create(title.copy().append(String.format(".option.%s", field.getName())),
+						.create(Component.translatable(name),
 								() -> ClassUtils.getFieldUnsafely(config, field),
 								object -> ClassUtils.setFieldUnsafely(config, field, object),
 								() -> ClassUtils.getFieldUnsafely(defaultConfig, field)));
 		}
-		return builder.registerCategories(categories.values().stream().map(ConfigCategory.Builder::build).toList()).setParent(parent);
 	}
 
 	@Override
@@ -47,12 +51,12 @@ public class ConfigScreenProvider<T extends ConfigData> implements Supplier<Scre
 		return getBuilder().Build();
 	}
 
-	private ConfigCategory.Builder getOrCreateCategory(Field field, Component baseName) {
+	private ConfigCategory.Builder getOrCreateCategory(Field field, String baseName) {
 		String categoryKey = "default";
 		if (field.isAnnotationPresent(Category.class))
 			categoryKey = field.getAnnotation(Category.class).value();
 
-		Component categoryName = baseName.copy().append(String.format(".category.%s", categoryKey));
+		Component categoryName = Component.translatable(baseName + ".category." + categoryKey);
 		ConfigCategory.Builder categoryBuilder = categories.get(categoryKey);
 		if (categoryBuilder == null)
 			categories.put(categoryKey, categoryBuilder = ConfigCategory.builder(categoryName));

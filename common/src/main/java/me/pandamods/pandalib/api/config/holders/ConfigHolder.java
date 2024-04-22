@@ -114,8 +114,8 @@ public class ConfigHolder<T extends ConfigData> {
 		return resourceLocation;
 	}
 
-	public MutableComponent getName() {
-		return Component.translatable(String.format("config.%s.%s", resourceLocation.getNamespace(), resourceLocation.getPath()));
+	public String getTranslatableName() {
+		return String.format("config.%s.%s", resourceLocation.getNamespace(), resourceLocation.getPath());
 	}
 
 	public String modID() {

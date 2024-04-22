@@ -89,7 +89,7 @@ public class ConfigMenu<T extends ConfigData> extends PLScreen {
 
 		private Builder(Class<T> config) {
 			this.configHolder = PandaLibConfig.getConfig(config);
-			this.title = configHolder.getName();
+			this.title = Component.empty();
 		}
 
 		public Builder<T> registerCategory(AbstractConfigCategory category) {

@@ -4,6 +4,7 @@ import dev.architectury.event.events.client.ClientPlayerEvent;
 import dev.architectury.event.events.common.PlayerEvent;
 import dev.architectury.networking.NetworkManager;
 import dev.architectury.platform.Platform;
+import dev.architectury.utils.Env;
 import io.netty.buffer.Unpooled;
 import me.pandamods.pandalib.PandaLib;
 import me.pandamods.pandalib.api.config.ConfigData;
@@ -47,9 +48,10 @@ public class ConfigNetworking {
 	}
 
 	public static void RegisterReceivers() {
-		switch (Platform.getEnvironment()) {
-			case SERVER -> NetworkManager.registerReceiver(NetworkManager.clientToServer(), CONFIG_PACKET, ConfigNetworking::ClientConfigReceiver);
-			case CLIENT -> NetworkManager.registerReceiver(NetworkManager.serverToClient(), CONFIG_PACKET, ConfigNetworking::CommonConfigReceiver);
+		NetworkManager.registerReceiver(NetworkManager.clientToServer(), CONFIG_PACKET, ConfigNetworking::ClientConfigReceiver);
+
+		if (Platform.getEnvironment().equals(Env.CLIENT)) {
+			NetworkManager.registerReceiver(NetworkManager.serverToClient(), CONFIG_PACKET, ConfigNetworking::CommonConfigReceiver);
 		}
 	}
 

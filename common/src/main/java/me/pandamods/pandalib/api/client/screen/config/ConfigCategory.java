@@ -1,6 +1,6 @@
 package me.pandamods.pandalib.api.client.screen.config;
 
-import me.pandamods.pandalib.api.client.screen.config.option.ConfigOption;
+import me.pandamods.pandalib.api.client.screen.config.option.AbstractConfigOption;
 import net.minecraft.client.gui.layouts.FrameLayout;
 import net.minecraft.client.gui.layouts.GridLayout;
 import net.minecraft.network.chat.Component;
@@ -10,9 +10,9 @@ import java.util.List;
 
 public class ConfigCategory extends AbstractConfigCategory {
 	private final Component name;
-	private final List<ConfigOption<?>> options;
+	private final List<AbstractConfigOption<?>> options;
 
-	public ConfigCategory(Component name, List<ConfigOption<?>> options) {
+	public ConfigCategory(Component name, List<AbstractConfigOption<?>> options) {
 		this.name = name;
 		this.options = options;
 	}
@@ -28,7 +28,7 @@ public class ConfigCategory extends AbstractConfigCategory {
 		gridLayout.defaultCellSetting().alignHorizontallyCenter();
 
 		int y = 0;
-		for (ConfigOption<?> option : this.options) {
+		for (AbstractConfigOption<?> option : this.options) {
 			gridLayout.addChild(option, y++, 0);
 		}
 
@@ -40,17 +40,17 @@ public class ConfigCategory extends AbstractConfigCategory {
 
 	@Override
 	public void save() {
-		this.options.forEach(ConfigOption::save);
+		this.options.forEach(AbstractConfigOption::save);
 	}
 
 	@Override
 	public void load() {
-		this.options.forEach(ConfigOption::load);
+		this.options.forEach(AbstractConfigOption::load);
 	}
 
 	@Override
 	public void reset() {
-		this.options.forEach(ConfigOption::reset);
+		this.options.forEach(AbstractConfigOption::reset);
 	}
 
 	public static Builder builder(Component name) {
@@ -59,13 +59,13 @@ public class ConfigCategory extends AbstractConfigCategory {
 
 	public static class Builder {
 		private final Component name;
-		private final List<ConfigOption<?>> options = new ArrayList<>();
+		private final List<AbstractConfigOption<?>> options = new ArrayList<>();
 
 		public Builder(Component name) {
 			this.name = name;
 		}
 
-		public void addOption(ConfigOption<?> configOption) {
+		public void addOption(AbstractConfigOption<?> configOption) {
 			this.options.add(configOption);
 		}
 

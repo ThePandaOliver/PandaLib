@@ -1,6 +1,9 @@
 package me.pandamods.pandalib.api.client.screen.config.option;
 
+import dev.architectury.event.Event;
+import dev.architectury.event.EventFactory;
 import me.pandamods.pandalib.PandaLib;
+import me.pandamods.pandalib.api.client.screen.UIComponent;
 import me.pandamods.pandalib.api.client.screen.UIComponentHolder;
 import me.pandamods.pandalib.api.client.screen.widget.IconButton;
 import me.pandamods.pandalib.api.utils.PLCommonComponents;
@@ -13,33 +16,42 @@ import net.minecraft.client.gui.layouts.SpacerElement;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
+import java.lang.reflect.Field;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public abstract class ConfigOption<T> extends UIComponentHolder {
-	public static final WidgetImage SAVE_ICON = new WidgetImage(
+public abstract class AbstractConfigOption<T> extends UIComponentHolder {
+	WidgetImage SAVE_ICON = new WidgetImage(
 			new ResourceLocation(PandaLib.MOD_ID, "textures/gui/icon/save.png"),
 			new ResourceLocation(PandaLib.MOD_ID, "textures/gui/icon/save_disabled.png")
 	);
-	public static final WidgetImage RESET_ICON = new WidgetImage(
+	WidgetImage RESET_ICON = new WidgetImage(
 			new ResourceLocation(PandaLib.MOD_ID, "textures/gui/icon/reset.png"),
 			new ResourceLocation(PandaLib.MOD_ID, "textures/gui/icon/reset_disabled.png")
 	);
-	public static final WidgetImage UNDO_ICON = new WidgetImage(
+	WidgetImage UNDO_ICON = new WidgetImage(
 			new ResourceLocation(PandaLib.MOD_ID, "textures/gui/icon/undo.png"),
 			new ResourceLocation(PandaLib.MOD_ID, "textures/gui/icon/undo_disabled.png")
 	);
 
 	public final Component name;
-	protected final Supplier<T> load;
-	protected final Consumer<T> save;
-	protected final Supplier<T> loadDefault;
 
-	public ConfigOption(Component name, Supplier<T> load, Consumer<T> save, Supplier<T> loadDefault) {
+	public final Event<Supplier<T>> onLoadEvent = EventFactory.createLoop();
+	public final Event<Consumer<T>> onSaveEvent = EventFactory.createLoop();
+	public final Event<Supplier<T>> onResetEvent = EventFactory.createLoop();
+
+	public AbstractConfigOption(Component name) {
 		this.name = name;
-		this.load = load;
-		this.save = save;
-		this.loadDefault = loadDefault;
+	}
+
+	@Override
+	public int getWidth() {
+		return this.getParent().map(UIComponent::getWidth).orElse(0);
+	}
+
+	@Override
+	public int getHeight() {
+		return 24;
 	}
 
 	@Override
@@ -54,13 +66,13 @@ public abstract class ConfigOption<T> extends UIComponentHolder {
 	protected abstract T getValue();
 
 	public void save() {
-		this.save.accept(this.getValue());
+		onSaveEvent.invoker().accept(getValue());
 	}
 	public void load() {
-		this.setValue(this.load.get());
+		setValue(onLoadEvent.invoker().get());
 	}
 	public void reset() {
-		this.setValue(this.loadDefault.get());
+		setValue(onResetEvent.invoker().get());
 	}
 
 	protected void addActionButtons(PLGridLayout grid, int spacing) {

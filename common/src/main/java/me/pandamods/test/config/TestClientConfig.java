@@ -2,6 +2,7 @@ package me.pandamods.test.config;
 
 import me.pandamods.pandalib.PandaLib;
 import me.pandamods.pandalib.api.annotation.Category;
+import me.pandamods.pandalib.api.annotation.ConfigGui;
 import me.pandamods.pandalib.api.config.Config;
 import me.pandamods.pandalib.api.config.ConfigData;
 
@@ -18,6 +19,7 @@ public class TestClientConfig implements ConfigData {
 	public float aFloat = 0f;
 	public double aDouble = 0f;
 	public TestEnum anEnum = TestEnum.OPTION1;
+	@ConfigGui.CollapsableObject
 	public TestObject testObject = new TestObject();
 
 	public static class TestObject {

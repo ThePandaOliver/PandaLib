@@ -4,14 +4,15 @@ import me.pandamods.pandalib.api.utils.screen.PLGridLayout;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
 
+import java.lang.reflect.Field;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public class StringOption extends ConfigOption<String> {
+public class StringOption extends AbstractConfigOption<String> {
 	private EditBox inputField;
 
-	public StringOption(Component name, Supplier<String> load, Consumer<String> save, Supplier<String> loadDefault) {
-		super(name, load, save, loadDefault);
+	public StringOption(Component name) {
+		super(name);
 		inputField = new EditBox(this.minecraft.font, 0, 0, 100, 16, name);
 	}
 

@@ -1,7 +1,6 @@
-package me.pandamods.pandalib.api.client.screen.config;
+package me.pandamods.pandalib.api.client.screen.config.category;
 
 import me.pandamods.pandalib.api.client.screen.UIComponentHolder;
-import me.pandamods.pandalib.api.client.screen.config.menu.ConfigMenu;
 import net.minecraft.network.chat.Component;
 
 import java.util.List;

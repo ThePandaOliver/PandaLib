@@ -3,7 +3,6 @@ package me.pandamods.pandalib.api.client.screen.widget.list;
 import me.pandamods.pandalib.api.client.screen.UIComponentHolder;
 import me.pandamods.pandalib.api.utils.screen.PLGridLayout;
 import me.pandamods.pandalib.api.utils.screen.PLGuiGraphics;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.layouts.LayoutElement;
 
 import java.awt.*;

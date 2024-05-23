@@ -5,14 +5,14 @@ import org.joml.Math;
 
 import java.util.Objects;
 
-public abstract class Interpolator<T> {
+public abstract class Animator<T> {
 	private float time = 0;
 	private float duration = 1;
 	private T previous = null;
 	private T next;
 	private boolean skipFirst = false;
 
-	public Interpolator(T value) {
+	public Animator(T value) {
 		this.next = value;
 	}
 
@@ -37,7 +37,7 @@ public abstract class Interpolator<T> {
 	}
 
 	@SuppressWarnings("unchecked")
-	public final <E extends Interpolator<T>> E setTarget(T next) {
+	public final <E extends Animator<T>> E setTarget(T next) {
 		if (!equals(this.next, next)) {
 			T value = this.getValue();
 			boolean shouldSkip = skipFirst && this.previous == null;
@@ -53,7 +53,7 @@ public abstract class Interpolator<T> {
 	}
 
 	@SuppressWarnings("unchecked")
-	public <E extends Interpolator<T>> E setTime(float time) {
+	public <E extends Animator<T>> E setTime(float time) {
 		this.time = time;
 		return (E) this;
 	}
@@ -63,7 +63,7 @@ public abstract class Interpolator<T> {
 	}
 
 	@SuppressWarnings("unchecked")
-	public <E extends Interpolator<T>> E setDuration(float duration) {
+	public <E extends Animator<T>> E setDuration(float duration) {
 		this.duration = duration;
 		return (E) this;
 	}
@@ -73,7 +73,7 @@ public abstract class Interpolator<T> {
 	}
 
 	@SuppressWarnings("unchecked")
-	public <E extends Interpolator<T>> E skipFirst() {
+	public <E extends Animator<T>> E skipFirst() {
 		this.skipFirst = true;
 		return (E) this;
 	}

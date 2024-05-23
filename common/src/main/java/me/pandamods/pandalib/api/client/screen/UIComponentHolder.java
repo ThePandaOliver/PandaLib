@@ -1,11 +1,10 @@
 package me.pandamods.pandalib.api.client.screen;
 
+import me.pandamods.pandalib.api.client.screen.converters.RenderableConverter;
 import me.pandamods.pandalib.api.utils.screen.PLGuiGraphics;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
-import org.joml.Vector3f;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -137,10 +136,6 @@ public abstract class UIComponentHolder extends AbstractUIComponent implements P
 		return renderables;
 	}
 
-	public List<PLRenderable> getPlRenderables() {
-		return plRenderables;
-	}
-
 	public List<UIComponent> getUiComponents() {
 		return uiComponents;
 	}
@@ -163,14 +158,16 @@ public abstract class UIComponentHolder extends AbstractUIComponent implements P
 
 	@Override
 	public void render(PLGuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+		mouseX -= this.getX();
+		mouseY -= this.getY();
 		if (!isActive()) return;
 		guiGraphics.pose().pushPose();
 		guiGraphics.pose().translate(this.getX(), this.getY(), 1);
 		for (Renderable renderable : renderables) {
-			renderable.render(guiGraphics, mouseX - this.getX(), mouseY - this.getY(), partialTick);
+			renderable.render(guiGraphics, mouseX, mouseY, partialTick);
 		}
 		for (PLRenderable renderable : plRenderables) {
-			renderable.render(guiGraphics, mouseX - this.getX(), mouseY - this.getY(), partialTick);
+			renderable.render(guiGraphics, mouseX, mouseY, partialTick);
 		}
 		guiGraphics.pose().popPose();
 	}
@@ -207,10 +204,12 @@ public abstract class UIComponentHolder extends AbstractUIComponent implements P
 	public boolean mouseReleased(double mouseX, double mouseY, int button) {
 		mouseX -= this.getX();
 		mouseY -= this.getY();
-		double finalMouseX = mouseX;
-		double finalMouseY = mouseY;
-		return this.getChildAt(mouseX, mouseY)
-				.filter(guiEventListener -> guiEventListener.mouseReleased(finalMouseX, finalMouseY, button)).isPresent();
+		for (GuiEventListener eventListener : this.eventListeners) {
+			if (!eventListener.isMouseOver(mouseX, mouseY)) continue;
+			if (eventListener.mouseReleased(mouseX, mouseY, button))
+				return true;
+		}
+		return false;
 	}
 
 	@Override

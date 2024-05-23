@@ -2,14 +2,14 @@ package me.pandamods.pandalib.core.utils.animation.interpolation;
 
 import org.joml.Math;
 
-public class NumberInterpolator extends Interpolator<Number> {
-	public NumberInterpolator(Number value) {
+public class NumberAnimator extends Animator<Number> {
+	public NumberAnimator(Number value) {
 		super(value);
 	}
 
 	@Override
 	public Number lerp(float time, Number min, Number max) {
-		return Math.lerp(min.floatValue(), max.floatValue(), (float) -Math.cos(time * Math.PI) / 2 + .5f);
+		return Math.lerp(min.floatValue(), max.floatValue(), time);
 	}
 
 	public float getAsFloat() {

@@ -1,7 +1,7 @@
 package me.pandamods.pandalib.api.client.screen.config.menu;
 
 import me.pandamods.pandalib.api.annotation.ConfigGui;
-import me.pandamods.pandalib.api.client.screen.config.ConfigCategory;
+import me.pandamods.pandalib.api.client.screen.config.category.ConfigCategory;
 import me.pandamods.pandalib.api.client.screen.config.ConfigGuiRegistry;
 import me.pandamods.pandalib.api.client.screen.config.option.AbstractConfigOption;
 import me.pandamods.pandalib.api.config.ConfigData;

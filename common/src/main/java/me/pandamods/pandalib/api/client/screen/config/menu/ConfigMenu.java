@@ -2,14 +2,13 @@ package me.pandamods.pandalib.api.client.screen.config.menu;
 
 import me.pandamods.pandalib.api.client.screen.PLScreen;
 import me.pandamods.pandalib.api.client.screen.UIComponentHolder;
-import me.pandamods.pandalib.api.client.screen.config.AbstractConfigCategory;
-import me.pandamods.pandalib.api.client.screen.config.ConfigCategory;
+import me.pandamods.pandalib.api.client.screen.config.category.AbstractConfigCategory;
+import me.pandamods.pandalib.api.client.screen.config.category.ConfigCategory;
 import me.pandamods.pandalib.api.client.screen.widget.list.QuickListWidget;
 import me.pandamods.pandalib.api.config.ConfigData;
 import me.pandamods.pandalib.api.config.PandaLibConfig;
 import me.pandamods.pandalib.api.config.holders.ConfigHolder;
 import me.pandamods.pandalib.api.utils.PLCommonComponents;
-import me.pandamods.pandalib.api.utils.ScreenUtils;
 import me.pandamods.pandalib.api.utils.screen.PLGridLayout;
 import me.pandamods.pandalib.api.utils.screen.PLGuiGraphics;
 import net.minecraft.client.Minecraft;
@@ -17,24 +16,18 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.EditBox;
-import net.minecraft.client.gui.components.events.GuiEventListener;
-import net.minecraft.client.gui.layouts.FrameLayout;
-import net.minecraft.client.gui.layouts.GridLayout;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.navigation.CommonInputs;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.sounds.SoundManager;
-import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 
 import java.awt.*;
-import java.util.*;
 
 public class ConfigMenu<T extends ConfigData> extends PLScreen {
 	private final Screen parent;
-	private final ConfigSideBar sideBar = new ConfigSideBar();
+	private final CategoryList categoryList = new CategoryList();
 	private final CategoryAddress addressBar = new CategoryAddress();
 	private final ConfigHolder<T> configHolder;
 	private AbstractConfigCategory category;
@@ -62,13 +55,27 @@ public class ConfigMenu<T extends ConfigData> extends PLScreen {
 		this.addressBar.setSize(this.width, 20);
 		this.addElement(this.addressBar);
 
-		this.sideBar.setPosition(0, this.addressBar.getHeight());
-		this.sideBar.setSize(100, this.height - this.sideBar.getY());
-		this.addElement(this.sideBar);
+		int categoryListWidth = 0;
+		if (!this.category.getCategories().isEmpty()) {
+			this.categoryList.setPosition(0, this.addressBar.getHeight());
+			this.categoryList.setSize(categoryListWidth = 100, this.height - this.categoryList.getY());
+			this.addElement(this.categoryList);
+		}
 
-		this.category.setPosition(this.sideBar.getWidth(), this.addressBar.getHeight());
+		this.category.setPosition(categoryListWidth, this.addressBar.getHeight());
 		this.category.setSize(this.width - this.category.getX(), this.height - this.category.getY());
 		this.addElement(this.category);
+
+		PLGridLayout actionGrid = new PLGridLayout();
+		actionGrid.spacing(4).defaultCellSetting();
+		PLGridLayout.ColumnHelper actionHelper = actionGrid.createColumnHelper(1);
+
+		actionHelper.addChild(Button.builder(PLCommonComponents.SAVE, button -> ConfigMenu.this.save()).width(50).build());
+		actionHelper.addChild(Button.builder(PLCommonComponents.RESET, button -> ConfigMenu.this.reset()).width(50).build());
+		actionHelper.addChild(Button.builder(PLCommonComponents.CANCEL, button -> ConfigMenu.this.onClose()).width(50).build());
+
+		actionGrid.quickArrange(this::addElement, this.category.getX(), this.category.maxY() - 30, this.category.getWidth(), 30,
+				0.5f, 0.5f);
 		super.init();
 	}
 
@@ -106,27 +113,15 @@ public class ConfigMenu<T extends ConfigData> extends PLScreen {
 		this.minecraft.setScreen(parent);
 	}
 
-	public class ConfigSideBar extends UIComponentHolder {
+	public class CategoryList extends UIComponentHolder {
 		@Override
 		protected void init() {
-			PLGridLayout categoryGrid = new PLGridLayout();
+			PLGridLayout categoryGrid = new PLGridLayout().spacing(2);
 			PLGridLayout.RowHelper categoryHelper = categoryGrid.createRowHelper(1);
 			for (AbstractConfigCategory category : ConfigMenu.this.getCategory().getCategories()) {
 				categoryHelper.addChild(Button.builder(category.getName(), button -> setCategory(category)).width(90).build());
 			}
 			categoryGrid.quickArrange(this::addElement, 0, 5, this.getWidth(), this.getHeight() - 55, 0.5f, 0);
-
-			PLGridLayout actionGrid = new PLGridLayout();
-			actionGrid.spacing(4).defaultCellSetting();
-
-			actionGrid.addChild(Button.builder(PLCommonComponents.SAVE, button -> ConfigMenu.this.save())
-					.size(45, 20).build(), 0, 0);
-			actionGrid.addChild(Button.builder(PLCommonComponents.RESET, button -> ConfigMenu.this.reset())
-					.size(45, 20).build(), 0, 1);
-			actionGrid.addChild(Button.builder(PLCommonComponents.CANCEL, button -> ConfigMenu.this.onClose())
-					.size(94, 20).build(), 1, 0, 1, 2);
-
-			actionGrid.quickArrange(this::addElement, 0, this.getHeight() - 50, this.getWidth(), 50, 0.5f, 0.5f);
 			super.init();
 		}
 

@@ -12,12 +12,11 @@ import me.pandamods.pandalib.api.utils.screen.PLGuiGraphics;
 import me.pandamods.pandalib.api.utils.screen.WidgetImage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.layouts.SpacerElement;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
-import java.lang.reflect.Field;
+import java.awt.*;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -61,6 +60,11 @@ public abstract class AbstractConfigOption<T> extends UIComponentHolder {
 		guiGraphics.drawString(font, name, this.getX() + 5, this.getY() + (this.getHeight() - font.lineHeight) / 2, 0xFFFFFF);
 
 		super.render(guiGraphics, mouseX, mouseY, partialTick);
+	}
+
+	@Override
+	public boolean isInteractable() {
+		return true;
 	}
 
 	protected abstract void setValue(T value);

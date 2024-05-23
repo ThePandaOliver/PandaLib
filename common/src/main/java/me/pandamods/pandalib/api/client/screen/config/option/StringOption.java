@@ -26,16 +26,15 @@ public class StringOption extends AbstractConfigOption<String> {
 		return inputField.getValue();
 	}
 
-
 	@Override
 	protected void init() {
 		PLGridLayout grid = new PLGridLayout().spacing(2);
-		grid.defaultCellSetting();
+		grid.defaultCellSetting().alignVerticallyMiddle();
 
-		grid.addChild(inputField = new EditBox(this.minecraft.font, x, y, 100, 16, inputField, this.name), 0, 0);
+		grid.addChild(inputField = new EditBox(this.minecraft.font, 0, 0, 100, 16, inputField, this.name), 0, 0);
 		addActionButtons(grid, 2);
 
-		grid.quickArrange(this::addElement, 0, 0, this.getWidth(), this.getHeight(), 1f, 0.5f);
+		grid.quickArrange(this::addElement, 0, 0, this.getWidth() - 5, this.getHeight(), 1f, 0.5f);
 		super.init();
 	}
 }

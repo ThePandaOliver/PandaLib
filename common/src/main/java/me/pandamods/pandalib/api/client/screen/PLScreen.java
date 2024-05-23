@@ -6,6 +6,7 @@ import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +18,7 @@ public abstract class PLScreen extends Screen {
 	private final List<GuiEventListener> eventListeners = new ArrayList<>();
 	private final List<PLRenderable> plRenderables = new ArrayList<>();
 
-	protected PLScreen(net.minecraft.network.chat.Component title) {
+	protected PLScreen(Component title) {
 		super(title);
 	}
 
@@ -144,20 +145,35 @@ public abstract class PLScreen extends Screen {
 
 	@Override
 	public boolean mouseReleased(double mouseX, double mouseY, int button) {
-		return this.getChildAt(mouseX, mouseY)
-				.filter(guiEventListener -> guiEventListener.mouseReleased(mouseX, mouseY, button)).isPresent();
+		for (GuiEventListener eventListener : this.eventListeners) {
+			if (!eventListener.isMouseOver(mouseX, mouseY)) continue;
+			if (eventListener.mouseReleased(mouseX, mouseY, button)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	@Override
 	public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
-		return this.getChildAt(mouseX, mouseY)
-				.filter(guiEventListener -> guiEventListener.mouseDragged(mouseX, mouseY, button, dragX, dragY)).isPresent();
+		for (GuiEventListener eventListener : this.eventListeners) {
+			if (!eventListener.isMouseOver(mouseX, mouseY)) continue;
+			if (eventListener.mouseDragged(mouseX, mouseY, button, dragX, dragY)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	@Override
 	public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
-		return this.getChildAt(mouseX, mouseY)
-				.filter(guiEventListener -> guiEventListener.mouseScrolled(mouseX, mouseY, delta)).isPresent();
+		for (GuiEventListener eventListener : this.eventListeners) {
+			if (!eventListener.isMouseOver(mouseX, mouseY)) continue;
+			if (eventListener.mouseScrolled(mouseX, mouseY, delta)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	@Override

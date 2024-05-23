@@ -1,5 +1,6 @@
 package me.pandamods.pandalib.api.client.screen;
 
+import me.pandamods.pandalib.api.utils.ScreenUtils;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
 
@@ -30,12 +31,12 @@ public interface UIComponent extends GuiEventListener {
 		return minY() + getHeight();
 	}
 
-	default boolean isFocusable() {
+	default boolean isInteractable() {
 		return true;
 	}
 
 	@Override
 	default boolean isMouseOver(double mouseX, double mouseY) {
-		return mouseX >= this.minX() && mouseX <= this.maxX() && mouseY >= this.minY() && mouseY <= this.maxY();
+		return ScreenUtils.isMouseOver(mouseX, mouseY, minX(), minY(), maxX(), maxY());
 	}
 }

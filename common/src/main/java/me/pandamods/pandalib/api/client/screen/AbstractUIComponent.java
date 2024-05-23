@@ -1,7 +1,10 @@
 package me.pandamods.pandalib.api.client.screen;
 
+import me.pandamods.pandalib.api.utils.screen.PLGuiGraphics;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.layouts.LayoutElement;
 import net.minecraft.client.gui.narration.NarratedElementType;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
@@ -13,7 +16,7 @@ import net.minecraft.network.chat.MutableComponent;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-public class AbstractUIComponent implements UIComponent, LayoutElement {
+public abstract class AbstractUIComponent implements UIComponent, LayoutElement {
 	public final Minecraft minecraft;
 
 	private Screen screen;
@@ -25,6 +28,7 @@ public class AbstractUIComponent implements UIComponent, LayoutElement {
 	protected int height = 0;
 
 	private boolean active = true;
+	private boolean visible = true;
 	private boolean focused = false;
 	private boolean hovered = false;
 
@@ -82,6 +86,19 @@ public class AbstractUIComponent implements UIComponent, LayoutElement {
 		return this.height;
 	}
 
+	public void setWidth(int width) {
+		this.width = width;
+	}
+
+	public void setHeight(int height) {
+		this.height = height;
+	}
+
+	public void setSize(int width, int height) {
+		this.width = width;
+		this.height = height;
+	}
+
 	@Override
 	public boolean isFocused() {
 		return this.focused;
@@ -104,6 +121,10 @@ public class AbstractUIComponent implements UIComponent, LayoutElement {
 		return isFocused() || isHovered();
 	}
 
+	protected void checkHoverState(int mouseX, int mouseY) {
+		this.hovered = this.isMouseOver(mouseX, mouseY);
+	}
+
 	public void setActive(boolean active) {
 		this.active = active;
 	}
@@ -112,11 +133,29 @@ public class AbstractUIComponent implements UIComponent, LayoutElement {
 		return active;
 	}
 
+	public void setVisible(boolean visible) {
+		this.visible = visible;
+	}
+
+	public boolean isVisible() {
+		return visible;
+	}
+
+	public boolean isActiveAndVisible() {
+		return isActive() && isVisible();
+	}
+
 	@Override
 	public void visitWidgets(Consumer<AbstractWidget> consumer) {}
 
 	@Override
 	public ScreenRectangle getRectangle() {
 		return UIComponent.super.getRectangle();
+	}
+
+	@Override
+	public boolean isMouseOver(double mouseX, double mouseY) {
+		if (!this.isActive()) return false;
+		return UIComponent.super.isMouseOver(mouseX, mouseY);
 	}
 }

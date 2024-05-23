@@ -8,6 +8,7 @@ import me.pandamods.pandalib.api.client.screen.UIComponentHolder;
 import me.pandamods.pandalib.api.client.screen.widget.IconButton;
 import me.pandamods.pandalib.api.utils.PLCommonComponents;
 import me.pandamods.pandalib.api.utils.screen.PLGridLayout;
+import me.pandamods.pandalib.api.utils.screen.PLGuiGraphics;
 import me.pandamods.pandalib.api.utils.screen.WidgetImage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -55,7 +56,7 @@ public abstract class AbstractConfigOption<T> extends UIComponentHolder {
 	}
 
 	@Override
-	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+	public void render(PLGuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
 		Font font = Minecraft.getInstance().font;
 		guiGraphics.drawString(font, name, this.getX() + 5, this.getY() + (this.getHeight() - font.lineHeight) / 2, 0xFFFFFF);
 

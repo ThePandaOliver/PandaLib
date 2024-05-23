@@ -154,6 +154,14 @@ public class PLGridLayout extends AbstractLayout {
         return new ColumnHelper(rows);
     }
 
+	public void quickArrange(Consumer<LayoutElement> consumer) {
+		quickArrange(consumer, 0, 0, width, height, 0f, 0f);
+	}
+
+	public void quickArrange(Consumer<LayoutElement> consumer, int x, int y, int width, int height) {
+		quickArrange(consumer, x, y, width, height, 0f, 0f);
+	}
+
 	public void quickArrange(Consumer<LayoutElement> consumer, int x, int y, int width, int height, float deltaX, float deltaY) {
 		this.arrangeElements();
 		FrameLayout.alignInRectangle(this, x, y, width, height, deltaX, deltaY);

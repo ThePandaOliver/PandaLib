@@ -11,10 +11,18 @@ import java.util.List;
 public class ConfigCategory extends AbstractConfigCategory {
 	private final Component name;
 	private final List<AbstractConfigOption<?>> options;
+	private final List<AbstractConfigCategory> categories;
 
-	public ConfigCategory(Component name, List<AbstractConfigOption<?>> options) {
+	public ConfigCategory(Component name, List<AbstractConfigOption<?>> options, List<AbstractConfigCategory> categories) {
 		this.name = name;
 		this.options = options;
+		this.categories = categories;
+		this.categories.forEach(category -> category.setParentCategory(this));
+	}
+
+	@Override
+	public List<AbstractConfigCategory> getCategories() {
+		return categories;
 	}
 
 	@Override
@@ -40,16 +48,19 @@ public class ConfigCategory extends AbstractConfigCategory {
 
 	@Override
 	public void save() {
+		this.categories.forEach(AbstractConfigCategory::save);
 		this.options.forEach(AbstractConfigOption::save);
 	}
 
 	@Override
 	public void load() {
+		this.categories.forEach(AbstractConfigCategory::load);
 		this.options.forEach(AbstractConfigOption::load);
 	}
 
 	@Override
 	public void reset() {
+		this.categories.forEach(AbstractConfigCategory::reset);
 		this.options.forEach(AbstractConfigOption::reset);
 	}
 
@@ -60,6 +71,7 @@ public class ConfigCategory extends AbstractConfigCategory {
 	public static class Builder {
 		private final Component name;
 		private final List<AbstractConfigOption<?>> options = new ArrayList<>();
+		private final List<AbstractConfigCategory> categories = new ArrayList<>();
 
 		public Builder(Component name) {
 			this.name = name;
@@ -69,8 +81,12 @@ public class ConfigCategory extends AbstractConfigCategory {
 			this.options.add(configOption);
 		}
 
+		public void addCategory(AbstractConfigCategory category) {
+			this.categories.add(category);
+		}
+
 		public ConfigCategory build() {
-			return new ConfigCategory(this.name, this.options);
+			return new ConfigCategory(this.name, this.options, this.categories);
 		}
 	}
 }

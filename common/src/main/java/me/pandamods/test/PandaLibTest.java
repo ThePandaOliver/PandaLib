@@ -1,31 +1,21 @@
 package me.pandamods.test;
 
-import dev.architectury.event.CompoundEventResult;
-import dev.architectury.event.EventResult;
-import dev.architectury.event.events.client.ClientGuiEvent;
-import dev.architectury.event.events.client.ClientPlayerEvent;
-import dev.architectury.event.events.common.PlayerEvent;
 import dev.architectury.platform.Platform;
 import me.pandamods.pandalib.api.config.PandaLibConfig;
 import me.pandamods.pandalib.api.config.holders.ClientConfigHolder;
 import me.pandamods.pandalib.api.config.holders.CommonConfigHolder;
-import me.pandamods.test.config.TestClientConfig;
-import me.pandamods.test.config.TestCommonConfig;
-import net.minecraft.client.Minecraft;
+import me.pandamods.test.config.TestConfig;
 
 public class PandaLibTest {
 	public static boolean SHOULD_INIT = true;
 
-	public static final ClientConfigHolder<TestClientConfig> CLIENT_CONFIG;
-	public static final CommonConfigHolder<TestCommonConfig> COMMON_CONFIG;
+	public static final ClientConfigHolder<TestConfig> CLIENT_CONFIG;
 
 	static {
 		if (shouldInit()) {
-			CLIENT_CONFIG = PandaLibConfig.registerClient(TestClientConfig.class);
-			COMMON_CONFIG = PandaLibConfig.registerCommon(TestCommonConfig.class);
+			CLIENT_CONFIG = PandaLibConfig.registerClient(TestConfig.class);
 		} else {
 			CLIENT_CONFIG = null;
-			COMMON_CONFIG = null;
 		}
 	}
 

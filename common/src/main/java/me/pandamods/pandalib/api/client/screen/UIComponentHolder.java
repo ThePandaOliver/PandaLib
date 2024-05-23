@@ -1,21 +1,24 @@
 package me.pandamods.pandalib.api.client.screen;
 
+import me.pandamods.pandalib.api.utils.screen.PLGuiGraphics;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
+import org.joml.Vector3f;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-public abstract class UIComponentHolder extends AbstractUIComponent implements Renderable {
+public abstract class UIComponentHolder extends AbstractUIComponent implements PLRenderable {
 	private final List<GuiEventListener> children = new ArrayList<>();
 	private final List<NarratableEntry> narratables = new ArrayList<>();
 	private final List<UIComponent> uiComponents = new ArrayList<>();
 	private final List<UIComponentHolder> holders = new ArrayList<>();
 	private final List<Renderable> renderables = new ArrayList<>();
+	private final List<PLRenderable> plRenderables = new ArrayList<>();
 	private final List<GuiEventListener> eventListeners = new ArrayList<>();
 
 	protected <T> T addElement(T element) {
@@ -31,7 +34,9 @@ public abstract class UIComponentHolder extends AbstractUIComponent implements R
 				this.children.add(guiEventListener);
 			}
 
-			if (element instanceof Renderable renderable)
+			if (element instanceof PLRenderable renderable)
+				this.plRenderables.add(renderable);
+			else if (element instanceof Renderable renderable)
 				this.renderables.add(renderable);
 		}
 		return element;
@@ -43,7 +48,7 @@ public abstract class UIComponentHolder extends AbstractUIComponent implements R
 		uiComponents.add(uiComponent);
 		this.eventListeners.add(uiComponent);
 		this.children.add(uiComponent);
-		if (uiComponent.isFocusable())
+		if (uiComponent.isInteractable())
 			ScreenHooks.getChildren(this.getScreen()).add(uiComponent);
 
 		if (uiComponent instanceof NarratableEntry narratableEntry) {
@@ -51,7 +56,9 @@ public abstract class UIComponentHolder extends AbstractUIComponent implements R
 			this.narratables.add(narratableEntry);
 		}
 
-		if (uiComponent instanceof Renderable renderable)
+		if (uiComponent instanceof PLRenderable renderable)
+			this.plRenderables.add(renderable);
+		else if (uiComponent instanceof Renderable renderable)
 			this.renderables.add(renderable);
 
 		if (uiComponent instanceof UIComponentHolder componentHolder)
@@ -85,6 +92,9 @@ public abstract class UIComponentHolder extends AbstractUIComponent implements R
 		if (listener instanceof Renderable)
 			this.renderables.remove(listener);
 
+		if (listener instanceof PLRenderable)
+			this.plRenderables.remove(listener);
+
 		if (listener instanceof NarratableEntry) {
 			ScreenHooks.getNarratables(this.getScreen()).remove(listener);
 			this.narratables.remove(listener);
@@ -100,6 +110,7 @@ public abstract class UIComponentHolder extends AbstractUIComponent implements R
 
 	protected void clearWidgets() {
 		this.renderables.clear();
+		this.plRenderables.clear();
 		ScreenHooks.getChildren(this.getScreen()).removeAll(this.children);
 		ScreenHooks.getNarratables(this.getScreen()).removeAll(this.narratables);
 		this.children.clear();
@@ -110,6 +121,34 @@ public abstract class UIComponentHolder extends AbstractUIComponent implements R
 		this.holders.clear();
 	}
 
+	public List<GuiEventListener> getEventListeners() {
+		return eventListeners;
+	}
+
+	public List<GuiEventListener> getChildren() {
+		return children;
+	}
+
+	public List<NarratableEntry> getNarratables() {
+		return narratables;
+	}
+
+	public List<Renderable> getRenderables() {
+		return renderables;
+	}
+
+	public List<PLRenderable> getPlRenderables() {
+		return plRenderables;
+	}
+
+	public List<UIComponent> getUiComponents() {
+		return uiComponents;
+	}
+
+	public List<UIComponentHolder> getHolders() {
+		return holders;
+	}
+
 	protected void rebuildWidgets() {
 		this.clearWidgets();
 		if (Objects.equals(this.getScreen().getFocused(), this))
@@ -118,15 +157,19 @@ public abstract class UIComponentHolder extends AbstractUIComponent implements R
 	}
 
 	@Override
-	public boolean isFocusable() {
+	public boolean isInteractable() {
 		return false;
 	}
 
 	@Override
-	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+	public void render(PLGuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+		if (!isActive()) return;
 		guiGraphics.pose().pushPose();
-		guiGraphics.pose().translate(this.getX(), this.getY(), 0);
+		guiGraphics.pose().translate(this.getX(), this.getY(), 1);
 		for (Renderable renderable : renderables) {
+			renderable.render(guiGraphics, mouseX - this.getX(), mouseY - this.getY(), partialTick);
+		}
+		for (PLRenderable renderable : plRenderables) {
 			renderable.render(guiGraphics, mouseX - this.getX(), mouseY - this.getY(), partialTick);
 		}
 		guiGraphics.pose().popPose();
@@ -201,5 +244,13 @@ public abstract class UIComponentHolder extends AbstractUIComponent implements R
 		for (GuiEventListener eventListener : this.eventListeners) {
 			eventListener.mouseMoved(mouseX, mouseY);
 		}
+	}
+
+	@Override
+	public boolean isMouseOver(double mouseX, double mouseY) {
+		if (!isActive()) return false;
+		if (isInteractable() && super.isMouseOver(mouseX, mouseY))
+			return true;
+		return this.getChildAt(mouseX, mouseY).isPresent();
 	}
 }

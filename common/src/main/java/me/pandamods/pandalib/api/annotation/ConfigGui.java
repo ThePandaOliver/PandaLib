@@ -12,11 +12,11 @@ public class ConfigGui {
 
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target(ElementType.FIELD)
-	public @interface CollapsableObject {
-		boolean startExpanded() default false;
-	}
+	public @interface Category {}
 
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target(ElementType.FIELD)
-	public @interface TransitiveObject {}
+	public @interface LangName {
+		String value();
+	}
 }

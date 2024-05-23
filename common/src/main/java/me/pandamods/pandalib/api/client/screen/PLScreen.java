@@ -1,5 +1,6 @@
 package me.pandamods.pandalib.api.client.screen;
 
+import me.pandamods.pandalib.api.utils.screen.PLGuiGraphics;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.GuiEventListener;
@@ -14,6 +15,7 @@ public abstract class PLScreen extends Screen {
 	private final List<UIComponent> uiComponents = new ArrayList<>();
 	private final List<UIComponentHolder> holders = new ArrayList<>();
 	private final List<GuiEventListener> eventListeners = new ArrayList<>();
+	private final List<PLRenderable> plRenderables = new ArrayList<>();
 
 	protected PLScreen(net.minecraft.network.chat.Component title) {
 		super(title);
@@ -32,7 +34,9 @@ public abstract class PLScreen extends Screen {
 				this.children.add(guiEventListener);
 			}
 
-			if (element instanceof Renderable renderable)
+			if (element instanceof PLRenderable renderable)
+				this.plRenderables.add(renderable);
+			else if (element instanceof Renderable renderable)
 				this.renderables.add(renderable);
 		}
 		return element;
@@ -44,7 +48,7 @@ public abstract class PLScreen extends Screen {
 		uiComponents.add(uiComponent);
 		this.eventListeners.add(uiComponent);
 		this.children.add(uiComponent);
-		if (uiComponent.isFocusable())
+		if (uiComponent.isInteractable())
 			ScreenHooks.getChildren(this).add(uiComponent);
 
 		if (uiComponent instanceof NarratableEntry narratableEntry) {
@@ -52,7 +56,9 @@ public abstract class PLScreen extends Screen {
 			this.narratables.add(narratableEntry);
 		}
 
-		if (uiComponent instanceof Renderable renderable)
+		if (uiComponent instanceof PLRenderable renderable)
+			this.plRenderables.add(renderable);
+		else if (uiComponent instanceof Renderable renderable)
 			this.renderables.add(renderable);
 
 		if (uiComponent instanceof UIComponentHolder componentHolder)
@@ -73,6 +79,9 @@ public abstract class PLScreen extends Screen {
 		if (listener instanceof UIComponentHolder)
 			this.holders.remove(listener);
 
+		if (listener instanceof PLRenderable)
+			this.plRenderables.remove(listener);
+
 		this.eventListeners.add(listener);
 		super.removeWidget(listener);
 	}
@@ -80,6 +89,7 @@ public abstract class PLScreen extends Screen {
 	@Override
 	protected void clearWidgets() {
 		super.clearWidgets();
+		this.plRenderables.clear();
 		this.eventListeners.clear();
 		this.uiComponents.clear();
 		this.holders.forEach(UIComponentHolder::clearWidgets);
@@ -92,8 +102,16 @@ public abstract class PLScreen extends Screen {
 	}
 
 	@Override
-	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+	public final void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+		PLGuiGraphics graphics = new PLGuiGraphics(guiGraphics);
+		render(graphics, mouseX, mouseY, partialTick);
+	}
+
+	protected void render(PLGuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
 		for (Renderable renderable : renderables) {
+			renderable.render(guiGraphics, mouseX, mouseY, partialTick);
+		}
+		for (PLRenderable renderable : plRenderables) {
 			renderable.render(guiGraphics, mouseX, mouseY, partialTick);
 		}
 	}

@@ -1,5 +1,6 @@
 package me.pandamods.pandalib.api.client.screen.config;
 
+import me.pandamods.pandalib.api.client.screen.config.option.BooleanOption;
 import me.pandamods.pandalib.api.client.screen.config.option.StringOption;
 import me.pandamods.pandalib.core.utils.PriorityMap;
 import net.fabricmc.api.EnvType;
@@ -17,6 +18,7 @@ public class ConfigGuiRegistry {
 
 	static {
 		registerGuiByType(0, StringOption::new, String.class);
+		registerGuiByType(0, BooleanOption::new, Boolean.class, boolean.class);
 	}
 
 	public static <Y> void registerGui(int priority, OptionGuiProvider<Y> provider, Function<Field, Boolean> prediction) {

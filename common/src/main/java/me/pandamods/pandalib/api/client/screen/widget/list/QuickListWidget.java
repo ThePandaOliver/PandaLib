@@ -1,7 +1,7 @@
 package me.pandamods.pandalib.api.client.screen.widget.list;
 
-import me.pandamods.pandalib.api.client.screen.UIComponentHolder;
-import me.pandamods.pandalib.api.utils.screen.PLGridLayout;
+import me.pandamods.pandalib.api.client.screen.elements.UIElementHolder;
+import me.pandamods.pandalib.api.client.screen.layouts.PLGridLayout;
 import me.pandamods.pandalib.api.utils.screen.PLGuiGraphics;
 import net.minecraft.client.gui.layouts.LayoutElement;
 
@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class QuickListWidget extends UIComponentHolder {
+public class QuickListWidget extends UIElementHolder {
 	private final int rows;
 	private final LayoutElement[] elements;
 
@@ -20,7 +20,7 @@ public class QuickListWidget extends UIComponentHolder {
 	}
 
 	@Override
-	protected void init() {
+	public void init() {
 		PLGridLayout grid = new PLGridLayout();
 		PLGridLayout.RowHelper helper = grid.createRowHelper(this.rows);
 		for (LayoutElement element : elements) {

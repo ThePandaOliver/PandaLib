@@ -1,7 +1,12 @@
 package me.pandamods.pandalib.api.client.screen;
 
+import me.pandamods.pandalib.api.client.screen.converters.AbstractWidgetConverter;
+import me.pandamods.pandalib.api.client.screen.converters.RenderableConverter;
+import me.pandamods.pandalib.api.client.screen.elements.UIElement;
+import me.pandamods.pandalib.api.client.screen.elements.UIElementHolder;
 import me.pandamods.pandalib.api.utils.screen.PLGuiGraphics;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
@@ -13,8 +18,8 @@ import java.util.List;
 import java.util.Optional;
 
 public abstract class PLScreen extends Screen {
-	private final List<UIComponent> uiComponents = new ArrayList<>();
-	private final List<UIComponentHolder> holders = new ArrayList<>();
+	private final List<UIElement> uiElements = new ArrayList<>();
+	private final List<UIElementHolder> holders = new ArrayList<>();
 	private final List<GuiEventListener> eventListeners = new ArrayList<>();
 	private final List<PLRenderable> plRenderables = new ArrayList<>();
 
@@ -23,7 +28,7 @@ public abstract class PLScreen extends Screen {
 	}
 
 	protected <T> T addElement(T element) {
-		if (element instanceof UIComponent uiComponent) addComponent(uiComponent);
+		if (element instanceof UIElement uiElement) addComponent(uiElement);
 		else {
 			if (element instanceof NarratableEntry narratableEntry) {
 				ScreenHooks.getNarratables(this).add(narratableEntry);
@@ -43,10 +48,10 @@ public abstract class PLScreen extends Screen {
 		return element;
 	}
 
-	protected <T extends UIComponent> T addComponent(T uiComponent) {
+	protected <T extends UIElement> T addComponent(T uiComponent) {
 		uiComponent.setScreen(this);
 		uiComponent.setParent(null);
-		uiComponents.add(uiComponent);
+		uiElements.add(uiComponent);
 		this.eventListeners.add(uiComponent);
 		this.children.add(uiComponent);
 		if (uiComponent.isInteractable())
@@ -62,7 +67,7 @@ public abstract class PLScreen extends Screen {
 		else if (uiComponent instanceof Renderable renderable)
 			this.renderables.add(renderable);
 
-		if (uiComponent instanceof UIComponentHolder componentHolder)
+		if (uiComponent instanceof UIElementHolder componentHolder)
 			this.holders.add(componentHolder);
 		return uiComponent;
 	}
@@ -74,10 +79,10 @@ public abstract class PLScreen extends Screen {
 	}
 
 	protected void removeWidget(GuiEventListener listener) {
-		if (listener instanceof UIComponent)
-			this.uiComponents.remove(listener);
+		if (listener instanceof UIElement)
+			this.uiElements.remove(listener);
 
-		if (listener instanceof UIComponentHolder)
+		if (listener instanceof UIElementHolder)
 			this.holders.remove(listener);
 
 		if (listener instanceof PLRenderable)
@@ -92,8 +97,8 @@ public abstract class PLScreen extends Screen {
 		super.clearWidgets();
 		this.plRenderables.clear();
 		this.eventListeners.clear();
-		this.uiComponents.clear();
-		this.holders.forEach(UIComponentHolder::clearWidgets);
+		this.uiElements.clear();
+		this.holders.forEach(UIElementHolder::clearElements);
 		this.holders.clear();
 	}
 
@@ -119,7 +124,7 @@ public abstract class PLScreen extends Screen {
 
 	@Override
 	protected void init() {
-		this.holders.forEach(UIComponentHolder::init);
+		this.holders.forEach(UIElementHolder::init);
 	}
 
 	@Override

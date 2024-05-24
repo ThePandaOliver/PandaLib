@@ -1,4 +1,4 @@
-package me.pandamods.pandalib.api.client.screen;
+package me.pandamods.pandalib.api.client.screen.elements;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -9,11 +9,11 @@ import net.minecraft.client.gui.screens.Screen;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-public abstract class AbstractUIComponent implements UIComponent, LayoutElement {
+public abstract class AbstractUIElement implements UIElement, LayoutElement {
 	public final Minecraft minecraft;
 
 	private Screen screen;
-	private UIComponent parent;
+	private UIElement parent;
 
 	protected int x = 0;
 	protected int y = 0;
@@ -25,7 +25,7 @@ public abstract class AbstractUIComponent implements UIComponent, LayoutElement 
 	private boolean focused = false;
 	private boolean hovered = false;
 
-	public AbstractUIComponent() {
+	public AbstractUIElement() {
 		this.minecraft = Minecraft.getInstance();
 	}
 
@@ -40,12 +40,12 @@ public abstract class AbstractUIComponent implements UIComponent, LayoutElement 
 	}
 
 	@Override
-	public Optional<UIComponent> getParent() {
+	public Optional<UIElement> getParent() {
 		return Optional.ofNullable(this.parent);
 	}
 
 	@Override
-	public void setParent(UIComponent parent) {
+	public void setParent(UIElement parent) {
 		this.parent = parent;
 	}
 
@@ -143,12 +143,12 @@ public abstract class AbstractUIComponent implements UIComponent, LayoutElement 
 
 	@Override
 	public ScreenRectangle getRectangle() {
-		return UIComponent.super.getRectangle();
+		return UIElement.super.getRectangle();
 	}
 
 	@Override
 	public boolean isMouseOver(double mouseX, double mouseY) {
 		if (!this.isActive()) return false;
-		return UIComponent.super.isMouseOver(mouseX, mouseY);
+		return UIElement.super.isMouseOver(mouseX, mouseY);
 	}
 }

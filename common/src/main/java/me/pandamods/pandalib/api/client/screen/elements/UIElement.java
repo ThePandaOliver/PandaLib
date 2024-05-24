@@ -1,4 +1,4 @@
-package me.pandamods.pandalib.api.client.screen;
+package me.pandamods.pandalib.api.client.screen.elements;
 
 import me.pandamods.pandalib.api.utils.ScreenUtils;
 import net.minecraft.client.gui.components.events.GuiEventListener;
@@ -6,12 +6,12 @@ import net.minecraft.client.gui.screens.Screen;
 
 import java.util.Optional;
 
-public interface UIComponent extends GuiEventListener {
+public interface UIElement extends GuiEventListener {
 	Screen getScreen();
 	void setScreen(Screen screen);
 
-	Optional<UIComponent> getParent();
-	void setParent(UIComponent parent);
+	Optional<UIElement> getParent();
+	void setParent(UIElement parent);
 
 	int getX();
 	int getY();

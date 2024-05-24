@@ -1,12 +1,10 @@
 package me.pandamods.pandalib.api.client.screen.config.option;
 
-import me.pandamods.pandalib.api.utils.screen.PLGridLayout;
+import me.pandamods.pandalib.api.client.screen.layouts.PLGridLayout;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractButton;
-import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 
 import java.awt.*;
 
@@ -29,7 +27,7 @@ public class BooleanOption extends AbstractConfigOption<Boolean> {
 	}
 
 	@Override
-	protected void init() {
+	public void init() {
 		PLGridLayout grid = new PLGridLayout().spacing(2);
 		grid.defaultCellSetting().alignVerticallyMiddle();
 

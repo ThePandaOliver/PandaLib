@@ -1,4 +1,4 @@
-package me.pandamods.pandalib.api.utils.screen;
+package me.pandamods.pandalib.api.client.screen.layouts;
 
 import com.mojang.math.Divisor;
 import net.fabricmc.api.EnvType;

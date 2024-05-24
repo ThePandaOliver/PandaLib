@@ -1,7 +1,7 @@
 package me.pandamods.pandalib.api.client.screen.config.menu;
 
 import me.pandamods.pandalib.api.client.screen.PLScreen;
-import me.pandamods.pandalib.api.client.screen.UIComponentHolder;
+import me.pandamods.pandalib.api.client.screen.elements.UIElementHolder;
 import me.pandamods.pandalib.api.client.screen.config.category.AbstractConfigCategory;
 import me.pandamods.pandalib.api.client.screen.config.category.ConfigCategory;
 import me.pandamods.pandalib.api.client.screen.widget.list.QuickListWidget;
@@ -9,7 +9,7 @@ import me.pandamods.pandalib.api.config.ConfigData;
 import me.pandamods.pandalib.api.config.PandaLibConfig;
 import me.pandamods.pandalib.api.config.holders.ConfigHolder;
 import me.pandamods.pandalib.api.utils.PLCommonComponents;
-import me.pandamods.pandalib.api.utils.screen.PLGridLayout;
+import me.pandamods.pandalib.api.client.screen.layouts.PLGridLayout;
 import me.pandamods.pandalib.api.utils.screen.PLGuiGraphics;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -113,9 +113,9 @@ public class ConfigMenu<T extends ConfigData> extends PLScreen {
 		this.minecraft.setScreen(parent);
 	}
 
-	public class CategoryList extends UIComponentHolder {
+	public class CategoryList extends UIElementHolder {
 		@Override
-		protected void init() {
+		public void init() {
 			PLGridLayout categoryGrid = new PLGridLayout().spacing(2);
 			PLGridLayout.RowHelper categoryHelper = categoryGrid.createRowHelper(1);
 			for (AbstractConfigCategory category : ConfigMenu.this.getCategory().getCategories()) {
@@ -132,9 +132,9 @@ public class ConfigMenu<T extends ConfigData> extends PLScreen {
 		}
 	}
 
-	public class CategoryAddress extends UIComponentHolder {
+	public class CategoryAddress extends UIElementHolder {
 		@Override
-		protected void init() {
+		public void init() {
 			PLGridLayout grid = new PLGridLayout();
 			grid.defaultCellSetting().padding(1);
 			PLGridLayout.ColumnHelper helper = grid.createColumnHelper(1);
@@ -191,7 +191,7 @@ public class ConfigMenu<T extends ConfigData> extends PLScreen {
 			}
 		}
 
-		private class CategoryArrowButton extends UIComponentHolder {
+		private class CategoryArrowButton extends UIElementHolder {
 			private final Font font;
 			private final QuickListWidget categoryList;
 
@@ -209,7 +209,7 @@ public class ConfigMenu<T extends ConfigData> extends PLScreen {
 			}
 
 			@Override
-			protected void init() {
+			public void init() {
 				this.categoryList.setActive(false);
 				this.categoryList.setPosition(0, this.getHeight() + 2);
 				this.addElement(this.categoryList);

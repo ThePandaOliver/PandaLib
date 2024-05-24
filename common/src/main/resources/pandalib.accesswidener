@@ -8,6 +8,9 @@ accessible method net/minecraft/client/gui/screens/Screen clearFocus ()V
 
 accessible class net/minecraft/client/gui/GuiGraphics$ScissorStack
 
+# AbstractWidget
+accessible field net/minecraft/client/gui/components/AbstractWidget height I
+
 # GuiGraphics
 accessible field net/minecraft/client/gui/GuiGraphics EXTRA_SPACE_AFTER_FIRST_TOOLTIP_LINE I
 accessible field net/minecraft/client/gui/GuiGraphics minecraft Lnet/minecraft/client/Minecraft;

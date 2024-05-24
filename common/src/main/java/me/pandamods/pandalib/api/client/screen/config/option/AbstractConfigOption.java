@@ -3,11 +3,11 @@ package me.pandamods.pandalib.api.client.screen.config.option;
 import dev.architectury.event.Event;
 import dev.architectury.event.EventFactory;
 import me.pandamods.pandalib.PandaLib;
-import me.pandamods.pandalib.api.client.screen.UIComponent;
-import me.pandamods.pandalib.api.client.screen.UIComponentHolder;
+import me.pandamods.pandalib.api.client.screen.elements.UIElement;
+import me.pandamods.pandalib.api.client.screen.elements.UIElementHolder;
 import me.pandamods.pandalib.api.client.screen.widget.IconButton;
 import me.pandamods.pandalib.api.utils.PLCommonComponents;
-import me.pandamods.pandalib.api.utils.screen.PLGridLayout;
+import me.pandamods.pandalib.api.client.screen.layouts.PLGridLayout;
 import me.pandamods.pandalib.api.utils.screen.PLGuiGraphics;
 import me.pandamods.pandalib.api.utils.screen.WidgetImage;
 import net.minecraft.client.Minecraft;
@@ -16,11 +16,10 @@ import net.minecraft.client.gui.layouts.SpacerElement;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
-import java.awt.*;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public abstract class AbstractConfigOption<T> extends UIComponentHolder {
+public abstract class AbstractConfigOption<T> extends UIElementHolder {
 	WidgetImage SAVE_ICON = new WidgetImage(
 			new ResourceLocation(PandaLib.MOD_ID, "textures/gui/icon/save.png"),
 			new ResourceLocation(PandaLib.MOD_ID, "textures/gui/icon/save_disabled.png")
@@ -46,7 +45,7 @@ public abstract class AbstractConfigOption<T> extends UIComponentHolder {
 
 	@Override
 	public int getWidth() {
-		return this.getParent().map(UIComponent::getWidth).orElse(0);
+		return this.getParent().map(UIElement::getWidth).orElse(0);
 	}
 
 	@Override

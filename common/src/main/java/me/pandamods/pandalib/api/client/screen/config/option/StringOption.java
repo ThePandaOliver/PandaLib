@@ -1,12 +1,8 @@
 package me.pandamods.pandalib.api.client.screen.config.option;
 
-import me.pandamods.pandalib.api.utils.screen.PLGridLayout;
+import me.pandamods.pandalib.api.client.screen.layouts.PLGridLayout;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
-
-import java.lang.reflect.Field;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 public class StringOption extends AbstractConfigOption<String> {
 	private EditBox inputField;
@@ -27,7 +23,7 @@ public class StringOption extends AbstractConfigOption<String> {
 	}
 
 	@Override
-	protected void init() {
+	public void init() {
 		PLGridLayout grid = new PLGridLayout().spacing(2);
 		grid.defaultCellSetting().alignVerticallyMiddle();
 

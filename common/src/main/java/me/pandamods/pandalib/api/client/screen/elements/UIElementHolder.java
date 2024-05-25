@@ -7,7 +7,6 @@ import me.pandamods.pandalib.api.client.screen.converters.RenderableConverter;
 import me.pandamods.pandalib.api.utils.screen.PLGuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Renderable;
-import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 
 import java.util.ArrayList;
@@ -38,12 +37,11 @@ public abstract class UIElementHolder extends AbstractUIElement implements PLRen
 		element.setParent(this);
 		this.children.add(element);
 		if (element.isInteractable())
-			ScreenHooks.getChildren(this.getScreen()).add(element);
+			this.getScreen().getInteractables().add(element);
 
 		if (element instanceof NarratableEntry) {
 			this.narratables.add((NarratableEntry) element);
-			if (element.isInteractable())
-				ScreenHooks.getNarratables(this.getScreen()).add((NarratableEntry) element);
+			ScreenHooks.getNarratables(this.getScreen()).add((NarratableEntry) element);
 		}
 
 		if (element instanceof UIElementHolder)
@@ -55,7 +53,7 @@ public abstract class UIElementHolder extends AbstractUIElement implements PLRen
 
 	@SuppressWarnings("SuspiciousMethodCalls")
 	public void removeElement(Object listener) {
-		ScreenHooks.getChildren(this.getScreen()).remove(listener);
+		this.getScreen().getInteractables().remove(listener);
 		this.children.remove(listener);
 		ScreenHooks.getNarratables(this.getScreen()).remove(listener);
 		this.narratables.remove(listener);
@@ -65,7 +63,7 @@ public abstract class UIElementHolder extends AbstractUIElement implements PLRen
 
 	public void clearElements() {
 		this.renderables.clear();
-		ScreenHooks.getChildren(this.getScreen()).removeAll(this.children);
+		this.getScreen().getInteractables().removeAll(this.children);
 		ScreenHooks.getNarratables(this.getScreen()).removeAll(this.narratables);
 		this.children.clear();
 		this.narratables.clear();
@@ -118,7 +116,7 @@ public abstract class UIElementHolder extends AbstractUIElement implements PLRen
 		this.holders.forEach(UIElementHolder::init);
 	}
 
-	public Optional<GuiEventListener> getChildAt(double mouseX, double mouseY) {
+	public Optional<UIElement> getElementAt(double mouseX, double mouseY) {
 		mouseX -= this.getX();
 		mouseY -= this.getY();
 		for (UIElement element : this.children) {
@@ -192,6 +190,6 @@ public abstract class UIElementHolder extends AbstractUIElement implements PLRen
 		if (!isActive()) return false;
 		if (isInteractable() && super.isMouseOver(mouseX, mouseY))
 			return true;
-		return this.getChildAt(mouseX, mouseY).isPresent();
+		return this.getElementAt(mouseX, mouseY).isPresent();
 	}
 }

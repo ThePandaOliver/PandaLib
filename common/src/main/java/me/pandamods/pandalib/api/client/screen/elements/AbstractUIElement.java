@@ -1,5 +1,6 @@
 package me.pandamods.pandalib.api.client.screen.elements;
 
+import me.pandamods.pandalib.api.client.screen.PLScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.layouts.LayoutElement;
@@ -12,7 +13,7 @@ import java.util.function.Consumer;
 public abstract class AbstractUIElement implements UIElement, LayoutElement {
 	public final Minecraft minecraft;
 
-	private Screen screen;
+	private PLScreen screen;
 	private UIElement parent;
 
 	protected int x = 0;
@@ -30,12 +31,12 @@ public abstract class AbstractUIElement implements UIElement, LayoutElement {
 	}
 
 	@Override
-	public Screen getScreen() {
+	public PLScreen getScreen() {
 		return this.screen;
 	}
 
 	@Override
-	public void setScreen(Screen screen) {
+	public void setScreen(PLScreen screen) {
 		this.screen = screen;
 	}
 

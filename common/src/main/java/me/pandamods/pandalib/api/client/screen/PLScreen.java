@@ -18,93 +18,123 @@ import java.util.List;
 import java.util.Optional;
 
 public abstract class PLScreen extends Screen {
-	private final List<UIElement> uiElements = new ArrayList<>();
+	private final List<GuiEventListener> interactables = new ArrayList<>();
+
+	private final List<UIElement> children = new ArrayList<>();
 	private final List<UIElementHolder> holders = new ArrayList<>();
-	private final List<GuiEventListener> eventListeners = new ArrayList<>();
-	private final List<PLRenderable> plRenderables = new ArrayList<>();
+	private final List<PLRenderable> renderables = new ArrayList<>();
 
 	protected PLScreen(Component title) {
 		super(title);
 	}
 
-	protected <T> T addElement(T element) {
-		if (element instanceof UIElement uiElement) addComponent(uiElement);
-		else {
-			if (element instanceof NarratableEntry narratableEntry) {
-				ScreenHooks.getNarratables(this).add(narratableEntry);
-				this.narratables.add(narratableEntry);
-			}
+	@SuppressWarnings("unchecked")
+	public <T> T addElement(T element) {
+		if (element instanceof AbstractWidget)
+			element = (T) new AbstractWidgetConverter((AbstractWidget) element);
+		else if (element instanceof Renderable)
+			element = (T) new RenderableConverter((Renderable) element);
 
-			if (element instanceof GuiEventListener guiEventListener) {
-				this.eventListeners.add(guiEventListener);
-				this.children.add(guiEventListener);
-			}
-
-			if (element instanceof PLRenderable renderable)
-				this.plRenderables.add(renderable);
-			else if (element instanceof Renderable renderable)
-				this.renderables.add(renderable);
-		}
+		if (element instanceof UIElement)
+			addElement((UIElement) element);
 		return element;
 	}
 
-	protected <T extends UIElement> T addComponent(T uiComponent) {
-		uiComponent.setScreen(this);
-		uiComponent.setParent(null);
-		uiElements.add(uiComponent);
-		this.eventListeners.add(uiComponent);
-		this.children.add(uiComponent);
-		if (uiComponent.isInteractable())
-			ScreenHooks.getChildren(this).add(uiComponent);
+	private void addElement(UIElement element) {
+		element.setScreen(this);
+		element.setParent(null);
+		this.children.add(element);
+		if (element.isInteractable())
+			this.interactables.add(element);
 
-		if (uiComponent instanceof NarratableEntry narratableEntry) {
-			ScreenHooks.getNarratables(this).add(narratableEntry);
-			this.narratables.add(narratableEntry);
+		if (element instanceof NarratableEntry) {
+			this.narratables.add((NarratableEntry) element);
 		}
 
-		if (uiComponent instanceof PLRenderable renderable)
-			this.plRenderables.add(renderable);
-		else if (uiComponent instanceof Renderable renderable)
-			this.renderables.add(renderable);
+		if (element instanceof UIElementHolder)
+			this.holders.add((UIElementHolder) element);
 
-		if (uiComponent instanceof UIElementHolder componentHolder)
-			this.holders.add(componentHolder);
-		return uiComponent;
+		if (element instanceof PLRenderable)
+			this.renderables.add((PLRenderable) element);
 	}
 
-	@Override
-	protected <T extends GuiEventListener & NarratableEntry> T addWidget(T listener) {
-		this.eventListeners.add(listener);
-		return super.addWidget(listener);
+	@SuppressWarnings("SuspiciousMethodCalls")
+	public void removeElement(Object listener) {
+		this.interactables.remove(listener);
+		this.children.remove(listener);
+		this.narratables.remove(listener);
+		this.renderables.remove(listener);
+		this.holders.remove(listener);
 	}
 
-	protected void removeWidget(GuiEventListener listener) {
-		if (listener instanceof UIElement)
-			this.uiElements.remove(listener);
-
-		if (listener instanceof UIElementHolder)
-			this.holders.remove(listener);
-
-		if (listener instanceof PLRenderable)
-			this.plRenderables.remove(listener);
-
-		this.eventListeners.add(listener);
-		super.removeWidget(listener);
-	}
-
-	@Override
-	protected void clearWidgets() {
-		super.clearWidgets();
-		this.plRenderables.clear();
-		this.eventListeners.clear();
-		this.uiElements.clear();
+	public void clearElements() {
+		this.renderables.clear();
+		this.interactables.clear();
+		this.children.clear();
+		this.narratables.clear();
 		this.holders.forEach(UIElementHolder::clearElements);
 		this.holders.clear();
+	}
+
+	@Deprecated
+	@Override
+	protected void removeWidget(GuiEventListener listener) {
+		this.removeElement(listener);
+	}
+
+	@Deprecated
+	@Override
+	protected void clearWidgets() {
+		this.clearElements();
+	}
+
+	@Deprecated
+	@Override
+	protected <T extends GuiEventListener & NarratableEntry> T addWidget(T listener) {
+		return addElement(listener);
+	}
+
+	@Deprecated
+	@Override
+	protected <T extends Renderable> T addRenderableOnly(T renderable) {
+		return addElement(renderable);
+	}
+
+	@Deprecated
+	@Override
+	protected <T extends GuiEventListener & Renderable & NarratableEntry> T addRenderableWidget(T widget) {
+		return addElement(widget);
 	}
 
 	@Override
 	protected void rebuildWidgets() {
 		super.rebuildWidgets();
+	}
+
+	@Deprecated
+	@Override
+	public List<? extends GuiEventListener> children() {
+		return this.getInteractables();
+	}
+
+	public List<GuiEventListener> getInteractables() {
+		return this.interactables;
+	}
+
+	public List<UIElement> getChildren() {
+		return children;
+	}
+
+	public List<NarratableEntry> getNarratables() {
+		return narratables;
+	}
+
+	public List<PLRenderable> getRenderables() {
+		return renderables;
+	}
+
+	public List<UIElementHolder> getHolders() {
+		return holders;
 	}
 
 	@Override
@@ -114,10 +144,7 @@ public abstract class PLScreen extends Screen {
 	}
 
 	protected void render(PLGuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-		for (Renderable renderable : renderables) {
-			renderable.render(guiGraphics, mouseX, mouseY, partialTick);
-		}
-		for (PLRenderable renderable : plRenderables) {
+		for (PLRenderable renderable : renderables) {
 			renderable.render(guiGraphics, mouseX, mouseY, partialTick);
 		}
 	}
@@ -127,21 +154,25 @@ public abstract class PLScreen extends Screen {
 		this.holders.forEach(UIElementHolder::init);
 	}
 
+	@Deprecated
 	@Override
 	public Optional<GuiEventListener> getChildAt(double mouseX, double mouseY) {
-		for (GuiEventListener eventListener : this.eventListeners) {
-			if (!eventListener.isMouseOver(mouseX, mouseY)) continue;
-			return Optional.of(eventListener);
+		return Optional.ofNullable(getElementAt(mouseX, mouseY).orElse(null));
+	}
+
+	public Optional<UIElement> getElementAt(double mouseX, double mouseY) {
+		for (UIElement element : this.children) {
+			if (!element.isMouseOver(mouseX, mouseY)) continue;
+			return Optional.of(element);
 		}
 		return Optional.empty();
 	}
-
 	@Override
 	public boolean mouseClicked(double mouseX, double mouseY, int button) {
-		for (GuiEventListener eventListener : this.eventListeners) {
-			if (!eventListener.isMouseOver(mouseX, mouseY)) continue;
-			this.setFocused(eventListener);
-			if (eventListener.mouseClicked(mouseX, mouseY, button)) {
+		for (UIElement element : this.children) {
+			if (!element.isMouseOver(mouseX, mouseY)) continue;
+			this.setFocused(element);
+			if (element.mouseClicked(mouseX, mouseY, button)) {
 				return true;
 			}
 		}
@@ -150,41 +181,38 @@ public abstract class PLScreen extends Screen {
 
 	@Override
 	public boolean mouseReleased(double mouseX, double mouseY, int button) {
-		for (GuiEventListener eventListener : this.eventListeners) {
-			if (!eventListener.isMouseOver(mouseX, mouseY)) continue;
-			if (eventListener.mouseReleased(mouseX, mouseY, button)) {
+		for (UIElement element : this.children) {
+			if (!element.isMouseOver(mouseX, mouseY)) continue;
+			if (element.mouseReleased(mouseX, mouseY, button))
 				return true;
-			}
 		}
 		return false;
 	}
 
 	@Override
 	public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
-		for (GuiEventListener eventListener : this.eventListeners) {
-			if (!eventListener.isMouseOver(mouseX, mouseY)) continue;
-			if (eventListener.mouseDragged(mouseX, mouseY, button, dragX, dragY)) {
+		for (UIElement element : this.children) {
+			if (!element.isMouseOver(mouseX, mouseY)) continue;
+			if (element.mouseDragged(mouseX, mouseY, button, dragX, dragY))
 				return true;
-			}
 		}
 		return false;
 	}
 
 	@Override
 	public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
-		for (GuiEventListener eventListener : this.eventListeners) {
-			if (!eventListener.isMouseOver(mouseX, mouseY)) continue;
-			if (eventListener.mouseScrolled(mouseX, mouseY, delta)) {
+		for (UIElement element : this.children) {
+			if (!element.isMouseOver(mouseX, mouseY)) continue;
+			if (element.mouseScrolled(mouseX, mouseY, delta))
 				return true;
-			}
 		}
 		return false;
 	}
 
 	@Override
 	public void mouseMoved(double mouseX, double mouseY) {
-		for (GuiEventListener eventListener : this.eventListeners) {
-			eventListener.mouseMoved(mouseX, mouseY);
+		for (UIElement element : this.children) {
+			element.mouseMoved(mouseX, mouseY);
 		}
 	}
 }

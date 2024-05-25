@@ -1,6 +1,7 @@
 package me.pandamods.pandalib.api.client.screen.converters;
 
 import me.pandamods.pandalib.api.client.screen.PLRenderable;
+import me.pandamods.pandalib.api.client.screen.PLScreen;
 import me.pandamods.pandalib.api.client.screen.elements.UIElement;
 import me.pandamods.pandalib.api.utils.screen.PLGuiGraphics;
 import me.pandamods.pandalib.api.utils.screen.WidgetHooks;
@@ -23,7 +24,7 @@ import java.util.Optional;
 public class AbstractWidgetConverter implements UIElement, PLLayoutElement, PLRenderable, NarratableEntry {
 	private final AbstractWidget widget;
 
-	private Screen screen;
+	private PLScreen screen;
 	private UIElement parent;
 
 	public AbstractWidgetConverter(AbstractWidget widget) {
@@ -31,12 +32,12 @@ public class AbstractWidgetConverter implements UIElement, PLLayoutElement, PLRe
 	}
 
 	@Override
-	public Screen getScreen() {
+	public PLScreen getScreen() {
 		return this.screen;
 	}
 
 	@Override
-	public void setScreen(Screen screen) {
+	public void setScreen(PLScreen screen) {
 		this.screen = screen;
 	}
 

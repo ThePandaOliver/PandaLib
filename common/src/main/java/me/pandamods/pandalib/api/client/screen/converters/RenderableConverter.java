@@ -7,7 +7,7 @@ import net.minecraft.client.gui.components.Renderable;
 import java.util.Objects;
 
 /**
- * A class that converts a Renderable object to a PLRenderable object.
+ * A class that converts a {@link Renderable} object to a {@link PLRenderable} object.
  */
 public class RenderableConverter implements PLRenderable {
 	private final Renderable renderable;

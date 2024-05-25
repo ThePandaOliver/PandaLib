@@ -84,7 +84,8 @@ public class ConfigCategory extends AbstractConfigCategory {
 			optionHighlightAlpha.setTarget(1);
 			optionHighlightPosition.setTarget(option.getY());
 			optionHighlightSize.setTarget(option.getHeight());
-		} else optionHighlightAlpha.setTarget(0);
+		} else
+			optionHighlightAlpha.setTarget(0);
 		super.mouseMoved(mouseX, mouseY);
 	}
 

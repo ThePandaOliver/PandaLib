@@ -8,6 +8,7 @@ import me.pandamods.pandalib.api.utils.screen.WidgetHooks;
 import net.minecraft.client.gui.ComponentPath;
 import net.minecraft.client.gui.components.AbstractWidget;
 import me.pandamods.pandalib.api.client.screen.layouts.PLLayoutElement;
+import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.navigation.FocusNavigationEvent;
@@ -19,7 +20,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 /**
- * A class that converts a AbstractWidget object to a class implementing UIComponent, PLLayoutElement, PLRenderable and NarratableEntry.
+ * A class that converts a {@link AbstractWidget} object to a class implementing {@link UIElement}, {@link PLLayoutElement}, {@link PLRenderable} and {@link NarratableEntry}.
  */
 public class AbstractWidgetConverter implements UIElement, PLLayoutElement, PLRenderable, NarratableEntry {
 	private final AbstractWidget widget;

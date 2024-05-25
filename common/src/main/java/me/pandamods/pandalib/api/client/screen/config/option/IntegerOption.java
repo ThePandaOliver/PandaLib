@@ -5,22 +5,24 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
 
-public class StringOption extends AbstractConfigOption<String> {
+import java.util.regex.Pattern;
+
+public class IntegerOption extends AbstractConfigOption<Integer> {
 	private EditBox inputField;
 
-	public StringOption(Component name) {
+	public IntegerOption(Component name) {
 		super(name);
 		inputField = new EditBox(Minecraft.getInstance().font, 0, 0, 100, 16, name);
 	}
 
 	@Override
-	protected void setValue(String value) {
-		inputField.setValue(value);
+	protected void setValue(Integer value) {
+		inputField.setValue(String.valueOf(value));
 	}
 
 	@Override
-	protected String getValue() {
-		return inputField.getValue();
+	protected Integer getValue() {
+		return Integer.valueOf(inputField.getValue());
 	}
 
 	@Override
@@ -30,6 +32,7 @@ public class StringOption extends AbstractConfigOption<String> {
 
 		grid.addChild(inputField = new EditBox(Minecraft.getInstance().font, 0, 0, 150, 16, this.inputField, this.name), 0, 0);
 		this.inputField.setMaxLength(Integer.MAX_VALUE);
+		this.inputField.setFilter(s -> Pattern.compile("[0-9]*").matcher(s).matches());
 
 		addActionButtons(grid, 2);
 

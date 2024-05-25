@@ -31,12 +31,8 @@ public class ConfigMenu<T extends ConfigData> extends PLScreen {
 	private final CategoryAddress addressBar = new CategoryAddress();
 	private final ConfigHolder<T> configHolder;
 	private AbstractConfigCategory category;
-	private AbstractConfigCategory rootCategory;
-
-	public ConfigMenu(Class<T> config, AbstractConfigCategory category) {
-		this(null, PandaLibConfig.getConfig(config), category);
-	}
-
+	private final AbstractConfigCategory rootCategory;
+	
 	public ConfigMenu(Screen parent, Class<T> config, AbstractConfigCategory category) {
 		this(parent, PandaLibConfig.getConfig(config), category);
 	}

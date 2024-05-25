@@ -11,8 +11,6 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 public abstract class AbstractUIElement implements UIElement, LayoutElement {
-	public final Minecraft minecraft;
-
 	private PLScreen screen;
 	private UIElement parent;
 
@@ -25,10 +23,6 @@ public abstract class AbstractUIElement implements UIElement, LayoutElement {
 	private boolean visible = true;
 	private boolean focused = false;
 	private boolean hovered = false;
-
-	public AbstractUIElement() {
-		this.minecraft = Minecraft.getInstance();
-	}
 
 	@Override
 	public PLScreen getScreen() {

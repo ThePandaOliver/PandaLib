@@ -20,7 +20,6 @@ import java.util.Optional;
 
 public abstract class PLScreen extends Screen {
 	private final List<GuiEventListener> interactables = new ArrayList<>();
-
 	private final List<UIElement> children = new ArrayList<>();
 	private final List<UIElementHolder> holders = new ArrayList<>();
 	private final List<PLRenderable> renderables = new ArrayList<>();
@@ -175,11 +174,6 @@ public abstract class PLScreen extends Screen {
 		for (PLRenderable renderable : renderables) {
 			renderable.render(guiGraphics, mouseX, mouseY, partialTick);
 		}
-	}
-
-	@Override
-	protected void init() {
-		this.holders.forEach(UIElementHolder::init);
 	}
 
 	/**

@@ -1,4 +1,6 @@
 {
+	"modmenu.nameTranslation.pandalib": "PandaLib",
+
 	"gui.pandalib.close": "Close",
 	"gui.pandalib.save": "Save",
 	"gui.pandalib.cancel": "Cancel",

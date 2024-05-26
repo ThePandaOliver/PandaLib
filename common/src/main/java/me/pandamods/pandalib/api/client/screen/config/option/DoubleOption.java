@@ -31,7 +31,7 @@ public class DoubleOption extends AbstractConfigOption<Double> {
 		PLGridLayout grid = new PLGridLayout().spacing(2);
 		grid.defaultCellSetting().alignVerticallyMiddle();
 
-		grid.addChild(inputField = new EditBox(Minecraft.getInstance().font, 0, 0, 150, 16, this.inputField, this.name), 0, 0);
+		grid.addChild(inputField = new EditBox(Minecraft.getInstance().font, 0, 0, 100, 16, this.inputField, this.name), 0, 0);
 		this.inputField.setMaxLength(Integer.MAX_VALUE);
 		this.inputField.setFilter(s -> Pattern.compile("-?[0-9]*.?[0-9]*").matcher(s).matches());
 

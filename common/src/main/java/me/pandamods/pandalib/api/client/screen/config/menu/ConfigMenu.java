@@ -140,7 +140,7 @@ public class ConfigMenu<T extends ConfigData> extends PLScreen {
 			AbstractConfigCategory previousCategory = ConfigMenu.this.getCategory().getParentCategory();
 			PLButton backButton = new PLButton(PLCommonComponents.BACK);
 			backButton.setSize(50, this.getHeight() - 4);
-			backButton.setClickListener((clickType, isReleased) -> setCategory(previousCategory));
+			backButton.setReleaseListener(clickType -> setCategory(previousCategory));
 			backButton.setActive(previousCategory != null);
 			helper.addChild(backButton);
 			helper.addChild(SpacerElement.width(4));

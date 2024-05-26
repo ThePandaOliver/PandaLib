@@ -16,6 +16,7 @@ import java.awt.*;
 
 public abstract class PLAbstractButton extends AbstractUIElement implements PLRenderable {
 	private ButtonClickConsumer clickListener;
+	private ButtonClickConsumer releaseListener;
 
 	public abstract Component getText();
 
@@ -61,11 +62,16 @@ public abstract class PLAbstractButton extends AbstractUIElement implements PLRe
 		this.clickListener = clickListener;
 	}
 
+	public void setReleaseListener(ButtonClickConsumer releaseListener) {
+		this.releaseListener = releaseListener;
+	}
+
 	@Override
 	public boolean mouseClicked(double mouseX, double mouseY, int button) {
-		if (this.isActiveAndVisible() && this.clickListener != null) {
-    		this.clickListener.onClick(getClickType(button), false);
+		if (this.isActiveAndVisible()) {
     		this.playSound();
+			if (this.clickListener != null)
+				this.clickListener.onClick(getClickType(button));
     		return true;
     	}
 		return true;
@@ -73,8 +79,8 @@ public abstract class PLAbstractButton extends AbstractUIElement implements PLRe
 
 	@Override
 	public boolean mouseReleased(double mouseX, double mouseY, int button) {
-		if (this.isActiveAndVisible() && this.clickListener != null) {
-    		this.clickListener.onClick(getClickType(button), true);
+		if (this.isActiveAndVisible() && this.releaseListener != null) {
+    		this.releaseListener.onClick(getClickType(button));
     		return true;
     	}
 		return true;
@@ -90,7 +96,7 @@ public abstract class PLAbstractButton extends AbstractUIElement implements PLRe
 	}
 
 	public interface ButtonClickConsumer {
-		void onClick(ClickType clickType, boolean isReleased);
+		void onClick(ClickType clickType);
 	}
 
 	public enum ClickType {

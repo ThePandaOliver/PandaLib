@@ -89,8 +89,8 @@ public abstract class AbstractConfigOption<T> extends UIElementHolder {
 	protected void addActionButtons(PLGridLayout grid, int spacing) {
 		int column = grid.getColumns();
 		grid.addChild(SpacerElement.width(spacing), 0, column + 1);
-		grid.addChild(IconButton.builder(PLCommonComponents.SAVE, SAVE_ICON.get(true),
-				iconButton -> this.save()).build(), 0, column + 2);
+//		grid.addChild(IconButton.builder(PLCommonComponents.SAVE, SAVE_ICON.get(true),
+//				iconButton -> this.save()).build(), 0, column + 2);
 		grid.addChild(IconButton.builder(PLCommonComponents.UNDO, UNDO_ICON.get(true),
 				iconButton -> this.load()).build(), 0, column + 3);
 		grid.addChild(IconButton.builder(PLCommonComponents.RESET, RESET_ICON.get(true),

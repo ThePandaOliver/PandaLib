@@ -12,7 +12,7 @@ import java.util.List;
 
 public class QuickListWidget extends UIElementHolder {
 	private final int rows;
-	private final LayoutElement[] elements;
+	public final LayoutElement[] elements;
 
 	private QuickListWidget(int rows, LayoutElement[] elements) {
 		this.rows = rows;

@@ -7,12 +7,13 @@ import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
 
 import java.awt.*;
+import java.lang.reflect.Field;
 
 public class BooleanOption extends AbstractConfigOption<Boolean> {
 	private ToggleButton button;
 
-	public BooleanOption(Component name) {
-		super(name);
+	public BooleanOption(Component name, Field field) {
+		super(name, field);
 		button = new ToggleButton(0, 0, 20, 20);
 	}
 

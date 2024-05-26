@@ -1,8 +1,10 @@
 accessWidener   v2  named
 
+# Screen
 accessible field net/minecraft/client/gui/screens/Screen children Ljava/util/List;
 accessible field net/minecraft/client/gui/screens/Screen narratables Ljava/util/List;
 accessible field net/minecraft/client/gui/screens/Screen renderables Ljava/util/List;
+accessible field net/minecraft/client/gui/components/events/AbstractContainerEventHandler focused Lnet/minecraft/client/gui/components/events/GuiEventListener;
 
 accessible method net/minecraft/client/gui/screens/Screen clearFocus ()V
 

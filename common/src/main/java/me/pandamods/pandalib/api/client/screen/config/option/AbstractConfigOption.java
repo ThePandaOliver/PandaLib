@@ -16,6 +16,7 @@ import net.minecraft.client.gui.layouts.SpacerElement;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
+import java.lang.reflect.Field;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -39,18 +40,9 @@ public abstract class AbstractConfigOption<T> extends UIElementHolder {
 	public final Event<Consumer<T>> onSaveEvent = EventFactory.createLoop();
 	public final Event<Supplier<T>> onResetEvent = EventFactory.createLoop();
 
-	public AbstractConfigOption(Component name) {
+	public AbstractConfigOption(Component name, Field field) {
 		this.name = name;
-	}
-
-	@Override
-	public int getWidth() {
-		return this.getParent().map(UIElement::getWidth).orElse(0);
-	}
-
-	@Override
-	public int getHeight() {
-		return 24;
+		this.setHeight(24);
 	}
 
 	@Override

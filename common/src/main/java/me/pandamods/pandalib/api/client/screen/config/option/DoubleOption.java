@@ -5,13 +5,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
 
+import java.lang.reflect.Field;
 import java.util.regex.Pattern;
 
 public class DoubleOption extends AbstractConfigOption<Double> {
 	private EditBox inputField;
 
-	public DoubleOption(Component name) {
-		super(name);
+	public DoubleOption(Component name, Field field) {
+		super(name, field);
 		inputField = new EditBox(Minecraft.getInstance().font, 0, 0, 100, 16, name);
 	}
 

@@ -47,8 +47,9 @@ public class ConfigCategory extends AbstractConfigCategory {
 		PLGridLayout.RowHelper rowHelper = grid.createRowHelper(1);
 		for (AbstractConfigOption<?> option : this.options) {
 			rowHelper.addChild(option);
+			option.setWidth(this.getWidth());
 		}
-		grid.quickArrange(this::addElement, 0, 0, this.getWidth(), this.getHeight());
+		grid.quickArrange(this::addElement, 0, 0, this.getWidth(), this.getHeight(), 0, 0);
 		super.init();
 	}
 

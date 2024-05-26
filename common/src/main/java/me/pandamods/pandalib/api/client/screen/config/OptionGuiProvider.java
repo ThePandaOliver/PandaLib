@@ -11,5 +11,5 @@ import java.util.function.Supplier;
 
 @Environment(EnvType.CLIENT)
 public interface OptionGuiProvider<T> {
-	AbstractConfigOption<T> create(Component name);
+	AbstractConfigOption<T> create(Component name, Field field);
 }

@@ -5,13 +5,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
 
+import java.lang.reflect.Field;
 import java.util.regex.Pattern;
 
 public class IntegerOption extends AbstractConfigOption<Integer> {
 	private EditBox inputField;
 
-	public IntegerOption(Component name) {
-		super(name);
+	public IntegerOption(Component name, Field field) {
+		super(name, field);
 		inputField = new EditBox(Minecraft.getInstance().font, 0, 0, 100, 16, name);
 	}
 

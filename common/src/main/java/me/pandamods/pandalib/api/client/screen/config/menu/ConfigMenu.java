@@ -16,6 +16,8 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.layouts.LayoutElement;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.navigation.CommonInputs;
 import net.minecraft.client.gui.screens.Screen;
@@ -24,6 +26,7 @@ import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.sounds.SoundEvents;
 
 import java.awt.*;
+import java.util.stream.Stream;
 
 public class ConfigMenu<T extends ConfigData> extends PLScreen {
 	private final Screen parent;
@@ -51,14 +54,11 @@ public class ConfigMenu<T extends ConfigData> extends PLScreen {
 		this.addressBar.setSize(this.width, 20);
 		this.addElement(this.addressBar);
 
-		int categoryListWidth = 0;
-		if (!this.category.getCategories().isEmpty()) {
-			this.categoryList.setPosition(0, this.addressBar.getHeight());
-			this.categoryList.setSize(categoryListWidth = 100, this.height - this.categoryList.getY());
-			this.addElement(this.categoryList);
-		}
+		this.categoryList.setPosition(0, this.addressBar.getHeight());
+		this.categoryList.setSize(100, this.height - this.categoryList.getY());
+		this.addElement(this.categoryList);
 
-		this.category.setPosition(categoryListWidth, this.addressBar.getHeight());
+		this.category.setPosition(this.categoryList.getWidth(), this.addressBar.getHeight());
 		this.category.setSize(this.width - this.category.getX(), this.height - this.category.getY());
 		this.addElement(this.category);
 
@@ -222,12 +222,22 @@ public class ConfigMenu<T extends ConfigData> extends PLScreen {
 				if (this.isHoveredOrFocused())
 					guiGraphics.fill(this.getX(), y, this.getX() + this.width, y + 1, Color.white.getRGB());
 
+				this.categoryList.setActive(this.isFocused());
+
 				super.render(guiGraphics, mouseX, mouseY, partialTick);
 			}
 
 			protected void onPress() {
 				this.playDownSound(Minecraft.getInstance().getSoundManager());
-				this.categoryList.setActive(!this.categoryList.isActive());
+			}
+
+			@Override
+			public boolean isFocused() {
+				for (LayoutElement element : this.categoryList.elements) {
+					if (element instanceof GuiEventListener listener && listener.isFocused())
+						return true;
+				}
+				return super.isFocused() || this.categoryList.isFocused();
 			}
 
 			@Override

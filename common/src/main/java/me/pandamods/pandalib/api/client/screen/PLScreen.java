@@ -12,6 +12,7 @@ import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -195,6 +196,18 @@ public abstract class PLScreen extends Screen {
 			return Optional.of(element);
 		}
 		return Optional.empty();
+	}
+
+	@Override
+	public void setFocused(@Nullable GuiEventListener focused) {
+		GuiEventListener lastFocused = ScreenHooks.getFocused(this);
+		if (focused != null) {
+			focused.setFocused(true);
+		}
+		this.focused = focused;
+		if (lastFocused != null) {
+			lastFocused.setFocused(false);
+		}
 	}
 
 	@Override

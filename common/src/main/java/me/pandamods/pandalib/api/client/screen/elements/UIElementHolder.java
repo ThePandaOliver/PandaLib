@@ -44,8 +44,10 @@ public abstract class UIElementHolder extends AbstractUIElement implements PLRen
 			ScreenHooks.getNarratables(this.getScreen()).add((NarratableEntry) element);
 		}
 
-		if (element instanceof UIElementHolder)
-			this.holders.add((UIElementHolder) element);
+		if (element instanceof UIElementHolder holder) {
+			this.holders.add(holder);
+			holder.init();
+		}
 
 		if (element instanceof PLRenderable)
 			this.renderables.add((PLRenderable) element);
@@ -112,9 +114,7 @@ public abstract class UIElementHolder extends AbstractUIElement implements PLRen
 		guiGraphics.pose().popPose();
 	}
 
-	public void init() {
-		this.holders.forEach(UIElementHolder::init);
-	}
+	public abstract void init();
 
 	public Optional<UIElement> getElementAt(double mouseX, double mouseY) {
 		mouseX -= this.getX();

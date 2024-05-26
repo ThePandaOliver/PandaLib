@@ -1,16 +1,23 @@
 package me.pandamods.pandalib.api.client.screen.elements;
 
 import me.pandamods.pandalib.api.client.screen.PLScreen;
+import me.pandamods.pandalib.api.client.screen.layouts.PLLayoutElement;
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.layouts.LayoutElement;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.tooltip.BelowOrAboveWidgetTooltipPositioner;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipPositioner;
+import net.minecraft.client.gui.screens.inventory.tooltip.MenuTooltipPositioner;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 import java.util.function.Consumer;
 
-public abstract class AbstractUIElement implements UIElement, LayoutElement {
+public abstract class AbstractUIElement implements UIElement, PLLayoutElement {
 	private PLScreen screen;
 	private UIElement parent;
 
@@ -143,7 +150,7 @@ public abstract class AbstractUIElement implements UIElement, LayoutElement {
 
 	@Override
 	public boolean isMouseOver(double mouseX, double mouseY) {
-		if (!this.isActive()) return false;
+		if (!this.isVisible()) return false;
 		return UIElement.super.isMouseOver(mouseX, mouseY);
 	}
 }

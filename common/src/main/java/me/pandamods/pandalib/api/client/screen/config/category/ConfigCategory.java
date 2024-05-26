@@ -26,7 +26,7 @@ public class ConfigCategory extends AbstractConfigCategory {
 		this.categories = categories;
 		this.categories.forEach(category -> category.setParentCategory(this));
 
-		this.optionHighlightAlpha = new NumberAnimator(0).setDuration(0.5f);
+		this.optionHighlightAlpha = new NumberAnimator(0).setDuration(0.25f);
 		this.optionHighlightPosition = new NumberAnimator(options.isEmpty() ? 0 : options.get(0).getY()).setDuration(0.25f);
 		this.optionHighlightSize = new NumberAnimator(options.isEmpty() ? 0 : options.get(0).getHeight()).setDuration(0.25f);
 	}
@@ -50,7 +50,6 @@ public class ConfigCategory extends AbstractConfigCategory {
 			option.setWidth(this.getWidth());
 		}
 		grid.quickArrange(this::addElement, 0, 0, this.getWidth(), this.getHeight(), 0, 0);
-		super.init();
 	}
 
 	@Override

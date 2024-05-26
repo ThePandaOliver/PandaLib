@@ -36,7 +36,6 @@ public class BooleanOption extends AbstractConfigOption<Boolean> {
 		addActionButtons(grid, 2);
 
 		grid.quickArrange(this::addElement, 0, 0, this.getWidth() - 5, this.getHeight(), 1f, 0.5f);
-		super.init();
 	}
 
 	public static class ToggleButton extends AbstractButton {

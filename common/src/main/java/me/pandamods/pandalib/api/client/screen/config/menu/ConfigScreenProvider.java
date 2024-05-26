@@ -51,9 +51,9 @@ public class ConfigScreenProvider<T extends ConfigData> implements Supplier<Scre
 
 			if (ConfigGuiRegistry.getGui(field).isPresent()) {
 				AbstractConfigOption<?> option = ConfigGuiRegistry.getGui(field).get().create(Component.translatable(langName), field);
-				option.onSaveEvent.register(object -> ClassUtils.setFieldUnsafely(config, field, object));
-				option.onLoadEvent.register(() -> ClassUtils.getFieldUnsafely(config, field));
-				option.onResetEvent.register(() -> ClassUtils.getFieldUnsafely(defaultConfig, field));
+				option.setSaveListener(object -> ClassUtils.setFieldUnsafely(config, field, object));
+				option.setLoadListener(() -> ClassUtils.getFieldUnsafely(config, field));
+				option.setResetListener(() -> ClassUtils.getFieldUnsafely(defaultConfig, field));
 				categoryBuilder.addOption(option);
 			}
 		}

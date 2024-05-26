@@ -52,8 +52,10 @@ public abstract class PLScreen extends Screen {
 			this.narratables.add((NarratableEntry) element);
 		}
 
-		if (element instanceof UIElementHolder)
-			this.holders.add((UIElementHolder) element);
+		if (element instanceof UIElementHolder holder) {
+			this.holders.add(holder);
+			holder.init();
+		}
 
 		if (element instanceof PLRenderable)
 			this.renderables.add((PLRenderable) element);

@@ -33,11 +33,10 @@ public class FloatOption extends AbstractConfigOption<Float> {
 
 		grid.addChild(inputField = new EditBox(Minecraft.getInstance().font, 0, 0, 150, 16, this.inputField, this.name), 0, 0);
 		this.inputField.setMaxLength(Integer.MAX_VALUE);
-		this.inputField.setFilter(s -> Pattern.compile("[0-9]*.?[0-9]*").matcher(s).matches());
+		this.inputField.setFilter(s -> Pattern.compile("-?[0-9]*.?[0-9]*").matcher(s).matches());
 
 		addActionButtons(grid, 2);
 
 		grid.quickArrange(this::addElement, 0, 0, this.getWidth() - 5, this.getHeight(), 1f, 0.5f);
-		super.init();
 	}
 }

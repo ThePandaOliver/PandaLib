@@ -28,7 +28,6 @@ public class QuickListWidget extends UIElementHolder {
 		}
 		grid.quickArrange(this::addElement);
 		this.setSize(grid.getWidth(), grid.getHeight());
-		super.init();
 	}
 
 	@Override

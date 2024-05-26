@@ -1,9 +1,6 @@
 package me.pandamods.pandalib.api.client.screen.config.option;
 
-import dev.architectury.event.Event;
-import dev.architectury.event.EventFactory;
 import me.pandamods.pandalib.PandaLib;
-import me.pandamods.pandalib.api.client.screen.elements.UIElement;
 import me.pandamods.pandalib.api.client.screen.elements.UIElementHolder;
 import me.pandamods.pandalib.api.client.screen.widget.IconButton;
 import me.pandamods.pandalib.api.utils.PLCommonComponents;
@@ -36,9 +33,9 @@ public abstract class AbstractConfigOption<T> extends UIElementHolder {
 
 	public final Component name;
 
-	public final Event<Supplier<T>> onLoadEvent = EventFactory.createLoop();
-	public final Event<Consumer<T>> onSaveEvent = EventFactory.createLoop();
-	public final Event<Supplier<T>> onResetEvent = EventFactory.createLoop();
+	private Supplier<T> onLoad;
+	private Consumer<T> onSave;
+	private Supplier<T> onReset;
 
 	public AbstractConfigOption(Component name, Field field) {
 		this.name = name;
@@ -62,13 +59,31 @@ public abstract class AbstractConfigOption<T> extends UIElementHolder {
 	protected abstract T getValue();
 
 	public void save() {
-		onSaveEvent.invoker().accept(getValue());
+		if (onSave != null) {
+			onSave.accept(getValue());
+		}
 	}
 	public void load() {
-		setValue(onLoadEvent.invoker().get());
+		if (onLoad != null) {
+			setValue(onLoad.get());
+		}
 	}
 	public void reset() {
-		setValue(onResetEvent.invoker().get());
+		if (onReset != null) {
+			setValue(onReset.get());
+		}
+	}
+
+	public void setSaveListener(Consumer<T> onSave) {
+		this.onSave = onSave;
+	}
+
+	public void setLoadListener(Supplier<T> onLoad) {
+		this.onLoad = onLoad;
+	}
+
+	public void setResetListener(Supplier<T> onReset) {
+		this.onReset = onReset;
 	}
 
 	protected void addActionButtons(PLGridLayout grid, int spacing) {

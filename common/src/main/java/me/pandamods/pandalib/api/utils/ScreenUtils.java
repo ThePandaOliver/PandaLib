@@ -28,26 +28,6 @@ public class ScreenUtils {
 		}
 	}
 
-	public static void renderString(GuiGraphics guiGraphics, Font font, Component text,
-									int minX, int minY, int maxX, int maxY, int color, boolean centerX, boolean centerY) {
-		int textWidth = font.width(text);
-		int textHeight = font.lineHeight;
-
-		int width = maxX - minX;
-		int height = maxY - minY;
-
-		int x = centerX ? (width - textWidth) / 2 : minX;
-		int y = centerY ? (height - textHeight) / 2 : minY;
-		if (textWidth > width) {
-			double time = Blaze3D.getTime();
-			guiGraphics.enableScissor(minX, minY, maxX, maxY);
-			guiGraphics.drawString(font, text, (int) (x + time), y, color);
-			guiGraphics.disableScissor();
-		} else {
-			guiGraphics.drawString(font, text, x, y, color);
-		}
-	}
-
 	public static boolean isMouseOver(double mouseX, double mouseY, int minX, int minY, int maxX, int maxY) {
 		return mouseX >= minX && mouseX <= maxX && mouseY >= minY && mouseY <= maxY;
 	}

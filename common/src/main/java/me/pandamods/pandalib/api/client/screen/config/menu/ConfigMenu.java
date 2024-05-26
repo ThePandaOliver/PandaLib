@@ -4,6 +4,7 @@ import me.pandamods.pandalib.api.client.screen.PLScreen;
 import me.pandamods.pandalib.api.client.screen.elements.UIElementHolder;
 import me.pandamods.pandalib.api.client.screen.config.category.AbstractConfigCategory;
 import me.pandamods.pandalib.api.client.screen.config.category.ConfigCategory;
+import me.pandamods.pandalib.api.client.screen.elements.widgets.buttons.PLButton;
 import me.pandamods.pandalib.api.client.screen.widget.list.QuickListWidget;
 import me.pandamods.pandalib.api.config.ConfigData;
 import me.pandamods.pandalib.api.config.PandaLibConfig;
@@ -18,11 +19,13 @@ import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.layouts.LayoutElement;
+import net.minecraft.client.gui.layouts.SpacerElement;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.navigation.CommonInputs;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.sounds.SoundManager;
+import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 
 import java.awt.*;
@@ -66,9 +69,9 @@ public class ConfigMenu<T extends ConfigData> extends PLScreen {
 		actionGrid.spacing(4).defaultCellSetting();
 		PLGridLayout.ColumnHelper actionHelper = actionGrid.createColumnHelper(1);
 
-		actionHelper.addChild(Button.builder(PLCommonComponents.SAVE, button -> ConfigMenu.this.save()).width(50).build());
-		actionHelper.addChild(Button.builder(PLCommonComponents.RESET, button -> ConfigMenu.this.reset()).width(50).build());
-		actionHelper.addChild(Button.builder(PLCommonComponents.CANCEL, button -> ConfigMenu.this.onClose()).width(50).build());
+		actionHelper.addChild(Button.builder(PLCommonComponents.SAVE, button -> this.save()).width(50).build());
+		actionHelper.addChild(Button.builder(PLCommonComponents.RESET, button -> this.reset()).width(50).build());
+		actionHelper.addChild(Button.builder(PLCommonComponents.CLOSE, button -> this.onClose()).width(50).build());
 
 		actionGrid.quickArrange(this::addElement, this.category.getX(), this.category.maxY() - 30, this.category.getWidth(), 30,
 				0.5f, 0.5f);
@@ -77,7 +80,7 @@ public class ConfigMenu<T extends ConfigData> extends PLScreen {
 
 	public void save() {
 		this.rootCategory.save();
-		configHolder.save();
+		this.configHolder.save();
 		this.onClose();
 	}
 
@@ -118,7 +121,6 @@ public class ConfigMenu<T extends ConfigData> extends PLScreen {
 				categoryHelper.addChild(Button.builder(category.getName(), button -> setCategory(category)).width(90).build());
 			}
 			categoryGrid.quickArrange(this::addElement, 0, 5, this.getWidth(), this.getHeight() - 55, 0.5f, 0);
-			super.init();
 		}
 
 		@Override
@@ -131,13 +133,21 @@ public class ConfigMenu<T extends ConfigData> extends PLScreen {
 	public class CategoryAddress extends UIElementHolder {
 		@Override
 		public void init() {
-			PLGridLayout grid = new PLGridLayout();
-			grid.defaultCellSetting().padding(1);
+			PLGridLayout grid = new PLGridLayout().spacing(2);
+			grid.defaultCellSetting().alignVerticallyMiddle();
 			PLGridLayout.ColumnHelper helper = grid.createColumnHelper(1);
+
+			AbstractConfigCategory previousCategory = ConfigMenu.this.getCategory().getParentCategory();
+			PLButton backButton = new PLButton(PLCommonComponents.BACK);
+			backButton.setSize(50, this.getHeight() - 4);
+			backButton.setClickListener((clickType, isReleased) -> setCategory(previousCategory));
+			backButton.setActive(previousCategory != null);
+			helper.addChild(backButton);
+			helper.addChild(SpacerElement.width(4));
+
 			addCategoryDist(helper, ConfigMenu.this.category);
 
-			grid.quickArrange(this::addElement, 5, 0, this.getWidth() - 10, this.getHeight(), 0f, 0.5f);
-			super.init();
+			grid.quickArrange(this::addElement, 4, 0, this.getWidth() - 10, this.getHeight(), 0f, 0.5f);
 		}
 
 		private void addCategoryDist(PLGridLayout.ColumnHelper helper, AbstractConfigCategory abstractCategory) {
@@ -209,7 +219,6 @@ public class ConfigMenu<T extends ConfigData> extends PLScreen {
 				this.categoryList.setActive(false);
 				this.categoryList.setPosition(0, this.getHeight() + 2);
 				this.addElement(this.categoryList);
-				super.init();
 			}
 
 			@Override

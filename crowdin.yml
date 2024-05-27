@@ -1,3 +1,0 @@
-files:
-  - source: /common/src/main/resources/assets/pandalib/lang/en_us.json
-    translation: /common/src/main/resources/assets/pandalib/lang/%language%.json

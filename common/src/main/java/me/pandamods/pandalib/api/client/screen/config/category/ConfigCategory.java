@@ -53,9 +53,9 @@ public class ConfigCategory extends AbstractConfigCategory {
 	}
 
 	@Override
-	public void render(PLGuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+	public void renderElement(PLGuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
 		renderHighlight(guiGraphics);
-		super.render(guiGraphics, mouseX, mouseY, partialTick);
+		super.renderElement(guiGraphics, mouseX, mouseY, partialTick);
 	}
 
 	private static final int OPTION_HIGHLIGHT_COLOR_TOP = new Color(255, 255, 255, 75).getRGB();

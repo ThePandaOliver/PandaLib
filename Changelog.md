@@ -1,3 +1,3 @@
-## Changelog 0.2.1 Beta
-#### Bug Fixes:
-* Fixed Client configs not staying synchronized on server.
+## Changelog 0.3 Beta
+* **Technical Changes**:
+  * The project now uses the gradle plugin [Forgix](https://github.com/PacifistMC/Forgix)

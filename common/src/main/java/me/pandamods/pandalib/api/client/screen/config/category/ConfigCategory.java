@@ -27,7 +27,7 @@ public class ConfigCategory extends AbstractConfigCategory {
 		this.categories.forEach(category -> category.setParentCategory(this));
 
 		this.optionHighlightAlpha = new NumberAnimator(0).setDuration(0.25f);
-		this.optionHighlightPosition = new NumberAnimator(options.isEmpty() ? 0 : options.get(0).getY()).setDuration(0.25f);
+		this.optionHighlightPosition = new NumberAnimator(options.isEmpty() ? 0 : options.get(0).getRelativeY()).setDuration(0.25f);
 		this.optionHighlightSize = new NumberAnimator(options.isEmpty() ? 0 : options.get(0).getHeight()).setDuration(0.25f);
 	}
 
@@ -49,13 +49,14 @@ public class ConfigCategory extends AbstractConfigCategory {
 			rowHelper.addChild(option);
 			option.setWidth(this.getWidth());
 		}
-		grid.quickArrange(this::addElement, 0, 0, this.getWidth(), this.getHeight(), 0, 0);
+		grid.quickArrange(this::addElement, this.getX(), this.getY(), this.getWidth(), this.getHeight(), 0, 0);
+		super.init();
 	}
 
 	@Override
-	public void renderElement(PLGuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+	public void render(PLGuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
 		renderHighlight(guiGraphics);
-		super.renderElement(guiGraphics, mouseX, mouseY, partialTick);
+		super.render(guiGraphics, mouseX, mouseY, partialTick);
 	}
 
 	private static final int OPTION_HIGHLIGHT_COLOR_TOP = new Color(255, 255, 255, 75).getRGB();
@@ -82,7 +83,7 @@ public class ConfigCategory extends AbstractConfigCategory {
 		AbstractConfigOption<?> option = getOptionAt((int) mouseX, (int) mouseY);
 		if (option != null) {
 			optionHighlightAlpha.setTarget(1);
-			optionHighlightPosition.setTarget(option.getY());
+			optionHighlightPosition.setTarget(option.getRelativeY());
 			optionHighlightSize.setTarget(option.getHeight());
 		} else
 			optionHighlightAlpha.setTarget(0);
@@ -90,8 +91,6 @@ public class ConfigCategory extends AbstractConfigCategory {
 	}
 
 	public AbstractConfigOption<?> getOptionAt(int mouseX, int mouseY) {
-		mouseX -= this.getX();
-		mouseY -= this.getY();
 		for (AbstractConfigOption<?> option : this.options) {
     		if (option.isMouseOver(mouseX, mouseY)) {
     			return option;

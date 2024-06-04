@@ -28,16 +28,17 @@ public class QuickListWidget extends UIElementHolder {
 		}
 		grid.quickArrange(this::addElement);
 		this.setSize(grid.getWidth(), grid.getHeight());
+		super.init();
 	}
 
 	@Override
 	public void render(PLGuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
 		if (this.isActive()) {
-			guiGraphics.fill(this.getX() - 1, this.getY() - 1,
-					this.getX() + this.width + 1, this.getY() + this.height + 1, Color.WHITE.getRGB());
+			guiGraphics.fill(this.getRelativeX() - 1, this.getRelativeY() - 1,
+					this.getRelativeX() + this.width + 1, this.getRelativeY() + this.height + 1, Color.WHITE.getRGB());
 
-			guiGraphics.fill(this.getX(), this.getY(),
-					this.getX() + this.width, this.getY() + this.height, Color.BLACK.getRGB());
+			guiGraphics.fill(this.getRelativeX(), this.getRelativeY(),
+					this.getRelativeX() + this.width, this.getRelativeY() + this.height, Color.BLACK.getRGB());
 		}
 		super.render(guiGraphics, mouseX, mouseY, partialTick);
 	}

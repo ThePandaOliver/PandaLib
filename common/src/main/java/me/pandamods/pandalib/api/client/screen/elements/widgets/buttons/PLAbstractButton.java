@@ -38,7 +38,7 @@ public abstract class PLAbstractButton extends AbstractUIElement implements PLRe
 	}
 
 	public void renderTexture(PLGuiGraphics guiGraphics) {
-		guiGraphics.blitNineSliced(AbstractWidget.WIDGETS_LOCATION, this.getX(), this.getY(), this.getWidth(), this.getHeight(),
+		guiGraphics.blitNineSliced(AbstractWidget.WIDGETS_LOCATION, this.getRelativeX(), this.getRelativeY(), this.getWidth(), this.getHeight(),
 				20, 4, 200, 20, 0, this.getTextureY());
 	}
 

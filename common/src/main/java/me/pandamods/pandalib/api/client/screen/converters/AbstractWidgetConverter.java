@@ -83,6 +83,16 @@ public class AbstractWidgetConverter implements UIElement, PLLayoutElement, PLRe
 	}
 
 	@Override
+	public int getRelativeX() {
+		return this.widget.getX();
+	}
+
+	@Override
+	public int getRelativeY() {
+		return this.widget.getY();
+	}
+
+	@Override
 	public int getWidth() {
 		return this.widget.getWidth();
 	}
@@ -166,7 +176,10 @@ public class AbstractWidgetConverter implements UIElement, PLLayoutElement, PLRe
 
 	@Override
 	public void render(PLGuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+//		guiGraphics.pose().pushPose();
+//		getParent().ifPresent(uiElement -> guiGraphics.pose().translate(-uiElement.getX(), -uiElement.getY(), 0));
 		this.widget.render(guiGraphics, mouseX, mouseY, partialTick);
+//		guiGraphics.pose().popPose();
 	}
 
 	@Override

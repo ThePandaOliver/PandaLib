@@ -20,6 +20,8 @@ public abstract class UIElementHolder extends AbstractUIElement implements PLRen
 	private final List<UIElementHolder> holders = new ArrayList<>();
 	private final List<PLRenderable> renderables = new ArrayList<>();
 
+	public void init() {}
+
 	@SuppressWarnings("unchecked")
 	public <T> T addElement(T element) {
 		if (element instanceof AbstractWidget)
@@ -103,22 +105,13 @@ public abstract class UIElementHolder extends AbstractUIElement implements PLRen
 
 	@Override
 	public void render(PLGuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-		mouseX -= this.getX();
-		mouseY -= this.getY();
 		if (!isActive()) return;
-		guiGraphics.pose().pushPose();
-		guiGraphics.pose().translate(this.getX(), this.getY(), 1);
 		for (PLRenderable renderable : renderables) {
 			renderable.render(guiGraphics, mouseX, mouseY, partialTick);
 		}
-		guiGraphics.pose().popPose();
 	}
 
-	public abstract void init();
-
 	public Optional<UIElement> getElementAt(double mouseX, double mouseY) {
-		mouseX -= this.getX();
-		mouseY -= this.getY();
 		for (UIElement element : this.children) {
 			if (!element.isMouseOver(mouseX, mouseY)) continue;
 			return Optional.of(element);
@@ -128,8 +121,6 @@ public abstract class UIElementHolder extends AbstractUIElement implements PLRen
 
 	@Override
 	public boolean mouseClicked(double mouseX, double mouseY, int button) {
-		mouseX -= this.getX();
-		mouseY -= this.getY();
 		for (UIElement element : this.children) {
 			if (!element.isMouseOver(mouseX, mouseY)) continue;
 			this.getScreen().setFocused(element);
@@ -142,8 +133,6 @@ public abstract class UIElementHolder extends AbstractUIElement implements PLRen
 
 	@Override
 	public boolean mouseReleased(double mouseX, double mouseY, int button) {
-		mouseX -= this.getX();
-		mouseY -= this.getY();
 		for (UIElement element : this.children) {
 			if (!element.isMouseOver(mouseX, mouseY)) continue;
 			if (element.mouseReleased(mouseX, mouseY, button))
@@ -154,8 +143,6 @@ public abstract class UIElementHolder extends AbstractUIElement implements PLRen
 
 	@Override
 	public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
-		mouseX -= this.getX();
-		mouseY -= this.getY();
 		for (UIElement element : this.children) {
 			if (!element.isMouseOver(mouseX, mouseY)) continue;
 			if (element.mouseDragged(mouseX, mouseY, button, dragX, dragY))
@@ -166,8 +153,6 @@ public abstract class UIElementHolder extends AbstractUIElement implements PLRen
 
 	@Override
 	public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
-		mouseX -= this.getX();
-		mouseY -= this.getY();
 		for (UIElement element : this.children) {
 			if (!element.isMouseOver(mouseX, mouseY)) continue;
 			if (element.mouseScrolled(mouseX, mouseY, delta))
@@ -178,8 +163,6 @@ public abstract class UIElementHolder extends AbstractUIElement implements PLRen
 
 	@Override
 	public void mouseMoved(double mouseX, double mouseY) {
-		mouseX -= this.getX();
-		mouseY -= this.getY();
 		for (UIElement element : this.children) {
 			element.mouseMoved(mouseX, mouseY);
 		}

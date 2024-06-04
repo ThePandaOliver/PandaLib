@@ -2,17 +2,8 @@ package me.pandamods.pandalib.api.client.screen.elements;
 
 import me.pandamods.pandalib.api.client.screen.PLScreen;
 import me.pandamods.pandalib.api.client.screen.layouts.PLLayoutElement;
-import net.minecraft.Util;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
-import net.minecraft.client.gui.components.Tooltip;
-import net.minecraft.client.gui.layouts.LayoutElement;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.inventory.tooltip.BelowOrAboveWidgetTooltipPositioner;
-import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipPositioner;
-import net.minecraft.client.gui.screens.inventory.tooltip.MenuTooltipPositioner;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -53,21 +44,39 @@ public abstract class AbstractUIElement implements UIElement, PLLayoutElement {
 
 	@Override
 	public void setX(int x) {
-		this.x = x;
+		setRelativeX(getParent().map(uiElement -> x - uiElement.getX()).orElse(x));
 	}
 
 	@Override
 	public void setY(int y) {
-		this.y = y;
+		setRelativeY(getParent().map(uiElement -> y - uiElement.getY()).orElse(y));
 	}
 
 	@Override
 	public int getX() {
-		return this.x;
+		return UIElement.super.getX();
 	}
 
 	@Override
 	public int getY() {
+		return UIElement.super.getY();
+	}
+
+	public void setRelativeX(int x) {
+		this.x = x;
+	}
+
+	public void setRelativeY(int y) {
+		this.y = y;
+	}
+
+	@Override
+	public int getRelativeX() {
+		return this.x;
+	}
+
+	@Override
+	public int getRelativeY() {
 		return this.y;
 	}
 

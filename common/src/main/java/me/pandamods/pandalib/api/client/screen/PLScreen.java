@@ -18,15 +18,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public abstract class PLScreen extends Screen {
+public abstract class PLScreen extends UIElementHolder {
 	private final List<GuiEventListener> interactables = new ArrayList<>();
 	private final List<UIElement> children = new ArrayList<>();
 	private final List<UIElementHolder> holders = new ArrayList<>();
 	private final List<PLRenderable> renderables = new ArrayList<>();
 
-	protected PLScreen(Component title) {
-		super(title);
-	}
+	public abstract Component getTitle();
 
 	@SuppressWarnings("unchecked")
 	public <T> T addElement(T element) {

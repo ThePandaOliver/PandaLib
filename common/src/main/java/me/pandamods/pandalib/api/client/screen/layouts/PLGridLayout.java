@@ -163,9 +163,9 @@ public class PLGridLayout extends AbstractLayout {
 	}
 
 	public void quickArrange(Consumer<LayoutElement> consumer, int x, int y, int width, int height, float deltaX, float deltaY) {
+		this.visitChildren(consumer);
 		this.arrangeElements();
 		FrameLayout.alignInRectangle(this, x, y, width, height, deltaX, deltaY);
-		this.visitChildren(consumer);
 	}
 
     @Environment(value=EnvType.CLIENT)

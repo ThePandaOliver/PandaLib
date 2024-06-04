@@ -38,7 +38,7 @@ public abstract class ScrollableUIElementHolder extends UIElementHolder {
 		PoseStack poseStack = guiGraphics.pose();
 		poseStack.pushPose();
 		poseStack.translate(-scrollHorizontalAmount, -scrollVerticalAmount, 0);
-		guiGraphics.disableScissor();
+		guiGraphics.enableScissor(minX(), minY(), maxX(), maxY());
 		renderElement(guiGraphics, mouseX, mouseY, partialTick);
 		super.render(guiGraphics, mouseX + scrollHorizontalAmount, mouseY + scrollVerticalAmount, partialTick);
 		guiGraphics.disableScissor();

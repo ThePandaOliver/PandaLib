@@ -25,11 +25,9 @@ import net.minecraft.client.gui.navigation.CommonInputs;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.sounds.SoundManager;
-import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 
 import java.awt.*;
-import java.util.stream.Stream;
 
 public class ConfigMenu<T extends ConfigData> extends PLScreen {
 	private final Screen parent;
@@ -75,7 +73,12 @@ public class ConfigMenu<T extends ConfigData> extends PLScreen {
 
 		actionGrid.quickArrange(this::addElement, this.category.getX(), this.category.maxY() - 30, this.category.getWidth(), 30,
 				0.5f, 0.5f);
-		super.init();
+	}
+
+	@Override
+	public void render(PLGuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+		renderDirtBackground(guiGraphics);
+		super.render(guiGraphics, mouseX, mouseY, partialTick);
 	}
 
 	public void save() {
@@ -102,12 +105,6 @@ public class ConfigMenu<T extends ConfigData> extends PLScreen {
 	}
 
 	@Override
-	public void render(PLGuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-		renderDirtBackground(guiGraphics);
-		super.render(guiGraphics, mouseX, mouseY, partialTick);
-	}
-
-	@Override
 	public void onClose() {
 		this.minecraft.setScreen(parent);
 	}
@@ -120,12 +117,13 @@ public class ConfigMenu<T extends ConfigData> extends PLScreen {
 			for (AbstractConfigCategory category : ConfigMenu.this.getCategory().getCategories()) {
 				categoryHelper.addChild(Button.builder(category.getName(), button -> setCategory(category)).width(90).build());
 			}
-			categoryGrid.quickArrange(this::addElement, 0, 5, this.getWidth(), this.getHeight() - 55, 0.5f, 0);
+			categoryGrid.quickArrange(this::addElement, getX(), getY() + 5, this.getWidth(), this.getHeight() - 55, 0.5f, 0);
+			super.init();
 		}
 
 		@Override
 		public void render(PLGuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-			guiGraphics.renderSeparatorLine(this.maxX(), this.getY(), this.height, true);
+			guiGraphics.renderSeparatorLine(this.maxX(), this.getRelativeY(), this.height, true);
 			super.render(guiGraphics, mouseX, mouseY, partialTick);
 		}
 	}
@@ -147,7 +145,8 @@ public class ConfigMenu<T extends ConfigData> extends PLScreen {
 
 			addCategoryDist(helper, ConfigMenu.this.category);
 
-			grid.quickArrange(this::addElement, 4, 0, this.getWidth() - 10, this.getHeight(), 0f, 0.5f);
+			grid.quickArrange(this::addElement, getX() + 4, getY(), this.getWidth() - 10, this.getHeight(), 0f, 0.5f);
+			super.init();
 		}
 
 		private void addCategoryDist(PLGridLayout.ColumnHelper helper, AbstractConfigCategory abstractCategory) {
@@ -162,7 +161,7 @@ public class ConfigMenu<T extends ConfigData> extends PLScreen {
 
 		@Override
 		public void render(PLGuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-			guiGraphics.renderSeparatorLine(getX(), maxY(), getWidth(), false);
+			guiGraphics.renderSeparatorLine(getRelativeX(), maxY(), getWidth(), false);
 			super.render(guiGraphics, mouseX, mouseY, partialTick);
 		}
 
@@ -219,17 +218,18 @@ public class ConfigMenu<T extends ConfigData> extends PLScreen {
 				this.categoryList.setActive(false);
 				this.categoryList.setPosition(0, this.getHeight() + 2);
 				this.addElement(this.categoryList);
+				super.init();
 			}
 
 			@Override
 			public void render(PLGuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
 				this.checkHoverState(mouseX, mouseY);
-				int y = this.getY() + (this.height - this.font.lineHeight) / 2;
-				guiGraphics.drawString(this.font, ">", this.getX(), y, Color.white.getRGB());
+				int y = this.getRelativeY() + (this.height - this.font.lineHeight) / 2;
+				guiGraphics.drawString(this.font, ">", this.getRelativeX(), y, Color.white.getRGB());
 
 				y += this.font.lineHeight;
 				if (this.isHoveredOrFocused())
-					guiGraphics.fill(this.getX(), y, this.getX() + this.width, y + 1, Color.white.getRGB());
+					guiGraphics.fill(this.getRelativeX(), y, this.getRelativeX() + this.width, y + 1, Color.white.getRGB());
 
 				this.categoryList.setActive(this.isFocused());
 

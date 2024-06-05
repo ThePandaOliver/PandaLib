@@ -23,11 +23,6 @@ public class IconButton extends AbstractIconButton {
 		this.onPress.accept(this);
 	}
 
-	@Override
-	protected void updateWidgetNarration(NarrationElementOutput narrationElementOutput) {
-		this.defaultButtonNarrationText(narrationElementOutput);
-	}
-
 	public static class Builder {
 		private int x = 0;
 		private int y = 0;

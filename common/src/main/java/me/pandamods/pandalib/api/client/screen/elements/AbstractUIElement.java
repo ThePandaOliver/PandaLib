@@ -3,13 +3,13 @@ package me.pandamods.pandalib.api.client.screen.elements;
 import me.pandamods.pandalib.api.client.screen.PLScreen;
 import me.pandamods.pandalib.api.client.screen.layouts.PLLayoutElement;
 import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 
 import java.util.Optional;
 import java.util.function.Consumer;
 
 public abstract class AbstractUIElement implements UIElement, PLLayoutElement {
-	private PLScreen screen;
 	private UIElement parent;
 
 	protected int x = 0;
@@ -19,18 +19,10 @@ public abstract class AbstractUIElement implements UIElement, PLLayoutElement {
 
 	private boolean active = true;
 	private boolean visible = true;
+
 	private boolean focused = false;
 	private boolean hovered = false;
 
-	@Override
-	public PLScreen getScreen() {
-		return this.screen;
-	}
-
-	@Override
-	public void setScreen(PLScreen screen) {
-		this.screen = screen;
-	}
 
 	@Override
 	public Optional<UIElement> getParent() {

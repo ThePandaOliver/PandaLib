@@ -6,7 +6,7 @@ import net.minecraft.network.chat.Component;
 
 import java.util.List;
 
-public abstract class AbstractConfigCategory extends UIElementHolder {
+public abstract class AbstractConfigCategory extends ScrollableUIElementHolder {
 	private AbstractConfigCategory parentCategory;
 
 	public abstract Component getName();
@@ -25,13 +25,13 @@ public abstract class AbstractConfigCategory extends UIElementHolder {
 	public abstract void load();
 	public abstract void reset();
 
-//	@Override
-//	public int scrollHorizontalLength() {
-//		return this.getHeight() * 2;
-//	}
-//
-//	@Override
-//	public int scrollVerticalLength() {
-//		return this.getHeight() * 2;
-//	}
+	@Override
+	public int scrollHorizontalLength() {
+		return this.getHeight() * 2;
+	}
+
+	@Override
+	public int scrollVerticalLength() {
+		return this.getHeight() * 2;
+	}
 }

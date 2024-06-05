@@ -29,7 +29,7 @@ public class ConfigScreenProvider<T extends ConfigData> implements Supplier<Scre
 
 		return new ConfigMenu<>(parent, config.getClass(),
 				createCategory(config, defaultConfig, configHolder.getLangName(), configHolder.getLangName())
-		);
+		).compileScreen();
 	}
 
 	private ConfigCategory createCategory(Object config, Object defaultConfig, String baseName, String langName) {

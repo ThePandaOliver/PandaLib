@@ -1,6 +1,8 @@
 package me.pandamods.pandalib.api.client.screen.config.option;
 
+import me.pandamods.pandalib.api.client.screen.elements.widgets.PLEditBox;
 import me.pandamods.pandalib.api.client.screen.layouts.PLGridLayout;
+import me.pandamods.pandalib.api.utils.screen.PLGuiGraphics;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
@@ -8,11 +10,13 @@ import net.minecraft.network.chat.Component;
 import java.lang.reflect.Field;
 
 public class StringOption extends AbstractConfigOption<String> {
-	private EditBox inputField;
+	private PLEditBox inputField;
 
 	public StringOption(Component name, Field field) {
 		super(name, field);
-		inputField = new EditBox(Minecraft.getInstance().font, 0, 0, 100, 16, name);
+		inputField = new PLEditBox(Minecraft.getInstance().font, name);
+		inputField.setPosition(0, 0);
+		inputField.setSize(100, 16);
 	}
 
 	@Override
@@ -30,7 +34,7 @@ public class StringOption extends AbstractConfigOption<String> {
 		PLGridLayout grid = new PLGridLayout().spacing(2);
 		grid.defaultCellSetting().alignVerticallyMiddle();
 
-		grid.addChild(inputField = new EditBox(Minecraft.getInstance().font, 0, 0, 100, 16, this.inputField, this.name), 0, 0);
+		grid.addChild(inputField = new PLEditBox(Minecraft.getInstance().font, this.inputField, this.name), 0, 0);
 		this.inputField.setMaxLength(Integer.MAX_VALUE);
 
 		addActionButtons(grid, 2);

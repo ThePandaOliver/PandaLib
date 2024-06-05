@@ -8,7 +8,7 @@ public class WidgetHooks {
 	}
 
 	public static void setY(AbstractWidget widget, int y) {
-		widget.setX(y);
+		widget.setY(y);
 	}
 
 	public static void setWidth(AbstractWidget widget, int width) {

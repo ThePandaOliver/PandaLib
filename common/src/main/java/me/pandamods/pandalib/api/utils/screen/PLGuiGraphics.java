@@ -4,7 +4,6 @@ import net.minecraft.Util;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.Mth;
 import org.joml.Math;
 import org.joml.Matrix4f;
 
@@ -47,7 +46,7 @@ public class PLGuiGraphics extends GuiGraphics {
 		this.fill(x, y, x + length, y + 1, SEPARATOR_LINE_LIGHT_COLOR);
 	}
 
-	public void drawScrollingText(Font font, Component text, int minX, int minY, int maxX, int maxY, int color) {
+	public void drawScrollingString(Font font, Component text, int minX, int minY, int maxX, int maxY, int color) {
 		int textWidth = font.width(text);
 		int y = (minY + maxY - 9) / 2 + 1;
 		int width = maxX - minX;

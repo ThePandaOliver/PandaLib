@@ -1,17 +1,13 @@
 package me.pandamods.pandalib.api.client.screen.elements;
 
 import me.pandamods.pandalib.api.client.screen.PLRenderable;
-import me.pandamods.pandalib.api.client.screen.ScreenHooks;
-import me.pandamods.pandalib.api.client.screen.converters.AbstractWidgetConverter;
-import me.pandamods.pandalib.api.client.screen.converters.RenderableConverter;
 import me.pandamods.pandalib.api.utils.screen.PLGuiGraphics;
-import net.minecraft.client.gui.components.AbstractWidget;
-import net.minecraft.client.gui.components.Renderable;
+import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 public abstract class UIElementHolder extends AbstractUIElement implements PLRenderable {
@@ -22,29 +18,18 @@ public abstract class UIElementHolder extends AbstractUIElement implements PLRen
 
 	public void init() {}
 
-	@SuppressWarnings("unchecked")
 	public <T> T addElement(T element) {
-		if (element instanceof AbstractWidget)
-			element = (T) new AbstractWidgetConverter((AbstractWidget) element);
-		else if (element instanceof Renderable)
-			element = (T) new RenderableConverter((Renderable) element);
-
 		if (element instanceof UIElement)
 			addElement((UIElement) element);
 		return element;
 	}
 
-	private void addElement(UIElement element) {
-		element.setScreen(this.getScreen());
+	public void addElement(UIElement element) {
 		element.setParent(this);
 		this.children.add(element);
-		if (element.isInteractable())
-			this.getScreen().getInteractables().add(element);
 
-		if (element instanceof NarratableEntry) {
+		if (element instanceof NarratableEntry)
 			this.narratables.add((NarratableEntry) element);
-			ScreenHooks.getNarratables(this.getScreen()).add((NarratableEntry) element);
-		}
 
 		if (element instanceof UIElementHolder holder) {
 			this.holders.add(holder);
@@ -57,9 +42,7 @@ public abstract class UIElementHolder extends AbstractUIElement implements PLRen
 
 	@SuppressWarnings("SuspiciousMethodCalls")
 	public void removeElement(Object listener) {
-		this.getScreen().getInteractables().remove(listener);
 		this.children.remove(listener);
-		ScreenHooks.getNarratables(this.getScreen()).remove(listener);
 		this.narratables.remove(listener);
 		this.renderables.remove(listener);
 		this.holders.remove(listener);
@@ -67,8 +50,6 @@ public abstract class UIElementHolder extends AbstractUIElement implements PLRen
 
 	public void clearElements() {
 		this.renderables.clear();
-		this.getScreen().getInteractables().removeAll(this.children);
-		ScreenHooks.getNarratables(this.getScreen()).removeAll(this.narratables);
 		this.children.clear();
 		this.narratables.clear();
 		this.holders.forEach(UIElementHolder::clearElements);
@@ -93,14 +74,11 @@ public abstract class UIElementHolder extends AbstractUIElement implements PLRen
 
 	public void rebuildWidgets() {
 		this.clearElements();
-		if (Objects.equals(this.getScreen().getFocused(), this))
-			this.getScreen().clearFocus();
 		this.init();
 	}
 
-	@Override
-	public boolean isInteractable() {
-		return false;
+	public void repositionElements() {
+		this.rebuildWidgets();
 	}
 
 	@Override
@@ -123,7 +101,7 @@ public abstract class UIElementHolder extends AbstractUIElement implements PLRen
 	public boolean mouseClicked(double mouseX, double mouseY, int button) {
 		for (UIElement element : this.children) {
 			if (!element.isMouseOver(mouseX, mouseY)) continue;
-			this.getScreen().setFocused(element);
+			element.setFocused();
 			if (element.mouseClicked(mouseX, mouseY, button)) {
 				return true;
 			}
@@ -170,9 +148,11 @@ public abstract class UIElementHolder extends AbstractUIElement implements PLRen
 
 	@Override
 	public boolean isMouseOver(double mouseX, double mouseY) {
-		if (!isActive()) return false;
-		if (isInteractable() && super.isMouseOver(mouseX, mouseY))
-			return true;
-		return this.getElementAt(mouseX, mouseY).isPresent();
+		if (!isVisible()) return false;
+		return super.isMouseOver(mouseX, mouseY);
+	}
+
+	protected boolean isMouseOverChild(double mouseX, double mouseY) {
+    	return this.getElementAt(mouseX, mouseY).isPresent();
 	}
 }

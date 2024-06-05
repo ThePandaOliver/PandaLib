@@ -4,6 +4,7 @@ import me.pandamods.pandalib.api.client.screen.PLScreen;
 import me.pandamods.pandalib.api.client.screen.elements.UIElementHolder;
 import me.pandamods.pandalib.api.client.screen.config.category.AbstractConfigCategory;
 import me.pandamods.pandalib.api.client.screen.config.category.ConfigCategory;
+import me.pandamods.pandalib.api.client.screen.elements.widgets.buttons.AbstractPLButton;
 import me.pandamods.pandalib.api.client.screen.elements.widgets.buttons.PLButton;
 import me.pandamods.pandalib.api.client.screen.widget.list.QuickListWidget;
 import me.pandamods.pandalib.api.config.ConfigData;
@@ -25,7 +26,9 @@ import net.minecraft.client.gui.navigation.CommonInputs;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.sounds.SoundManager;
+import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
+import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
 
@@ -42,7 +45,6 @@ public class ConfigMenu<T extends ConfigData> extends PLScreen {
 	}
 
 	protected ConfigMenu(Screen parent, ConfigHolder<T> configHolder, AbstractConfigCategory category) {
-		super(category.getName());
 		this.parent = parent;
 		this.configHolder = configHolder;
 		this.category = this.rootCategory = category;
@@ -51,7 +53,12 @@ public class ConfigMenu<T extends ConfigData> extends PLScreen {
 	}
 
 	@Override
-	protected void init() {
+	public Component getTitle() {
+		return getCategory().getName();
+	}
+
+	@Override
+	public void init() {
 		this.addressBar.setSize(this.width, 20);
 		this.addElement(this.addressBar);
 
@@ -67,9 +74,9 @@ public class ConfigMenu<T extends ConfigData> extends PLScreen {
 		actionGrid.spacing(4).defaultCellSetting();
 		PLGridLayout.ColumnHelper actionHelper = actionGrid.createColumnHelper(1);
 
-		actionHelper.addChild(Button.builder(PLCommonComponents.SAVE, button -> this.save()).width(50).build());
-		actionHelper.addChild(Button.builder(PLCommonComponents.RESET, button -> this.reset()).width(50).build());
-		actionHelper.addChild(Button.builder(PLCommonComponents.CLOSE, button -> this.onClose()).width(50).build());
+		actionHelper.addChild(PLButton.builder(PLCommonComponents.SAVE, button -> this.save()).width(50).build());
+		actionHelper.addChild(PLButton.builder(PLCommonComponents.RESET, button -> this.reset()).width(50).build());
+		actionHelper.addChild(PLButton.builder(PLCommonComponents.CLOSE, button -> this.onClose()).width(50).build());
 
 		actionGrid.quickArrange(this::addElement, this.category.getX(), this.category.maxY() - 30, this.category.getWidth(), 30,
 				0.5f, 0.5f);
@@ -77,7 +84,7 @@ public class ConfigMenu<T extends ConfigData> extends PLScreen {
 
 	@Override
 	public void render(PLGuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-		renderDirtBackground(guiGraphics);
+		renderBackground(guiGraphics);
 		super.render(guiGraphics, mouseX, mouseY, partialTick);
 	}
 
@@ -115,7 +122,7 @@ public class ConfigMenu<T extends ConfigData> extends PLScreen {
 			PLGridLayout categoryGrid = new PLGridLayout().spacing(2);
 			PLGridLayout.RowHelper categoryHelper = categoryGrid.createRowHelper(1);
 			for (AbstractConfigCategory category : ConfigMenu.this.getCategory().getCategories()) {
-				categoryHelper.addChild(Button.builder(category.getName(), button -> setCategory(category)).width(90).build());
+				categoryHelper.addChild(PLButton.builder(category.getName(), button -> setCategory(category)).width(90).build());
 			}
 			categoryGrid.quickArrange(this::addElement, getX(), getY() + 5, this.getWidth(), this.getHeight() - 55, 0.5f, 0);
 			super.init();
@@ -136,9 +143,8 @@ public class ConfigMenu<T extends ConfigData> extends PLScreen {
 			PLGridLayout.ColumnHelper helper = grid.createColumnHelper(1);
 
 			AbstractConfigCategory previousCategory = ConfigMenu.this.getCategory().getParentCategory();
-			PLButton backButton = new PLButton(PLCommonComponents.BACK);
+			PLButton backButton = PLButton.builder(PLCommonComponents.BACK, button -> setCategory(previousCategory)).build();
 			backButton.setSize(50, this.getHeight() - 4);
-			backButton.setReleaseListener(clickType -> setCategory(previousCategory));
 			backButton.setActive(previousCategory != null);
 			helper.addChild(backButton);
 			helper.addChild(SpacerElement.width(4));
@@ -165,19 +171,21 @@ public class ConfigMenu<T extends ConfigData> extends PLScreen {
 			super.render(guiGraphics, mouseX, mouseY, partialTick);
 		}
 
-		private class CategoryButton extends AbstractButton {
+		private class CategoryButton extends AbstractPLButton {
 			private final Font font;
 			private final AbstractConfigCategory category;
 
 			public CategoryButton(AbstractConfigCategory category) {
-				super(0, 0, 0, 20, category.getName());
+				super(category.getName());
 				this.category = category;
 				this.font = Minecraft.getInstance().font;
+				this.setSize(font.width(getMessage()), 20);
 				this.width = font.width(getMessage());
 			}
 
 			@Override
-			public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+			public void render(PLGuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+				this.checkHoverState(mouseX, mouseY);
 				int y = this.getY() + (this.height - this.font.lineHeight) / 2;
 				guiGraphics.drawString(this.font, getMessage(), this.getX(), y, Color.white.getRGB());
 
@@ -189,10 +197,6 @@ public class ConfigMenu<T extends ConfigData> extends PLScreen {
 			@Override
 			public void onPress() {
 				ConfigMenu.this.setCategory(category);
-			}
-
-			@Override
-			protected void updateWidgetNarration(NarrationElementOutput narrationElementOutput) {
 			}
 		}
 
@@ -207,7 +211,7 @@ public class ConfigMenu<T extends ConfigData> extends PLScreen {
 
 				this.categoryList = QuickListWidget.builder(1)
 						.addElements(category.getCategories().stream().map(child ->
-								Button.builder(child.getName(), button -> ConfigMenu.this.setCategory(child))
+								PLButton.builder(child.getName(), button -> ConfigMenu.this.setCategory(child))
 										.size(150, font.lineHeight + 8)
 										.build()
 						).toList()).build();
@@ -215,10 +219,9 @@ public class ConfigMenu<T extends ConfigData> extends PLScreen {
 
 			@Override
 			public void init() {
-				this.categoryList.setActive(false);
-				this.categoryList.setPosition(0, this.getHeight() + 2);
 				this.addElement(this.categoryList);
-				super.init();
+				this.categoryList.setActive(false);
+				this.categoryList.setPosition(this.getX(), this.getY() + this.getHeight() + 2);
 			}
 
 			@Override
@@ -233,7 +236,10 @@ public class ConfigMenu<T extends ConfigData> extends PLScreen {
 
 				this.categoryList.setActive(this.isFocused());
 
+				guiGraphics.pose().pushPose();
+				guiGraphics.pose().translate(0,0, 999);
 				super.render(guiGraphics, mouseX, mouseY, partialTick);
+				guiGraphics.pose().popPose();
 			}
 
 			protected void onPress() {
@@ -287,8 +293,8 @@ public class ConfigMenu<T extends ConfigData> extends PLScreen {
 			}
 
 			@Override
-			public boolean isInteractable() {
-				return true;
+			public boolean isMouseOver(double mouseX, double mouseY) {
+				return super.isMouseOver(mouseX, mouseY) || this.isMouseOverChild(mouseX, mouseY);
 			}
 		}
 	}

@@ -50,11 +50,6 @@ public abstract class AbstractConfigOption<T> extends UIElementHolder {
 		super.render(guiGraphics, mouseX, mouseY, partialTick);
 	}
 
-	@Override
-	public boolean isInteractable() {
-		return true;
-	}
-
 	protected abstract void setValue(T value);
 	protected abstract T getValue();
 

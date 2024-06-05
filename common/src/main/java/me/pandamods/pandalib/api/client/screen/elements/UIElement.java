@@ -7,18 +7,25 @@ import net.minecraft.client.gui.components.events.GuiEventListener;
 import java.util.Optional;
 
 public interface UIElement extends GuiEventListener {
-	PLScreen getScreen();
-	void setScreen(PLScreen screen);
+	default PLScreen getScreen() {
+		return getParent().map(UIElement::getScreen).orElse(null);
+	}
 
 	Optional<UIElement> getParent();
 	void setParent(UIElement parent);
 
 	default int getX() {
-		return getParent().map(uiElement -> uiElement.getX() + getRelativeX()).orElse(getRelativeX());
+		return getParent().map(uiElement -> uiElement.getChildOffsetX() + uiElement.getX() + getRelativeX()).orElse(getRelativeX());
+	}
+	default int getY() {
+		return getParent().map(uiElement -> uiElement.getChildOffsetY() + uiElement.getY() + getRelativeY()).orElse(getRelativeY());
 	}
 
-	default int getY() {
-		return getParent().map(uiElement -> uiElement.getY() + getRelativeY()).orElse(getRelativeY());
+	default int getChildOffsetX() {
+		return 0;
+	}
+	default int getChildOffsetY() {
+		return 0;
 	}
 
 	int getRelativeX();
@@ -40,12 +47,12 @@ public interface UIElement extends GuiEventListener {
 		return minY() + getHeight();
 	}
 
-	default boolean isInteractable() {
-		return true;
-	}
-
 	@Override
 	default boolean isMouseOver(double mouseX, double mouseY) {
 		return ScreenUtils.isMouseOver(mouseX, mouseY, minX(), minY(), maxX(), maxY());
+	}
+
+	default void setFocused() {
+		getScreen().setFocused(this);
 	}
 }

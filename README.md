@@ -13,10 +13,11 @@ This Library was created to easily share code between The Panda Oliver's mods.
 
 ### Current Features:
 - Config API
-- Automatic Config synchronisation
+  - Automatic Config synchronisation
+  - Config Screen API
+- Screen API [WIP]
 
 ### Planned Features:
-- Config Screen API
 - Custom Model Rendering API
 - And more to come
 

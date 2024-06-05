@@ -49,24 +49,31 @@ public class ConfigCategory extends AbstractConfigCategory {
 			rowHelper.addChild(option);
 			option.setWidth(this.getWidth());
 		}
-		grid.quickArrange(this::addElement, this.getX(), this.getY(), this.getWidth(), this.getHeight(), 0, 0);
+		grid.quickArrange(this::addElement, this.getX(), this.getY());
 		super.init();
 	}
 
 	@Override
-	public void render(PLGuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-		renderHighlight(guiGraphics);
-		super.render(guiGraphics, mouseX, mouseY, partialTick);
+	protected void renderElement(PLGuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+		renderHighlight(guiGraphics, mouseX, mouseY);
 	}
 
-	private static final int OPTION_HIGHLIGHT_COLOR_TOP = new Color(255, 255, 255, 75).getRGB();
-	private static final int OPTION_HIGHLIGHT_COLOR = new Color(200, 200, 200, 75).getRGB();
-	private static final int OPTION_HIGHLIGHT_COLOR_BOTTOM = new Color(150, 150, 150, 75).getRGB();
+	private static final int OPTION_HIGHLIGHT_COLOR_TOP = new Color(255, 255, 255, 50).getRGB();
+	private static final int OPTION_HIGHLIGHT_COLOR = new Color(200, 200, 200, 50).getRGB();
+	private static final int OPTION_HIGHLIGHT_COLOR_BOTTOM = new Color(150, 150, 150, 50).getRGB();
 
-	private void renderHighlight(PLGuiGraphics guiGraphics) {
+	private void renderHighlight(PLGuiGraphics guiGraphics, int mouseX, int mouseY) {
 		optionHighlightAlpha.update();
 		optionHighlightPosition.update();
 		optionHighlightSize.update();
+
+		AbstractConfigOption<?> option = getOptionAt(mouseX, mouseY);
+		if (option != null) {
+			optionHighlightAlpha.setTarget(1);
+			optionHighlightPosition.setTarget(option.getRelativeY());
+			optionHighlightSize.setTarget(option.getHeight());
+		} else
+			optionHighlightAlpha.setTarget(0);
 
 		int minY = this.getY() + optionHighlightPosition.getAsInt();
 		int maxY = minY + optionHighlightSize.getAsInt();
@@ -76,18 +83,6 @@ public class ConfigCategory extends AbstractConfigCategory {
 		guiGraphics.fill(minX(), minY + 2, maxX(), maxY - 2, OPTION_HIGHLIGHT_COLOR);
 		guiGraphics.fill(minX(), maxY - 2, maxX(), maxY, OPTION_HIGHLIGHT_COLOR_BOTTOM);
 		guiGraphics.setColor(1, 1, 1, 1);
-	}
-
-	@Override
-	public void mouseMoved(double mouseX, double mouseY) {
-		AbstractConfigOption<?> option = getOptionAt((int) mouseX, (int) mouseY);
-		if (option != null) {
-			optionHighlightAlpha.setTarget(1);
-			optionHighlightPosition.setTarget(option.getRelativeY());
-			optionHighlightSize.setTarget(option.getHeight());
-		} else
-			optionHighlightAlpha.setTarget(0);
-		super.mouseMoved(mouseX, mouseY);
 	}
 
 	public AbstractConfigOption<?> getOptionAt(int mouseX, int mouseY) {

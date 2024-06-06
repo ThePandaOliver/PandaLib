@@ -220,7 +220,7 @@ public class ConfigMenu<T extends ConfigData> extends PLScreen {
 			@Override
 			public void init() {
 				this.addElement(this.categoryList);
-				this.categoryList.setActive(false);
+				this.categoryList.setVisible(false);
 				this.categoryList.setPosition(this.getX(), this.getY() + this.getHeight() + 2);
 			}
 
@@ -234,7 +234,7 @@ public class ConfigMenu<T extends ConfigData> extends PLScreen {
 				if (this.isHoveredOrFocused())
 					guiGraphics.fill(this.getRelativeX(), y, this.getRelativeX() + this.width, y + 1, Color.white.getRGB());
 
-				this.categoryList.setActive(this.isFocused());
+				this.categoryList.setVisible(this.isFocused());
 
 				guiGraphics.pose().pushPose();
 				guiGraphics.pose().translate(0,0, 999);
@@ -260,7 +260,7 @@ public class ConfigMenu<T extends ConfigData> extends PLScreen {
 				if (super.mouseClicked(mouseX, mouseY, button))
 					return true;
 
-				if (this.isActive()) {
+				if (this.isActiveAndVisible()) {
 					if (this.isValidClickButton(button)) {
 						this.onPress();
 						return true;
@@ -275,7 +275,7 @@ public class ConfigMenu<T extends ConfigData> extends PLScreen {
 				if (super.keyReleased(keyCode, scanCode, modifiers))
 					return true;
 
-				if (!this.isActive())
+				if (!this.isActiveAndVisible())
 					return false;
 				if (CommonInputs.selected(keyCode)) {
 					this.onPress();
@@ -290,11 +290,6 @@ public class ConfigMenu<T extends ConfigData> extends PLScreen {
 
 			protected boolean isValidClickButton(int button) {
 				return button == 0;
-			}
-
-			@Override
-			public boolean isMouseOver(double mouseX, double mouseY) {
-				return super.isMouseOver(mouseX, mouseY) || this.isMouseOverChild(mouseX, mouseY);
 			}
 		}
 	}

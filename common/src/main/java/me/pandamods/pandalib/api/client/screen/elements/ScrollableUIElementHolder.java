@@ -81,4 +81,9 @@ public abstract class ScrollableUIElementHolder extends UIElementHolder {
 		scrollVerticalAmount = Math.clamp(0, scrollVerticalLength() - this.getHeight(), scrollVerticalAmount);
 		return true;
 	}
+
+	@Override
+	protected boolean isOutOfBoundsInteractionAllowed() {
+		return false;
+	}
 }

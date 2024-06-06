@@ -83,7 +83,7 @@ public abstract class UIElementHolder extends AbstractUIElement implements PLRen
 
 	@Override
 	public void render(PLGuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-		if (!isActive()) return;
+		if (!isVisible()) return;
 		for (PLRenderable renderable : renderables) {
 			renderable.render(guiGraphics, mouseX, mouseY, partialTick);
 		}
@@ -148,11 +148,14 @@ public abstract class UIElementHolder extends AbstractUIElement implements PLRen
 
 	@Override
 	public boolean isMouseOver(double mouseX, double mouseY) {
-		if (!isVisible()) return false;
+		if (!isVisible())
+			return false;
+		if (isOutOfBoundsInteractionAllowed() && this.getElementAt(mouseX, mouseY).isPresent())
+			return true;
 		return super.isMouseOver(mouseX, mouseY);
 	}
 
-	protected boolean isMouseOverChild(double mouseX, double mouseY) {
-    	return this.getElementAt(mouseX, mouseY).isPresent();
+	protected boolean isOutOfBoundsInteractionAllowed() {
+		return true;
 	}
 }

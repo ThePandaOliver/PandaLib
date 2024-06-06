@@ -32,7 +32,7 @@ public class QuickListWidget extends UIElementHolder {
 
 	@Override
 	public void render(PLGuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-		if (this.isActive()) {
+		if (this.isVisible()) {
 			guiGraphics.fill(this.getX() - 1, this.getY() - 1,
 					this.getX() + this.getWidth() + 1, this.getY() + this.getHeight() + 1, Color.WHITE.getRGB());
 

@@ -55,4 +55,7 @@ public interface UIElement extends GuiEventListener {
 	default void setFocused() {
 		getScreen().setFocused(this);
 	}
+
+	default void tick() {
+	}
 }

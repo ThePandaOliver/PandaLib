@@ -26,12 +26,12 @@ public abstract class AbstractConfigCategory extends ScrollableUIElementHolder {
 	public abstract void reset();
 
 	@Override
-	public int scrollHorizontalLength() {
-		return this.getHeight() * 2;
+	public int getContentWidth() {
+		return 0;
 	}
 
 	@Override
-	public int scrollVerticalLength() {
-		return this.getHeight() * 2;
+	public int getContentHeight() {
+		return 0;
 	}
 }

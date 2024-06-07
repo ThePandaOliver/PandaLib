@@ -20,6 +20,8 @@ public class ConfigCategory extends AbstractConfigCategory {
 	private final NumberAnimator optionHighlightPosition;
 	private final NumberAnimator optionHighlightSize;
 
+	private int contentHeight = 0;
+
 	public ConfigCategory(Component name, List<AbstractConfigOption<?>> options, List<AbstractConfigCategory> categories) {
 		this.name = name;
 		this.options = options;
@@ -50,7 +52,13 @@ public class ConfigCategory extends AbstractConfigCategory {
 			option.setWidth(this.getWidth());
 		}
 		grid.quickArrange(this::addElement, this.getX(), this.getY());
+		contentHeight = grid.getHeight();
 		super.init();
+	}
+
+	@Override
+	public int getContentHeight() {
+		return contentHeight;
 	}
 
 	@Override

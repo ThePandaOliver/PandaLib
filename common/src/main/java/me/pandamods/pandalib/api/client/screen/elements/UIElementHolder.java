@@ -158,4 +158,9 @@ public abstract class UIElementHolder extends AbstractUIElement implements PLRen
 	protected boolean isOutOfBoundsInteractionAllowed() {
 		return true;
 	}
+
+	@Override
+	public void tick() {
+		this.children.forEach(UIElement::tick);
+	}
 }

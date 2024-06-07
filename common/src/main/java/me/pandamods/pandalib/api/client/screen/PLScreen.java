@@ -97,9 +97,6 @@ public abstract class PLScreen extends UIElementHolder {
 		return false;
 	}
 
-	public void tick() {
-	}
-
 	public void removed() {
 	}
 

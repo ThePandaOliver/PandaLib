@@ -2,7 +2,7 @@ package me.pandamods.pandalib.api.client.screen.config.option;
 
 import me.pandamods.pandalib.PandaLib;
 import me.pandamods.pandalib.api.client.screen.elements.UIElementHolder;
-import me.pandamods.pandalib.api.client.screen.widget.IconButton;
+import me.pandamods.pandalib.api.client.screen.elements.widgets.buttons.IconButton;
 import me.pandamods.pandalib.api.utils.PLCommonComponents;
 import me.pandamods.pandalib.api.client.screen.layouts.PLGridLayout;
 import me.pandamods.pandalib.api.utils.screen.PLGuiGraphics;

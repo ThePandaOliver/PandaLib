@@ -53,11 +53,6 @@ public class CompiledPLScreen extends Screen {
 	}
 
 	@Override
-	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-		return screen.keyPressed(keyCode, scanCode, modifiers);
-	}
-
-	@Override
 	protected void setInitialFocus(GuiEventListener listener) {
 		super.setInitialFocus(listener);
 	}
@@ -286,6 +281,11 @@ public class CompiledPLScreen extends Screen {
 	@Override
 	public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
 		return screen.mouseScrolled(mouseX, mouseY, delta);
+	}
+
+	@Override
+	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+		return screen.keyPressed(keyCode, scanCode, modifiers);
 	}
 
 	@Override

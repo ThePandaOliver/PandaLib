@@ -1,6 +1,5 @@
-package me.pandamods.pandalib.api.client.screen.widget;
+package me.pandamods.pandalib.api.client.screen.elements.widgets.buttons;
 
-import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 

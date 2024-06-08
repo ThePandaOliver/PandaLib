@@ -49,11 +49,11 @@ public abstract class UIElementHolder extends AbstractUIElement implements PLRen
 	}
 
 	public void clearElements() {
-		this.renderables.clear();
 		this.children.clear();
 		this.narratables.clear();
 		this.holders.forEach(UIElementHolder::clearElements);
 		this.holders.clear();
+		this.renderables.clear();
 	}
 
 	public List<UIElement> getChildren() {

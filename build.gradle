@@ -22,6 +22,11 @@ forgix {
         projectName = "fabric"
         jarLocation = "build/libs/pandalib-${mod_version}.jar"
     }
+
+    neoforge {
+        projectName = "neoforge"
+        jarLocation = "build/libs/pandalib-${mod_version}.jar"
+    }
 }
 
 subprojects {

@@ -1,5 +1,6 @@
 package me.pandamods.pandalib.api.client.screen.elements.widgets.buttons;
 
+import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
@@ -8,13 +9,13 @@ import java.util.function.Consumer;
 public class IconButton extends AbstractIconButton {
 	private final Consumer<IconButton> onPress;
 
-	IconButton(int x, int y, int size, Component message, ResourceLocation iconLocation, int textureSize, Consumer<IconButton> onPress) {
-		super(x, y, size, message, iconLocation, textureSize);
+	IconButton(int x, int y, int size, Component message, WidgetSprites iconSprite, int textureSize, Consumer<IconButton> onPress) {
+		super(x, y, size, message, iconSprite, textureSize);
 		this.onPress = onPress;
 	}
 
-	public static Builder builder(Component message, ResourceLocation iconLocation, Consumer<IconButton> onPress) {
-		return new Builder(message, iconLocation, onPress);
+	public static Builder builder(Component message, WidgetSprites iconSprite, Consumer<IconButton> onPress) {
+		return new Builder(message, iconSprite, onPress);
 	}
 
 	@Override
@@ -27,13 +28,13 @@ public class IconButton extends AbstractIconButton {
 		private int y = 0;
 		private int size  = 20;
 		private final Component message;
-		private final ResourceLocation iconLocation;
+		private final WidgetSprites iconSprite;
 		private int textureSize = 16;
 		private final Consumer<IconButton> onPress;
 
-		Builder(Component message, ResourceLocation iconLocation, Consumer<IconButton> onPress) {
+		Builder(Component message, WidgetSprites iconSprite, Consumer<IconButton> onPress) {
 			this.message = message;
-			this.iconLocation = iconLocation;
+			this.iconSprite = iconSprite;
 			this.onPress = onPress;
 		}
 
@@ -64,7 +65,7 @@ public class IconButton extends AbstractIconButton {
 		}
 
 		public IconButton build() {
-			return new IconButton(x, y, size, message, iconLocation, textureSize, onPress);
+			return new IconButton(x, y, size, message, iconSprite, textureSize, onPress);
 		}
 	}
 }

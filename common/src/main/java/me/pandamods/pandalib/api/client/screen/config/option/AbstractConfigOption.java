@@ -20,11 +20,13 @@ import java.util.function.Supplier;
 public abstract class AbstractConfigOption<T> extends UIElementHolder {
 	WidgetSprites RESET_ICON = new WidgetSprites(
 			new ResourceLocation(PandaLib.MOD_ID, "textures/gui/icon/reset.png"),
-			new ResourceLocation(PandaLib.MOD_ID, "textures/gui/icon/reset_disabled.png")
+			new ResourceLocation(PandaLib.MOD_ID, "textures/gui/icon/reset_disabled.png"),
+			new ResourceLocation(PandaLib.MOD_ID, "textures/gui/icon/reset.png")
 	);
 	WidgetSprites UNDO_ICON = new WidgetSprites(
 			new ResourceLocation(PandaLib.MOD_ID, "textures/gui/icon/undo.png"),
-			new ResourceLocation(PandaLib.MOD_ID, "textures/gui/icon/undo_disabled.png")
+			new ResourceLocation(PandaLib.MOD_ID, "textures/gui/icon/undo_disabled.png"),
+			new ResourceLocation(PandaLib.MOD_ID, "textures/gui/icon/undo.png")
 	);
 
 	public final Component name;
@@ -80,9 +82,9 @@ public abstract class AbstractConfigOption<T> extends UIElementHolder {
 	protected void addActionButtons(PLGridLayout grid, int spacing) {
 		int column = grid.getColumns();
 		grid.addChild(SpacerElement.width(spacing), 0, column + 1);
-		grid.addChild(IconButton.builder(PLCommonComponents.UNDO, UNDO_ICON.get(this.isActive(), true),
+		grid.addChild(IconButton.builder(PLCommonComponents.UNDO, UNDO_ICON,
 				iconButton -> this.load()).build(), 0, column + 3);
-		grid.addChild(IconButton.builder(PLCommonComponents.RESET, RESET_ICON.get(this.isActive(), true),
+		grid.addChild(IconButton.builder(PLCommonComponents.RESET, RESET_ICON,
 				iconButton -> this.reset()).build(), 0, column + 4);
 	}
 }

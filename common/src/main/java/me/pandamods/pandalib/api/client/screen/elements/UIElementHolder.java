@@ -130,10 +130,10 @@ public abstract class UIElementHolder extends AbstractUIElement implements PLRen
 	}
 
 	@Override
-	public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
+	public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
 		for (UIElement element : this.children) {
 			if (!element.isMouseOver(mouseX, mouseY)) continue;
-			if (element.mouseScrolled(mouseX, mouseY, delta))
+			if (element.mouseScrolled(mouseX, mouseY, scrollX, scrollY))
 				return true;
 		}
 		return false;

@@ -113,7 +113,7 @@ public class ConfigMenu<T extends ConfigData> extends PLScreen {
 
 	@Override
 	public void onClose() {
-		this.minecraft.setScreen(parent);
+		this.getMinecraft().setScreen(parent);
 	}
 
 	public class CategoryList extends UIElementHolder {

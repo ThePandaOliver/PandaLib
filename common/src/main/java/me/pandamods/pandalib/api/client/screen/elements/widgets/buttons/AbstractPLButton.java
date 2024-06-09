@@ -9,6 +9,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.narration.NarratedElementType;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
@@ -17,16 +18,17 @@ import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 
 @Environment(EnvType.CLIENT)
 public abstract class AbstractPLButton extends AbstractUIElement implements PLRenderable, NarratableEntry {
-    protected static final int TEXTURE_Y_OFFSET = 46;
-    protected static final int TEXTURE_WIDTH = 200;
-    protected static final int TEXTURE_HEIGHT = 20;
-    protected static final int TEXTURE_BORDER_X = 20;
-    protected static final int TEXTURE_BORDER_Y = 4;
-    protected static final int TEXT_MARGIN = 2;
+	public static final WidgetSprites SPRITES = new WidgetSprites(
+			new ResourceLocation("widget/button"),
+			new ResourceLocation("widget/button_disabled"),
+			new ResourceLocation("widget/button_highlighted")
+	);
+
 	private final Component message;
 
 	public AbstractPLButton(Component message) {
@@ -45,25 +47,12 @@ public abstract class AbstractPLButton extends AbstractUIElement implements PLRe
         Minecraft minecraft = Minecraft.getInstance();
         RenderSystem.enableBlend();
         RenderSystem.enableDepthTest();
-        guiGraphics.blitNineSliced(AbstractWidget.WIDGETS_LOCATION, this.getX(), this.getY(), this.getWidth(), this.getHeight(),
-				20, 4, 200, 20, 0, this.getTextureY());
-        int i = this.isActive() ? 16777215 : 10526880;
-        this.renderString(guiGraphics, minecraft.font, i);
+		guiGraphics.blitSprite(SPRITES.get(this.isActive(), this.isHoveredOrFocused()), this.getX(), this.getY(), this.getWidth(), this.getHeight());
+        this.renderString(guiGraphics, minecraft.font, this.isActive() ? 16777215 : 10526880);
     }
 
     public void renderString(PLGuiGraphics guiGraphics, Font font, int color) {
 		guiGraphics.drawScrollingString(font, getMessage(), minX() + 2, minY(), maxX() - 2, maxY(), color);
-    }
-
-    private int getTextureY() {
-        int i = 1;
-        if (!this.isActive()) {
-            i = 0;
-        } else if (this.isHoveredOrFocused()) {
-            i = 2;
-        }
-
-        return 46 + i * 20;
     }
 
 	@Override

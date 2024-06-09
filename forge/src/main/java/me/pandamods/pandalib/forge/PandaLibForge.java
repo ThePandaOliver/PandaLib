@@ -10,8 +10,8 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 @Mod(PandaLib.MOD_ID)
 public class PandaLibForge {
     public PandaLibForge() {
-        EventBuses.registerModEventBus(PandaLib.MOD_ID, FMLJavaModLoadingContext.get().getModEventBus());
-        PandaLib.init();
-		DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> PandaLibForgeClient::clientInit);
+		EventBuses.registerModEventBus(PandaLib.MOD_ID, FMLJavaModLoadingContext.get().getModEventBus());
+		PandaLib.init();
+		DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> PandaLibForgeClient::init);
     }
 }

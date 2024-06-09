@@ -35,25 +35,13 @@ public abstract class AbstractIconButton extends AbstractPLButton {
 		this.checkHoverState(mouseX, mouseY);
 		RenderSystem.enableBlend();
 		RenderSystem.enableDepthTest();
-		guiGraphics.blitNineSliced(AbstractWidget.WIDGETS_LOCATION, this.getX(), this.getY(), this.getWidth(), this.getHeight(),
-				20, 4, 200, 20, 0, this.getTextureY());
+		guiGraphics.blitSprite(SPRITES.get(this.isActive(), this.isHoveredOrFocused()), this.getX(), this.getY(), this.getWidth(), this.getHeight());
 		guiGraphics.blit(this.iconLocation, this.getX() + 2, this.getY() + 2, 0,
 				0, 0, this.size - 4, this.size - 4, this.textureSize, this.textureSize);
 
 		if (this.isHovered() && this.tooltip != null) {
 			Minecraft.getInstance().screen.setTooltipForNextRenderPass(this.tooltip, createTooltipPositioner(), this.isFocused());
 		}
-	}
-
-	private int getTextureY() {
-		int i = 1;
-		if (!this.isActive()) {
-			i = 0;
-		} else if (this.isHoveredOrFocused()) {
-			i = 2;
-		}
-
-		return 46 + i * 20;
 	}
 
 	protected ClientTooltipPositioner createTooltipPositioner() {

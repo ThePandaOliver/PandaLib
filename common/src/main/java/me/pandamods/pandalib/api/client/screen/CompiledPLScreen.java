@@ -132,8 +132,8 @@ public class CompiledPLScreen extends Screen {
 	}
 
 	@Override
-	public void renderBackground(GuiGraphics guiGraphics) {
-		super.renderBackground(guiGraphics);
+	public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+		super.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
 	}
 
 	@Override
@@ -279,8 +279,8 @@ public class CompiledPLScreen extends Screen {
 	}
 
 	@Override
-	public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
-		return screen.mouseScrolled(mouseX, mouseY, delta);
+	public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+		return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
 	}
 
 	@Override

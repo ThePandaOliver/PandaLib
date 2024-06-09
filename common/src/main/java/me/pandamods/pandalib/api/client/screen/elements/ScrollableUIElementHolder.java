@@ -87,13 +87,11 @@ public abstract class ScrollableUIElementHolder extends UIElementHolder {
 	}
 
 	@Override
-	public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
-		if (super.mouseScrolled(mouseX, mouseY, delta)) return true;
+	public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+		if (super.mouseScrolled(mouseX, mouseY, scrollX, scrollY)) return true;
 
-		if (Screen.hasShiftDown())
-			this.scrollXDistance -= (int) (delta * 10);
-		else
-			this.scrollYDistance -= (int) (delta * 10);
+		this.scrollXDistance -= (int) (scrollX * 10);
+		this.scrollYDistance -= (int) (scrollY * 10);
 		applyScrollLimits();
 		return true;
 	}

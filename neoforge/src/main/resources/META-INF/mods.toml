@@ -1,5 +1,5 @@
 modLoader = "javafml"
-loaderVersion = "[48,)"
+loaderVersion = "[1,)"
 license = "MIT"
 issueTrackerURL="https://github.com/PandaDap2006/PandaLib/issues"
 showAsResourcePack=false
@@ -13,9 +13,9 @@ logoFile = "icon.png"
 description = "A multi purpose library with a Config API, Model and Animation API, Menu API and a bit of utility code."
 
 [[dependencies.pandalib]]
-modId = "forge"
+modId = "neoforge"
 mandatory = true
-versionRange = "[48,)"
+versionRange = "[20.2.88,)"
 ordering = "NONE"
 side = "BOTH"
 
@@ -32,3 +32,8 @@ mandatory = true
 versionRange = "[10.1.20,)"
 ordering = "AFTER"
 side = "BOTH"
+
+[[mixins]]
+config = "pandalib-common.mixins.json"
+[[mixins]]
+config = "pandalib.mixins.json"

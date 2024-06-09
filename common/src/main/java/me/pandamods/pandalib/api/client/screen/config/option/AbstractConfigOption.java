@@ -6,9 +6,9 @@ import me.pandamods.pandalib.api.client.screen.elements.widgets.buttons.IconButt
 import me.pandamods.pandalib.api.utils.PLCommonComponents;
 import me.pandamods.pandalib.api.client.screen.layouts.PLGridLayout;
 import me.pandamods.pandalib.api.utils.screen.PLGuiGraphics;
-import me.pandamods.pandalib.api.utils.screen.WidgetImage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.layouts.SpacerElement;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -18,15 +18,11 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public abstract class AbstractConfigOption<T> extends UIElementHolder {
-	WidgetImage SAVE_ICON = new WidgetImage(
-			new ResourceLocation(PandaLib.MOD_ID, "textures/gui/icon/save.png"),
-			new ResourceLocation(PandaLib.MOD_ID, "textures/gui/icon/save_disabled.png")
-	);
-	WidgetImage RESET_ICON = new WidgetImage(
+	WidgetSprites RESET_ICON = new WidgetSprites(
 			new ResourceLocation(PandaLib.MOD_ID, "textures/gui/icon/reset.png"),
 			new ResourceLocation(PandaLib.MOD_ID, "textures/gui/icon/reset_disabled.png")
 	);
-	WidgetImage UNDO_ICON = new WidgetImage(
+	WidgetSprites UNDO_ICON = new WidgetSprites(
 			new ResourceLocation(PandaLib.MOD_ID, "textures/gui/icon/undo.png"),
 			new ResourceLocation(PandaLib.MOD_ID, "textures/gui/icon/undo_disabled.png")
 	);
@@ -84,11 +80,9 @@ public abstract class AbstractConfigOption<T> extends UIElementHolder {
 	protected void addActionButtons(PLGridLayout grid, int spacing) {
 		int column = grid.getColumns();
 		grid.addChild(SpacerElement.width(spacing), 0, column + 1);
-//		grid.addChild(IconButton.builder(PLCommonComponents.SAVE, SAVE_ICON.get(true),
-//				iconButton -> this.save()).build(), 0, column + 2);
-		grid.addChild(IconButton.builder(PLCommonComponents.UNDO, UNDO_ICON.get(true),
+		grid.addChild(IconButton.builder(PLCommonComponents.UNDO, UNDO_ICON.get(this.isActive(), true),
 				iconButton -> this.load()).build(), 0, column + 3);
-		grid.addChild(IconButton.builder(PLCommonComponents.RESET, RESET_ICON.get(true),
+		grid.addChild(IconButton.builder(PLCommonComponents.RESET, RESET_ICON.get(this.isActive(), true),
 				iconButton -> this.reset()).build(), 0, column + 4);
 	}
 }

@@ -18,9 +18,6 @@
     "main": [
 			"me.pandamods.pandalib.fabric.PandaLibFabric"
     ],
-		"client": [
-			"me.pandamods.pandalib.fabric.PandaLibFabricClient"
-		],
 		"modmenu": [
 			"me.pandamods.pandalib.fabric.PandaLibModMenu"
 		]

@@ -24,9 +24,9 @@ import net.minecraft.sounds.SoundEvents;
 @Environment(EnvType.CLIENT)
 public abstract class AbstractPLButton extends AbstractUIElement implements PLRenderable, NarratableEntry {
 	public static final WidgetSprites SPRITES = new WidgetSprites(
-			new ResourceLocation("widget/button"),
-			new ResourceLocation("widget/button_disabled"),
-			new ResourceLocation("widget/button_highlighted")
+			ResourceLocation.withDefaultNamespace("widget/button"),
+			ResourceLocation.withDefaultNamespace("widget/button_disabled"),
+			ResourceLocation.withDefaultNamespace("widget/button_highlighted")
 	);
 
 	private final Component message;

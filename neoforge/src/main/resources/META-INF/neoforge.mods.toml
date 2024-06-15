@@ -15,21 +15,21 @@ description = "A multi purpose library with a Config API, Model and Animation AP
 [[dependencies.pandalib]]
 modId = "neoforge"
 mandatory = true
-versionRange = "[20.2.88,)"
+versionRange = "[21.0.6-beta,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.pandalib]]
 modId = "minecraft"
 mandatory = true
-versionRange = "[1.20.2,)"
+versionRange = "[1.21,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.pandalib]]
 modId = "architectury"
 mandatory = true
-versionRange = "[10.1.20,)"
+versionRange = "[13.0.1,)"
 ordering = "AFTER"
 side = "BOTH"
 

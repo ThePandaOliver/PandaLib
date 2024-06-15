@@ -11,7 +11,7 @@ public class PandaLib {
 	public static final Logger LOGGER = LogUtils.getLogger();
 
     public static void init() {
-		ConfigNetworking.RegisterReceivers();
+		ConfigNetworking.registerPackets();
 		EventHandler.Register();
 
 		if (PandaLibTest.shouldInit()) {

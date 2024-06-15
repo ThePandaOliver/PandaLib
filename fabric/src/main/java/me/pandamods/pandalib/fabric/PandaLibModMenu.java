@@ -10,6 +10,6 @@ import me.pandamods.test.config.TestConfig;
 public class PandaLibModMenu implements ModMenuApi {
 	@Override
 	public ConfigScreenFactory<?> getModConfigScreenFactory() {
-		return screen -> new ConfigScreenProvider<>(screen, PandaLibTest.CLIENT_CONFIG).get();
+		return screen -> new ConfigScreenProvider<>(screen, PandaLibTest.CONFIG).get();
 	}
 }

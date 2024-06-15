@@ -14,6 +14,7 @@ import java.util.function.Consumer;
 public abstract class AbstractUIElement implements UIElement, PLLayoutElement {
 	private Minecraft minecraft;
 
+	private PLScreen screen;
 	private UIElement parent;
 
 	protected int x = 0;
@@ -33,6 +34,16 @@ public abstract class AbstractUIElement implements UIElement, PLLayoutElement {
 
 	protected Minecraft getMinecraft() {
 		return minecraft;
+	}
+
+	@Override
+	public PLScreen getScreen() {
+		return screen;
+	}
+
+	@Override
+	public void setScreen(PLScreen screen) {
+		this.screen = screen;
 	}
 
 	@Override

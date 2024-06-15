@@ -15,20 +15,15 @@ import me.pandamods.pandalib.api.client.screen.layouts.PLGridLayout;
 import me.pandamods.pandalib.api.utils.screen.PLGuiGraphics;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.AbstractButton;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.layouts.LayoutElement;
 import net.minecraft.client.gui.layouts.SpacerElement;
-import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.navigation.CommonInputs;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
-import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
 
@@ -59,15 +54,15 @@ public class ConfigMenu<T extends ConfigData> extends PLScreen {
 
 	@Override
 	public void init() {
-		this.addressBar.setSize(this.width, 20);
+		this.addressBar.setSize(this.getWidth(), 20);
 		this.addElement(this.addressBar);
 
 		this.categoryList.setPosition(0, this.addressBar.getHeight());
-		this.categoryList.setSize(100, this.height - this.categoryList.getY());
+		this.categoryList.setSize(100, this.getHeight() - this.categoryList.getY());
 		this.addElement(this.categoryList);
 
 		this.category.setPosition(this.categoryList.getWidth(), this.addressBar.getHeight());
-		this.category.setSize(this.width - this.category.getX(), this.height - this.category.getY());
+		this.category.setSize(this.getWidth() - this.category.getX(), this.getHeight() - this.category.getY());
 		this.addElement(this.category);
 
 		PLGridLayout actionGrid = new PLGridLayout();
@@ -76,7 +71,7 @@ public class ConfigMenu<T extends ConfigData> extends PLScreen {
 
 		actionHelper.addChild(PLButton.builder(PLCommonComponents.SAVE, button -> this.save()).width(50).build());
 		actionHelper.addChild(PLButton.builder(PLCommonComponents.RESET, button -> this.reset()).width(50).build());
-		actionHelper.addChild(PLButton.builder(PLCommonComponents.CLOSE, button -> this.onClose()).width(50).build());
+		actionHelper.addChild(PLButton.builder(PLCommonComponents.CLOSE, button -> this.close()).width(50).build());
 
 		actionGrid.quickArrange(this::addElement, this.category.getX(), this.category.maxY() - 30, this.category.getWidth(), 30,
 				0.5f, 0.5f);
@@ -84,14 +79,14 @@ public class ConfigMenu<T extends ConfigData> extends PLScreen {
 
 	@Override
 	public void render(PLGuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-		renderBackground(guiGraphics);
+		renderBackground(guiGraphics, mouseX, mouseY, partialTick);
 		super.render(guiGraphics, mouseX, mouseY, partialTick);
 	}
 
 	public void save() {
 		this.rootCategory.save();
 		this.configHolder.save();
-		this.onClose();
+		this.close();
 	}
 
 	public void load() {
@@ -112,7 +107,7 @@ public class ConfigMenu<T extends ConfigData> extends PLScreen {
 	}
 
 	@Override
-	public void onClose() {
+	public void close() {
 		this.getMinecraft().setScreen(parent);
 	}
 

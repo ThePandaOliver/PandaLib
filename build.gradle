@@ -13,10 +13,10 @@ forgix {
     mergedJarName = "pandalib-${mod_version}-${minecraft_version}.jar"
     outputDir = "build/libs/merged"
 
-    forge {
-        projectName = "forge"
-        jarLocation = "build/libs/pandalib-${mod_version}.jar"
-    }
+//    forge {
+//        projectName = "forge"
+//        jarLocation = "build/libs/pandalib-${mod_version}.jar"
+//    }
 
     fabric {
         projectName = "fabric"
@@ -76,7 +76,7 @@ allprojects {
 
 	tasks.withType(JavaCompile).configureEach {
 		options.encoding = "UTF-8"
-		options.release = 17
+		options.release = 21
 	}
 
 	java {

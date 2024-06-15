@@ -69,7 +69,7 @@ public class CompiledPLScreen extends Screen {
 
 	@Override
 	public void onClose() {
-		screen.onClose();
+		screen.close();
 	}
 
 	@Override
@@ -134,11 +134,6 @@ public class CompiledPLScreen extends Screen {
 	@Override
 	public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
 		super.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
-	}
-
-	@Override
-	public void renderDirtBackground(GuiGraphics guiGraphics) {
-		super.renderDirtBackground(guiGraphics);
 	}
 
 	@Override
@@ -212,11 +207,6 @@ public class CompiledPLScreen extends Screen {
 	}
 
 	@Override
-	public void narrationEnabled() {
-		super.narrationEnabled();
-	}
-
-	@Override
 	public void setTooltipForNextRenderPass(List<FormattedCharSequence> tooltip) {
 		super.setTooltipForNextRenderPass(tooltip);
 	}
@@ -227,7 +217,7 @@ public class CompiledPLScreen extends Screen {
 	}
 
 	@Override
-	protected void setTooltipForNextRenderPass(Component tooltip) {
+	public void setTooltipForNextRenderPass(Component tooltip) {
 		super.setTooltipForNextRenderPass(tooltip);
 	}
 
@@ -312,11 +302,6 @@ public class CompiledPLScreen extends Screen {
 	@Override
 	public ComponentPath getCurrentFocusPath() {
 		return super.getCurrentFocusPath();
-	}
-
-	@Override
-	public void magicalSpecialHackyFocus(@Nullable GuiEventListener eventListener) {
-		super.magicalSpecialHackyFocus(eventListener);
 	}
 
 	@Nullable

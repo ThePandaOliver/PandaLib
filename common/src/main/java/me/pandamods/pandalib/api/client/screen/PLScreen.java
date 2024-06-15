@@ -1,31 +1,78 @@
 package me.pandamods.pandalib.api.client.screen;
 
-import com.google.common.annotations.VisibleForTesting;
+import com.mojang.blaze3d.systems.RenderSystem;
 import me.pandamods.pandalib.api.client.screen.elements.UIElement;
 import me.pandamods.pandalib.api.client.screen.elements.UIElementHolder;
+import me.pandamods.pandalib.api.client.screen.elements.UIElementHolderAccessor;
 import me.pandamods.pandalib.api.utils.screen.PLGuiGraphics;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.ComponentPath;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.events.GuiEventListener;
-import net.minecraft.client.gui.navigation.FocusNavigationEvent;
-import net.minecraft.client.gui.navigation.ScreenDirection;
+import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import org.jetbrains.annotations.Nullable;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class PLScreen extends UIElementHolder {
+public abstract class PLScreen implements UIElementHolderAccessor {
+	private final List<UIElement> children = new ArrayList<>();
+	private final List<NarratableEntry> narratables = new ArrayList<>();
+	private final List<UIElementHolder> holders = new ArrayList<>();
+	private final List<PLRenderable> renderables = new ArrayList<>();
+
 	private final CompiledPLScreen compiledScreen;
 	protected Font font;
+
+	private int width = 0;
+	private int height = 0;
 
 	private boolean initialized = false;
 
 	public PLScreen() {
 		this.compiledScreen = new CompiledPLScreen(this);
-		this.font = this.getMinecraft().font;
+		this.font = getMinecraft().font;
+	}
+
+	protected Minecraft getMinecraft() {
+		return Minecraft.getInstance();
+	}
+
+	public final int getWidth() {
+		return width;
+	}
+
+	public final int getHeight() {
+		return height;
+	}
+
+	@Override
+	public List<UIElement> getChildren() {
+		return children;
+	}
+
+	@Override
+	public List<NarratableEntry> getNarratables() {
+		return narratables;
+	}
+
+	@Override
+	public List<UIElementHolder> getHolders() {
+		return holders;
+	}
+
+	@Override
+	public List<PLRenderable> getRenderables() {
+		return renderables;
+	}
+
+	@Override
+	public void addElement(UIElement element) {
+		element.setParent(null);
+		element.setScreen(this);
+		UIElementHolderAccessor.super.addElement(element);
 	}
 
 	public CompiledPLScreen compileScreen() {
@@ -34,14 +81,10 @@ public abstract class PLScreen extends UIElementHolder {
 
 	public abstract Component getTitle();
 
-	@Override
-	public PLScreen getScreen() {
-		return this;
-	}
-
 	public final void init(Minecraft minecraft, int width, int height) {
 		this.font = minecraft.font;
-		setSize(width, height);
+		this.width = width;
+		this.height = height;
 		if (!this.initialized) {
 			this.init();
 		} else {
@@ -52,7 +95,8 @@ public abstract class PLScreen extends UIElementHolder {
 	}
 
 	public void resize(Minecraft minecraft, int width, int height) {
-		setSize(width, height);
+		this.width = width;
+		this.height = height;
 		this.repositionElements();
 	}
 
@@ -65,45 +109,35 @@ public abstract class PLScreen extends UIElementHolder {
 	}
 
 	@Override
-	public void setFocused(boolean focused) {
-		compiledScreen.setFocused(focused);
-	}
-
-	@Override
-	public boolean isFocused() {
-		return compiledScreen.isFocused();
-	}
-
-	@Override
 	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
 		if (keyCode == 256 && this.shouldCloseOnEsc()) {
-			this.onClose();
+			this.close();
 			return true;
 		} else if (this.getFocused() != null && this.getFocused().keyPressed(keyCode, scanCode, modifiers)) {
 			return true;
 		}
 
-		FocusNavigationEvent navigationEvent = switch (keyCode) {
-			case 258 -> this.createTabEvent();
-			case 262 -> this.createArrowEvent(ScreenDirection.RIGHT);
-			case 263 -> this.createArrowEvent(ScreenDirection.LEFT);
-			case 264 -> this.createArrowEvent(ScreenDirection.DOWN);
-			case 265 -> this.createArrowEvent(ScreenDirection.UP);
-			default -> null;
-		};
-
-		if (navigationEvent != null) {
-			ComponentPath componentPath = super.nextFocusPath(navigationEvent);
-
-			if (componentPath == null && navigationEvent instanceof FocusNavigationEvent.TabNavigation) {
-				this.clearFocus();
-				componentPath = super.nextFocusPath(navigationEvent);
-			}
-
-			if (componentPath != null) {
-				this.changeFocus(componentPath);
-			}
-		}
+//		FocusNavigationEvent navigationEvent = switch (keyCode) {
+//			case 258 -> this.createTabEvent();
+//			case 262 -> this.createArrowEvent(ScreenDirection.RIGHT);
+//			case 263 -> this.createArrowEvent(ScreenDirection.LEFT);
+//			case 264 -> this.createArrowEvent(ScreenDirection.DOWN);
+//			case 265 -> this.createArrowEvent(ScreenDirection.UP);
+//			default -> null;
+//		};
+//
+//		if (navigationEvent != null) {
+//			ComponentPath componentPath = super.nextFocusPath(navigationEvent);
+//
+//			if (componentPath == null && navigationEvent instanceof FocusNavigationEvent.TabNavigation) {
+//				this.clearFocus();
+//				componentPath = super.nextFocusPath(navigationEvent);
+//			}
+//
+//			if (componentPath != null) {
+//				this.changeFocus(componentPath);
+//			}
+//		}
 		return false;
 	}
 
@@ -123,14 +157,14 @@ public abstract class PLScreen extends UIElementHolder {
 		return false;
 	}
 
-	private FocusNavigationEvent.TabNavigation createTabEvent() {
-		boolean bl = !Screen.hasShiftDown();
-		return new FocusNavigationEvent.TabNavigation(bl);
-	}
+//	private FocusNavigationEvent.TabNavigation createTabEvent() {
+//		boolean bl = !Screen.hasShiftDown();
+//		return new FocusNavigationEvent.TabNavigation(bl);
+//	}
 
-	private FocusNavigationEvent.ArrowNavigation createArrowEvent(ScreenDirection direction) {
-		return new FocusNavigationEvent.ArrowNavigation(direction);
-	}
+//	private FocusNavigationEvent.ArrowNavigation createArrowEvent(ScreenDirection direction) {
+//		return new FocusNavigationEvent.ArrowNavigation(direction);
+//	}
 
 //	protected void setInitialFocus(GuiEventListener listener) {
 //		ComponentPath componentPath = ComponentPath.path(this, listener.nextFocusPath(new FocusNavigationEvent.InitialFocus()));
@@ -139,19 +173,18 @@ public abstract class PLScreen extends UIElementHolder {
 //		}
 //	}
 
-	public final void clearFocus() {
-		ComponentPath componentPath = this.getCurrentFocusPath();
-		if (componentPath != null) {
-			componentPath.applyFocus(false);
-		}
+//	public final void clearFocus() {
+//		ComponentPath componentPath = this.getCurrentFocusPath();
+//		if (componentPath != null) {
+//			componentPath.applyFocus(false);
+//		}
+//	}
 
-	}
-
-	@VisibleForTesting
-	protected void changeFocus(ComponentPath path) {
-		this.clearFocus();
-		path.applyFocus(true);
-	}
+//	@VisibleForTesting
+//	protected void changeFocus(ComponentPath path) {
+//		this.clearFocus();
+//		path.applyFocus(true);
+//	}
 
 	public void removed() {
 	}
@@ -167,22 +200,53 @@ public abstract class PLScreen extends UIElementHolder {
 		return true;
 	}
 
-	public void onClose() {
+	public void close() {
 		this.getMinecraft().setScreen(null);
 	}
 
-	public void renderBackground(PLGuiGraphics guiGraphics) {
-		if (this.getMinecraft().level != null) {
-			guiGraphics.fillGradient(0, 0, this.getWidth(), this.getHeight(), -1072689136, -804253680);
-		} else {
-			this.renderDirtBackground(guiGraphics);
-		}
+	public void open() {
+		this.getMinecraft().setScreen(this.compileScreen());
 	}
 
-	public void renderDirtBackground(PLGuiGraphics guiGraphics) {
-		guiGraphics.setColor(0.25F, 0.25F, 0.25F, 1.0F);
-		guiGraphics.blit(Screen.BACKGROUND_LOCATION, 0, 0, 0, 0.0F, 0.0F,
-				this.getWidth(), this.getHeight(), 32, 32);
-		guiGraphics.setColor(1.0F, 1.0F, 1.0F, 1.0F);
+	public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+		if (this.getMinecraft().level == null) {
+			this.renderPanorama(guiGraphics, partialTick);
+		}
+
+		this.renderBlurredBackground(partialTick);
+		this.renderMenuBackground(guiGraphics);
+	}
+
+	protected void renderBlurredBackground(float partialTick) {
+		this.getMinecraft().gameRenderer.processBlurEffect(partialTick);
+		this.getMinecraft().getMainRenderTarget().bindWrite(false);
+	}
+
+	protected void renderPanorama(GuiGraphics guiGraphics, float partialTick) {
+		Screen.PANORAMA.render(guiGraphics, this.width, this.height, 1.0F, partialTick);
+	}
+
+	protected void renderMenuBackground(GuiGraphics partialTick) {
+		this.renderMenuBackground(partialTick, 0, 0, this.width, this.height);
+	}
+
+	protected void renderMenuBackground(GuiGraphics guiGraphics, int x, int y, int width, int height) {
+		renderMenuBackgroundTexture(guiGraphics, this.getMinecraft().level == null ? Screen.MENU_BACKGROUND :
+				Screen.INWORLD_MENU_BACKGROUND, x, y, 0.0F, 0.0F, width, height);
+	}
+
+	public static void renderMenuBackgroundTexture(GuiGraphics guiGraphics, ResourceLocation texture, int x, int y,
+												   float uOffset, float vOffset, int width, int height) {
+		RenderSystem.enableBlend();
+		guiGraphics.blit(texture, x, y, 0, uOffset, vOffset, width, height, 32, 32);
+		RenderSystem.disableBlend();
+	}
+
+	public void renderTransparentBackground(GuiGraphics guiGraphics) {
+		guiGraphics.fillGradient(0, 0, this.width, this.height, -1072689136, -804253680);
+	}
+
+	public static float getDeltaSeconds() {
+		return Minecraft.getInstance().getTimer().getGameTimeDeltaTicks() / 20.0f;
 	}
 }

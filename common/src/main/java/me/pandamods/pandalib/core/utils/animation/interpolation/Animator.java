@@ -1,6 +1,8 @@
 package me.pandamods.pandalib.core.utils.animation.interpolation;
 
-import me.pandamods.pandalib.core.utils.RenderUtils;
+import com.mojang.blaze3d.Blaze3D;
+import me.pandamods.pandalib.api.client.screen.PLScreen;
+import net.minecraft.client.Minecraft;
 import org.joml.Math;
 
 import java.util.Objects;
@@ -25,7 +27,7 @@ public abstract class Animator<T> {
 	}
 
 	public final void update(float multiplier) {
-		time += RenderUtils.getDeltaSeconds() * multiplier;
+		time += PLScreen.getDeltaSeconds() * multiplier;
 		time = Math.clamp(0, duration, time);
 	}
 

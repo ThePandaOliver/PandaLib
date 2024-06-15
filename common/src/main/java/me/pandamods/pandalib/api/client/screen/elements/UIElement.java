@@ -7,9 +7,8 @@ import net.minecraft.client.gui.components.events.GuiEventListener;
 import java.util.Optional;
 
 public interface UIElement extends GuiEventListener {
-	default PLScreen getScreen() {
-		return getParent().map(UIElement::getScreen).orElse(null);
-	}
+	PLScreen getScreen();
+	void setScreen(PLScreen screen);
 
 	Optional<UIElement> getParent();
 	void setParent(UIElement parent);

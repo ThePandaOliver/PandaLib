@@ -22,6 +22,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
+import net.minecraft.util.StringUtil;
 import org.jetbrains.annotations.Nullable;
 
 @Environment(EnvType.CLIENT)
@@ -114,7 +115,7 @@ public class PLEditBox extends AbstractUIElement implements PLRenderable {
         int i = Math.min(this.cursorPos, this.highlightPos);
         int j = Math.max(this.cursorPos, this.highlightPos);
         int k = this.maxLength - this.value.length() - (i - j);
-        String string = SharedConstants.filterText(textToWrite);
+        String string = StringUtil.filterText(textToWrite);
         int l = string.length();
         if (k < l) {
             string = string.substring(0, k);
@@ -328,7 +329,7 @@ public class PLEditBox extends AbstractUIElement implements PLRenderable {
     public boolean charTyped(char codePoint, int modifiers) {
         if (!this.canConsumeInput()) {
             return false;
-        } else if (SharedConstants.isAllowedChatCharacter(codePoint)) {
+        } else if (StringUtil.isAllowedChatCharacter(codePoint)) {
             if (this.isEditable) {
                 this.insertText(Character.toString(codePoint));
             }

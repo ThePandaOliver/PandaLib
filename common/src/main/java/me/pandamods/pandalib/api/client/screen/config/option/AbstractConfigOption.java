@@ -19,14 +19,14 @@ import java.util.function.Supplier;
 
 public abstract class AbstractConfigOption<T> extends UIElementHolder {
 	WidgetSprites RESET_ICON = new WidgetSprites(
-			new ResourceLocation(PandaLib.MOD_ID, "textures/gui/icon/reset.png"),
-			new ResourceLocation(PandaLib.MOD_ID, "textures/gui/icon/reset_disabled.png"),
-			new ResourceLocation(PandaLib.MOD_ID, "textures/gui/icon/reset.png")
+			ResourceLocation.fromNamespaceAndPath(PandaLib.MOD_ID, "textures/gui/icon/reset.png"),
+			ResourceLocation.fromNamespaceAndPath(PandaLib.MOD_ID, "textures/gui/icon/reset_disabled.png"),
+			ResourceLocation.fromNamespaceAndPath(PandaLib.MOD_ID, "textures/gui/icon/reset.png")
 	);
 	WidgetSprites UNDO_ICON = new WidgetSprites(
-			new ResourceLocation(PandaLib.MOD_ID, "textures/gui/icon/undo.png"),
-			new ResourceLocation(PandaLib.MOD_ID, "textures/gui/icon/undo_disabled.png"),
-			new ResourceLocation(PandaLib.MOD_ID, "textures/gui/icon/undo.png")
+			ResourceLocation.fromNamespaceAndPath(PandaLib.MOD_ID, "textures/gui/icon/undo.png"),
+			ResourceLocation.fromNamespaceAndPath(PandaLib.MOD_ID, "textures/gui/icon/undo_disabled.png"),
+			ResourceLocation.fromNamespaceAndPath(PandaLib.MOD_ID, "textures/gui/icon/undo.png")
 	);
 
 	public final Component name;

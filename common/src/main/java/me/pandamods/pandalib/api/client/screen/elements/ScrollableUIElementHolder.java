@@ -189,7 +189,7 @@ public abstract class ScrollableUIElementHolder extends UIElementHolder {
 	}
 
 	@Override
-	protected boolean isOutOfBoundsInteractionAllowed() {
+	public boolean isOutOfBoundsInteractionAllowed() {
 		return false;
 	}
 }

@@ -9,13 +9,13 @@ import me.pandamods.test.config.TestConfig;
 public class PandaLibTest {
 	public static boolean SHOULD_INIT = true;
 
-	public static final ClientConfigHolder<TestConfig> CLIENT_CONFIG;
+	public static final CommonConfigHolder<TestConfig> CONFIG;
 
 	static {
 		if (shouldInit()) {
-			CLIENT_CONFIG = PandaLibConfig.registerClient(TestConfig.class);
+			CONFIG = PandaLibConfig.registerCommon(TestConfig.class);
 		} else {
-			CLIENT_CONFIG = null;
+			CONFIG = null;
 		}
 	}
 

@@ -13,8 +13,8 @@ import java.awt.*;
  * PLGuiGraphics class extends GuiGraphics class and provides additional and improved functionality for rendering.
  */
 public class PLGuiGraphics extends GuiGraphics {
-	private static final int SEPARATOR_LINE_DARK_COLOR = new Color(0, 0, 0, 150).getRGB();
-	private static final int SEPARATOR_LINE_LIGHT_COLOR = new Color(100, 100, 100, 150).getRGB();
+	private static final int SEPARATOR_LINE_DARK_COLOR = new Color(0, 0, 0, 125).getRGB();
+	private static final int SEPARATOR_LINE_LIGHT_COLOR = new Color(100, 100, 100, 125).getRGB();
 
 	public PLGuiGraphics(GuiGraphics guiGraphics) {
 		super(guiGraphics.minecraft, guiGraphics.pose, guiGraphics.bufferSource);

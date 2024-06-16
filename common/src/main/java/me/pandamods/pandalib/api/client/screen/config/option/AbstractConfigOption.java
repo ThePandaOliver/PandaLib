@@ -3,6 +3,7 @@ package me.pandamods.pandalib.api.client.screen.config.option;
 import me.pandamods.pandalib.PandaLib;
 import me.pandamods.pandalib.api.client.screen.elements.UIElementHolder;
 import me.pandamods.pandalib.api.client.screen.elements.widgets.buttons.IconButton;
+import me.pandamods.pandalib.api.client.screen.layouts.PLGrid;
 import me.pandamods.pandalib.api.utils.PLCommonComponents;
 import me.pandamods.pandalib.api.client.screen.layouts.PLGridLayout;
 import me.pandamods.pandalib.api.utils.screen.PLGuiGraphics;
@@ -13,6 +14,7 @@ import net.minecraft.client.gui.layouts.SpacerElement;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
+import java.awt.*;
 import java.lang.reflect.Field;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -30,6 +32,7 @@ public abstract class AbstractConfigOption<T> extends UIElementHolder {
 	);
 
 	public final Component name;
+	private Component errorMessage = null;
 
 	private Supplier<T> onLoad;
 	private Consumer<T> onSave;
@@ -42,10 +45,14 @@ public abstract class AbstractConfigOption<T> extends UIElementHolder {
 
 	@Override
 	public void render(PLGuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-		Font font = Minecraft.getInstance().font;
-		guiGraphics.drawString(font, name, this.getX() + 5, this.getY() + (this.getHeight() - font.lineHeight) / 2, 0xFFFFFF);
-
+		renderText(guiGraphics);
 		super.render(guiGraphics, mouseX, mouseY, partialTick);
+	}
+
+	protected void renderText(PLGuiGraphics guiGraphics) {
+		int color = hasError() ? Color.red.getRGB() : Color.white.getRGB();
+		Font font = this.getMinecraft().font;
+		guiGraphics.drawString(font, name, this.getX() + 5, this.getY() + (this.getHeight() - font.lineHeight) / 2, color);
 	}
 
 	protected abstract void setValue(T value);
@@ -79,12 +86,20 @@ public abstract class AbstractConfigOption<T> extends UIElementHolder {
 		this.onReset = onReset;
 	}
 
-	protected void addActionButtons(PLGridLayout grid, int spacing) {
+	protected void addActionButtons(PLGrid grid, int spacing) {
 		int column = grid.getColumns();
-		grid.addChild(SpacerElement.width(spacing), 0, column + 1);
+//		grid.addChild(SpacerElement.width(spacing), 0, column + 1);
 		grid.addChild(IconButton.builder(PLCommonComponents.UNDO, UNDO_ICON,
 				iconButton -> this.load()).build(), 0, column + 3);
 		grid.addChild(IconButton.builder(PLCommonComponents.RESET, RESET_ICON,
 				iconButton -> this.reset()).build(), 0, column + 4);
+	}
+
+	public boolean hasError() {
+		return false;
+	}
+
+	public Component getErrorMessage() {
+		return errorMessage;
 	}
 }

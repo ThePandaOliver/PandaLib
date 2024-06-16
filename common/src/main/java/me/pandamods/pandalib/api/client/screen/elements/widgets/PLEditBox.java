@@ -550,4 +550,17 @@ public class PLEditBox extends AbstractUIElement implements PLRenderable {
     public void setHint(Component hint) {
         this.hint = hint;
     }
+
+	@Override
+	public void setWidth(int width) {
+		super.setWidth(width);
+		this.setHighlightPos(this.cursorPos);
+	}
+
+	@Override
+	public void setHeight(int height) {
+		super.setHeight(height);
+		this.moveCursorTo(this.cursorPos);
+		this.setHighlightPos(this.cursorPos);
+	}
 }

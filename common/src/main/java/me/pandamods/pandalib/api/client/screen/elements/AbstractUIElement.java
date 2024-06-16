@@ -2,6 +2,7 @@ package me.pandamods.pandalib.api.client.screen.elements;
 
 import me.pandamods.pandalib.api.client.screen.PLScreen;
 import me.pandamods.pandalib.api.client.screen.layouts.PLLayoutElement;
+import me.pandamods.pandalib.api.client.screen.layouts.PLLayoutElement2;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -11,7 +12,7 @@ import net.minecraft.client.gui.navigation.ScreenRectangle;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-public abstract class AbstractUIElement implements UIElement, PLLayoutElement {
+public abstract class AbstractUIElement implements UIElement, PLLayoutElement, PLLayoutElement2 {
 	private Minecraft minecraft;
 
 	private PLScreen screen;
@@ -67,6 +68,11 @@ public abstract class AbstractUIElement implements UIElement, PLLayoutElement {
 	}
 
 	@Override
+	public void setPosition(int x, int y) {
+		PLLayoutElement2.super.setPosition(x, y);
+	}
+
+	@Override
 	public int getX() {
 		return UIElement.super.getX();
 	}
@@ -95,6 +101,16 @@ public abstract class AbstractUIElement implements UIElement, PLLayoutElement {
 	}
 
 	@Override
+	public void setWidth(int width) {
+		this.width = width;
+	}
+
+	@Override
+	public void setHeight(int height) {
+		this.height = height;
+	}
+
+	@Override
 	public int getWidth() {
 		return this.width;
 	}
@@ -104,17 +120,9 @@ public abstract class AbstractUIElement implements UIElement, PLLayoutElement {
 		return this.height;
 	}
 
-	public void setWidth(int width) {
-		this.width = width;
-	}
-
-	public void setHeight(int height) {
-		this.height = height;
-	}
-
+	@Override
 	public void setSize(int width, int height) {
-		this.width = width;
-		this.height = height;
+		PLLayoutElement2.super.setSize(width, height);
 	}
 
 	@Override

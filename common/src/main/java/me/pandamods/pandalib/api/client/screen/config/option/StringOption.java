@@ -1,6 +1,7 @@
 package me.pandamods.pandalib.api.client.screen.config.option;
 
 import me.pandamods.pandalib.api.client.screen.elements.widgets.PLEditBox;
+import me.pandamods.pandalib.api.client.screen.layouts.PLGrid;
 import me.pandamods.pandalib.api.client.screen.layouts.PLGridLayout;
 import me.pandamods.pandalib.api.utils.screen.PLGuiGraphics;
 import net.minecraft.client.Minecraft;
@@ -31,7 +32,7 @@ public class StringOption extends AbstractConfigOption<String> {
 
 	@Override
 	public void init() {
-		PLGridLayout grid = new PLGridLayout().spacing(2);
+		PLGrid grid = new PLGrid().spacing(2);
 		grid.defaultCellSetting().alignVerticallyMiddle();
 
 		grid.addChild(inputField = new PLEditBox(Minecraft.getInstance().font, this.inputField, this.name), 0, 0);

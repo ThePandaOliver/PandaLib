@@ -8,4 +8,4 @@
 * **Technical Changes:**
   * The project now uses the gradle plugin [Forgix](https://github.com/PacifistMC/Forgix)
 * **License Update:**
-  * Every update from this update and onwards will be licensed under GN LGPLv3
+  * Every update from this update and onwards will be licensed under the GNU LGPLv3

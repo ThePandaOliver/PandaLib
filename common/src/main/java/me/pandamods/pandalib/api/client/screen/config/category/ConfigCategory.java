@@ -13,7 +13,7 @@
 package me.pandamods.pandalib.api.client.screen.config.category;
 
 import me.pandamods.pandalib.api.client.screen.config.option.AbstractConfigOption;
-import me.pandamods.pandalib.api.client.screen.layouts.PLGridLayout;
+import me.pandamods.pandalib.api.client.screen.layouts.PLGrid;
 import me.pandamods.pandalib.api.utils.screen.PLGuiGraphics;
 import me.pandamods.pandalib.core.utils.animation.interpolation.NumberAnimator;
 import net.minecraft.network.chat.Component;
@@ -57,13 +57,13 @@ public class ConfigCategory extends AbstractConfigCategory {
 
 	@Override
 	public void init() {
-		PLGridLayout grid = new PLGridLayout();
-		PLGridLayout.RowHelper rowHelper = grid.createRowHelper(1);
+		PLGrid grid = this.addElement(new PLGrid());
+		PLGrid.RowHelper rowHelper = grid.createRowHelper(1);
 		for (AbstractConfigOption<?> option : this.options) {
 			rowHelper.addChild(option);
 			option.setWidth(this.getWidth());
 		}
-		grid.quickArrange(this::addElement, this.getX(), this.getY());
+		grid.quickArrange(this.getX(), this.getY());
 		contentHeight = grid.getHeight();
 		super.init();
 	}

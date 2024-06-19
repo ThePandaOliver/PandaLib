@@ -13,18 +13,13 @@
 package me.pandamods.pandalib.api.client.screen.elements;
 
 import me.pandamods.pandalib.api.client.screen.PLScreen;
-import me.pandamods.pandalib.api.client.screen.layouts.PLLayoutElement;
-import me.pandamods.pandalib.api.client.screen.layouts.PLLayoutElement2;
+import me.pandamods.pandalib.api.client.screen.layouts.PLLayout;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.components.AbstractWidget;
-import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 
 import java.util.Optional;
-import java.util.function.Consumer;
 
-public abstract class AbstractUIElement implements UIElement, PLLayoutElement, PLLayoutElement2 {
+public abstract class AbstractUIElement implements UIElement, PLLayout {
 	private Minecraft minecraft;
 
 	private PLScreen screen;
@@ -71,17 +66,12 @@ public abstract class AbstractUIElement implements UIElement, PLLayoutElement, P
 
 	@Override
 	public void setX(int x) {
-		setRelativeX(getParent().map(uiElement -> x - uiElement.getX()).orElse(x));
+		setRelativeX(getParent().map(uiElement -> x - uiElement.getX() - uiElement.getChildOffsetX()).orElse(x));
 	}
 
 	@Override
 	public void setY(int y) {
-		setRelativeY(getParent().map(uiElement -> y - uiElement.getY()).orElse(y));
-	}
-
-	@Override
-	public void setPosition(int x, int y) {
-		PLLayoutElement2.super.setPosition(x, y);
+		setRelativeY(getParent().map(uiElement -> y - uiElement.getY() - uiElement.getChildOffsetY()).orElse(y));
 	}
 
 	@Override
@@ -134,7 +124,8 @@ public abstract class AbstractUIElement implements UIElement, PLLayoutElement, P
 
 	@Override
 	public void setSize(int width, int height) {
-		PLLayoutElement2.super.setSize(width, height);
+		this.setWidth(width);
+		this.setHeight(height);
 	}
 
 	@Override
@@ -182,9 +173,6 @@ public abstract class AbstractUIElement implements UIElement, PLLayoutElement, P
 	public boolean isActiveAndVisible() {
 		return isActive() && isVisible();
 	}
-
-	@Override
-	public void visitWidgets(Consumer<AbstractWidget> consumer) {}
 
 	@Override
 	public ScreenRectangle getRectangle() {

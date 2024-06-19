@@ -28,10 +28,10 @@ public abstract class UIElementHolder extends AbstractUIElement implements UIEle
 	private final List<PLRenderable> renderables = new ArrayList<>();
 
 	@Override
-	public void addElement(UIElement element) {
+	public <T extends UIElement> T addElement(T element) {
 		element.setParent(this);
 		element.setScreen(getScreen());
-		UIElementHolderAccessor.super.addElement(element);
+		return UIElementHolderAccessor.super.addElement(element);
 	}
 
 	@Override
@@ -58,9 +58,9 @@ public abstract class UIElementHolder extends AbstractUIElement implements UIEle
 	public boolean isMouseOver(double mouseX, double mouseY) {
 		if (!isVisible())
 			return false;
-		if (isOutOfBoundsInteractionAllowed() && this.getElementAt(mouseX, mouseY).isPresent())
+		if (super.isMouseOver(mouseX, mouseY))
 			return true;
-		return super.isMouseOver(mouseX, mouseY);
+		return isOutOfBoundsInteractionAllowed() && this.getElementAt(mouseX, mouseY).isPresent();
 	}
 
 	public boolean isOutOfBoundsInteractionAllowed() {

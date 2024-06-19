@@ -81,10 +81,10 @@ public abstract class PLScreen implements UIElementHolderAccessor {
 	}
 
 	@Override
-	public void addElement(UIElement element) {
+	public <T extends UIElement> T addElement(T element) {
 		element.setParent(null);
 		element.setScreen(this);
-		UIElementHolderAccessor.super.addElement(element);
+		return UIElementHolderAccessor.super.addElement(element);
 	}
 
 	public CompiledPLScreen compileScreen() {

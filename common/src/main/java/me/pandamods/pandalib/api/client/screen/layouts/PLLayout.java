@@ -14,22 +14,33 @@ package me.pandamods.pandalib.api.client.screen.layouts;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.gui.components.AbstractWidget;
-import net.minecraft.client.gui.layouts.LayoutElement;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 
-import java.util.function.Consumer;
-
 @Environment(EnvType.CLIENT)
-public interface PLLayoutElement extends LayoutElement {
+public interface PLLayout {
+	void setX(int var1);
+	void setY(int var1);
+
+	int getX();
+	int getY();
+
+	default void setPosition(int x, int y) {
+		this.setX(x);
+		this.setY(y);
+	}
+
 	void setWidth(int width);
 	void setHeight(int height);
+
+	int getWidth();
+	int getHeight();
 
 	default void setSize(int width, int height) {
 		this.setWidth(width);
 		this.setHeight(height);
 	}
 
-	@Override
-	default void visitWidgets(Consumer<AbstractWidget> consumer) {}
+	default ScreenRectangle getRectangle() {
+		return new ScreenRectangle(this.getX(), this.getY(), this.getWidth(), this.getHeight());
+	}
 }

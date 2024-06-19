@@ -16,13 +16,11 @@ import me.pandamods.pandalib.PandaLib;
 import me.pandamods.pandalib.api.client.screen.elements.UIElementHolder;
 import me.pandamods.pandalib.api.client.screen.elements.widgets.buttons.IconButton;
 import me.pandamods.pandalib.api.client.screen.layouts.PLGrid;
+import me.pandamods.pandalib.api.client.screen.layouts.PLSpacerElement;
 import me.pandamods.pandalib.api.utils.PLCommonComponents;
-import me.pandamods.pandalib.api.client.screen.layouts.PLGridLayout;
 import me.pandamods.pandalib.api.utils.screen.PLGuiGraphics;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.WidgetSprites;
-import net.minecraft.client.gui.layouts.SpacerElement;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
@@ -100,7 +98,7 @@ public abstract class AbstractConfigOption<T> extends UIElementHolder {
 
 	protected void addActionButtons(PLGrid grid, int spacing) {
 		int column = grid.getColumns();
-//		grid.addChild(SpacerElement.width(spacing), 0, column + 1);
+		grid.addChild(PLSpacerElement.width(spacing), 0, column + 1);
 		grid.addChild(IconButton.builder(PLCommonComponents.UNDO, UNDO_ICON,
 				iconButton -> this.load()).build(), 0, column + 3);
 		grid.addChild(IconButton.builder(PLCommonComponents.RESET, RESET_ICON,

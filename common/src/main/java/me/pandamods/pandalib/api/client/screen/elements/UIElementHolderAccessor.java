@@ -34,7 +34,7 @@ public interface UIElementHolderAccessor extends GuiEventListener, PLRenderable 
 		return element;
 	}
 
-	default void addElement(UIElement element) {
+	default <T extends UIElement> T addElement(T element) {
 		this.getChildren().add(element);
 
 		if (element instanceof NarratableEntry)
@@ -47,6 +47,7 @@ public interface UIElementHolderAccessor extends GuiEventListener, PLRenderable 
 
 		if (element instanceof PLRenderable)
 			this.getRenderables().add((PLRenderable) element);
+		return element;
 	}
 
 	@SuppressWarnings("SuspiciousMethodCalls")

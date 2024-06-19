@@ -13,9 +13,9 @@
 package me.pandamods.pandalib.api.client.screen.widget.list;
 
 import me.pandamods.pandalib.api.client.screen.elements.UIElementHolder;
-import me.pandamods.pandalib.api.client.screen.layouts.PLGridLayout;
+import me.pandamods.pandalib.api.client.screen.layouts.PLGrid;
+import me.pandamods.pandalib.api.client.screen.layouts.PLLayout;
 import me.pandamods.pandalib.api.utils.screen.PLGuiGraphics;
-import net.minecraft.client.gui.layouts.LayoutElement;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -24,21 +24,21 @@ import java.util.List;
 
 public class QuickListWidget extends UIElementHolder {
 	private final int rows;
-	public final LayoutElement[] elements;
+	public final PLLayout[] elements;
 
-	private QuickListWidget(int rows, LayoutElement[] elements) {
+	private QuickListWidget(int rows, PLLayout[] elements) {
 		this.rows = rows;
 		this.elements = elements;
 	}
 
 	@Override
 	public void init() {
-		PLGridLayout grid = new PLGridLayout();
-		PLGridLayout.RowHelper helper = grid.createRowHelper(this.rows);
-		for (LayoutElement element : elements) {
+		PLGrid grid = this.addElement(new PLGrid());
+		PLGrid.RowHelper helper = grid.createRowHelper(this.rows);
+		for (PLLayout element : elements) {
 			helper.addChild(element);
 		}
-		grid.quickArrange(this::addElement);
+		grid.quickArrange(this.getX(), this.getY());
 		this.setSize(grid.getWidth(), grid.getHeight());
 	}
 
@@ -60,25 +60,25 @@ public class QuickListWidget extends UIElementHolder {
 
 	public static class Builder {
 		private final int rows;
-		private final List<LayoutElement> elements;
+		private final List<PLLayout> elements;
 
 		private Builder(int rows) {
 			this.rows = rows;
 			this.elements = new ArrayList<>();
 		}
 
-		public Builder addElement(LayoutElement element) {
+		public Builder addElement(PLLayout element) {
 			this.elements.add(element);
 			return this;
 		}
 
-		public Builder addElements(Collection<? extends LayoutElement> elements) {
+		public Builder addElements(Collection<? extends PLLayout> elements) {
 			this.elements.addAll(elements);
 			return this;
 		}
 
 		public QuickListWidget build() {
-			return new QuickListWidget(rows, elements.toArray(new LayoutElement[0]));
+			return new QuickListWidget(rows, elements.toArray(new PLLayout[0]));
 		}
 	}
 }

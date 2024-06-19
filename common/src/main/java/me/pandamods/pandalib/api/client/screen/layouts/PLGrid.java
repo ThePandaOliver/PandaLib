@@ -13,158 +13,161 @@
 package me.pandamods.pandalib.api.client.screen.layouts;
 
 import com.mojang.math.Divisor;
+import me.pandamods.pandalib.api.client.screen.elements.UIElementHolder;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.gui.layouts.AbstractLayout;
-import net.minecraft.client.gui.layouts.FrameLayout;
-import net.minecraft.client.gui.layouts.LayoutElement;
-import net.minecraft.client.gui.layouts.LayoutSettings;
 import net.minecraft.util.Mth;
+import org.joml.Math;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class PLGrid implements PLLayoutElement2 {
-	private int x;
-	private int y;
-	private int width;
-	private int height;
-
-	private final List<PLLayoutElement2> children = new ArrayList<>();
+@Environment(EnvType.CLIENT)
+public class PLGrid extends UIElementHolder {
 	private final List<CellInhabitant> cellInhabitants = new ArrayList<>();
-	private final LayoutSettings defaultCellSettings = LayoutSettings.defaults();
+	private final PLLayoutSettings defaultCellSettings = PLLayoutSettings.defaults();
+
 	private int rowSpacing = 0;
 	private int columnSpacing = 0;
 
 	private int columns = 0;
 	private int rows = 0;
 
-	public PLGrid() {
-		this(0, 0);
+	private int contentWidth = 0;
+	private int contentHeight = 0;
+
+	private float contentDeltaX = 0;
+	private float contentDeltaY = 0;
+
+	public void setDeltaX(int x) {
+		this.contentDeltaX = x;
 	}
 
-	public PLGrid(int x, int y) {
-		this(x, y, -1, -1);
+	public void setDeltaY(int y) {
+		this.contentDeltaY = y;
 	}
 
-	public PLGrid(int x, int y, int width, int height) {
-		this.x = x;
-		this.y = y;
-		this.width = width;
-		this.height = height;
+	public void setDelta(float x, float y) {
+		this.contentDeltaX = x;
+		this.contentDeltaY = y;
 	}
 
-	@Override
-	public void setX(int x) {
-		this.x = x;
+	public float getDeltaX() {
+		return contentDeltaX;
 	}
 
-	@Override
-	public void setY(int y) {
-		this.y = y;
+	public float getDeltaY() {
+		return contentDeltaY;
 	}
 
-	@Override
-	public int getX() {
-		return x;
+	public int getContentWidth() {
+		return contentWidth;
 	}
 
-	@Override
-	public int getY() {
-		return y;
-	}
-
-	@Override
-	public void setWidth(int width) {
-		this.width = width;
+	public int getContentHeight() {
+		return contentHeight;
 	}
 
 	@Override
-	public void setHeight(int height) {
-		this.height = height;
+	public int getChildOffsetX() {
+		return (int) Math.lerp(0, this.getWidth() - this.contentWidth, this.getDeltaX());
 	}
 
 	@Override
-	public int getWidth() {
-		return width;
-	}
-
-	@Override
-	public int getHeight() {
-		return height;
+	public int getChildOffsetY() {
+		return (int) Math.lerp(0, this.getHeight() - this.contentHeight, this.getDeltaY());
 	}
 
 	public void arrangeElements() {
-		int m;
-		int l;
-		int k;
-		int i = 0;
-		int j = 0;
+		int row, column, maxOccupiedRow = 0, maxOccupiedColumn = 0;
+
+		// Find the maximum occupied row and column index among all cell inhabitants
 		for (CellInhabitant cellInhabitant : this.cellInhabitants) {
-			i = Math.max(cellInhabitant.getLastOccupiedRow(), i);
-			j = Math.max(cellInhabitant.getLastOccupiedColumn(), j);
+			maxOccupiedRow = Math.max(cellInhabitant.getLastOccupiedRow(), maxOccupiedRow);
+			maxOccupiedColumn = Math.max(cellInhabitant.getLastOccupiedColumn(), maxOccupiedColumn);
 		}
-		int[] is = new int[j + 1];
-		int[] js = new int[i + 1];
+
+		int[] maxRowHeights = new int[maxOccupiedRow + 1];
+		int[] maxColumnWidths = new int[maxOccupiedColumn + 1];
+
+		// Calculate the maximum width (for each column) and the maximum height (for each row)
 		for (CellInhabitant cellInhabitant : this.cellInhabitants) {
-			k = cellInhabitant.getHeight() - (cellInhabitant.occupiedRows - 1) * this.rowSpacing;
-			Divisor divisor = new Divisor(k, cellInhabitant.occupiedRows);
-			for (l = cellInhabitant.row; l <= cellInhabitant.getLastOccupiedRow(); ++l) {
-				js[l] = Math.max(js[l], divisor.nextInt());
+			int cellHeight = cellInhabitant.getHeight() - (cellInhabitant.occupiedRows - 1) * this.rowSpacing;
+			Divisor heightDivisor = new Divisor(cellHeight, cellInhabitant.occupiedRows);
+
+			for (row = cellInhabitant.row; row <= cellInhabitant.getLastOccupiedRow(); ++row) {
+				maxRowHeights[row] = Math.max(maxRowHeights[row], heightDivisor.nextInt());
 			}
-			l = cellInhabitant.getWidth() - (cellInhabitant.occupiedColumns - 1) * this.columnSpacing;
-			Divisor divisor2 = new Divisor(l, cellInhabitant.occupiedColumns);
-			for (m = cellInhabitant.column; m <= cellInhabitant.getLastOccupiedColumn(); ++m) {
-				is[m] = Math.max(is[m], divisor2.nextInt());
+
+			int cellWidth = cellInhabitant.getWidth() - (cellInhabitant.occupiedColumns - 1) * this.columnSpacing;
+			Divisor widthDivisor = new Divisor(cellWidth, cellInhabitant.occupiedColumns);
+
+			for (column = cellInhabitant.column; column <= cellInhabitant.getLastOccupiedColumn(); ++column) {
+				maxColumnWidths[column] = Math.max(maxColumnWidths[column], widthDivisor.nextInt());
 			}
 		}
-		int[] ks = new int[j + 1];
-		int[] ls = new int[i + 1];
-		ks[0] = 0;
-		for (k = 1; k <= j; ++k) {
-			ks[k] = ks[k - 1] + is[k - 1] + this.columnSpacing;
+
+		// Preparation for position calculation
+		int[] columnOffSets = new int[maxOccupiedColumn + 1];
+		int[] rowOffSets = new int[maxOccupiedRow + 1];
+		columnOffSets[0] = 0;
+		for (int k = 1; k <= maxOccupiedColumn; ++k) {
+			columnOffSets[k] = columnOffSets[k - 1] + maxColumnWidths[k - 1] + this.columnSpacing;
 		}
-		ls[0] = 0;
-		for (k = 1; k <= i; ++k) {
-			ls[k] = ls[k - 1] + js[k - 1] + this.rowSpacing;
+		rowOffSets[0] = 0;
+		for (int k = 1; k <= maxOccupiedRow; ++k) {
+			rowOffSets[k] = rowOffSets[k - 1] + maxRowHeights[k - 1] + this.rowSpacing;
 		}
-		for (CellInhabitant cellInhabitant3 : this.cellInhabitants) {
-			int n;
-			l = 0;
-			for (n = cellInhabitant3.column; n <= cellInhabitant3.getLastOccupiedColumn(); ++n) {
-				l += is[n];
+
+		// Adjust the position of each cell inhabitant
+		for (CellInhabitant cellInhabitant : this.cellInhabitants) {
+			int cellWidth = 0;
+			int occupiedWidth;
+			for (occupiedWidth = cellInhabitant.column; occupiedWidth <= cellInhabitant.getLastOccupiedColumn(); ++occupiedWidth) {
+				cellWidth += maxColumnWidths[occupiedWidth];
 			}
-			cellInhabitant3.setX(this.getX() + ks[cellInhabitant3.column], l += this.columnSpacing * (cellInhabitant3.occupiedColumns - 1));
-			n = 0;
-			for (m = cellInhabitant3.row; m <= cellInhabitant3.getLastOccupiedRow(); ++m) {
-				n += js[m];
+			cellWidth += this.columnSpacing * (cellInhabitant.occupiedColumns - 1);
+			cellInhabitant.setX(columnOffSets[cellInhabitant.column], cellWidth);
+
+			int cellHeight = 0;
+			int occupiedHeight;
+			for (occupiedHeight = cellInhabitant.row; occupiedHeight <= cellInhabitant.getLastOccupiedRow(); ++occupiedHeight) {
+				cellHeight += maxRowHeights[occupiedHeight];
 			}
-			cellInhabitant3.setY(this.getY() + ls[cellInhabitant3.row], n += this.rowSpacing * (cellInhabitant3.occupiedRows - 1));
+			cellHeight += this.rowSpacing * (cellInhabitant.occupiedRows - 1);
+			cellInhabitant.setY(rowOffSets[cellInhabitant.row], cellHeight);
 		}
-		this.width = ks[j] + is[j];
-		this.height = ls[i] + js[i];
+
+		// Update the grid cell of the current object
+		this.contentWidth = columnOffSets[maxOccupiedColumn] + maxColumnWidths[maxOccupiedColumn];
+		this.contentHeight = rowOffSets[maxOccupiedRow] + maxRowHeights[maxOccupiedRow];
 	}
 
-	public <T extends PLLayoutElement2> T addChild(T child, int row, int column) {
+	public PLLayoutSettings newCellSettings() {
+		return this.defaultCellSettings.copy();
+	}
+
+	public <T extends PLLayout> T addChild(T child, int row, int column) {
 		return this.addChild(child, row, column, this.newCellSettings());
 	}
 
-	public <T extends PLLayoutElement2> T addChild(T child, int row, int column, LayoutSettings layoutSettings) {
+	public <T extends PLLayout> T addChild(T child, int row, int column, PLLayoutSettings layoutSettings) {
 		return this.addChild(child, row, column, 1, 1, layoutSettings);
 	}
 
-	public <T extends PLLayoutElement2> T addChild(T child, int row, int column, int occupiedRows, int occupiedColumns) {
+	public <T extends PLLayout> T addChild(T child, int row, int column, int occupiedRows, int occupiedColumns) {
 		return this.addChild(child, row, column, occupiedRows, occupiedColumns, this.newCellSettings());
 	}
 
-	public <T extends PLLayoutElement2> T addChild(T child, int row, int column, int occupiedRows, int occupiedColumns, LayoutSettings layoutSettings) {
+	public <T extends PLLayout> T addChild(T child, int row, int column,
+										   int occupiedRows, int occupiedColumns, PLLayoutSettings layoutSettings) {
 		if (occupiedRows < 1)
 			throw new IllegalArgumentException("Occupied rows must be at least 1");
 		if (occupiedColumns < 1)
 			throw new IllegalArgumentException("Occupied columns must be at least 1");
 		this.cellInhabitants.add(new CellInhabitant(child, row, column, occupiedRows, occupiedColumns, layoutSettings));
-		this.children.add(child);
+		this.addElement(child);
 
 		if (column >  this.columns)
 			this.columns = column;
@@ -172,6 +175,7 @@ public class PLGrid implements PLLayoutElement2 {
 			this.rows = row;
 		return child;
 	}
+
 
 	public PLGrid columnSpacing(int columnSpacing) {
 		this.columnSpacing = columnSpacing;
@@ -187,15 +191,7 @@ public class PLGrid implements PLLayoutElement2 {
 		return this.columnSpacing(spacing).rowSpacing(spacing);
 	}
 
-	public void visitChildren(Consumer<PLLayoutElement2> consumer) {
-		this.children.forEach(consumer);
-	}
-
-	public LayoutSettings newCellSettings() {
-		return this.defaultCellSettings.copy();
-	}
-
-	public LayoutSettings defaultCellSetting() {
+	public PLLayoutSettings defaultCellSetting() {
 		return this.defaultCellSettings;
 	}
 
@@ -207,37 +203,38 @@ public class PLGrid implements PLLayoutElement2 {
 		return columns;
 	}
 
-	public void quickArrange(Consumer<PLLayoutElement2> consumer) {
-		quickArrange(consumer, 0, 0, width, height, 0f, 0f);
-	}
-
-	public void quickArrange(Consumer<PLLayoutElement2> consumer, int x, int y, int width, int height) {
-		quickArrange(consumer, x, y, width, height, 0f, 0f);
-	}
-
-	public void quickArrange(Consumer<PLLayoutElement2> consumer, int x, int y, int width, int height, float deltaX, float deltaY) {
-		this.setPosition(x, y);
-		this.visitChildren(consumer);
+	public void quickArrange(int x, int y) {
 		this.arrangeElements();
-	}
-
-	public void quickArrange(Consumer<PLLayoutElement2> consumer, int x, int y) {
 		this.setPosition(x, y);
-		this.visitChildren(consumer);
-		this.arrangeElements();
 	}
 
-	@Environment(value= EnvType.CLIENT)
+	public void quickArrange(int x, int y, int width, int height, float deltaX, float deltaY) {
+		this.quickArrange(x, y);
+		this.setSize(width, height);
+		this.setDelta(deltaX, deltaY);
+	}
+
+	public RowHelper createRowHelper(int columns) {
+		return new RowHelper(columns);
+	}
+
+	public ColumnHelper createColumnHelper(int rows) {
+		return new ColumnHelper(rows);
+	}
+
+	@Environment(EnvType.CLIENT)
 	static class CellInhabitant {
-		public final PLLayoutElement2 child;
-		public final LayoutSettings.LayoutSettingsImpl layoutSettings;
+		public final PLLayout child;
+		public final PLLayoutSettings.LayoutSettingsImpl layoutSettings;
 
 		final int row;
 		final int column;
+
 		final int occupiedRows;
 		final int occupiedColumns;
 
-		CellInhabitant(PLLayoutElement2 child, int row, int column, int occupiedRows, int occupiedColumns, LayoutSettings layoutSettings) {
+		CellInhabitant(PLLayout child, int row, int column,
+					   int occupiedRows, int occupiedColumns, PLLayoutSettings layoutSettings) {
 			this.child = child;
 			this.layoutSettings = layoutSettings.getExposed();
 			this.row = row;
@@ -254,19 +251,6 @@ public class PLGrid implements PLLayoutElement2 {
 			return this.column + this.occupiedColumns - 1;
 		}
 
-		public void setX(int x, int width) {
-			float f = this.layoutSettings.paddingLeft;
-			float g = width - this.child.getWidth() - this.layoutSettings.paddingRight;
-			int i = (int) Mth.lerp(this.layoutSettings.xAlignment, f, g);
-			this.child.setX(i + x);
-		}
-
-		public void setY(int y, int height) {
-			float f = this.layoutSettings.paddingTop;
-			float g = height - this.child.getHeight() - this.layoutSettings.paddingBottom;
-			int i = Math.round(Mth.lerp(this.layoutSettings.yAlignment, f, g));
-			this.child.setY(i + y);
-		}
 
 		public int getHeight() {
 			return this.child.getHeight() + this.layoutSettings.paddingTop + this.layoutSettings.paddingBottom;
@@ -274,6 +258,112 @@ public class PLGrid implements PLLayoutElement2 {
 
 		public int getWidth() {
 			return this.child.getWidth() + this.layoutSettings.paddingLeft + this.layoutSettings.paddingRight;
+		}
+
+		public void setX(int x, int width) {
+			float min = this.layoutSettings.paddingLeft;
+			float max = width - this.child.getWidth() - this.layoutSettings.paddingRight;
+			int i = (int) Mth.lerp(this.layoutSettings.xAlignment, min, max);
+			this.child.setX(i + x);
+		}
+
+		public void setY(int y, int height) {
+			float min = this.layoutSettings.paddingTop;
+			float max = height - this.child.getHeight() - this.layoutSettings.paddingBottom;
+			int i = Math.round(Mth.lerp(this.layoutSettings.yAlignment, min, max));
+			this.child.setY(i + y);
+		}
+	}
+
+	@Environment(EnvType.CLIENT)
+	public final class RowHelper {
+		private final int columns;
+		private int index;
+
+		RowHelper(int columns) {
+			this.columns = columns;
+		}
+
+		public <T extends PLLayout> T addChild(T child) {
+			return this.addChild(child, 1);
+		}
+
+		public <T extends PLLayout> T addChild(T child, int occupiedColumns) {
+			return this.addChild(child, occupiedColumns, this.defaultCellSetting());
+		}
+
+		public <T extends PLLayout> T addChild(T child, PLLayoutSettings layoutSettings) {
+			return this.addChild(child, 1, layoutSettings);
+		}
+
+		public <T extends PLLayout> T addChild(T child, int occupiedColumns, PLLayoutSettings layoutSettings) {
+			int x = this.index / this.columns;
+			int y = this.index % this.columns;
+			if (y + occupiedColumns > this.columns) {
+				++x;
+				y = 0;
+				this.index = Mth.roundToward(this.index, this.columns);
+			}
+			this.index += occupiedColumns;
+			return PLGrid.this.addChild(child, x, y, 1, occupiedColumns, layoutSettings);
+		}
+
+		public PLGrid getGrid() {
+			return PLGrid.this;
+		}
+
+		public PLLayoutSettings newCellSettings() {
+			return PLGrid.this.newCellSettings();
+		}
+
+		public PLLayoutSettings defaultCellSetting() {
+			return PLGrid.this.defaultCellSetting();
+		}
+	}
+
+	@Environment(EnvType.CLIENT)
+	public final class ColumnHelper {
+		private final int rows;
+		private int index;
+
+		ColumnHelper(int rows) {
+			this.rows = rows;
+		}
+
+		public <T extends PLLayout> T addChild(T child) {
+			return this.addChild(child, 1);
+		}
+
+		public <T extends PLLayout> T addChild(T child, int occupiedRows) {
+			return this.addChild(child, occupiedRows, this.defaultCellSetting());
+		}
+
+		public <T extends PLLayout> T addChild(T child, PLLayoutSettings layoutSettings) {
+			return this.addChild(child, 1, layoutSettings);
+		}
+
+		public <T extends PLLayout> T addChild(T child, int occupiedRows, PLLayoutSettings layoutSettings) {
+			int x = this.index % this.rows;
+			int y = this.index / this.rows;
+			if (y + occupiedRows > this.rows) {
+				x = 0;
+				++y;
+				this.index = Mth.roundToward(this.index, this.rows);
+			}
+			this.index += occupiedRows;
+			return PLGrid.this.addChild(child, x, y, occupiedRows, 1, layoutSettings);
+		}
+
+		public PLGrid getGrid() {
+			return PLGrid.this;
+		}
+
+		public PLLayoutSettings newCellSettings() {
+			return PLGrid.this.newCellSettings();
+		}
+
+		public PLLayoutSettings defaultCellSetting() {
+			return PLGrid.this.defaultCellSetting();
 		}
 	}
 }

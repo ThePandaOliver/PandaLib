@@ -18,18 +18,18 @@ import me.pandamods.pandalib.api.client.screen.config.category.AbstractConfigCat
 import me.pandamods.pandalib.api.client.screen.config.category.ConfigCategory;
 import me.pandamods.pandalib.api.client.screen.elements.widgets.buttons.AbstractPLButton;
 import me.pandamods.pandalib.api.client.screen.elements.widgets.buttons.PLButton;
+import me.pandamods.pandalib.api.client.screen.layouts.PLGrid;
+import me.pandamods.pandalib.api.client.screen.layouts.PLLayout;
+import me.pandamods.pandalib.api.client.screen.layouts.PLSpacerElement;
 import me.pandamods.pandalib.api.client.screen.widget.list.QuickListWidget;
 import me.pandamods.pandalib.api.config.ConfigData;
 import me.pandamods.pandalib.api.config.PandaLibConfig;
 import me.pandamods.pandalib.api.config.holders.ConfigHolder;
 import me.pandamods.pandalib.api.utils.PLCommonComponents;
-import me.pandamods.pandalib.api.client.screen.layouts.PLGridLayout;
 import me.pandamods.pandalib.api.utils.screen.PLGuiGraphics;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.events.GuiEventListener;
-import net.minecraft.client.gui.layouts.LayoutElement;
-import net.minecraft.client.gui.layouts.SpacerElement;
 import net.minecraft.client.gui.navigation.CommonInputs;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
@@ -77,16 +77,15 @@ public class ConfigMenu<T extends ConfigData> extends PLScreen {
 		this.category.setSize(this.getWidth() - this.category.getX(), this.getHeight() - this.category.getY());
 		this.addElement(this.category);
 
-		PLGridLayout actionGrid = new PLGridLayout();
+		PLGrid actionGrid = this.addElement(new PLGrid());
 		actionGrid.spacing(4).defaultCellSetting();
-		PLGridLayout.ColumnHelper actionHelper = actionGrid.createColumnHelper(1);
+		PLGrid.ColumnHelper actionHelper = actionGrid.createColumnHelper(1);
 
 		actionHelper.addChild(PLButton.builder(PLCommonComponents.SAVE, button -> this.save()).width(50).build());
 		actionHelper.addChild(PLButton.builder(PLCommonComponents.RESET, button -> this.reset()).width(50).build());
 		actionHelper.addChild(PLButton.builder(PLCommonComponents.CLOSE, button -> this.close()).width(50).build());
 
-		actionGrid.quickArrange(this::addElement, this.category.getX(), this.category.maxY() - 30, this.category.getWidth(), 30,
-				0.5f, 0.5f);
+		actionGrid.quickArrange(this.category.getX(), this.category.maxY() - 30, this.category.getWidth(), 30, 0.5f, 0.5f);
 	}
 
 	@Override
@@ -126,12 +125,12 @@ public class ConfigMenu<T extends ConfigData> extends PLScreen {
 	public class CategoryList extends UIElementHolder {
 		@Override
 		public void init() {
-			PLGridLayout categoryGrid = new PLGridLayout().spacing(2);
-			PLGridLayout.RowHelper categoryHelper = categoryGrid.createRowHelper(1);
+			PLGrid grid = this.addElement(new PLGrid()).spacing(2);
+			PLGrid.RowHelper helper = grid.createRowHelper(1);
 			for (AbstractConfigCategory category : ConfigMenu.this.getCategory().getCategories()) {
-				categoryHelper.addChild(PLButton.builder(category.getName(), button -> setCategory(category)).width(90).build());
+				helper.addChild(PLButton.builder(category.getName(), button -> setCategory(category)).width(90).build());
 			}
-			categoryGrid.quickArrange(this::addElement, getX(), getY() + 5, this.getWidth(), this.getHeight() - 55, 0.5f, 0);
+			grid.quickArrange(getX(), getY() + 5, this.getWidth(), this.getHeight() - 5, 0.5f, 0);
 			super.init();
 		}
 
@@ -145,31 +144,30 @@ public class ConfigMenu<T extends ConfigData> extends PLScreen {
 	public class CategoryAddress extends UIElementHolder {
 		@Override
 		public void init() {
-			PLGridLayout grid = new PLGridLayout().spacing(2);
+			PLGrid grid = this.addElement(new PLGrid()).spacing(2);
 			grid.defaultCellSetting().alignVerticallyMiddle();
-			PLGridLayout.ColumnHelper helper = grid.createColumnHelper(1);
+			PLGrid.ColumnHelper helper = grid.createColumnHelper(1);
 
 			AbstractConfigCategory previousCategory = ConfigMenu.this.getCategory().getParentCategory();
 			PLButton backButton = PLButton.builder(PLCommonComponents.BACK, button -> setCategory(previousCategory)).build();
 			backButton.setSize(50, this.getHeight() - 4);
 			backButton.setActive(previousCategory != null);
 			helper.addChild(backButton);
-			helper.addChild(SpacerElement.width(4));
+			helper.addChild(PLSpacerElement.width(4));
 
 			addCategoryDist(helper, ConfigMenu.this.category);
-
-			grid.quickArrange(this::addElement, getX() + 4, getY(), this.getWidth() - 10, this.getHeight(), 0f, 0.5f);
+			grid.quickArrange(getX() + 4, getY(), this.getWidth() - 10, this.getHeight(), 0f, 0.5f);
 			super.init();
 		}
 
-		private void addCategoryDist(PLGridLayout.ColumnHelper helper, AbstractConfigCategory abstractCategory) {
+		private void addCategoryDist(PLGrid.ColumnHelper helper, AbstractConfigCategory abstractCategory) {
 			AbstractConfigCategory parentCategory = abstractCategory.getParentCategory();
 			if (parentCategory != null)
 				addCategoryDist(helper, parentCategory);
 
 			helper.addChild(new CategoryButton(abstractCategory));
-			if (abstractCategory instanceof ConfigCategory category && !category.getCategories().isEmpty())
-				helper.addChild(new CategoryArrowButton(category));
+			if (abstractCategory instanceof ConfigCategory category2 && !category2.getCategories().isEmpty())
+				helper.addChild(new CategoryArrowButton(category2));
 		}
 
 		@Override
@@ -255,7 +253,7 @@ public class ConfigMenu<T extends ConfigData> extends PLScreen {
 
 			@Override
 			public boolean isFocused() {
-				for (LayoutElement element : this.categoryList.elements) {
+				for (PLLayout element : this.categoryList.elements) {
 					if (element instanceof GuiEventListener listener && listener.isFocused())
 						return true;
 				}

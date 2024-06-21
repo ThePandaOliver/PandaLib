@@ -14,11 +14,10 @@ This Library was created to easily share code between The Panda Oliver's mods.
 ### Current Features:
 - Config API
   - Automatic Config synchronisation
-  - Config Screen API
-- Screen API [WIP]
 
 ### Planned Features:
 - Custom Model Rendering API
+- Config Menu API
 - And more to come
 
 If you have any of your own questions, please leave them [here](https://github.com/PandaDap2006/PandaLib/discussions/q-a).

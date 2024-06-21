@@ -1,6 +1,6 @@
 modLoader = "javafml"
 loaderVersion = "[1,)"
-license = "MIT"
+license = "LGPL-3"
 issueTrackerURL="https://github.com/PandaDap2006/PandaLib/issues"
 showAsResourcePack=false
 
@@ -8,9 +8,9 @@ showAsResourcePack=false
 modId = "pandalib"
 version = "${version}"
 displayName = "PandaLib"
-authors = "Panda Mods/The Panda Oliver"
+authors = "The Panda Oliver"
 logoFile = "icon.png"
-description = "A multi purpose library with a Config API, Model and Animation API, Menu API and a bit of utility code."
+description = "A multi purpose library with a Config API and a bit of utility code. More features planned"
 
 [[dependencies.pandalib]]
 modId = "neoforge"

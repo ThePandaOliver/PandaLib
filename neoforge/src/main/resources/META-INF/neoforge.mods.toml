@@ -15,14 +15,14 @@ description = "A multi purpose library with a Config API and a bit of utility co
 [[dependencies.pandalib]]
 modId = "neoforge"
 mandatory = true
-versionRange = "[21.0.6-beta,)"
+versionRange = "[20.5.21-beta,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.pandalib]]
 modId = "minecraft"
 mandatory = true
-versionRange = "[1.21,)"
+versionRange = "[1.20.5,1.21)"
 ordering = "NONE"
 side = "BOTH"
 
@@ -32,13 +32,6 @@ mandatory = true
 versionRange = "[1,)"
 ordering = "AFTER"
 side = "BOTH"
-
-[[dependencies.pandalib]]
-modId = "cloth-config"
-mandatory = false
-versionRange = "[1,)"
-ordering = "AFTER"
-side = "CLIENT"
 
 [[mixins]]
 config = "pandalib-common.mixins.json"

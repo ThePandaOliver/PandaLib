@@ -17,7 +17,10 @@
   "entrypoints": {
     "main": [
 			"me.pandamods.pandalib.fabric.PandaLibFabric"
-    ]
+    ],
+		"modmenu": [
+			"me.pandamods.pandalib.fabric.PandaLibFabric"
+		]
   },
   "mixins": [
 		"pandalib.mixins.json",
@@ -27,8 +30,12 @@
     "fabric": "*",
     "fabric-api": "*",
     "minecraft": ">=1.21",
-    "architectury": ">=13.0.1"
+    "architectury": "*"
   },
+	"recommends": {
+		"modmenu": "*",
+		"cloth-config": "*"
+	},
 	"custom": {
 		"modmenu": {
 			"links": {

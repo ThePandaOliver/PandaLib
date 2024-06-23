@@ -43,6 +43,9 @@ subprojects {
             parchment("org.parchmentmc.data:parchment-${rootProject.parchment_version}@zip")
         }
     }
+
+    build.finalizedBy(mergeJars)
+    assemble.finalizedBy(mergeJars)
 }
 
 allprojects {
@@ -58,12 +61,14 @@ allprojects {
     group = maven_group
 
     repositories {
-        maven { url = uri("https://maven.terraformersmc.com/releases/") }
+        maven { url "https://maven.neoforged.net/releases/" }
         maven {
             name = 'ParchmentMC'
             url = 'https://maven.parchmentmc.org'
         }
-        maven { url "https://maven.neoforged.net/releases/" }
+
+        maven { url = uri("https://maven.terraformersmc.com/releases/") }
+        maven { url "https://maven.shedaniel.me/" }
     }
 
 	processResources {

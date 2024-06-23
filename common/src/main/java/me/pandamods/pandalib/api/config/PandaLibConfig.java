@@ -67,12 +67,57 @@ public class PandaLibConfig {
 				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 	}
 
+	/**
+	 * Retrieves the configuration screen for the specified mod ID.
+	 *
+	 * @param modID the mod ID of the configuration
+	 * @return the configuration screen
+	 * @deprecated The config menu screen api is still in development, this is just here for quick support with future versions,
+	 * this method is deprecated and returns null.
+	 */
+	@Deprecated
 	public static Screen getConfigScreen(String modID) {
 		return null;
 	}
 
-	
+	/**
+	 * Retrieves the configuration screen for the specified parent screen and mod ID.
+	 *
+	 * @param parent the parent screen
+	 * @param modID  the mod ID of the configuration
+	 * @return the configuration screen
+	 * @deprecated The config menu screen API is still in development, this is just here for quick support with future versions,
+	 * this method is deprecated and returns null.
+	 */
+	@Deprecated
+	public static Screen getConfigScreen(Screen parent, String modID) {
+		return null;
+	}
+
+	/**
+	 * Retrieves the configuration screen for the specified configClass.
+	 *
+	 * @param configClass the class of the config data
+	 * @return the configuration screen
+	 * @deprecated The config menu screen API is still in development, this is just here for quick support with future versions,
+	 * this method is deprecated and returns null.
+	 */
+	@Deprecated
 	public static <T extends ConfigData> Screen getConfigScreen(Class<T> configClass) {
+		return null;
+	}
+
+	/**
+	 * Retrieves the configuration screen for the specified configClass.
+	 *
+	 * @param parent      the parent screen
+	 * @param configClass the class of the config data
+	 * @return the configuration screen
+	 * @deprecated The config menu screen API is still in development, this is just here for quick support with future versions,
+	 * this method is deprecated and returns null.
+	 */
+	@Deprecated
+	public static <T extends ConfigData> Screen getConfigScreen(Screen parent, Class<T> configClass) {
 		return null;
 	}
 

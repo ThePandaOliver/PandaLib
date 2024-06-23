@@ -33,13 +33,6 @@ versionRange = "[1,)"
 ordering = "AFTER"
 side = "BOTH"
 
-[[dependencies.pandalib]]
-modId = "cloth-config"
-mandatory = false
-versionRange = "[1,)"
-ordering = "AFTER"
-side = "CLIENT"
-
 [[mixins]]
 config = "pandalib-common.mixins.json"
 [[mixins]]

@@ -33,8 +33,7 @@
     "architectury": "*"
   },
 	"recommends": {
-		"modmenu": "*",
-		"cloth-config": "*"
+		"modmenu": "*"
 	},
 	"custom": {
 		"modmenu": {

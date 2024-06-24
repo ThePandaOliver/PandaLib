@@ -10,16 +10,16 @@
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package me.pandamods.pandalib.network;
+package me.pandamods.pandalib.core.network;
 
+import dev.architectury.event.events.common.PlayerEvent;
 import dev.architectury.networking.NetworkManager;
+import dev.architectury.platform.Platform;
+import dev.architectury.utils.Env;
 import me.pandamods.pandalib.api.config.ConfigData;
 import me.pandamods.pandalib.api.config.PandaLibConfig;
 import me.pandamods.pandalib.api.config.holders.ClientConfigHolder;
 import me.pandamods.pandalib.api.config.holders.CommonConfigHolder;
-import me.pandamods.pandalib.api.util.NetworkHelper;
-import me.pandamods.pandalib.network.packets.ClientConfigPacketData;
-import me.pandamods.pandalib.network.packets.CommonConfigPacketData;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 

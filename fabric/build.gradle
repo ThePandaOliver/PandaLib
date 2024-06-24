@@ -59,7 +59,7 @@ publishing {
     publications {
         mavenFabric(MavenPublication) {
             artifactId = "${archives_base_name}-fabric"
-            version = "${mod_version}"
+            version = "${mod_version}-${minecraft_version}"
             from components.java
         }
     }

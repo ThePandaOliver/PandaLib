@@ -16,6 +16,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import dev.architectury.platform.Platform;
+import me.pandamods.pandalib.PandaLib;
 import me.pandamods.pandalib.api.config.Config;
 import me.pandamods.pandalib.api.config.ConfigData;
 import me.pandamods.pandalib.core.utils.ClassUtils;
@@ -43,7 +44,7 @@ public class ConfigHolder<T extends ConfigData> {
 		this.logger = LoggerFactory.getLogger(config.modId() + " | Config");
 		this.gson = getNewDefault().buildGson(new GsonBuilder()).setPrettyPrinting().create();
 
-		this.resourceLocation = new ResourceLocation(config.modId(), config.name());
+		this.resourceLocation = ResourceLocation.fromNamespaceAndPath(config.modId(), config.name());
 		this.synchronize = config.synchronize();
 
 		if (this.load()) {

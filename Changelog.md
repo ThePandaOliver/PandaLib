@@ -1,6 +1,7 @@
 ## Changelog 0.2.2 Beta
-* **NeoForge Support** (1.20.5+)
-* **1.21 Support**
+* **General Updates:**
+  * NeoForge Support (1.20.5+)
+  * 1.21 Support
 * **Technical Changes:**
   * The project now uses the gradle plugin [Forgix](https://github.com/PacifistMC/Forgix)
 * **License Update:**

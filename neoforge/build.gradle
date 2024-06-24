@@ -61,7 +61,7 @@ publishing {
     publications {
         mavenNeoForge(MavenPublication) {
             artifactId = "${archives_base_name}-neoforge"
-            version = "${mod_version}-${getCommitCount()}"
+            version = "${mod_version}"
             from components.java
         }
     }
@@ -71,8 +71,8 @@ publishing {
             name = 'GitHubPackages'
             url = uri("https://maven.pkg.github.com/PandaDap2006/PandaLib")
             credentials {
-                username = project.findProperty("gpr.user") ?: System.getenv("GH_USERNAME")
-                password = project.findProperty("gpr.key") ?: System.getenv("GH_TOKEN")
+                username = System.getenv("GH_USERNAME")
+                password = System.getenv("GH_TOKEN")
             }
         }
     }

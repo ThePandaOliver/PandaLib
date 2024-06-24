@@ -88,18 +88,3 @@ allprojects {
         withSourcesJar()
     }
 }
-
-import groovy.json.JsonSlurper
-
-def getCommitCount() {
-    def url = new URL("https://api.github.com/repos/PandaDap2006/PandaLib/commits")
-    def connection = url.openConnection()
-    connection.setRequestProperty("Accept", "application/vnd.github.v3+json")
-
-    if (connection.responseCode == 200) {
-        def commits = new JsonSlurper().parseText(connection.content.text)
-        return commits.size()
-    } else {
-        throw new RuntimeException("Failed to get commits: $connection.responseCode $connection.responseMessage")
-    }
-}

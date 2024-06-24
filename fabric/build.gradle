@@ -20,11 +20,11 @@ configurations {
 }
 
 dependencies {
-    modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
-    modApi "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}+${rootProject.minecraft_version}"
-    modApi "dev.architectury:architectury-fabric:${rootProject.architectury_version}"
+    modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
+    modApi "net.fabricmc.fabric-api:fabric-api:${fabric_api_version}+${minecraft_version}"
+    modApi "dev.architectury:architectury-fabric:${architectury_version}"
 
-    modApi("com.terraformersmc:modmenu:${rootProject.modmenu_version}")
+    modApi("com.terraformersmc:modmenu:${modmenu_version}")
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
@@ -58,13 +58,20 @@ components.java {
 publishing {
     publications {
         mavenFabric(MavenPublication) {
-            artifactId = rootProject.archives_base_name + "-" + project.name
+            artifactId = "${archives_base_name}-fabric"
+            version = "${mod_version}-${minecraft_version}"
             from components.java
         }
     }
 
-    // See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
     repositories {
-        // Add repositories to publish to here.
+        maven {
+            name = 'GitHubPackages'
+            url = uri("https://maven.pkg.github.com/PandaDap2006/PandaLib")
+            credentials {
+                username = System.getenv("GH_USERNAME")
+                password = System.getenv("GH_TOKEN")
+            }
+        }
     }
 }

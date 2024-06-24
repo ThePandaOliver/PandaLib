@@ -15,7 +15,7 @@ publishing {
     publications {
         mavenCommon(MavenPublication) {
             artifactId = "${archives_base_name}-common"
-            version = "${mod_version}"
+            version = "${mod_version}-${minecraft_version}"
             from components.java
         }
     }

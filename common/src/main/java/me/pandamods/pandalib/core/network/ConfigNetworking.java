@@ -58,7 +58,7 @@ public class ConfigNetworking {
 	}
 
 	private static void ClientConfigReceiver(ClientConfigPacketData packetData, NetworkManager.PacketContext packetContext) {
-		ResourceLocation resourceLocation = ResourceLocation.parse(packetData.resourceLocation());
+		ResourceLocation resourceLocation = ResourceLocation.tryParse(packetData.resourceLocation());
 		PandaLibConfig.getConfig(resourceLocation).ifPresent(configHolder -> {
 			if (configHolder instanceof ClientConfigHolder<? extends ConfigData>) {
 				configHolder.logger.info("Received config '{}' from {}",
@@ -70,17 +70,7 @@ public class ConfigNetworking {
 	}
 
 	private static void CommonConfigReceiver(CommonConfigPacketData packetData, NetworkManager.PacketContext packetContext) {
-		ResourceLocation resourceLocation = ResourceLocation.parse(packetData.resourceLocation());
-		PandaLibConfig.getConfig(resourceLocation).ifPresent(configHolder -> {
-			if (configHolder instanceof CommonConfigHolder<? extends ConfigData> commonConfigHolder) {
-				configHolder.logger.info("Received common config '{}' from server", configHolder.resourceLocation().toString());
-				commonConfigHolder.setCommonConfig(configHolder.getGson().fromJson(packetData.configJson(), configHolder.getConfigClass()));
-			}
-		});
-	}
-
-	public static void CommonConfigReceiver(CommonConfigPacketData packetData) {
-		ResourceLocation resourceLocation = ResourceLocation.parse(packetData.resourceLocation());
+		ResourceLocation resourceLocation = ResourceLocation.tryParse(packetData.resourceLocation());
 		PandaLibConfig.getConfig(resourceLocation).ifPresent(configHolder -> {
 			if (configHolder instanceof CommonConfigHolder<? extends ConfigData> commonConfigHolder) {
 				configHolder.logger.info("Received common config '{}' from server", configHolder.resourceLocation().toString());

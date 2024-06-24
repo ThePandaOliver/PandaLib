@@ -13,14 +13,21 @@ dependencies {
 
 publishing {
     publications {
-        mavenFabric(MavenPublication) {
-            artifactId = rootProject.archives_base_name
+        mavenCommon(MavenPublication) {
+            artifactId = "${archives_base_name}-common"
+            version = "${mod_version}-${getCommitCount()}"
             from components.java
         }
     }
 
-    // See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
     repositories {
-        // Add repositories to publish to here.
+        maven {
+            name = 'GitHubPackages'
+            url = uri("https://maven.pkg.github.com/PandaDap2006/PandaLib")
+            credentials {
+                username = project.findProperty("gpr.user") ?: System.getenv("GH_USERNAME")
+                password = project.findProperty("gpr.key") ?: System.getenv("GH_TOKEN")
+            }
+        }
     }
 }

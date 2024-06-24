@@ -20,8 +20,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 
 public record ClientConfigPacketData(String resourceLocation, String configJson) implements CustomPacketPayload {
-	public static final Type<ClientConfigPacketData> TYPE =
-			new Type<>(ResourceLocation.fromNamespaceAndPath(PandaLib.MOD_ID, "client_config_sync"));
+	public static final Type<ClientConfigPacketData> TYPE = new Type<>(PandaLib.ID("client_config_sync"));
 
 	public static final StreamCodec<ByteBuf, ClientConfigPacketData> STREAM_CODEC = StreamCodec.composite(
 			ByteBufCodecs.STRING_UTF8,

@@ -1,10 +1,32 @@
 plugins {
     id "architectury-plugin" version "3.4-SNAPSHOT"
-    id "dev.architectury.loom" version "1.5-SNAPSHOT" apply false
+    id "dev.architectury.loom" version "1.6-SNAPSHOT" apply false
+    id "io.github.pacifistmc.forgix" version "1.2.9"
 }
 
 architectury {
     minecraft = rootProject.minecraft_version
+}
+
+forgix {
+    group = "me.pandamods.pandalib"
+    mergedJarName = "pandalib-${mod_version}-${minecraft_version}.jar"
+    outputDir = "build/libs/merged"
+
+//    forge {
+//        projectName = "forge"
+//        jarLocation = "build/libs/pandalib-${mod_version}.jar"
+//    }
+
+    fabric {
+        projectName = "fabric"
+        jarLocation = "build/libs/pandalib-${mod_version}.jar"
+    }
+
+    neoforge {
+        projectName = "neoforge"
+        jarLocation = "build/libs/pandalib-${mod_version}.jar"
+    }
 }
 
 subprojects {
@@ -21,6 +43,9 @@ subprojects {
             parchment("org.parchmentmc.data:parchment-${rootProject.parchment_version}@zip")
         }
     }
+
+    build.finalizedBy(mergeJars)
+    assemble.finalizedBy(mergeJars)
 }
 
 allprojects {
@@ -36,24 +61,27 @@ allprojects {
     group = maven_group
 
     repositories {
-        maven { url = uri("https://maven.terraformersmc.com/releases/") }
+        maven { url "https://maven.neoforged.net/releases/" }
         maven {
             name = 'ParchmentMC'
             url = 'https://maven.parchmentmc.org'
         }
+
+        maven { url = uri("https://maven.terraformersmc.com/releases/") }
+        maven { url "https://maven.shedaniel.me/" }
     }
 
 	processResources {
 		inputs.property "version", project.version
 
-		filesMatching(["fabric.mod.json", "META-INF/mods.toml", "pack.mcmeta"]) {
+		filesMatching(["fabric.mod.json", "META-INF/mods.toml", "META-INF/neoforge.mods.toml", "pack.mcmeta"]) {
 			expand "version": project.version
 		}
 	}
 
 	tasks.withType(JavaCompile).configureEach {
 		options.encoding = "UTF-8"
-		options.release = 17
+		options.release = 21
 	}
 
 	java {

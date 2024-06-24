@@ -11,19 +11,26 @@
 ## About:
 This Library was created to easily share code between The Panda Oliver's mods.
 
-#### Current Features:
+### Current Features:
 - Config API
-- Automatic Config synchronisation
+  - Automatic Config synchronisation
 
-#### Planned Features:
-- Config Screen API
+### Planned Features:
 - Custom Model Rendering API
+- Config Menu API
 - And more to come
 
 If you have any of your own questions, please leave them [here](https://github.com/PandaDap2006/PandaLib/discussions/q-a).
 
 You can also join my [Discord](https://discord.gg/wjPt4vEfXb)
 
+## Technical Stuff:
+The mod uses the [Forgix](https://github.com/PacifistMC/Forgix) project to merge the mods into one jar.
+If you need separate files you can find them on Github
+
 ---
 ### Do you need a cheap Minecraft server and want to support me, click the banner below and sign up, you can also use my code to get 15% off you first month at Kinetic Hosting.
 [![](https://github.com/PandaDap2006/PandaDap2006/blob/main/assets_for_readme/kinetic_hosting_banner.png?raw=true)](https://billing.kinetichosting.net/aff.php?aff=476)
+
+## License
+The project is licensed under the GNU LGPLv3

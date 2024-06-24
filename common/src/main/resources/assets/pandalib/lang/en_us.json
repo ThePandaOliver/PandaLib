@@ -1,6 +1,23 @@
 {
+	"modmenu.nameTranslation.pandalib": "PandaLib",
+
+	"gui.pandalib.close": "Close",
 	"gui.pandalib.save": "Save",
 	"gui.pandalib.cancel": "Cancel",
 	"gui.pandalib.reset": "Reset",
-	"gui.pandalib.accept": "Accept"
+	"gui.pandalib.accept": "Accept",
+	"gui.pandalib.undo": "Undo",
+	"gui.pandalib.back": "Back",
+
+	"config.pandalib.pandalib_test": "Test Config",
+
+	"config.pandalib.category_a": "Category A",
+	"config.pandalib.category_b": "Category B",
+
+	"config.pandalib.option.string": "String Option",
+	"config.pandalib.option.boolean": "Boolean Option",
+	"config.pandalib.option.int": "Integer Option",
+	"config.pandalib.option.float": "Float Option",
+	"config.pandalib.option.double": "Double Option",
+	"config.pandalib.option.enum": "Enum Option"
 }

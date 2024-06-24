@@ -1,0 +1,39 @@
+modLoader = "javafml"
+loaderVersion = "[1,)"
+license = "LGPL-3"
+issueTrackerURL="https://github.com/PandaDap2006/PandaLib/issues"
+showAsResourcePack=false
+
+[[mods]]
+modId = "pandalib"
+version = "${version}"
+displayName = "PandaLib"
+authors = "The Panda Oliver"
+logoFile = "icon.png"
+description = "A multi purpose library with a Config API and a bit of utility code. More features planned"
+
+[[dependencies.pandalib]]
+modId = "neoforge"
+mandatory = true
+versionRange = "[21.0.6-beta,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.pandalib]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[1.21,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.pandalib]]
+modId = "architectury"
+mandatory = true
+versionRange = "[1,)"
+ordering = "AFTER"
+side = "BOTH"
+
+[[mixins]]
+config = "pandalib-common.mixins.json"
+[[mixins]]
+config = "pandalib.mixins.json"

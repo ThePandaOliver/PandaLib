@@ -3,26 +3,23 @@
   "id": "pandalib",
   "version": "${version}",
   "name": "PandaLib",
-  "description": "A multi purpose library with a Config API, Model and Animation API, Menu API and a bit of utility code.",
+  "description": "A multi purpose library with a Config API and a bit of utility code. More features planned",
   "authors": [
-		"Panda Mods/The Panda Oliver"
+		"The Panda Oliver"
   ],
 	"icon": "icon.png",
 	"contact": {
 		"issues": "https://github.com/PandaDap2006/PandaLib/issues",
 		"sources": "https://github.com/PandaDap2006/PandaLib"
 	},
-  "license": "MIT",
+  "license": "LGPL-3",
   "environment": "*",
   "entrypoints": {
     "main": [
 			"me.pandamods.pandalib.fabric.PandaLibFabric"
     ],
-		"client": [
-			"me.pandamods.pandalib.fabric.PandaLibFabricClient"
-		],
 		"modmenu": [
-			"me.pandamods.pandalib.fabric.PandaLibModMenuIntegration"
+			"me.pandamods.pandalib.fabric.PandaLibFabric"
 		]
   },
   "mixins": [
@@ -32,14 +29,23 @@
   "depends": {
     "fabric": "*",
     "fabric-api": "*",
-    "minecraft": ">=1.20",
-    "architectury": ">=9.1.12"
+    "minecraft": ">=1.21",
+    "architectury": "*"
   },
+	"recommends": {
+		"modmenu": "*"
+	},
 	"custom": {
 		"modmenu": {
 			"links": {
-				"modmenu.discord": "https://discord.gg/wjPt4vEfXb"
-			}
+				"modmenu.discord": "https://discord.gg/wjPt4vEfXb",
+				"modmenu.kofi": "https://ko-fi.com/pandamods",
+				"modmenu.curseforge": "https://www.curseforge.com/minecraft/mc-mods/pandalib",
+				"modmenu.modrinth": "https://modrinth.com/mod/pandalib",
+				"modmenu.github_releases": "https://github.com/PandaDap2006/PandaLib/releases"
+			},
+			"badges": ["library"],
+			"update_checker": true
 		}
 	}
 }

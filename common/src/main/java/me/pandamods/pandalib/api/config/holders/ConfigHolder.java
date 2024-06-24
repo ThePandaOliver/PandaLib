@@ -1,19 +1,25 @@
+/*
+ * Copyright (C) 2024 Oliver Froberg (The Panda Oliver)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  any later version.
+ *
+ * You should have received a copy of the GNU General Public License
+ *  along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package me.pandamods.pandalib.api.config.holders;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import dev.architectury.platform.Platform;
-import me.pandamods.pandalib.api.client.screen.config.*;
-import me.pandamods.pandalib.api.client.screen.config.auto.ConfigScreenProvider;
+import me.pandamods.pandalib.PandaLib;
 import me.pandamods.pandalib.api.config.Config;
 import me.pandamods.pandalib.api.config.ConfigData;
 import me.pandamods.pandalib.core.utils.ClassUtils;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,7 +44,7 @@ public class ConfigHolder<T extends ConfigData> {
 		this.logger = LoggerFactory.getLogger(config.modId() + " | Config");
 		this.gson = getNewDefault().buildGson(new GsonBuilder()).setPrettyPrinting().create();
 
-		this.resourceLocation = new ResourceLocation(config.modId(), config.name());
+		this.resourceLocation = ResourceLocation.fromNamespaceAndPath(config.modId(), config.name());
 		this.synchronize = config.synchronize();
 
 		if (this.load()) {
@@ -119,8 +125,8 @@ public class ConfigHolder<T extends ConfigData> {
 		return resourceLocation;
 	}
 
-	public MutableComponent getName() {
-		return Component.translatable(String.format("config.%s.%s", resourceLocation.getNamespace(), resourceLocation.getPath()));
+	public String getLangName() {
+		return String.format("config.%s.%s", resourceLocation.getNamespace(), resourceLocation.getPath());
 	}
 
 	public String modID() {
@@ -132,10 +138,5 @@ public class ConfigHolder<T extends ConfigData> {
 	 */
 	public T get() {
 		return config;
-	}
-
-	@Environment(EnvType.CLIENT)
-	public ConfigMenu.Builder<T> buildScreen(Screen parent) {
-		return new ConfigScreenProvider<T>(parent, this).getBuilder();
 	}
 }

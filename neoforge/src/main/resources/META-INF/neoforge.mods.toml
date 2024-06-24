@@ -14,21 +14,21 @@ description = "A multi purpose library with a Config API and a bit of utility co
 
 [[dependencies.pandalib]]
 modId = "neoforge"
-mandatory = true
+type = "required"
 versionRange = "[20.5.21-beta,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.pandalib]]
 modId = "minecraft"
-mandatory = true
+type = "required"
 versionRange = "[1.20.5,1.21)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.pandalib]]
 modId = "architectury"
-mandatory = true
+type = "required"
 versionRange = "[1,)"
 ordering = "AFTER"
 side = "BOTH"

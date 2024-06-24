@@ -21,11 +21,11 @@ import me.pandamods.test.config.TestConfig;
 public class PandaLibTest {
 	public static boolean SHOULD_INIT = true;
 
-	public static final CommonConfigHolder<TestConfig> CONFIG;
+	public static final ClientConfigHolder<TestConfig> CONFIG;
 
 	static {
 		if (shouldInit()) {
-			CONFIG = PandaLibConfig.registerCommon(TestConfig.class);
+			CONFIG = PandaLibConfig.registerClient(TestConfig.class);
 		} else {
 			CONFIG = null;
 		}

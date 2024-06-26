@@ -32,7 +32,7 @@ forgix {
 
 allprojects {
     group = rootProject.maven_group
-    version = rootProject.mod_version
+    version = "${rootProject.mod_version}-${rootProject.minecraft_version}"
 }
 
 subprojects {
@@ -75,8 +75,8 @@ subprojects {
         publications {
             mavenJava(MavenPublication) {
                 groupId = rootProject.maven_group
-                artifactId = project.base.archivesName
-                version = "${rootProject.mod_version}-${rootProject.minecraft_version}"
+                artifactId = "${rootProject.archives_name}-${project.name}"
+                version = project.version
                 from components.java
             }
         }

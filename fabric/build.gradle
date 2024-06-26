@@ -7,6 +7,10 @@ architectury {
     fabric()
 }
 
+loom {
+    accessWidenerPath = project(":common").loom.accessWidenerPath
+}
+
 configurations {
     common
     shadowCommon // Don't use shadow from the shadow plugin since it *excludes* files.
@@ -32,10 +36,10 @@ dependencies {
 }
 
 processResources {
-    inputs.property 'version', project.version
+    inputs.property 'version', rootProject.mod_version
 
     filesMatching('fabric.mod.json') {
-        expand version: project.version
+        expand version: rootProject.mod_version
     }
 }
 

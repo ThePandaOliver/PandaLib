@@ -7,6 +7,14 @@ architectury {
     neoForge()
 }
 
+loom {
+    accessWidenerPath = project(":common").loom.accessWidenerPath
+}
+
+remapJar {
+    atAccessWideners.add(loom.accessWidenerPath.get().asFile.name)
+}
+
 configurations {
     common
     shadowCommon // Don't use shadow from the shadow plugin since it *excludes* files.
@@ -32,10 +40,10 @@ dependencies {
 }
 
 processResources {
-    inputs.property 'version', project.version
+    inputs.property 'version', rootProject.mod_version
 
     filesMatching('META-INF/neoforge.mods.toml') {
-        expand version: project.version
+        expand version: rootProject.mod_version
     }
 }
 

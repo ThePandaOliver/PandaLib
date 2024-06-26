@@ -10,13 +10,13 @@
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package me.pandamods.pandalib.core.event;
+package me.pandamods.pandalib.event;
 
 import dev.architectury.event.events.client.ClientPlayerEvent;
 import dev.architectury.event.events.common.PlayerEvent;
 import dev.architectury.platform.Platform;
 import dev.architectury.utils.Env;
-import me.pandamods.pandalib.core.network.ConfigNetworking;
+import me.pandamods.pandalib.network.ConfigNetworking;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.server.level.ServerPlayer;
 

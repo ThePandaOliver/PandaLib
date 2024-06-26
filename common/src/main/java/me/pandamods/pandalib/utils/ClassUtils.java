@@ -10,7 +10,7 @@
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package me.pandamods.pandalib.core.utils;
+package me.pandamods.pandalib.utils;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;

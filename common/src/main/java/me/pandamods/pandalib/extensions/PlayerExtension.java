@@ -10,7 +10,7 @@
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package me.pandamods.pandalib.core.extensions;
+package me.pandamods.pandalib.extensions;
 
 import com.google.gson.JsonObject;
 import me.pandamods.pandalib.api.config.ConfigData;

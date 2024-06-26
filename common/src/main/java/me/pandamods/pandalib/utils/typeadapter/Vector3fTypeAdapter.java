@@ -10,7 +10,7 @@
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package me.pandamods.pandalib.core.utils.typeadapter;
+package me.pandamods.pandalib.utils.typeadapter;
 
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;

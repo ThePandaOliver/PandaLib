@@ -1,14 +1,10 @@
 plugins {
-    id "com.github.johnrengelman.shadow" version "8.1.1"
+    id "com.github.johnrengelman.shadow"
 }
 
 architectury {
     platformSetupLoomIde()
     fabric()
-}
-
-loom {
-    accessWidenerPath = project(":common").loom.accessWidenerPath
 }
 
 configurations {
@@ -19,59 +15,35 @@ configurations {
     developmentFabric.extendsFrom common
 }
 
-dependencies {
-    modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
-    modApi "net.fabricmc.fabric-api:fabric-api:${fabric_api_version}+${minecraft_version}"
-    modApi "dev.architectury:architectury-fabric:${architectury_version}"
+repositories {
+    maven { url = "https://maven.terraformersmc.com/releases/" }
+}
 
-    modApi("com.terraformersmc:modmenu:${modmenu_version}")
+dependencies {
+    modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
+    modApi "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
+
+    modApi "dev.architectury:architectury-fabric:${rootProject.architectury_version}"
+
+    modApi("com.terraformersmc:modmenu:${rootProject.modmenu_version}")
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
 }
 
-shadowJar {
-    exclude "architectury.common.json"
+processResources {
+    inputs.property 'version', project.version
 
+    filesMatching('fabric.mod.json') {
+        expand version: project.version
+    }
+}
+
+shadowJar {
     configurations = [project.configurations.shadowCommon]
     archiveClassifier = "dev-shadow"
 }
 
 remapJar {
-    injectAccessWidener = true
     input.set shadowJar.archiveFile
-    dependsOn shadowJar
-}
-
-sourcesJar {
-    def commonSources = project(":common").sourcesJar
-    dependsOn commonSources
-    from commonSources.archiveFile.map { zipTree(it) }
-}
-
-components.java {
-    withVariantsFromConfiguration(project.configurations.shadowRuntimeElements) {
-        skip()
-    }
-}
-
-publishing {
-    publications {
-        mavenFabric(MavenPublication) {
-            artifactId = "${archives_base_name}-fabric"
-            version = "${mod_version}-${minecraft_version}"
-            from components.java
-        }
-    }
-
-    repositories {
-        maven {
-            name = 'GitHubPackages'
-            url = uri("https://maven.pkg.github.com/PandaDap2006/PandaLib")
-            credentials {
-                username = System.getenv("GH_USERNAME")
-                password = System.getenv("GH_TOKEN")
-            }
-        }
-    }
 }

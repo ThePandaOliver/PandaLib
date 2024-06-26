@@ -10,7 +10,7 @@
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package me.pandamods.pandalib.core.network;
+package me.pandamods.pandalib.network;
 
 import dev.architectury.event.events.common.PlayerEvent;
 import dev.architectury.impl.NetworkAggregator;
@@ -22,10 +22,7 @@ import me.pandamods.pandalib.api.config.PandaLibConfig;
 import me.pandamods.pandalib.api.config.holders.ClientConfigHolder;
 import me.pandamods.pandalib.api.config.holders.CommonConfigHolder;
 import me.pandamods.pandalib.api.util.NetworkHelper;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 
 public class ConfigNetworking {

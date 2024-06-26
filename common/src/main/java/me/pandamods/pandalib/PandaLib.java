@@ -13,9 +13,8 @@
 package me.pandamods.pandalib;
 
 import com.mojang.logging.LogUtils;
-import me.pandamods.pandalib.core.event.EventHandler;
-import me.pandamods.pandalib.core.network.ConfigNetworking;
-import me.pandamods.test.PandaLibTest;
+import me.pandamods.pandalib.event.EventHandler;
+import me.pandamods.pandalib.network.ConfigNetworking;
 import net.minecraft.resources.ResourceLocation;
 import org.slf4j.Logger;
 
@@ -26,10 +25,6 @@ public class PandaLib {
     public static void init() {
 		ConfigNetworking.registerPackets();
 		EventHandler.Register();
-
-		if (PandaLibTest.shouldInit()) {
-			PandaLibTest.init();
-		}
     }
 
 	public static ResourceLocation ID(String path) {

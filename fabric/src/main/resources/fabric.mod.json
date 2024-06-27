@@ -17,10 +17,7 @@
   "entrypoints": {
     "main": [
 			"me.pandamods.pandalib.fabric.PandaLibFabric"
-    ],
-		"modmenu": [
-			"me.pandamods.pandalib.fabric.PandaLibFabric"
-		]
+    ]
   },
   "mixins": [
 		"pandalib.mixins.json",

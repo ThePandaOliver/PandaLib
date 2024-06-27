@@ -15,8 +15,6 @@ package me.pandamods.pandalib.api.util;
 import dev.architectury.networking.NetworkManager;
 import dev.architectury.platform.Platform;
 import dev.architectury.utils.Env;
-import me.pandamods.pandalib.core.network.CommonConfigPacketData;
-import me.pandamods.pandalib.core.network.ConfigNetworking;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;

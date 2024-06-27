@@ -10,7 +10,7 @@
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package me.pandamods.pandalib.network;
+package me.pandamods.pandalib.network.packets;
 
 import io.netty.buffer.ByteBuf;
 import me.pandamods.pandalib.PandaLib;

@@ -12,16 +12,14 @@
 
 package me.pandamods.pandalib.network;
 
-import dev.architectury.event.events.common.PlayerEvent;
-import dev.architectury.impl.NetworkAggregator;
 import dev.architectury.networking.NetworkManager;
-import dev.architectury.platform.Platform;
-import dev.architectury.utils.Env;
 import me.pandamods.pandalib.api.config.ConfigData;
 import me.pandamods.pandalib.api.config.PandaLibConfig;
 import me.pandamods.pandalib.api.config.holders.ClientConfigHolder;
 import me.pandamods.pandalib.api.config.holders.CommonConfigHolder;
 import me.pandamods.pandalib.api.util.NetworkHelper;
+import me.pandamods.pandalib.network.packets.ClientConfigPacketData;
+import me.pandamods.pandalib.network.packets.CommonConfigPacketData;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
@@ -39,7 +37,7 @@ public class ConfigNetworking {
 	}
 
 	public static void SyncCommonConfig(ServerPlayer serverPlayer, CommonConfigHolder<?> holder) {
-		holder.logger.info("Sending {} common config '{}'", serverPlayer.getDisplayName().getString(), holder.resourceLocation().toString());
+		holder.logger.info("Sending common config '{}' to {}", holder.resourceLocation().toString(), serverPlayer.getDisplayName().getString());
 		NetworkManager.sendToPlayer(serverPlayer, new CommonConfigPacketData(holder.resourceLocation().toString(), holder.getGson().toJson(holder.get())));
 	}
 
@@ -50,7 +48,7 @@ public class ConfigNetworking {
 	}
 
 	public static void SyncClientConfig(ClientConfigHolder<?> holder) {
-		holder.logger.info("Sending server client config '{}'", holder.resourceLocation().toString());
+		holder.logger.info("Sending client config '{}' to server", holder.resourceLocation().toString());
 		NetworkManager.sendToServer(new ClientConfigPacketData(holder.resourceLocation().toString(), holder.getGson().toJson(holder.get())));
 	}
 
@@ -58,7 +56,7 @@ public class ConfigNetworking {
 		ResourceLocation resourceLocation = ResourceLocation.tryParse(packetData.resourceLocation());
 		PandaLibConfig.getConfig(resourceLocation).ifPresent(configHolder -> {
 			if (configHolder instanceof ClientConfigHolder<? extends ConfigData>) {
-				configHolder.logger.info("Received config '{}' from {}",
+				configHolder.logger.info("Received client config '{}' from {}",
 						configHolder.resourceLocation().toString(), packetContext.getPlayer().getDisplayName().getString());
 				packetContext.getPlayer().pandaLib$setConfig(configHolder.getGson()
 						.fromJson(packetData.configJson(), configHolder.getConfigClass()));

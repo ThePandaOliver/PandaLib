@@ -15,20 +15,20 @@ forgix {
     mergedJarName = "${rootProject.archives_name}-${version}.jar"
     outputDir = "build/libs/merged"
 
-    fabric {
-        projectName = "fabric"
-        jarLocation = "build/libs/${rootProject.archives_name}-fabric-${version}.jar"
-    }
+    if (findProject(":fabric"))
+        fabric {
+            jarLocation = "build/libs/${rootProject.archives_name}-fabric-${version}.jar"
+        }
 
-    forge {
-        projectName = "forge"
-        jarLocation = "build/libs/${rootProject.archives_name}-forge-${version}.jar"
-    }
+    if (findProject(":forge"))
+        forge {
+            jarLocation = "build/libs/${rootProject.archives_name}-forge-${version}.jar"
+        }
 
-    neoforge {
-        projectName = "neoforge"
-        jarLocation = "build/libs/${rootProject.archives_name}-neoforge-${version}.jar"
-    }
+    if (findProject(":neoforge"))
+        neoforge {
+            jarLocation = "build/libs/${rootProject.archives_name}-neoforge-${version}.jar"
+        }
 
     removeDuplicate "me.pandamods.pandalib"
 }
@@ -46,9 +46,6 @@ subprojects {
     base {
         archivesName = "${rootProject.archives_name}-${project.name}"
     }
-
-    build.finalizedBy(mergeJars)
-    assemble.finalizedBy(mergeJars)
 
     repositories {
         maven {

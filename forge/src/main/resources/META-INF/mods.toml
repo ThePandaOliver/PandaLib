@@ -1,5 +1,5 @@
 modLoader = "javafml"
-loaderVersion = "[48,)"
+loaderVersion = "[51,)"
 license = "LGPL-3"
 issueTrackerURL="https://github.com/PandaDap2006/PandaLib/issues"
 showAsResourcePack=false
@@ -15,7 +15,7 @@ description = "A multi purpose library with a Config API and a bit of utility co
 [[dependencies.pandalib]]
 modId = "forge"
 mandatory = true
-versionRange = "[48,)"
+versionRange = "[51,)"
 ordering = "NONE"
 side = "BOTH"
 
@@ -29,6 +29,6 @@ side = "BOTH"
 [[dependencies.pandalib]]
 modId = "architectury"
 mandatory = true
-versionRange = "[1,)"
+versionRange = "[13,)"
 ordering = "AFTER"
 side = "BOTH"

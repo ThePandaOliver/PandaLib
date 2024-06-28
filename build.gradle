@@ -80,7 +80,7 @@ publishMods {
         username = "Mod Release"
         avatarUrl = "https://avatars.githubusercontent.com/u/70108603?v=4"
         content = changelog.map { "# PandaLib ${rootProject.mod_version} Release for ${supported_version_str} \n" + it +
-                    "\n<@&1244983762874400892> \n# This is a test for my automatic publishing for the mods" }
+                    "\n<@&1244983762874400892>" }
     }
 
     def curseforgeOptions = curseforgeOptions {

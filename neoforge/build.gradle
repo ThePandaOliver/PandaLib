@@ -8,11 +8,7 @@ architectury {
 }
 
 loom {
-    accessWidenerPath = project(":common").loom.accessWidenerPath
-}
-
-remapJar {
-    atAccessWideners.add(loom.accessWidenerPath.get().asFile.name)
+//    accessWidenerPath = project(":common").loom.accessWidenerPath
 }
 
 configurations {
@@ -54,4 +50,5 @@ shadowJar {
 
 remapJar {
     input.set shadowJar.archiveFile
+//    atAccessWideners.add(loom.accessWidenerPath.get().asFile.name)
 }

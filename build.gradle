@@ -71,7 +71,7 @@ publishMods {
     changelog = rootProject.file("Changelog.md").text
 
     var supported_version_str = using_ranged_game_version ?
-            "${rootProject.min_supported_game_version}-${rootProject.max_supported_game_version}" :
+            "${rootProject.supported_game_version}-${rootProject.max_supported_game_version}" :
             rootProject.supported_game_version
 
     discord {
@@ -89,7 +89,7 @@ publishMods {
 
         if (using_ranged_game_version)
             minecraftVersionRange {
-                start = rootProject.min_supported_game_version
+                start = rootProject.supported_game_version
                 end = rootProject.max_supported_game_version
             }
         else
@@ -111,7 +111,7 @@ publishMods {
 
         if (using_ranged_game_version)
             minecraftVersionRange {
-                start = rootProject.min_supported_game_version
+                start = rootProject.supported_game_version
                 end = rootProject.max_supported_game_version
             }
         else
@@ -185,7 +185,7 @@ publishMods {
         accessToken = providers.environmentVariable("GITHUB_API_KEY")
         repository = "PandaDap2006/PandaLib"
         commitish = "main"
-        tagName = "release/${rootProject.mod_version}-${rootProject.min_supported_game_version}"
+        tagName = "release/${rootProject.mod_version}-${supported_version_str}"
 
         modLoaders.addAll("fabric", "forge", "neoforge")
         file = project(":common").jar.archiveFile

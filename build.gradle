@@ -29,6 +29,8 @@ forgix {
         projectName = "neoforge"
         jarLocation = "build/libs/${rootProject.archives_name}-neoforge-${version}.jar"
     }
+
+    removeDuplicate "me.pandamods.pandalib"
 }
 
 allprojects {
@@ -65,7 +67,7 @@ subprojects {
 
     tasks.withType(JavaCompile).configureEach {
         options.encoding = "UTF-8"
-        options.release = 21
+        options.release = 17
     }
 
     java {

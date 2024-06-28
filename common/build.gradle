@@ -3,7 +3,7 @@ architectury {
 }
 
 loom {
-    accessWidenerPath = file("src/main/resources/pandalib.accesswidener")
+//    accessWidenerPath = file("src/main/resources/pandalib.accesswidener")
 }
 
 dependencies {

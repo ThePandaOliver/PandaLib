@@ -29,4 +29,4 @@ You can also join my [Discord](https://discord.gg/wjPt4vEfXb)
 [![](https://github.com/PandaDap2006/PandaDap2006/blob/main/assets_for_readme/kinetic_hosting_banner.png?raw=true)](https://billing.kinetichosting.net/aff.php?aff=476)
 
 ## License
-The project is licensed under the GNU LGPLv3
+The project is licensed under the GNU GPLv3

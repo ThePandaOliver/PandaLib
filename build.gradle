@@ -70,6 +70,7 @@ publishMods {
 
     dryRun = Boolean.parseBoolean(rootProject.is_dry_run)
 
+    version = rootProject.mod_version
     type = BETA
     changelog = rootProject.file("Changelog.md").text
 
@@ -125,16 +126,19 @@ publishMods {
     def fabricOptions = publishOptions {
         file = project(":fabric").remapJar.archiveFile
         modLoaders.add("fabric")
+        displayName = "[Fabric ${supported_version_str}] ${rootProject.mod_version}"
     }
 
     def forgeOptions = publishOptions {
         file = project(":forge").remapJar.archiveFile
         modLoaders.add("forge")
+        displayName = "[Forge ${supported_version_str}] ${rootProject.mod_version}"
     }
 
     def neoForgeOptions = publishOptions {
         file = project(":neoforge").remapJar.archiveFile
         modLoaders.add("neoforge")
+        displayName = "[NeoForge ${supported_version_str}] ${rootProject.mod_version}"
     }
 
     if (findProject(":fabric") && is_fabric_publishing_enabled) {

@@ -44,7 +44,11 @@ public class ConfigHolder<T extends ConfigData> {
 		this.logger = LoggerFactory.getLogger(config.modId() + " | Config");
 		this.gson = getNewDefault().buildGson(new GsonBuilder()).setPrettyPrinting().create();
 
-		this.resourceLocation = ResourceLocation.fromNamespaceAndPath(config.modId(), config.name());
+		#if MC_VER == MC_1_21
+			this.resourceLocation = ResourceLocation.fromNamespaceAndPath(config.modId(), config.name());
+		#else
+			this.resourceLocation = new ResourceLocation(config.modId(), config.name());
+		#endif
 		this.synchronize = config.synchronize();
 
 		if (this.load()) {

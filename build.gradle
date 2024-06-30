@@ -2,8 +2,31 @@ plugins {
     id "architectury-plugin" version "3.4-SNAPSHOT"
     id "dev.architectury.loom" version "1.6-SNAPSHOT" apply false
     id "com.github.johnrengelman.shadow" version "8.1.1" apply false
+    id "systems.manifold.manifold-gradle-plugin" version "0.0.2-alpha"
     id "me.modmuss50.mod-publish-plugin" version "0.5.1"
 }
+
+def writeBuildGradlePredefine(List<String> AvailableVersion, int versionIndex) {
+    StringBuilder sb = new StringBuilder();
+
+    sb.append("# DON'T TOUCH THIS FILE, This is handled by the build script\n");
+
+    for (int i = 0; i < AvailableVersion.size(); i++) {
+        String versionString = AvailableVersion[i].replace(".", "_");
+        sb.append("MC_" + versionString + "=" + i.toString() + "\n");
+
+        if (versionIndex == i)
+            sb.append("MC_VER=" + i.toString() + "\n");
+    }
+
+    new File(projectDir, "build.properties").text = sb.toString()
+}
+
+project.gradle.ext.getProperties().each { prop ->
+    rootProject.ext.set(prop.key, prop.value)
+}
+
+writeBuildGradlePredefine(rootProject.availableVersions, rootProject.versionIndex)
 
 architectury {
     minecraft = rootProject.minecraft_version
@@ -36,11 +59,28 @@ subprojects {
             officialMojangMappings()
             parchment "org.parchmentmc.data:parchment-${rootProject.parchment_version}@zip"
         }
+
+        annotationProcessor("systems.manifold:manifold-preprocessor:${rootProject.manifold_version}")
+    }
+
+    processResources {
+        def replaceProperties = [
+                version: rootProject.version,
+
+                compatible_fabricmc_versions: rootProject.compatible_fabricmc_versions,
+                compatible_forgemc_versions: rootProject.compatible_forgemc_versions,
+        ]
+
+        inputs.properties replaceProperties
+        filesMatching(["fabric.mod.json", "META-INF/mods.toml", "META-INF/neoforge.mods.toml"]) {
+            expand replaceProperties
+        }
     }
 
     tasks.withType(JavaCompile).configureEach {
         options.encoding = "UTF-8"
-        options.release = 21
+        options.release = rootProject.java_version as Integer
+        options.compilerArgs += ["-Xplugin:Manifold"]
     }
 
     java {

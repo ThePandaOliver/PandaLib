@@ -26,7 +26,7 @@
   "depends": {
     "fabric": "*",
     "fabric-api": "*",
-    "minecraft": ">=1.21",
+    "minecraft": "${compatible_fabricmc_versions}",
     "architectury": "*"
   },
 	"custom": {

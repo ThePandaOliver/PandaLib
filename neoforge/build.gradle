@@ -35,14 +35,6 @@ dependencies {
     shadowCommon(project(path: ":common", configuration: "transformProductionNeoForge")) { transitive = false }
 }
 
-processResources {
-    inputs.property 'version', rootProject.mod_version
-
-    filesMatching('META-INF/neoforge.mods.toml') {
-        expand version: rootProject.mod_version
-    }
-}
-
 shadowJar {
     configurations = [project.configurations.shadowCommon]
     archiveClassifier = "dev-shadow"

@@ -36,14 +36,6 @@ dependencies {
     shadowCommon(project(path: ":common", configuration: "transformProductionForge")) { transitive = false }
 }
 
-processResources {
-    inputs.property 'version', rootProject.mod_version
-
-    filesMatching('META-INF/mods.toml') {
-        expand version: rootProject.mod_version
-    }
-}
-
 shadowJar {
     configurations = [project.configurations.shadowCommon]
     archiveClassifier = "dev-shadow"

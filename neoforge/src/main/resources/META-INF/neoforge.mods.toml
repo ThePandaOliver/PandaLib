@@ -1,5 +1,5 @@
 modLoader = "javafml"
-loaderVersion = "[1,)"
+loaderVersion = "*"
 license = "LGPL-3"
 issueTrackerURL="https://github.com/PandaDap2006/PandaLib/issues"
 showAsResourcePack=false
@@ -15,21 +15,21 @@ description = "A multi purpose library with a Config API and a bit of utility co
 [[dependencies.pandalib]]
 modId = "neoforge"
 type = "required"
-versionRange = "[20.5.21-beta,)"
+versionRange = "*"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.pandalib]]
 modId = "minecraft"
 type = "required"
-versionRange = "[1.21,)"
+versionRange = "${compatible_forgemc_versions}"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.pandalib]]
 modId = "architectury"
 type = "required"
-versionRange = "[13,)"
+versionRange = "*"
 ordering = "AFTER"
 side = "BOTH"
 

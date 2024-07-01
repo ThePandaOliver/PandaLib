@@ -1,0 +1,53 @@
+project.ext.loadProperties = { version ->
+    String defaultVersion = "1.21"
+
+    List<String> availableVersions = fileTree("versionProperties").files.name
+    for (int i = 0; i < availableVersions.size(); i++) {
+        availableVersions[i] = availableVersions[i].replaceAll("\\.properties", "")
+    }
+
+    availableVersions.sort()
+    println "Avalible Minecraft versions: ${availableVersions}"
+
+    String selectedVersion = ""
+    int versionIndex = -1
+    println "Avalible MC versions: ${availableVersions}"
+    if (version instanceof String) {
+        selectedVersion = version as String
+        versionIndex = availableVersions.indexOf(version as String)
+    }
+    if (versionIndex == -1) {
+        println "No 'game_version' set or the set 'game_version' is invalid! Defaulting to ${defaultVersion}."
+        selectedVersion = defaultVersion
+        versionIndex = availableVersions.indexOf(defaultVersion)
+        assert versionIndex != -1
+    }
+
+    println "Loading properties file at " + selectedVersion + ".properties"
+    var properties = new Properties()
+    properties.load(new FileInputStream("${rootDir}/versionProperties/${selectedVersion}.properties"))
+
+    properties.each { prop ->
+        project.ext.set(prop.key, prop.value)
+    }
+    project.ext.availableVersions = availableVersions
+    project.ext.versionIndex = versionIndex
+
+    writeBuildGradlePredefine(availableVersions, versionIndex)
+}
+
+def writeBuildGradlePredefine(List<String> AvailableVersion, int versionIndex) {
+    StringBuilder sb = new StringBuilder();
+
+    sb.append("# DON'T TOUCH THIS FILE, This is handled by the build script\n");
+
+    for (int i = 0; i < AvailableVersion.size(); i++) {
+        String versionString = AvailableVersion[i].replace(".", "_");
+        sb.append("MC_" + versionString + "=" + i.toString() + "\n");
+
+        if (versionIndex == i)
+            sb.append("MC_VER=" + i.toString() + "\n");
+    }
+
+    new File(projectDir, "build.properties").text = sb.toString()
+}

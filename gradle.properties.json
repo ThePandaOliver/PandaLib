@@ -1,5 +1,5 @@
 {
-	"game_version": "1.21",
+	"game_version": "latest",
 
 	"mod_name": "PandaLib",
 	"mod_description": "A multipurpose library with a Config API and a bit of utility code.",

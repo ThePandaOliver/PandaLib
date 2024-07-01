@@ -1,7 +1,3 @@
-import com.google.gson.Gson
-import com.google.gson.JsonObject
-import com.google.gson.JsonPrimitive
-
 plugins {
     id "architectury-plugin" version "3.4-SNAPSHOT"
     id "dev.architectury.loom" version "1.6-SNAPSHOT" apply false
@@ -10,46 +6,9 @@ plugins {
     id "me.modmuss50.mod-publish-plugin" version "0.5.1"
 }
 
-def loadJsonProperties() {
-    File jsonPropertiesFile = file("${rootDir}/gradle.properties.json")
-    if (jsonPropertiesFile.exists()) {
-        JsonObject properties = new Gson().fromJson(jsonPropertiesFile.text, JsonObject.class)
+apply from: rootProject.file("gradleConfigs/PropertiesHelper.gradle")
 
-        properties.entrySet().each {entry ->
-            def key = entry.getKey()
-            def value = entry.getValue()
-
-            if(value instanceof JsonObject){
-                gradle.ext.set(key, value)
-            } else if(value instanceof JsonPrimitive){
-                gradle.ext.set(key, value.asString)
-            }
-        }
-    }
-}
-loadJsonProperties()
-
-def writeBuildGradlePredefine(List<String> AvailableVersion, int versionIndex) {
-    StringBuilder sb = new StringBuilder();
-
-    sb.append("# DON'T TOUCH THIS FILE, This is handled by the build script\n");
-
-    for (int i = 0; i < AvailableVersion.size(); i++) {
-        String versionString = AvailableVersion[i].replace(".", "_");
-        sb.append("MC_" + versionString + "=" + i.toString() + "\n");
-
-        if (versionIndex == i)
-            sb.append("MC_VER=" + i.toString() + "\n");
-    }
-
-    new File(projectDir, "build.properties").text = sb.toString()
-}
-
-project.gradle.ext.getProperties().each { prop ->
-    rootProject.ext.set(prop.key, prop.value)
-}
-
-writeBuildGradlePredefine(rootProject.availableVersions, rootProject.versionIndex)
+loadProperties(rootProject.game_version)
 
 architectury {
     minecraft = rootProject.minecraft_version

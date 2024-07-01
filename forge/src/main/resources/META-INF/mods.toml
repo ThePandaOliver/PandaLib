@@ -1,21 +1,20 @@
 modLoader = "javafml"
-loaderVersion = "[51,)"
+loaderVersion = "*"
 license = "LGPL-3"
 issueTrackerURL="https://github.com/PandaDap2006/PandaLib/issues"
-showAsResourcePack=false
 
 [[mods]]
 modId = "pandalib"
 version = "${version}"
-displayName = "PandaLib"
+displayName = "${name}"
 authors = "The Panda Oliver"
-logoFile = "icon.png"
-description = "A multi purpose library with a Config API and a bit of utility code. More features planned"
+logoFile = "assets/pandalib/icon.png"
+description = "${description}"
 
 [[dependencies.pandalib]]
 modId = "forge"
 mandatory = true
-versionRange = "[51,)"
+versionRange = "*"
 ordering = "NONE"
 side = "BOTH"
 
@@ -29,6 +28,6 @@ side = "BOTH"
 [[dependencies.pandalib]]
 modId = "architectury"
 mandatory = true
-versionRange = "[13,)"
+versionRange = "*"
 ordering = "AFTER"
 side = "BOTH"

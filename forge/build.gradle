@@ -2,6 +2,8 @@ plugins {
     id "com.github.johnrengelman.shadow"
 }
 
+apply from: rootProject.file("gradleConfigs/DependencyHelper.gradle")
+
 architectury {
     platformSetupLoomIde()
     forge()

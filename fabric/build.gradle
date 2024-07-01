@@ -2,6 +2,8 @@ plugins {
     id "com.github.johnrengelman.shadow"
 }
 
+apply from: rootProject.file("gradleConfigs/DependencyHelper.gradle")
+
 architectury {
     platformSetupLoomIde()
     fabric()
@@ -29,11 +31,11 @@ dependencies {
 
     modApi "dev.architectury:architectury-fabric:${rootProject.architectury_version}"
 
-    modApi("com.terraformersmc:modmenu:${rootProject.modmenu_version}")
-
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
 }
+
+addModApi(rootProject.modmenu, "com.terraformersmc:modmenu:${rootProject.modmenu_version}")
 
 shadowJar {
     configurations = [project.configurations.shadowCommon]

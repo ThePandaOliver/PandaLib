@@ -1,3 +1,7 @@
+import com.google.gson.Gson
+import com.google.gson.JsonObject
+import com.google.gson.JsonPrimitive
+
 plugins {
     id "architectury-plugin" version "3.4-SNAPSHOT"
     id "dev.architectury.loom" version "1.6-SNAPSHOT" apply false
@@ -5,6 +9,25 @@ plugins {
     id "systems.manifold.manifold-gradle-plugin" version "0.0.2-alpha"
     id "me.modmuss50.mod-publish-plugin" version "0.5.1"
 }
+
+def loadJsonProperties() {
+    File jsonPropertiesFile = file("${rootDir}/gradle.properties.json")
+    if (jsonPropertiesFile.exists()) {
+        JsonObject properties = new Gson().fromJson(jsonPropertiesFile.text, JsonObject.class)
+
+        properties.entrySet().each {entry ->
+            def key = entry.getKey()
+            def value = entry.getValue()
+
+            if(value instanceof JsonObject){
+                gradle.ext.set(key, value)
+            } else if(value instanceof JsonPrimitive){
+                gradle.ext.set(key, value.asString)
+            }
+        }
+    }
+}
+loadJsonProperties()
 
 def writeBuildGradlePredefine(List<String> AvailableVersion, int versionIndex) {
     StringBuilder sb = new StringBuilder();
@@ -65,7 +88,10 @@ subprojects {
 
     processResources {
         def replaceProperties = [
-                version: rootProject.version,
+                version: rootProject.mod_version,
+                id: rootProject.archives_name,
+                name: rootProject.mod_name,
+                description: rootProject.mod_description,
 
                 compatible_fabricmc_versions: rootProject.compatible_fabricmc_versions,
                 compatible_forgemc_versions: rootProject.compatible_forgemc_versions,

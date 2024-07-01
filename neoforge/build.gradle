@@ -2,6 +2,8 @@ plugins {
     id "com.github.johnrengelman.shadow"
 }
 
+apply from: rootProject.file("gradleConfigs/DependencyHelper.gradle")
+
 architectury {
     platformSetupLoomIde()
     neoForge()
@@ -33,6 +35,23 @@ dependencies {
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionNeoForge")) { transitive = false }
+}
+
+processResources {
+    def replaceProperties = [
+            version: rootProject.version,
+            id: rootProject.archives_name,
+            name: rootProject.mod_name,
+            description: rootProject.mod_description,
+
+            compatible_fabricmc_versions: rootProject.compatible_fabricmc_versions,
+            compatible_forgemc_versions: rootProject.compatible_forgemc_versions,
+    ]
+
+    inputs.properties replaceProperties
+    filesMatching(["META-INF/neoforge.mods.toml"]) {
+        expand replaceProperties
+    }
 }
 
 shadowJar {

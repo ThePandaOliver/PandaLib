@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
-  "id": "pandalib",
+  "id": "${id}",
   "version": "${version}",
-  "name": "PandaLib",
-  "description": "A multi purpose library with a Config API and a bit of utility code. More features planned",
+  "name": "${name}",
+  "description": "${description}",
   "authors": [
 		"The Panda Oliver"
   ],
-	"icon": "icon.png",
+	"icon": "assets/pandalib/icon.png",
 	"contact": {
 		"issues": "https://github.com/PandaDap2006/PandaLib/issues",
 		"sources": "https://github.com/PandaDap2006/PandaLib"

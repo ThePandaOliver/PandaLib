@@ -2,15 +2,13 @@ plugins {
     id "com.github.johnrengelman.shadow"
 }
 
-apply from: rootProject.file("gradleConfigs/DependencyHelper.gradle")
-
 architectury {
     platformSetupLoomIde()
     fabric()
 }
 
 loom {
-//    accessWidenerPath = project(":common").loom.accessWidenerPath
+    accessWidenerPath = project(":common").loom.accessWidenerPath
 }
 
 configurations {
@@ -31,6 +29,9 @@ dependencies {
 
     modApi "dev.architectury:architectury-fabric:${rootProject.architectury_version}"
 
+    // Used for testing
+    modRuntimeOnly "maven.modrinth:pandas-falling-trees:0.12.3-fabric,${rootProject.minecraft_version}"
+
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
 }
@@ -44,4 +45,5 @@ shadowJar {
 
 remapJar {
     input.set shadowJar.archiveFile
+    injectAccessWidener = true
 }

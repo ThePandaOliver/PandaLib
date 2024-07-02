@@ -2,19 +2,17 @@ plugins {
     id "com.github.johnrengelman.shadow"
 }
 
-apply from: rootProject.file("gradleConfigs/DependencyHelper.gradle")
-
 architectury {
     platformSetupLoomIde()
     forge()
 }
 
 loom {
-//    accessWidenerPath = project(":common").loom.accessWidenerPath
+    accessWidenerPath = project(":common").loom.accessWidenerPath
 
     forge {
-//        convertAccessWideners = true
-//        extraAccessWideners.add loom.accessWidenerPath.get().asFile.name
+        convertAccessWideners = true
+        extraAccessWideners.add loom.accessWidenerPath.get().asFile.name
 
         mixinConfig "pandalib-common.mixins.json"
         mixinConfig "pandalib.mixins.json"
@@ -45,4 +43,5 @@ shadowJar {
 
 remapJar {
     input.set shadowJar.archiveFile
+    injectAccessWidener = true
 }

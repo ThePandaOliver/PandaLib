@@ -27,6 +27,7 @@
     "fabric": "*",
     "fabric-api": "*",
     "minecraft": "${compatible_fabricmc_versions}",
+    "java": ">=${java_version}",
     "architectury": "*"
   },
 	"custom": {

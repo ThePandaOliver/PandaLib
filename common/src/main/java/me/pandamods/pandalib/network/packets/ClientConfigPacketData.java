@@ -10,6 +10,7 @@
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+#if MC_VER >= MC_1_20_5
 package me.pandamods.pandalib.network.packets;
 
 import io.netty.buffer.ByteBuf;
@@ -34,3 +35,4 @@ public record ClientConfigPacketData(String resourceLocation, String configJson)
 		return TYPE;
 	}
 }
+#endif

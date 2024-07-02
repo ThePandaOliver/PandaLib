@@ -28,7 +28,7 @@ public class PandaLib {
     }
 
 	public static ResourceLocation ID(String path) {
-		#if MC_VER == MC_1_21
+		#if MC_VER >= MC_1_21
 			return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
 		#else
 			return new ResourceLocation(MOD_ID, path);

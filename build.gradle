@@ -6,9 +6,27 @@ plugins {
     id "me.modmuss50.mod-publish-plugin" version "0.5.1"
 }
 
-apply from: rootProject.file("gradleConfigs/PropertiesHelper.gradle")
+def writeBuildGradlePredefine(List<String> AvailableVersion, int versionIndex) {
+    StringBuilder sb = new StringBuilder();
 
-loadProperties(rootProject.game_version)
+    sb.append("# DON'T TOUCH THIS FILE, This is handled by the build script\n");
+
+    for (int i = 0; i < AvailableVersion.size(); i++) {
+        String versionString = AvailableVersion[i].replace(".", "_");
+        sb.append("MC_" + versionString + "=" + i.toString() + "\n");
+
+        if (versionIndex == i)
+            sb.append("MC_VER=" + i.toString() + "\n");
+    }
+
+    new File(projectDir, "build.properties").text = sb.toString()
+}
+
+project.gradle.ext.getProperties().each { prop ->
+    rootProject.ext.set(prop.key, prop.value)
+}
+
+writeBuildGradlePredefine(rootProject.availableVersions, rootProject.versionIndex)
 
 architectury {
     minecraft = rootProject.minecraft_version
@@ -20,9 +38,44 @@ allprojects {
 }
 
 subprojects {
+    apply plugin: "com.github.johnrengelman.shadow"
     apply plugin: "dev.architectury.loom"
     apply plugin: "architectury-plugin"
     apply plugin: "maven-publish"
+
+    project.ext.addMod = { param, String path ->
+        switch(param as int){
+            case 1:
+                project.dependencies {
+                    add('modCompileOnly', path)
+                }
+                break
+            case 2:
+                project.dependencies {
+                    add('modImplementation', path)
+                }
+                break
+            default:
+                println("Invalid Parameter")
+        }
+    }
+
+    project.ext.addModApi = { param, String path ->
+        switch(param as int){
+            case 1:
+                project.dependencies {
+                    add('modCompileOnlyApi', path)
+                }
+                break
+            case 2:
+                project.dependencies {
+                    add('modApi', path)
+                }
+                break
+            default:
+                println("Invalid Parameter")
+        }
+    }
 
     base {
         archivesName = "${rootProject.archives_name}-${project.name}"
@@ -32,6 +85,17 @@ subprojects {
         maven {
             name = "ParchmentMC"
             url = "https://maven.parchmentmc.org"
+        }
+        exclusiveContent {
+            forRepository {
+                maven {
+                    name = "Modrinth"
+                    url = "https://api.modrinth.com/maven"
+                }
+            }
+            filter {
+                includeGroup "maven.modrinth"
+            }
         }
     }
 
@@ -43,17 +107,23 @@ subprojects {
         }
 
         annotationProcessor("systems.manifold:manifold-preprocessor:${rootProject.manifold_version}")
+
+        if (rootProject.hasProperty("embed_joml") && rootProject.embed_joml == "true" && project != project(":common"))
+            include(implementation("org.joml:joml:${rootProject.joml_version}"))
+        else
+            implementation("org.joml:joml:${rootProject.joml_version}")
     }
 
     processResources {
         def replaceProperties = [
+                java_version: rootProject.java_version,
                 version: rootProject.mod_version,
                 id: rootProject.archives_name,
                 name: rootProject.mod_name,
                 description: rootProject.mod_description,
 
                 compatible_fabricmc_versions: rootProject.compatible_fabricmc_versions,
-                compatible_forgemc_versions: rootProject.compatible_forgemc_versions,
+                compatible_forgemc_versions: rootProject.compatible_forgemc_versions
         ]
 
         inputs.properties replaceProperties
@@ -88,7 +158,7 @@ subprojects {
 }
 
 publishMods {
-    var using_ranged_game_version = Boolean.parseBoolean(rootProject.use_ranged_game_version)
+    var using_ranged_game_version = rootProject.hasProperty("latest_supported_game_version")
     var is_fabric_publishing_enabled =  Boolean.parseBoolean(rootProject.enable_fabric_publishing)
     var is_forge_publishing_enabled =  Boolean.parseBoolean(rootProject.enable_forge_publishing)
     var is_neoforge_publishing_enabled =  Boolean.parseBoolean(rootProject.enable_neoforge_publishing)
@@ -100,7 +170,7 @@ publishMods {
     changelog = rootProject.file("Changelog.md").text
 
     var supported_version_str = using_ranged_game_version ?
-            "${rootProject.supported_game_version}-${rootProject.max_supported_game_version}" :
+            "${rootProject.supported_game_version}-${rootProject.latest_supported_game_version}" :
             rootProject.supported_game_version
 
     discord {
@@ -118,7 +188,7 @@ publishMods {
         if (using_ranged_game_version)
             minecraftVersionRange {
                 start = rootProject.supported_game_version
-                end = rootProject.max_supported_game_version
+                end = rootProject.latest_supported_game_version
             }
         else
             minecraftVersions.add(rootProject.supported_game_version)
@@ -140,7 +210,7 @@ publishMods {
         if (using_ranged_game_version)
             minecraftVersionRange {
                 start = rootProject.supported_game_version
-                end = rootProject.max_supported_game_version
+                end = rootProject.latest_supported_game_version
             }
         else
             minecraftVersions.add(rootProject.supported_game_version)

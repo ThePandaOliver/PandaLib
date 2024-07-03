@@ -154,12 +154,12 @@ publishMods {
 		dryRunWebhookUrl = providers.environmentVariable("DISCORD_WEBHOOK_DRY_RUN")
 		username = "Mod Release"
 		avatarUrl = "https://avatars.githubusercontent.com/u/70108603?v=4"
-		content = changelog.map { "# PandaLib ${mod_version} Release for ${supported_version_str} \n" + it }
+		content = changelog.map { "# ${mod_name} ${mod_version} Release for ${supported_version_str} \n" + it }
 	}
 
 	def curseforgeOptions = curseforgeOptions {
 		accessToken = providers.environmentVariable("CURSEFORGE_API_KEY")
-		projectId = "975460"
+		projectId = curseforge_project_id
 
 		if (using_ranged_game_version)
 			minecraftVersionRange {
@@ -181,7 +181,7 @@ publishMods {
 
 	def modrinthOptions = modrinthOptions {
 		accessToken = providers.environmentVariable("MODRINTH_API_KEY")
-		projectId = "mEEGbEIu"
+		projectId = modrinth_project_id
 
 		if (using_ranged_game_version)
 			minecraftVersionRange {
@@ -260,7 +260,7 @@ publishMods {
 
 	github {
 		accessToken = providers.environmentVariable("GITHUB_API_KEY")
-		repository = "PandaDap2006/PandaLib"
+		repository = github_repo
 		commitish = "main"
 		tagName = "release/${mod_version}-${supported_version_str}"
 

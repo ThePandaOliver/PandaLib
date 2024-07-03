@@ -1,47 +1,47 @@
 plugins {
-    id "com.github.johnrengelman.shadow"
+	id "com.github.johnrengelman.shadow"
 }
 
 architectury {
-    platformSetupLoomIde()
-    neoForge()
+	platformSetupLoomIde()
+	neoForge()
 }
 
 loom {
-    accessWidenerPath = project(":common").loom.accessWidenerPath
+	accessWidenerPath = project(":common").loom.accessWidenerPath
 }
 
 configurations {
-    common
-    shadowCommon // Don't use shadow from the shadow plugin since it *excludes* files.
-    compileClasspath.extendsFrom common
-    runtimeClasspath.extendsFrom common
-    developmentNeoForge.extendsFrom common
+	common
+	shadowCommon // Don't use shadow from the shadow plugin since it *excludes* files.
+	compileClasspath.extendsFrom common
+	runtimeClasspath.extendsFrom common
+	developmentNeoForge.extendsFrom common
 }
 
 repositories {
-    maven {
-        name = "NeoForged"
-        url = "https://maven.neoforged.net/releases"
-    }
+	maven {
+		name = "NeoForged"
+		url = "https://maven.neoforged.net/releases"
+	}
 }
 
 dependencies {
-    neoForge "net.neoforged:neoforge:${rootProject.neoforge_version}"
+	neoForge "net.neoforged:neoforge:${neoforge_version}"
 
-    modApi "dev.architectury:architectury-neoforge:${rootProject.architectury_version}"
+	modApi "dev.architectury:architectury-neoforge:${architectury_version}"
 
-    common(project(path: ":common", configuration: "namedElements")) { transitive false }
-    shadowCommon(project(path: ":common", configuration: "transformProductionNeoForge")) { transitive = false }
+	common(project(path: ":common", configuration: "namedElements")) { transitive false }
+	shadowCommon(project(path: ":common", configuration: "transformProductionNeoForge")) { transitive = false }
 }
 
 shadowJar {
-    configurations = [project.configurations.shadowCommon]
-    archiveClassifier = "dev-shadow"
+	configurations = [project.configurations.shadowCommon]
+	archiveClassifier = "dev-shadow"
 }
 
 remapJar {
-    input.set shadowJar.archiveFile
-    injectAccessWidener = true
-    atAccessWideners.add(loom.accessWidenerPath.get().asFile.name)
+	input.set shadowJar.archiveFile
+	injectAccessWidener = true
+	atAccessWideners.add(loom.accessWidenerPath.get().asFile.name)
 }

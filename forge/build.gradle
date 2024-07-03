@@ -1,47 +1,47 @@
 plugins {
-    id "com.github.johnrengelman.shadow"
+	id "com.github.johnrengelman.shadow"
 }
 
 architectury {
-    platformSetupLoomIde()
-    forge()
+	platformSetupLoomIde()
+	forge()
 }
 
 loom {
-    accessWidenerPath = project(":common").loom.accessWidenerPath
+	accessWidenerPath = project(":common").loom.accessWidenerPath
 
-    forge {
-        convertAccessWideners = true
-        extraAccessWideners.add loom.accessWidenerPath.get().asFile.name
+	forge {
+		convertAccessWideners = true
+		extraAccessWideners.add loom.accessWidenerPath.get().asFile.name
 
-        mixinConfig "pandalib-common.mixins.json"
-        mixinConfig "pandalib.mixins.json"
-    }
+		mixinConfig "pandalib-common.mixins.json"
+		mixinConfig "pandalib.mixins.json"
+	}
 }
 
 configurations {
-    common
-    shadowCommon // Don't use shadow from the shadow plugin since it *excludes* files.
-    compileClasspath.extendsFrom common
-    runtimeClasspath.extendsFrom common
-    developmentForge.extendsFrom common
+	common
+	shadowCommon // Don't use shadow from the shadow plugin since it *excludes* files.
+	compileClasspath.extendsFrom common
+	runtimeClasspath.extendsFrom common
+	developmentForge.extendsFrom common
 }
 
 dependencies {
-    forge "net.minecraftforge:forge:${rootProject.minecraft_version}-${rootProject.forge_version}"
+	forge "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
-    modApi "dev.architectury:architectury-forge:${rootProject.architectury_version}"
+	modApi "dev.architectury:architectury-forge:${architectury_version}"
 
-    common(project(path: ":common", configuration: "namedElements")) { transitive false }
-    shadowCommon(project(path: ":common", configuration: "transformProductionForge")) { transitive = false }
+	common(project(path: ":common", configuration: "namedElements")) { transitive false }
+	shadowCommon(project(path: ":common", configuration: "transformProductionForge")) { transitive = false }
 }
 
 shadowJar {
-    configurations = [project.configurations.shadowCommon]
-    archiveClassifier = "dev-shadow"
+	configurations = [project.configurations.shadowCommon]
+	archiveClassifier = "dev-shadow"
 }
 
 remapJar {
-    input.set shadowJar.archiveFile
-    injectAccessWidener = true
+	input.set shadowJar.archiveFile
+	injectAccessWidener = true
 }

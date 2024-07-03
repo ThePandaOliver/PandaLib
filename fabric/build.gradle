@@ -1,49 +1,49 @@
 plugins {
-    id "com.github.johnrengelman.shadow"
+	id "com.github.johnrengelman.shadow"
 }
 
 architectury {
-    platformSetupLoomIde()
-    fabric()
+	platformSetupLoomIde()
+	fabric()
 }
 
 loom {
-    accessWidenerPath = project(":common").loom.accessWidenerPath
+	accessWidenerPath = project(":common").loom.accessWidenerPath
 }
 
 configurations {
-    common
-    shadowCommon // Don't use shadow from the shadow plugin since it *excludes* files.
-    compileClasspath.extendsFrom common
-    runtimeClasspath.extendsFrom common
-    developmentFabric.extendsFrom common
+	common
+	shadowCommon // Don't use shadow from the shadow plugin since it *excludes* files.
+	compileClasspath.extendsFrom common
+	runtimeClasspath.extendsFrom common
+	developmentFabric.extendsFrom common
 }
 
 repositories {
-    maven { url = "https://maven.terraformersmc.com/releases/" }
+	maven { url = "https://maven.terraformersmc.com/releases/" }
 }
 
 dependencies {
-    modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
-    modApi "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
+	modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
+	modApi "net.fabricmc.fabric-api:fabric-api:${fabric_api_version}"
 
-    modApi "dev.architectury:architectury-fabric:${rootProject.architectury_version}"
+	modApi "dev.architectury:architectury-fabric:${architectury_version}"
 
-    // Used for testing
-    modRuntimeOnly "maven.modrinth:pandas-falling-trees:0.12.3-fabric,${rootProject.minecraft_version}"
+	modApi("com.terraformersmc:modmenu:${modmenu_version}")
 
-    common(project(path: ":common", configuration: "namedElements")) { transitive false }
-    shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
+	// Used for testing
+	modRuntimeOnly "maven.modrinth:pandas-falling-trees:0.12.3-fabric,${minecraft_version}"
+
+	common(project(path: ":common", configuration: "namedElements")) { transitive false }
+	shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
 }
 
-addModApi(rootProject.modmenu, "com.terraformersmc:modmenu:${rootProject.modmenu_version}")
-
 shadowJar {
-    configurations = [project.configurations.shadowCommon]
-    archiveClassifier = "dev-shadow"
+	configurations = [project.configurations.shadowCommon]
+	archiveClassifier = "dev-shadow"
 }
 
 remapJar {
-    input.set shadowJar.archiveFile
-    injectAccessWidener = true
+	input.set shadowJar.archiveFile
+	injectAccessWidener = true
 }

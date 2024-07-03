@@ -44,7 +44,7 @@ def loadProperties() {
 }
 loadProperties()
 
-rootProject.name = "PandaLib"
+rootProject.name = archives_name
 
 include("common")
 for (loader in ((String) gradle.supported_modloaders).split(",")) {

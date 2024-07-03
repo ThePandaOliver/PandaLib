@@ -288,14 +288,19 @@ publishMods {
         commitish = "main"
         tagName = "release/${rootProject.mod_version}-${supported_version_str}"
 
-        modLoaders.addAll("fabric", "forge", "neoforge")
         file = project(":common").remapJar.archiveFile
 
-        if (findProject(":fabric"))
+        if (findProject(":fabric")) {
+            modLoaders.add("fabric")
             additionalFiles.from(project(":fabric").remapJar.archiveFile)
-        if (findProject(":forge"))
+        }
+        if (findProject(":forge")) {
+            modLoaders.add("forge")
             additionalFiles.from(project(":forge").remapJar.archiveFile)
-        if (findProject(":neoforge"))
+        }
+        if (findProject(":neoforge")) {
+            modLoaders.add("neoforge")
             additionalFiles.from(project(":neoforge").remapJar.archiveFile)
+        }
     }
 }

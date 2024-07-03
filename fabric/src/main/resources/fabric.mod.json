@@ -12,7 +12,7 @@
 		"issues": "https://github.com/PandaDap2006/PandaLib/issues",
 		"sources": "https://github.com/PandaDap2006/PandaLib"
 	},
-  "license": "LGPL-3",
+  "license": "GPL-3",
   "environment": "*",
   "entrypoints": {
     "main": [

@@ -1,10 +1,10 @@
 modLoader = "javafml"
 loaderVersion = "*"
-license = "LGPL-3"
+license = "GPL-3"
 issueTrackerURL="https://github.com/PandaDap2006/PandaLib/issues"
 
 [[mods]]
-modId = "pandalib"
+modId = "${id}"
 version = "${version}"
 displayName = "${name}"
 authors = "The Panda Oliver"

@@ -49,12 +49,12 @@ subprojects {
 
 	configurations {
 		includeJar
-		implementation.extendsFrom includeJar
 		include.extendsFrom includeJar
+		implementation.extendsFrom includeJar
 
 		includeModJar
-		modImplementation.extendsFrom includeModJar
 		include.extendsFrom includeModJar
+		modImplementation.extendsFrom includeModJar
 	}
 
 	repositories {

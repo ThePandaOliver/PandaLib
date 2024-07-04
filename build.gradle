@@ -1,4 +1,8 @@
+import groovy.json.JsonSlurper
+import groovy.json.JsonBuilder
+
 plugins {
+	id "java"
 	id "architectury-plugin" version "3.4-SNAPSHOT"
 	id "dev.architectury.loom" version "1.7-SNAPSHOT" apply false
 	id "com.github.johnrengelman.shadow" version "8.1.1" apply false
@@ -106,6 +110,24 @@ subprojects {
 		filesMatching(["fabric.mod.json", "META-INF/mods.toml", "META-INF/neoforge.mods.toml"]) {
 			expand replaceProperties
 		}
+	}
+
+	// Fix for Access widener reference not getting removed from architectury.common.json when build
+	tasks.register("removeAWfromArchitecturyJson") {
+		doLast {
+			def jsonFile = file("$buildDir/resources/main/architectury.common.json")
+
+			if (jsonFile.exists()) {
+				def jsonContent = new JsonSlurper().parse(jsonFile)
+
+				jsonContent.remove("accessWidener")
+				jsonFile.write(new JsonBuilder(jsonContent).toPrettyString())
+			}
+		}
+	}
+
+	jar {
+		dependsOn removeAWfromArchitecturyJson
 	}
 
 	tasks.withType(JavaCompile).configureEach {

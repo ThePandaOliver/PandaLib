@@ -18,9 +18,12 @@ def writeBuildGradlePredefine(List<String> AvailableVersion, int versionIndex) {
 	for (int i = 0; i < AvailableVersion.size(); i++) {
 		String versionString = AvailableVersion[i].replace(".", "_")
 		sb.append("MC_" + versionString + "=" + i.toString() + "\n")
+		ext.set("MC_" + versionString, i.toString())
 
-		if (versionIndex == i)
+		if (versionIndex == i) {
 			sb.append("MC_VER=" + i.toString() + "\n")
+			ext.set("MC_VER", i.toString())
+		}
 	}
 
 	new File(projectDir, "build.properties").text = sb.toString()
@@ -173,7 +176,7 @@ publishMods {
 		dryRunWebhookUrl = providers.environmentVariable("DISCORD_WEBHOOK_DRY_RUN")
 		username = "Mod Release"
 		avatarUrl = "https://avatars.githubusercontent.com/u/70108603?v=4"
-		content = changelog.map { "# ${mod_name} ${mod_version} Release for ${supported_version_str} \n" + it }
+		content = changelog.map { "# ${mod_name} ${mod_version} Release for ${supported_version_str} \n" + it + "\n<@&${pinged_discord_role_id}>" }
 	}
 
 	def curseforgeOptions = curseforgeOptions {

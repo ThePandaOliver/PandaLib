@@ -1,18 +1,18 @@
 {
   "schemaVersion": 1,
-  "id": "${id}",
-  "version": "${version}",
-  "name": "${name}",
-  "description": "${description}",
-  "authors": [
-		"The Panda Oliver"
-  ],
-	"icon": "assets/pandalib/icon.png",
+	"id": "${modId}",
+	"version": "${modVersion}",
+	"name": "${modName}",
+	"description": "${modDescription}",
+	"authors": [
+		"${modAuthor}"
+	],
 	"contact": {
 		"issues": "https://github.com/PandaDap2006/PandaLib/issues",
 		"sources": "https://github.com/PandaDap2006/PandaLib"
 	},
   "license": "GPL-3",
+	"icon": "assets/${modId}/icon.png",
   "environment": "*",
   "entrypoints": {
     "main": [
@@ -20,14 +20,13 @@
     ]
   },
   "mixins": [
-		"pandalib.mixins.json",
-    "pandalib-common.mixins.json"
+		"${modId}.mixins.json",
+    "${modId}-common.mixins.json"
   ],
   "depends": {
     "fabric": "*",
     "fabric-api": "*",
-    "minecraft": "${compatible_fabricmc_versions}",
-    "java": ">=${java_version}",
+    "minecraft": "${fabricCompatibleVersions}",
     "architectury": "*"
   },
 	"custom": {

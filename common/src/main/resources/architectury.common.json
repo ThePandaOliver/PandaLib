@@ -1,6 +1,3 @@
 {
-	"accessWidener": "pandalib.accesswidener",
-	"injected_interfaces": {
-		"net/minecraft/world/entity/player/Player": ["me/pandamods/pandalib/extensions/PlayerExtension"]
-	}
+	"accessWidener": "pandalib.accesswidener"
 }

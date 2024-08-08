@@ -1,31 +1,33 @@
 modLoader = "javafml"
 loaderVersion = "*"
-license = "GPL-3"
 issueTrackerURL="https://github.com/PandaDap2006/PandaLib/issues"
+license = "GPL-3"
 
 [[mods]]
-modId = "${id}"
-version = "${version}"
-displayName = "${name}"
-authors = "The Panda Oliver"
-logoFile = "assets/pandalib/icon.png"
-description = "${description}"
+modId = "${modId}"
+version = "${modVersion}"
+displayName = "${modName}"
+authors = "${modAuthor}"
+description = '''
+${modDescription}
+'''
+logoFile = "assets/${modId}/icon.png"
 
-[[dependencies.pandalib]]
+[[dependencies.${modId}]]
 modId = "forge"
 mandatory = true
 versionRange = "*"
 ordering = "NONE"
 side = "BOTH"
 
-[[dependencies.pandalib]]
+[[dependencies.${modId}]]
 modId = "minecraft"
 mandatory = true
-versionRange = "${compatible_forgemc_versions}"
+versionRange = "${forgeCompatibleVersions}"
 ordering = "NONE"
 side = "BOTH"
 
-[[dependencies.pandalib]]
+[[dependencies.${modId}]]
 modId = "architectury"
 mandatory = true
 versionRange = "*"

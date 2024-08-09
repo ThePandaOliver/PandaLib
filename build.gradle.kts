@@ -58,6 +58,7 @@ val minecraftVersion: String by project
 val parchmentVersion: String by project
 val parchmentMinecraftVersion: String by project
 
+val lwjglVersion: String by project
 val jomlVersion = properties["jomlVersion"]
 val manifoldVersion: String by project
 
@@ -130,6 +131,20 @@ subprojects {
 			"modApi"("dev.architectury:architectury:${architecturyVersion}")
 		}
 
+		if (isMinecraftSubProject) {
+			// Assimp Library
+			"jarShadow"("org.lwjgl:lwjgl-assimp:${lwjglVersion}")
+
+			// Assimp natives
+			"jarShadow"("org.lwjgl:lwjgl-assimp:${lwjglVersion}:natives-windows")
+
+			"jarShadow"("org.lwjgl:lwjgl-assimp:${lwjglVersion}:natives-linux")
+
+			"jarShadow"("org.lwjgl:lwjgl-assimp:${lwjglVersion}:natives-macos")
+		} else {
+			implementation("org.lwjgl:lwjgl-assimp:${lwjglVersion}")
+		}
+
 		if (jomlVersion != null) {
 			"jarShadow"("org.joml:joml:${jomlVersion}")
 		}
@@ -150,6 +165,14 @@ subprojects {
 			archiveClassifier.set("dev-shadow")
 
 			exclude("architectury.common.json")
+
+			var librariesLocation = "${projectArchivesName}.libraries"
+
+			// Relocate assimp so it will not cause any conflicts with other mods also using it.
+			relocate("org.lwjgl.assimp", "${librariesLocation}.org.lwjgl.assimp")
+			relocate("windows.x64.org.lwjgl.assimp", "${librariesLocation}.windows.x64.org.lwjgl.assimp")
+			relocate("linux.x64.org.lwjgl.assimp", "${librariesLocation}.linux.x64.org.lwjgl.assimp")
+			relocate("macos.x64.org.lwjgl.assimp", "${librariesLocation}.macos.x64.org.lwjgl.assimp")
 		}
 
 		tasks.withType<RemapJarTask>().configureEach {

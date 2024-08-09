@@ -85,10 +85,10 @@ public class ConfigNetworking {
 		private static void ClientConfigReceiver(ClientConfigPacketData packetData, NetworkManager.PacketContext packetContext) {
 			ResourceLocation resourceLocation = ResourceLocation.tryParse(packetData.resourceLocation());
 			PandaLibConfig.getConfig(resourceLocation).ifPresent(configHolder -> {
-				if (configHolder instanceof ClientConfigHolder<? extends ConfigData>) {
+				if (configHolder instanceof ClientConfigHolder<? extends ConfigData> clientConfigHolder) {
 					configHolder.logger.info("Received client config '{}' from {}",
 							configHolder.resourceLocation().toString(), packetContext.getPlayer().getDisplayName().getString());
-					packetContext.getPlayer().pandaLib$setConfig(configHolder.getGson()
+					clientConfigHolder.putConfig(packetContext.getPlayer(), configHolder.getGson()
 							.fromJson(packetData.configJson(), configHolder.getConfigClass()));
 				}
 			});
@@ -110,7 +110,7 @@ public class ConfigNetworking {
 				if (configHolder instanceof ClientConfigHolder<? extends ConfigData>) {
 					configHolder.logger.info("Received client config '{}' from {}",
 							configHolder.resourceLocation().toString(), context.getPlayer().getDisplayName().getString());
-					context.getPlayer().pandaLib$setConfig(configHolder.getGson().fromJson(buf.readUtf(), configHolder.getConfigClass()));
+					clientConfigHolder.putConfig(packetContext.getPlayer(), configHolder.getGson().fromJson(buf.readUtf(), configHolder.getConfigClass()));
 				}
 			});
 		}

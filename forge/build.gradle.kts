@@ -35,7 +35,7 @@ dependencies {
 }
 
 tasks {
-	base.archivesName.set(base.archivesName.get() + "-Forge")
+	base.archivesName.set(base.archivesName.get() + "-forge")
 
 	shadowJar {
 		exclude("fabric.mod.json")

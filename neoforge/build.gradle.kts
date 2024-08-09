@@ -22,7 +22,7 @@ dependencies {
 }
 
 tasks {
-	base.archivesName.set(base.archivesName.get() + "-NeoForge")
+	base.archivesName.set(base.archivesName.get() + "-neoforge")
 
 	shadowJar {
 		exclude("fabric.mod.json")

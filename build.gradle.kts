@@ -78,10 +78,10 @@ allprojects {
 }
 
 subprojects {
-	val isMinecraftSubProject = findProject("common") != null && project("common") != project
-	val isFabric = findProject("fabric") != null && project("fabric") == project
-	val isForge = findProject("forge") != null && project("forge") == project
-	val isNeoForge = findProject("neoforge") != null && project("neoforge") == project
+	val isMinecraftSubProject = findProject(":common") != project
+	val isFabric = findProject(":fabric") == project
+	val isForge = findProject(":forge") == project
+	val isNeoForge = findProject(":neoforge") == project
 
 	apply(plugin = "architectury-plugin")
 	apply(plugin = "dev.architectury.loom")
@@ -117,7 +117,7 @@ subprojects {
 	}
 
 	@Suppress("UnstableApiUsage")
-			dependencies {
+	dependencies {
 		"minecraft"("com.mojang:minecraft:${minecraftVersion}")
 		"mappings"(loom.layered {
 			officialMojangMappings()
@@ -290,6 +290,8 @@ publishMods {
 
 			if (loaderName == "fabric")
 				requires("fabric-api")
+
+			requires("architectury-api")
 		}
 
 		modrinth("modrinth_" + loaderName) {
@@ -311,6 +313,8 @@ publishMods {
 
 			if (loaderName == "fabric")
 				requires("fabric-api")
+
+			requires("architectury-api")
 		}
 	}
 

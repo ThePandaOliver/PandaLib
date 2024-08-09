@@ -54,7 +54,7 @@ fun loadProperties() {
 }
 loadProperties()
 
-rootProject.name = "PandaMods Template"
+rootProject.name = "PandaLib"
 
 include("common")
 gradle.extra.properties["supportedModLoaders"].toString().split(",").forEach {

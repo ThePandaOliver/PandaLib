@@ -29,6 +29,7 @@ public abstract class PlayerMixin extends LivingEntity implements PlayerExtensio
 		super(entityType, level);
 	}
 
+	@Deprecated(forRemoval = true, since = "0.4")
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T extends ConfigData> void pandaLib$setConfig(T config) {
@@ -38,6 +39,7 @@ public abstract class PlayerMixin extends LivingEntity implements PlayerExtensio
 		}
 	}
 
+	@Deprecated(forRemoval = true, since = "0.4")
 	@Override
 	public <T extends ConfigData> T pandaLib$getConfig(Class<T> configClass) {
 		ConfigHolder<T> holder = PandaLibConfig.getConfig(configClass);

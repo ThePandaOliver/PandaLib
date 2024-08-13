@@ -16,7 +16,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import dev.architectury.platform.Platform;
-import me.pandamods.pandalib.PandaLib;
 import me.pandamods.pandalib.api.config.Config;
 import me.pandamods.pandalib.api.config.ConfigData;
 import me.pandamods.pandalib.utils.ClassUtils;

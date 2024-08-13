@@ -1,3 +1,5 @@
+import org.gradle.kotlin.dsl.tasks
+
 // gradle.properties
 val neoForgeVersion: String by project
 
@@ -18,24 +20,14 @@ dependencies {
 	neoForge("net.neoforged:neoforge:${neoForgeVersion}")
 
 	"common"(project(":common", "namedElements")) { isTransitive = false }
-	"shadowCommon"(project(":common", "transformProductionNeoForge")) { isTransitive = false }
+	"shadowBundle"(project(":common", "transformProductionNeoForge"))
 }
 
-tasks {
-	base.archivesName.set(base.archivesName.get() + "-neoforge")
+tasks.shadowJar {
+	exclude("fabric.mod.json")
+}
 
-	shadowJar {
-		exclude("fabric.mod.json")
-	}
-
-	remapJar {
-		injectAccessWidener = true
-		atAccessWideners.add(loom.accessWidenerPath.get().asFile.name)
-	}
-
-	sourcesJar {
-		val commonSources = project(":common").tasks.sourcesJar
-		dependsOn(commonSources)
-		from(commonSources.get().archiveFile.map { zipTree(it) })
-	}
+tasks.remapJar {
+	injectAccessWidener = true
+	atAccessWideners.add(loom.accessWidenerPath.get().asFile.name)
 }

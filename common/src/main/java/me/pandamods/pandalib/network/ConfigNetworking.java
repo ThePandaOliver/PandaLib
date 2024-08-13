@@ -13,8 +13,6 @@
 package me.pandamods.pandalib.network;
 
 import dev.architectury.networking.NetworkManager;
-import io.netty.buffer.Unpooled;
-import me.pandamods.pandalib.PandaLib;
 import me.pandamods.pandalib.api.config.ConfigData;
 import me.pandamods.pandalib.api.config.PandaLibConfig;
 import me.pandamods.pandalib.api.config.holders.ClientConfigHolder;
@@ -24,7 +22,6 @@ import me.pandamods.pandalib.api.util.NetworkHelper;
 import me.pandamods.pandalib.network.packets.ClientConfigPacketData;
 import me.pandamods.pandalib.network.packets.CommonConfigPacketData;
 #endif
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 

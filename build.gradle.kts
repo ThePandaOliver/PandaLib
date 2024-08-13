@@ -15,6 +15,9 @@ plugins {
 	id("me.modmuss50.mod-publish-plugin") version "0.6.3"
 }
 
+/**
+ * Borrowed from Distant Horizons
+ */
 fun writeBuildGradlePredefine(AvailableVersion: List<String>, versionIndex: Int) {
 	val sb = StringBuilder()
 
@@ -73,7 +76,7 @@ architectury.minecraft = minecraftVersion
 allprojects {
 	apply(plugin = "java")
 
-	base.archivesName = projectArchivesName
+	tasks { base.archivesName = projectArchivesName }
 	version = "${modVersion}-${minecraftVersion}"
 	group = projectGroup
 }
@@ -90,17 +93,29 @@ subprojects {
 	apply(plugin = "maven-publish")
 	apply(plugin = "com.github.johnrengelman.shadow")
 
+	tasks { base.archivesName = "${projectArchivesName}-${project.name}" }
+
 	val loom = project.extensions.getByName<LoomGradleExtensionAPI>("loom")
 	loom.silentMojangMappingsLicense()
 
 	configurations {
-		create("common")
-		create("shadowCommon")
+		create("common") {
+			isCanBeResolved = true
+			isCanBeConsumed = false
+		}
 		compileClasspath.get().extendsFrom(configurations["common"])
 		runtimeClasspath.get().extendsFrom(configurations["common"])
 
+		// Files in this configuration will be bundled into your mod using the Shadow plugin.
+		// Don't use the `shadow` configuration from the plugin itself as it's meant for excluding files.
+		create("shadowBundle") {
+			isCanBeResolved = true
+			isCanBeConsumed = false
+		}
+
 		create("jarShadow")
 		implementation.get().extendsFrom(configurations["jarShadow"])
+		getByName("shadowBundle").extendsFrom(configurations["jarShadow"])
 
 		create("modShadow")
 		getByName("modImplementation").extendsFrom(configurations["modShadow"])
@@ -131,18 +146,23 @@ subprojects {
 			"modApi"("dev.architectury:architectury:${architecturyVersion}")
 		}
 
+		// Assimp Library
+		"jarShadow"("org.lwjgl:lwjgl-assimp:${lwjglVersion}") {
+			exclude(group = "org.lwjgl", module = "lwjgl")
+		}
 		if (isMinecraftSubProject) {
-			// Assimp Library
-			"jarShadow"("org.lwjgl:lwjgl-assimp:${lwjglVersion}")
-
 			// Assimp natives
-			"jarShadow"("org.lwjgl:lwjgl-assimp:${lwjglVersion}:natives-windows")
+			"jarShadow"("org.lwjgl:lwjgl-assimp:${lwjglVersion}:natives-windows") {
+				exclude(group = "org.lwjgl", module = "lwjgl")
+			}
 
-			"jarShadow"("org.lwjgl:lwjgl-assimp:${lwjglVersion}:natives-linux")
+			"jarShadow"("org.lwjgl:lwjgl-assimp:${lwjglVersion}:natives-linux") {
+				exclude(group = "org.lwjgl", module = "lwjgl")
+			}
 
-			"jarShadow"("org.lwjgl:lwjgl-assimp:${lwjglVersion}:natives-macos")
-		} else {
-			implementation("org.lwjgl:lwjgl-assimp:${lwjglVersion}")
+			"jarShadow"("org.lwjgl:lwjgl-assimp:${lwjglVersion}:natives-macos") {
+				exclude(group = "org.lwjgl", module = "lwjgl")
+			}
 		}
 
 		if (jomlVersion != null) {
@@ -153,38 +173,51 @@ subprojects {
 		annotationProcessor("systems.manifold:manifold-preprocessor:${manifoldVersion}")
 	}
 
+	if (isMinecraftSubProject) {
+		tasks.withType<ShadowJar>().configureEach {
+			configurations = listOf(project.configurations.getByName("shadowBundle"))
+			archiveClassifier.set("dev-shadow")
+
+			exclude("architectury.common.json")
+
+			if (isMinecraftSubProject) {
+				// Relocate assimp so it will not cause any conflicts with other mods also using it.
+				relocate("org.lwjgl.assimp", "$projectGroup.assimp")
+				// Relocate natives
+				relocate("windows.x64.org.lwjgl.assimp", "windows.x64.$projectGroup.assimp")
+				relocate("linux.x64.org.lwjgl.assimp", "linux.x64.$projectGroup.assimp")
+				relocate("macos.x64.org.lwjgl.assimp", "macos.x64.$projectGroup.assimp")
+
+				relocate("META-INF.windows.arm64.org.lwjgl.assimp", "META-INF.windows.arm64.$projectGroup.assimp")
+				relocate("META-INF.windows.x64.org.lwjgl.assimp", "META-INF.windows.x64.$projectGroup.assimp")
+				relocate("META-INF.windows.x86.org.lwjgl.assimp", "META-INF.windows.x86.$projectGroup.assimp")
+
+				relocate("META-INF.linux.arm32.org.lwjgl.assimp", "META-INF.linux.arm32.$projectGroup.assimp")
+				relocate("META-INF.linux.arm64.org.lwjgl.assimp", "META-INF.linux.arm64.$projectGroup.assimp")
+				relocate("META-INF.linux.x64.org.lwjgl.assimp", "META-INF.linux.x64.$projectGroup.assimp")
+
+				relocate("META-INF.macos.arm64.org.lwjgl.assimp", "META-INF.macos.arm64.$projectGroup.assimp")
+				relocate("META-INF.macos.x64.org.lwjgl.assimp", "META-INF.macos.x64.$projectGroup.assimp")
+
+				if (jomlVersion != null)
+					relocate("org.joml", "$projectGroup.joml")
+			}
+		}
+
+		tasks.withType<RemapJarTask>().configureEach {
+			val shadowJar = tasks.getByName<ShadowJar>("shadowJar")
+			inputFile.set(shadowJar.archiveFile)
+		}
+	}
+
 	tasks.withType<JavaCompile>().configureEach {
 		options.encoding = "UTF-8"
 		options.release.set(JavaLanguageVersion.of(projectJavaVersion).asInt())
 		options.compilerArgs.add("-Xplugin:Manifold")
 	}
 
-	if (isMinecraftSubProject) {
-		tasks.withType<ShadowJar>().configureEach {
-			configurations = listOf(project.configurations.getByName("shadowCommon"), project.configurations.getByName("jarShadow"))
-			archiveClassifier.set("dev-shadow")
-
-			exclude("architectury.common.json")
-
-			var librariesLocation = "${projectArchivesName}.libraries"
-
-			// Relocate assimp so it will not cause any conflicts with other mods also using it.
-			relocate("org.lwjgl.assimp", "${librariesLocation}.org.lwjgl.assimp")
-			relocate("windows.x64.org.lwjgl.assimp", "${librariesLocation}.windows.x64.org.lwjgl.assimp")
-			relocate("linux.x64.org.lwjgl.assimp", "${librariesLocation}.linux.x64.org.lwjgl.assimp")
-			relocate("macos.x64.org.lwjgl.assimp", "${librariesLocation}.macos.x64.org.lwjgl.assimp")
-		}
-
-		tasks.withType<RemapJarTask>().configureEach {
-			val shadowJar = tasks.getByName<ShadowJar>("shadowJar")
-			inputFile.set(shadowJar.archiveFile)
-			dependsOn(shadowJar)
-		}
-	}
-
-	tasks {
-		processResources {
-			val properties = mapOf(
+	tasks.processResources {
+		val properties = mapOf(
 				"minecraftVersion" to minecraftVersion,
 
 				"modId" to modId,
@@ -196,28 +229,25 @@ subprojects {
 				"fabricCompatibleVersions" to fabricCompatibleVersions,
 				"forgeCompatibleVersions" to forgeCompatibleVersions,
 				"neoForgeCompatibleVersions" to neoForgeCompatibleVersions
-			)
+		)
 
-			inputs.properties(properties)
-			filesMatching(listOf("META-INF/mods.toml", "META-INF/neoforge.mods.toml", "pack.mcmeta", "fabric.mod.json")) {
-				expand(properties)
-			}
+		inputs.properties(properties)
+		filesMatching(listOf("META-INF/mods.toml", "META-INF/neoforge.mods.toml", "pack.mcmeta", "fabric.mod.json")) {
+			expand(properties)
 		}
+	}
 
-		jar {
-			manifest {
-				attributes(mapOf(
-						"Specification-Title" to modName,
-						"Specification-Vendor" to modAuthor,
-						"Specification-Version" to modVersion,
-						"Implementation-Title" to name,
-						"Implementation-Vendor" to modAuthor,
-						"Implementation-Version" to archiveVersion
-				))
-			}
+	tasks.jar {
+		manifest {
+			attributes(mapOf(
+					"Specification-Title" to modName,
+					"Specification-Vendor" to modAuthor,
+					"Specification-Version" to modVersion,
+					"Implementation-Title" to name,
+					"Implementation-Vendor" to modAuthor,
+					"Implementation-Version" to archiveVersion
+			))
 		}
-
-		jar.get().archiveClassifier.set("dev")
 	}
 
 	java {

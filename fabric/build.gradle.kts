@@ -1,3 +1,6 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+import kotlin.text.set
+
 // gradle.properties
 val fabricLoaderVersion: String by project
 val fabricApiVersion: String by project
@@ -28,19 +31,9 @@ dependencies {
 	modApi("com.terraformersmc:modmenu:${modmenuVersion}")
 
 	"common"(project(":common", "namedElements")) { isTransitive = false }
-	"shadowCommon"(project(":common", "transformProductionFabric")) { isTransitive = false }
+	"shadowBundle"(project(":common", "transformProductionFabric"))
 }
 
-tasks {
-	base.archivesName.set(base.archivesName.get() + "-fabric")
-
-	remapJar {
-		injectAccessWidener.set(true)
-	}
-
-	sourcesJar {
-		val commonSources = project(":common").tasks.sourcesJar
-		dependsOn(commonSources)
-		from(commonSources.get().archiveFile.map { zipTree(it) })
-	}
+tasks.remapJar {
+	injectAccessWidener.set(true)
 }

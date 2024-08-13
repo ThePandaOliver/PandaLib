@@ -25,6 +25,7 @@ loom {
 
 configurations {
 	getByName("developmentForge").extendsFrom(configurations["common"])
+	getByName("developmentForge").extendsFrom(configurations["jarShadow"])
 }
 
 dependencies {

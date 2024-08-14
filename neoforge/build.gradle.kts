@@ -1,5 +1,3 @@
-import org.gradle.kotlin.dsl.tasks
-
 // gradle.properties
 val neoForgeVersion: String by project
 

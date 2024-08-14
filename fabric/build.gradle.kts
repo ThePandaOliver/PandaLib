@@ -1,6 +1,3 @@
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
-import kotlin.text.set
-
 // gradle.properties
 val fabricLoaderVersion: String by project
 val fabricApiVersion: String by project

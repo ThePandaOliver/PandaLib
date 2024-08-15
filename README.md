@@ -12,6 +12,7 @@
 This Library was created to easily share code between The Panda Oliver's mods.
 
 ### Current Features:
+- Embedded Joml for 1.19.2
 - Config API
   - Automatic Config synchronisation
 

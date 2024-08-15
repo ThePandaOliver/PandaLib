@@ -25,30 +25,20 @@ loom {
 
 configurations {
 	getByName("developmentForge").extendsFrom(configurations["common"])
-	getByName("developmentForge").extendsFrom(configurations["jarShadow"])
 }
 
 dependencies {
 	forge("net.minecraftforge:forge:${forgeVersion}")
 
 	"common"(project(":common", "namedElements")) { isTransitive = false }
-	"shadowCommon"(project(":common", "transformProductionForge")) { isTransitive = false }
+	"shadowBundle"(project(":common", "transformProductionForge"))
 }
 
-tasks {
-	base.archivesName.set(base.archivesName.get() + "-forge")
+tasks.shadowJar {
+	exclude("fabric.mod.json")
+}
 
-	shadowJar {
-		exclude("fabric.mod.json")
-	}
-
-	remapJar {
-		injectAccessWidener = true
-	}
-
-	sourcesJar {
-		val commonSources = project(":common").tasks.sourcesJar
-		dependsOn(commonSources)
-		from(commonSources.get().archiveFile.map { zipTree(it) })
-	}
+tasks.remapJar {
+	injectAccessWidener = true
+	atAccessWideners.add(loom.accessWidenerPath.get().asFile.name)
 }

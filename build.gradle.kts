@@ -180,28 +180,26 @@ subprojects {
 
 			exclude("architectury.common.json")
 
-			if (isMinecraftSubProject) {
-				// Relocate assimp so it will not cause any conflicts with other mods also using it.
-				relocate("org.lwjgl.assimp", "$projectGroup.assimp")
-				// Relocate natives
-				relocate("windows.x64.org.lwjgl.assimp", "windows.x64.$projectGroup.assimp")
-				relocate("linux.x64.org.lwjgl.assimp", "linux.x64.$projectGroup.assimp")
-				relocate("macos.x64.org.lwjgl.assimp", "macos.x64.$projectGroup.assimp")
+			// Relocate assimp so it will not cause any conflicts with other mods also using it.
+			relocate("org.lwjgl.assimp", "$projectGroup.assimp")
+			// Relocate natives
+			relocate("windows.x64.org.lwjgl.assimp", "windows.x64.$projectGroup.assimp")
+			relocate("linux.x64.org.lwjgl.assimp", "linux.x64.$projectGroup.assimp")
+			relocate("macos.x64.org.lwjgl.assimp", "macos.x64.$projectGroup.assimp")
 
-				relocate("META-INF.windows.arm64.org.lwjgl.assimp", "META-INF.windows.arm64.$projectGroup.assimp")
-				relocate("META-INF.windows.x64.org.lwjgl.assimp", "META-INF.windows.x64.$projectGroup.assimp")
-				relocate("META-INF.windows.x86.org.lwjgl.assimp", "META-INF.windows.x86.$projectGroup.assimp")
+			relocate("META-INF.windows.arm64.org.lwjgl.assimp", "META-INF.windows.arm64.$projectGroup.assimp")
+			relocate("META-INF.windows.x64.org.lwjgl.assimp", "META-INF.windows.x64.$projectGroup.assimp")
+			relocate("META-INF.windows.x86.org.lwjgl.assimp", "META-INF.windows.x86.$projectGroup.assimp")
 
-				relocate("META-INF.linux.arm32.org.lwjgl.assimp", "META-INF.linux.arm32.$projectGroup.assimp")
-				relocate("META-INF.linux.arm64.org.lwjgl.assimp", "META-INF.linux.arm64.$projectGroup.assimp")
-				relocate("META-INF.linux.x64.org.lwjgl.assimp", "META-INF.linux.x64.$projectGroup.assimp")
+			relocate("META-INF.linux.arm32.org.lwjgl.assimp", "META-INF.linux.arm32.$projectGroup.assimp")
+			relocate("META-INF.linux.arm64.org.lwjgl.assimp", "META-INF.linux.arm64.$projectGroup.assimp")
+			relocate("META-INF.linux.x64.org.lwjgl.assimp", "META-INF.linux.x64.$projectGroup.assimp")
 
-				relocate("META-INF.macos.arm64.org.lwjgl.assimp", "META-INF.macos.arm64.$projectGroup.assimp")
-				relocate("META-INF.macos.x64.org.lwjgl.assimp", "META-INF.macos.x64.$projectGroup.assimp")
+			relocate("META-INF.macos.arm64.org.lwjgl.assimp", "META-INF.macos.arm64.$projectGroup.assimp")
+			relocate("META-INF.macos.x64.org.lwjgl.assimp", "META-INF.macos.x64.$projectGroup.assimp")
 
-				if (jomlVersion != null)
-					relocate("org.joml", "$projectGroup.joml")
-			}
+			if (jomlVersion != null)
+				relocate("org.joml", "$projectGroup.joml")
 		}
 
 		tasks.withType<RemapJarTask>().configureEach {

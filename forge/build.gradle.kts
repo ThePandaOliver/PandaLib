@@ -1,5 +1,7 @@
 // gradle.properties
 val modId: String by project
+val projectGroup
+: String by project
 
 val forgeVersion: String by project
 
@@ -25,6 +27,8 @@ loom {
 
 configurations {
 	getByName("developmentForge").extendsFrom(configurations["common"])
+	// Required for embedding libraries into the jar because Forge is weird.
+	getByName("forgeRuntimeLibrary").extendsFrom(configurations["jarShadow"])
 }
 
 dependencies {

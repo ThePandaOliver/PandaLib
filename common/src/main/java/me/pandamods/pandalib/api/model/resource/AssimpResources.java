@@ -109,7 +109,14 @@ public class AssimpResources implements PreparableReloadListener {
 						for (int i = 0; i < scene.mNumAnimations(); i++) {
 							AIAnimation aiAnimation = AIAnimation.create(scene.mAnimations().get(i));
 							ResourceLocation animationLocation = resourceLocation;
-							if (scene.mNumAnimations() > 1) animationLocation = animationLocation.withSuffix("/" + aiAnimation.mName().dataString());
+							if (scene.mNumAnimations() > 1) {
+								#if MC_VER > MC_1_19_2
+									animationLocation = animationLocation.withSuffix("/" + aiAnimation.mName().dataString());
+								#else
+									animationLocation = new ResourceLocation(animationLocation.getNamespace(),
+											animationLocation.getPath() + "/" + aiAnimation.mName().dataString());
+								#endif
+							}
 
 							Animation animation = AnimationLoader.loadAnimation(AssimpResources.getAnimation(animationLocation), aiAnimation);
 							putAnimation.accept(animationLocation, animation);

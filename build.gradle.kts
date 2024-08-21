@@ -223,11 +223,11 @@ subprojects {
 				"modName" to modName,
 				"modDescription" to modDescription,
 				"modAuthor" to modAuthor,
+		).toMutableMap()
 
-				"fabricCompatibleVersions" to fabricCompatibleVersions,
-				"forgeCompatibleVersions" to forgeCompatibleVersions,
-				"neoForgeCompatibleVersions" to neoForgeCompatibleVersions
-		)
+		if (isFabric) properties["fabricCompatibleVersions"] = fabricCompatibleVersions
+		if (isForge) properties["forgeCompatibleVersions"] = forgeCompatibleVersions
+		if (isNeoForge) properties["neoForgeCompatibleVersions"] = neoForgeCompatibleVersions
 
 		inputs.properties(properties)
 		filesMatching(listOf("META-INF/mods.toml", "META-INF/neoforge.mods.toml", "pack.mcmeta", "fabric.mod.json")) {
@@ -302,7 +302,7 @@ publishMods {
 	val minecraftVersionStr = if (isRangedVersion) {
 		"${publishingMinecraftVersion}-${publishingLatestMinecraftVersion}"
 	} else {
-		publishingLatestMinecraftVersion
+		publishingMinecraftVersion
 	}
 
 	// Creates publish options for each supported mod loader
@@ -377,6 +377,7 @@ publishMods {
 	}
 	var githubTagName = "${releaseType}/${modVersion}-${minecraftVersionStr}"
 	github {
+		displayName = "${modName} ${modVersion} MC${minecraftVersionStr}"
 		accessToken = githubAPIKey
 		repository = githubRepository
 		tagName = githubTagName

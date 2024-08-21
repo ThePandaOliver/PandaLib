@@ -21,19 +21,6 @@ import net.minecraft.resources.ResourceLocation;
 import java.util.function.Function;
 
 public class PLRenderType extends RenderType {
-	private static final ShaderStateShard MESH_SHADER =
-			new ShaderStateShard(PLInternalShaders::getRenderTypeMesh);
-
-
-	public static final RenderType CUTOUT_MESH = create("cutout_mesh",
-			DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.TRIANGLES, 131072, true, false,
-			CompositeState.builder()
-					.setLightmapState(LIGHTMAP)
-					.setShaderState(MESH_SHADER)
-					.setTextureState(BLOCK_SHEET)
-					.createCompositeState(true)
-	);
-
 	public static final Function<ResourceLocation, RenderType> CUTOUT_MESH_ENTITY = Util.memoize((resourceLocation) -> {
 		CompositeState compositeState = CompositeState.builder()
 				.setShaderState(RENDERTYPE_ENTITY_CUTOUT_SHADER)

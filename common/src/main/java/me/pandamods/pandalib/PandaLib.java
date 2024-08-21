@@ -3,7 +3,6 @@ package me.pandamods.pandalib;
 import com.mojang.logging.LogUtils;
 import dev.architectury.event.events.client.ClientReloadShadersEvent;
 import dev.architectury.registry.ReloadListenerRegistry;
-import me.pandamods.pandalib.api.model.client.render.PLInternalShaders;
 import me.pandamods.pandalib.api.model.resource.AssimpResources;
 import me.pandamods.pandalib.event.EventHandler;
 import me.pandamods.pandalib.network.ConfigNetworking;
@@ -16,7 +15,6 @@ public class PandaLib {
     public static final Logger LOGGER = LogUtils.getLogger();
 
     public static void init() {
-		ClientReloadShadersEvent.EVENT.register(PLInternalShaders::register);
 		ReloadListenerRegistry.register(PackType.CLIENT_RESOURCES, new AssimpResources(), LOCATION("assimp_loader"));
 
 		ConfigNetworking.registerPackets();

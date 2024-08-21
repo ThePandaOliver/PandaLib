@@ -13,6 +13,7 @@
 package me.pandamods.pandalib.network;
 
 import dev.architectury.networking.NetworkManager;
+import me.pandamods.pandalib.PandaLib;
 import me.pandamods.pandalib.api.config.ConfigData;
 import me.pandamods.pandalib.api.config.PandaLibConfig;
 import me.pandamods.pandalib.api.config.holders.ClientConfigHolder;
@@ -21,13 +22,16 @@ import me.pandamods.pandalib.api.util.NetworkHelper;
 #if MC_VER >= MC_1_20_5
 import me.pandamods.pandalib.network.packets.ClientConfigPacketData;
 import me.pandamods.pandalib.network.packets.CommonConfigPacketData;
+#else
+import net.minecraft.network.FriendlyByteBuf;
+import io.netty.buffer.Unpooled;
 #endif
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
 public class ConfigNetworking {
 	#if MC_VER <= MC_1_20
-		public static final ResourceLocation CONFIG_PACKET = new ResourceLocation(PandaLib.MOD_ID, "config_sync");
+		public static final ResourceLocation CONFIG_PACKET = PandaLib.LOCATION("config_sync");
 	#endif
 
 	public static void registerPackets() {
@@ -104,10 +108,10 @@ public class ConfigNetworking {
 		private static void ClientConfigReceiver(FriendlyByteBuf buf, NetworkManager.PacketContext context) {
 			ResourceLocation resourceLocation = buf.readResourceLocation();
 			PandaLibConfig.getConfig(resourceLocation).ifPresent(configHolder -> {
-				if (configHolder instanceof ClientConfigHolder<? extends ConfigData>) {
+				if (configHolder instanceof ClientConfigHolder<? extends ConfigData> clientConfigHolder) {
 					configHolder.logger.info("Received client config '{}' from {}",
 							configHolder.resourceLocation().toString(), context.getPlayer().getDisplayName().getString());
-					clientConfigHolder.putConfig(packetContext.getPlayer(), configHolder.getGson().fromJson(buf.readUtf(), configHolder.getConfigClass()));
+					clientConfigHolder.putConfig(context.getPlayer(), configHolder.getGson().fromJson(buf.readUtf(), configHolder.getConfigClass()));
 				}
 			});
 		}

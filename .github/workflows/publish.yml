@@ -10,8 +10,15 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        minecraft-version: [ "1.19.2", "1.20", "1.20.5", "1.21" ]
-        subproject: [":common", ":fabric", ":forge", "neoforge"]
+        include:
+          - minecraft-version: "1.19.2"
+            subproject: [":common", ":fabric", ":forge"]
+          - minecraft-version: "1.20"
+            subproject: [":common", ":fabric", ":forge"]
+          - minecraft-version: "1.20.5"
+            subproject: [":common", ":fabric", ":neoforge"]
+          - minecraft-version: "1.21"
+            subproject: [":common", ":fabric", ":neoforge"]
 
     permissions:
       contents: read
@@ -34,14 +41,7 @@ jobs:
       run: chmod +x ./gradlew
       
     - name: Publish to GitHub Packages
-#      run: ./gradlew -PminecraftVersion=${{ matrix.minecraft-version }} ${{ matrix.subproject }}:publish
-      run: |
-        if ./gradlew -q projects | grep -q "${{ matrix.subproject }}"; then
-          echo "Running ${matrix.subproject}:publish for Minecraft version ${matrix.minecraft-version}"
-          ./gradlew ${{ matrix.subproject }}:publish -PminecraftVersion=${{ matrix.minecraft-version }}
-        else
-          echo "Skipped ${matrix.subproject} as it does not exist"
-        fi
+      run: ./gradlew -PminecraftVersion=${{ matrix.minecraft-version }} ${{ matrix.subproject }}:publish
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         GITHUB_ACTOR: ${{ github.actor }}

@@ -271,6 +271,14 @@ subprojects {
 
 				from(components["java"])
 			}
+
+			create<MavenPublication>("mod-snapshot") {
+				groupId = projectGroup
+				artifactId = "${projectArchivesName}-${project.name}"
+				version = "${project.version as String}-SNAPSHOT"
+
+				from(components["java"])
+			}
 		}
 
 		repositories {

@@ -11,14 +11,37 @@ jobs:
     strategy:
       matrix:
         include:
+          # 1.19.2
           - minecraft-version: "1.19.2"
-            subproject: [":common", ":fabric", ":forge"]
+            subproject: ":common"
+          - minecraft-version: "1.19.2"
+            subproject: ":fabric"
+          - minecraft-version: "1.19.2"
+            subproject: ":forge"
+
+          # 1.20
           - minecraft-version: "1.20"
-            subproject: [":common", ":fabric", ":forge"]
+            subproject: ":common"
+          - minecraft-version: "1.20"
+            subproject: ":fabric"
+          - minecraft-version: "1.20"
+            subproject: ":forge"
+
+          # 1.20.5
           - minecraft-version: "1.20.5"
-            subproject: [":common", ":fabric", ":neoforge"]
+            subproject: ":common"
+          - minecraft-version: "1.20.5"
+            subproject: ":fabric"
+          - minecraft-version: "1.20.5"
+            subproject: ":neoforge"
+
+          # 1.21
           - minecraft-version: "1.21"
-            subproject: [":common", ":fabric", ":neoforge"]
+            subproject: ":common"
+          - minecraft-version: "1.21"
+            subproject: ":fabric"
+          - minecraft-version: "1.21"
+            subproject: ":neoforge"
 
     permissions:
       contents: read

@@ -20,7 +20,9 @@ import me.pandamods.pandalib.api.config.holders.ConfigHolder;
 import net.minecraft.resources.ResourceLocation;
 
 public interface PlayerExtension {
+	@Deprecated(forRemoval = true, since = "0.4")
 	default <T extends ConfigData> void pandaLib$setConfig(T config) {}
+	@Deprecated(forRemoval = true, since = "0.4")
 	default <T extends ConfigData> T pandaLib$getConfig(Class<T> configClass) {
 		return PandaLibConfig.getConfig(configClass).get();
 	}

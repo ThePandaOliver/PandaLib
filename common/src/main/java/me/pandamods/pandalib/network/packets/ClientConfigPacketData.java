@@ -10,6 +10,7 @@
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+#if MC_VER >= MC_1_20_5
 package me.pandamods.pandalib.network.packets;
 
 import io.netty.buffer.ByteBuf;
@@ -19,7 +20,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 
 public record ClientConfigPacketData(String resourceLocation, String configJson) implements CustomPacketPayload {
-	public static final Type<ClientConfigPacketData> TYPE = new Type<>(PandaLib.ID("client_config_sync"));
+	public static final Type<ClientConfigPacketData> TYPE = new Type<>(PandaLib.LOCATION("client_config_sync"));
 
 	public static final StreamCodec<ByteBuf, ClientConfigPacketData> STREAM_CODEC = StreamCodec.composite(
 			ByteBufCodecs.STRING_UTF8,
@@ -34,3 +35,4 @@ public record ClientConfigPacketData(String resourceLocation, String configJson)
 		return TYPE;
 	}
 }
+#endif

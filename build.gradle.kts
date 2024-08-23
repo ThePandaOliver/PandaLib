@@ -264,6 +264,11 @@ subprojects {
 				artifactId = "${projectArchivesName}-${project.name}"
 				version = project.version as String
 
+				val buildNumber = System.getenv("GITHUB_BUILD_NUMBER")
+				if (buildNumber != null) {
+					version = "$version-$buildNumber"
+				}
+
 				from(components["java"])
 			}
 		}

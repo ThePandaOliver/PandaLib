@@ -273,7 +273,7 @@ subprojects {
 				name = "Github"
 				url = uri("https://maven.pkg.github.com/${properties["publishingGitHubRepo"]}")
 				credentials {
-					username = System.getenv("GITHUB_ACTOR")
+					username = "PandaDap2006"
 					password = System.getenv("GITHUB_TOKEN")
 				}
 			}

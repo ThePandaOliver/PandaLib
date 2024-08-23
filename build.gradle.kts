@@ -43,6 +43,18 @@ project.gradle.extra.properties.forEach { prop ->
 
 writeBuildGradlePredefine(project.properties["availableVersions"] as List<String>, project.properties["versionIndex"] as Int)
 
+tasks.register("publishAll") {
+	val availableVersions = project.properties["availableVersions"] as List<String>
+
+	availableVersions.forEach { version ->
+		doLast {
+			exec {
+				commandLine = listOf("./gradlew", "-PminecraftVersion=${version}", "publish")
+			}
+		}
+	}
+}
+
 // gradle.properties
 val supportedModLoaders: String by project
 

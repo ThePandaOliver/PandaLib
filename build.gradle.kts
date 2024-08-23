@@ -279,7 +279,7 @@ tasks.register("publishLocallyAll") {
 	availableVersions.forEach { version ->
 		doLast {
 			exec {
-				commandLine = listOf("./gradlew", "-PminecraftVersion=$version", "publishToMavenLocal")
+				commandLine = listOf("gradlew.bat", "-PminecraftVersion=$version", "publishToMavenLocal")
 			}
 		}
 	}

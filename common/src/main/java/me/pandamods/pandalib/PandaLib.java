@@ -15,8 +15,6 @@ public class PandaLib {
     public static final Logger LOGGER = LogUtils.getLogger();
 
     public static void init() {
-		ReloadListenerRegistry.register(PackType.CLIENT_RESOURCES, new AssimpResources(), LOCATION("assimp_loader"));
-
 		ConfigNetworking.registerPackets();
 		EventHandler.Register();
     }

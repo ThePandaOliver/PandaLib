@@ -1,7 +1,6 @@
 // gradle.properties
 val modId: String by project
-val projectGroup
-: String by project
+val projectGroup: String by project
 
 val forgeVersion: String by project
 
@@ -18,7 +17,7 @@ loom {
 		extraAccessWideners.add(loom.accessWidenerPath.get().asFile.name)
 
 		// Fixes Mixin Patcher issue with Forge
-		useCustomMixin.set(false)
+		useCustomMixin.set(true)
 
 		mixinConfig("${modId}-common.mixins.json")
 		mixinConfig("${modId}.mixins.json")

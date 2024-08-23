@@ -113,9 +113,11 @@ subprojects {
 			isCanBeConsumed = false
 		}
 
-		create("jarShadow")
+		create("jarShadow") {
+			isCanBeResolved = true
+			isCanBeConsumed = false
+		}
 		implementation.get().extendsFrom(configurations["jarShadow"])
-		getByName("shadowBundle").extendsFrom(configurations["jarShadow"])
 
 		create("modShadow")
 		getByName("modImplementation").extendsFrom(configurations["modShadow"])
@@ -174,41 +176,43 @@ subprojects {
 	}
 
 	if (isMinecraftSubProject) {
-		tasks.withType<ShadowJar>().configureEach {
-			configurations = listOf(project.configurations.getByName("shadowBundle"))
+		tasks.withType<ShadowJar> {
+			configurations = listOf(project.configurations.getByName("shadowBundle"), project.configurations.getByName("jarShadow"))
 			archiveClassifier.set("dev-shadow")
 
 			exclude("architectury.common.json")
-
-			// Relocate assimp so it will not cause any conflicts with other mods also using it.
-			relocate("org.lwjgl.assimp", "$projectGroup.assimp")
-			// Relocate natives
-			relocate("windows.x64.org.lwjgl.assimp", "windows.x64.$projectGroup.assimp")
-			relocate("linux.x64.org.lwjgl.assimp", "linux.x64.$projectGroup.assimp")
-			relocate("macos.x64.org.lwjgl.assimp", "macos.x64.$projectGroup.assimp")
-
-			relocate("META-INF.windows.arm64.org.lwjgl.assimp", "META-INF.windows.arm64.$projectGroup.assimp")
-			relocate("META-INF.windows.x64.org.lwjgl.assimp", "META-INF.windows.x64.$projectGroup.assimp")
-			relocate("META-INF.windows.x86.org.lwjgl.assimp", "META-INF.windows.x86.$projectGroup.assimp")
-
-			relocate("META-INF.linux.arm32.org.lwjgl.assimp", "META-INF.linux.arm32.$projectGroup.assimp")
-			relocate("META-INF.linux.arm64.org.lwjgl.assimp", "META-INF.linux.arm64.$projectGroup.assimp")
-			relocate("META-INF.linux.x64.org.lwjgl.assimp", "META-INF.linux.x64.$projectGroup.assimp")
-
-			relocate("META-INF.macos.arm64.org.lwjgl.assimp", "META-INF.macos.arm64.$projectGroup.assimp")
-			relocate("META-INF.macos.x64.org.lwjgl.assimp", "META-INF.macos.x64.$projectGroup.assimp")
-
-			if (jomlVersion != null)
-				relocate("org.joml", "$projectGroup.joml")
 		}
 
-		tasks.withType<RemapJarTask>().configureEach {
+		tasks.withType<RemapJarTask> {
 			val shadowJar = tasks.getByName<ShadowJar>("shadowJar")
 			inputFile.set(shadowJar.archiveFile)
 		}
 	}
 
-	tasks.withType<JavaCompile>().configureEach {
+	tasks.withType<ShadowJar> {
+		// Relocate assimp so it will not cause any conflicts with other mods also using it.
+		relocate("org.lwjgl.assimp", "$projectGroup.assimp")
+		// Relocate natives
+		relocate("windows.x64.org.lwjgl.assimp", "windows.x64.$projectGroup.assimp")
+		relocate("linux.x64.org.lwjgl.assimp", "linux.x64.$projectGroup.assimp")
+		relocate("macos.x64.org.lwjgl.assimp", "macos.x64.$projectGroup.assimp")
+
+		relocate("META-INF.windows.arm64.org.lwjgl.assimp", "META-INF.windows.arm64.$projectGroup.assimp")
+		relocate("META-INF.windows.x64.org.lwjgl.assimp", "META-INF.windows.x64.$projectGroup.assimp")
+		relocate("META-INF.windows.x86.org.lwjgl.assimp", "META-INF.windows.x86.$projectGroup.assimp")
+
+		relocate("META-INF.linux.arm32.org.lwjgl.assimp", "META-INF.linux.arm32.$projectGroup.assimp")
+		relocate("META-INF.linux.arm64.org.lwjgl.assimp", "META-INF.linux.arm64.$projectGroup.assimp")
+		relocate("META-INF.linux.x64.org.lwjgl.assimp", "META-INF.linux.x64.$projectGroup.assimp")
+
+		relocate("META-INF.macos.arm64.org.lwjgl.assimp", "META-INF.macos.arm64.$projectGroup.assimp")
+		relocate("META-INF.macos.x64.org.lwjgl.assimp", "META-INF.macos.x64.$projectGroup.assimp")
+
+		if (jomlVersion != null)
+			relocate("org.joml", "$projectGroup.joml")
+	}
+
+	tasks.withType<JavaCompile> {
 		options.encoding = "UTF-8"
 		options.release.set(JavaLanguageVersion.of(projectJavaVersion).asInt())
 		options.compilerArgs.add("-Xplugin:Manifold")
@@ -265,6 +269,14 @@ subprojects {
 		}
 
 		repositories {
+			maven {
+				name = "Github"
+				url = uri("https://maven.pkg.github.com/${properties["publishingGitHubRepo"]}")
+				credentials {
+					username = System.getenv("GITHUB_ACTOR")
+					password = System.getenv("GITHUB_TOKEN")
+				}
+			}
 		}
 	}
 }

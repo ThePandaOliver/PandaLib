@@ -264,31 +264,22 @@ subprojects {
 				artifactId = "${projectArchivesName}-${project.name}"
 				version = project.version as String
 
-				val buildNumber = System.getenv("GITHUB_BUILD_NUMBER")
-				if (buildNumber != null) {
-					version = "$version-$buildNumber"
-				}
-
-				from(components["java"])
-			}
-
-			create<MavenPublication>("mod-snapshot") {
-				groupId = projectGroup
-				artifactId = "${projectArchivesName}-${project.name}"
-				version = "${project.version as String}-SNAPSHOT"
-
 				from(components["java"])
 			}
 		}
 
 		repositories {
-			maven {
-				name = "Github"
-				url = uri("https://maven.pkg.github.com/${properties["publishingGitHubRepo"]}")
-				credentials {
-					username = System.getenv("GITHUB_ACTOR")
-					password = System.getenv("GITHUB_TOKEN")
-				}
+		}
+	}
+}
+
+tasks.register("publishLocallyAll") {
+	val availableVersions = project.properties["availableVersions"] as List<String>
+
+	availableVersions.forEach { version ->
+		doLast {
+			exec {
+				commandLine = listOf("./gradlew", "-PminecraftVersion=$version", "publishToMavenLocal")
 			}
 		}
 	}

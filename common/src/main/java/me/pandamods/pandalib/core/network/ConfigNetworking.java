@@ -10,22 +10,21 @@
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package me.pandamods.pandalib.network;
+package me.pandamods.pandalib.core.network;
 
-import dev.architectury.networking.NetworkManager;
-import me.pandamods.pandalib.PandaLib;
 import me.pandamods.pandalib.api.config.ConfigData;
 import me.pandamods.pandalib.api.config.PandaLibConfig;
 import me.pandamods.pandalib.api.config.holders.ClientConfigHolder;
 import me.pandamods.pandalib.api.config.holders.CommonConfigHolder;
-import me.pandamods.pandalib.api.util.NetworkHelper;
 #if MC_VER >= MC_1_20_5
-import me.pandamods.pandalib.network.packets.ClientConfigPacketData;
-import me.pandamods.pandalib.network.packets.CommonConfigPacketData;
+import me.pandamods.pandalib.core.network.packets.ClientConfigPacketData;
+import me.pandamods.pandalib.core.network.packets.CommonConfigPacketData;
 #else
 import net.minecraft.network.FriendlyByteBuf;
 import io.netty.buffer.Unpooled;
 #endif
+import me.pandamods.pandalib.networking.NetworkManager;
+import me.pandamods.pandalib.networking.PacketContext;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
@@ -36,9 +35,9 @@ public class ConfigNetworking {
 
 	public static void registerPackets() {
 		#if MC_VER >= MC_1_20_5
-			NetworkHelper.registerS2C(CommonConfigPacketData.TYPE, CommonConfigPacketData.STREAM_CODEC, ConfigNetworking::CommonConfigReceiver);
+			NetworkManager.registerS2CReceiver(CommonConfigPacketData.TYPE, CommonConfigPacketData.STREAM_CODEC, ConfigNetworking::CommonConfigReceiver);
 
-			NetworkHelper.registerC2S(ClientConfigPacketData.TYPE, ClientConfigPacketData.STREAM_CODEC, ConfigNetworking::ClientConfigReceiver);
+		NetworkManager.registerC2SReceiver(ClientConfigPacketData.TYPE, ClientConfigPacketData.STREAM_CODEC, ConfigNetworking::ClientConfigReceiver);
 		#else
 			NetworkHelper.registerS2C(CONFIG_PACKET, ConfigNetworking::CommonConfigReceiver);
 
@@ -83,7 +82,7 @@ public class ConfigNetworking {
 	}
 
 	#if MC_VER >= MC_1_20_5
-		private static void ClientConfigReceiver(ClientConfigPacketData packetData, NetworkManager.PacketContext packetContext) {
+		private static void ClientConfigReceiver(ClientConfigPacketData packetData, PacketContext packetContext) {
 			ResourceLocation resourceLocation = ResourceLocation.tryParse(packetData.resourceLocation());
 			PandaLibConfig.getConfig(resourceLocation).ifPresent(configHolder -> {
 				if (configHolder instanceof ClientConfigHolder<? extends ConfigData> clientConfigHolder) {
@@ -95,7 +94,7 @@ public class ConfigNetworking {
 			});
 		}
 
-		private static void CommonConfigReceiver(CommonConfigPacketData packetData, NetworkManager.PacketContext packetContext) {
+		private static void CommonConfigReceiver(CommonConfigPacketData packetData, PacketContext packetContext) {
 			ResourceLocation resourceLocation = ResourceLocation.tryParse(packetData.resourceLocation());
 			PandaLibConfig.getConfig(resourceLocation).ifPresent(configHolder -> {
 				if (configHolder instanceof CommonConfigHolder<? extends ConfigData> commonConfigHolder) {

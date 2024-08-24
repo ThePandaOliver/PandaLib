@@ -12,16 +12,26 @@
 
 package me.pandamods.pandalib.platform;
 
+import me.pandamods.pandalib.utils.Env;
+
 import java.nio.file.Path;
 
-public interface ModLoader {
-	boolean isModLoaded(String modId);
+public interface GameUtils {
+	Path getGamePath();
+	Path getConfigPath();
+	Path getModsPath();
 
-	boolean isFabric();
-	boolean isMinecraftForge();
-	boolean isNeoForge();
+	/**
+	 * Retrieves the current environment.
+	 *
+	 * @return the current environment, either CLIENT or SERVER
+	 */
+	Env getEnvironment();
 
-	default boolean isForgeLike() {
-		return isMinecraftForge() || isNeoForge();
+	default boolean isClient() {
+		return getEnvironment() == Env.CLIENT;
+	}
+	default boolean isServer() {
+		return getEnvironment() == Env.SERVER;
 	}
 }

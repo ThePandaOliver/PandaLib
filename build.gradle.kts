@@ -136,17 +136,13 @@ subprojects {
 
 	@Suppress("UnstableApiUsage")
 	dependencies {
-		"minecraft"("com.mojang:minecraft:${minecraftVersion}")
+		"minecraft"("com.mojang:minecraft:${minecraftVersion}") {
+			exclude(group = "org.joml", module = "joml")
+		}
 		"mappings"(loom.layered {
 			officialMojangMappings()
 			parchment("org.parchmentmc.data:parchment-${parchmentMinecraftVersion}:${parchmentVersion}@zip")
 		})
-
-		if (isMinecraftSubProject) {
-			"modApi"("dev.architectury:architectury-${project.name}:${architecturyVersion}")
-		} else {
-			"modApi"("dev.architectury:architectury:${architecturyVersion}")
-		}
 
 		// Assimp Library
 		"jarShadow"("org.lwjgl:lwjgl-assimp:${lwjglVersion}") {
@@ -167,9 +163,8 @@ subprojects {
 			}
 		}
 
-		if (jomlVersion != null) {
-			"jarShadow"("org.joml:joml:${jomlVersion}")
-		}
+		// Embed joml
+		"jarShadow"("org.joml:joml:${jomlVersion}")
 
 		compileOnly("org.jetbrains:annotations:24.1.0")
 		annotationProcessor("systems.manifold:manifold-preprocessor:${manifoldVersion}")
@@ -208,8 +203,8 @@ subprojects {
 		relocate("META-INF.macos.arm64.org.lwjgl.assimp", "META-INF.macos.arm64.$projectGroup.assimp")
 		relocate("META-INF.macos.x64.org.lwjgl.assimp", "META-INF.macos.x64.$projectGroup.assimp")
 
-		if (jomlVersion != null)
-			relocate("org.joml", "$projectGroup.joml")
+		// Relocate joml as to not cause issues with Minecraft
+		relocate("org.joml", "$projectGroup.joml")
 	}
 
 	tasks.withType<JavaCompile> {

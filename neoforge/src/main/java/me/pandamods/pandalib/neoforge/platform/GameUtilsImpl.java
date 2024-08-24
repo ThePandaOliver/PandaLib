@@ -12,28 +12,30 @@
 
 package me.pandamods.pandalib.neoforge.platform;
 
-import me.pandamods.pandalib.networking.NetworkHandler;
 import me.pandamods.pandalib.platform.GameUtils;
-import me.pandamods.pandalib.platform.ModLoader;
-import me.pandamods.pandalib.platform.Platform;
+import me.pandamods.pandalib.utils.Env;
+import net.neoforged.fml.loading.FMLLoader;
 
-public class PlatformImpl implements Platform {
-	private final ModLoader modLoader = new ModLoaderImpl();
-	private final GameUtils gameUtils = new GameUtilsImpl();
-	private final NetworkHandler networkHandler = new NetworkHandlerImpl();
+import java.nio.file.Path;
 
+public class GameUtilsImpl implements GameUtils {
 	@Override
-	public ModLoader getModLoader() {
-		return this.modLoader;
+	public Path getGamePath() {
+		return FMLLoader.getGamePath();
 	}
 
 	@Override
-	public GameUtils getGame() {
-		return this.gameUtils;
+	public Path getConfigPath() {
+		return getGamePath().resolve("config");
 	}
 
 	@Override
-	public NetworkHandler getNetwork() {
-		return this.networkHandler;
+	public Path getModsPath() {
+		return getGamePath().resolve("mods");
+	}
+
+	@Override
+	public Env getEnvironment() {
+		return FMLLoader.getDist().isClient() ? Env.CLIENT : Env.SERVER;
 	}
 }

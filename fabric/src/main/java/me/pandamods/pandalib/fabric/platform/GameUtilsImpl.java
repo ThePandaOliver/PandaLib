@@ -12,29 +12,31 @@
 
 package me.pandamods.pandalib.fabric.platform;
 
-import me.pandamods.pandalib.platform.ModLoader;
+import me.pandamods.pandalib.platform.GameUtils;
+import me.pandamods.pandalib.utils.Env;
+import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
 
 import java.nio.file.Path;
 
-public class ModLoaderImpl implements ModLoader {
+public class GameUtilsImpl implements GameUtils {
 	@Override
-	public boolean isModLoaded(String modId) {
-		return FabricLoader.getInstance().isModLoaded(modId);
+	public Path getGamePath() {
+		return FabricLoader.getInstance().getGameDir();
 	}
 
 	@Override
-	public boolean isFabric() {
-		return true;
+	public Path getConfigPath() {
+		return FabricLoader.getInstance().getConfigDir();
 	}
 
 	@Override
-	public boolean isMinecraftForge() {
-		return false;
+	public Path getModsPath() {
+		return getGamePath().resolve("mods");
 	}
 
 	@Override
-	public boolean isNeoForge() {
-		return false;
+	public Env getEnvironment() {
+		return FabricLoader.getInstance().getEnvironmentType().equals(EnvType.CLIENT) ? Env.CLIENT : Env.SERVER;
 	}
 }

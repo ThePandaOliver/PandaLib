@@ -10,18 +10,21 @@
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package me.pandamods.pandalib.platform;
+package me.pandamods.pandalib.networking;
 
-import java.nio.file.Path;
+import me.pandamods.pandalib.utils.Env;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.world.entity.player.Player;
 
-public interface ModLoader {
-	boolean isModLoaded(String modId);
+/**
+ * Borrowed from Architectury API
+ */
+public interface PacketContext {
+	Player getPlayer();
 
-	boolean isFabric();
-	boolean isMinecraftForge();
-	boolean isNeoForge();
+	void queue(Runnable runnable);
 
-	default boolean isForgeLike() {
-		return isMinecraftForge() || isNeoForge();
-	}
+	Env getEnvironment();
+
+	RegistryAccess registryAccess();
 }

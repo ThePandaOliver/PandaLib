@@ -10,18 +10,9 @@
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package me.pandamods.pandalib.platform;
+package me.pandamods.pandalib.networking;
 
-import java.nio.file.Path;
-
-public interface ModLoader {
-	boolean isModLoaded(String modId);
-
-	boolean isFabric();
-	boolean isMinecraftForge();
-	boolean isNeoForge();
-
-	default boolean isForgeLike() {
-		return isMinecraftForge() || isNeoForge();
-	}
+@FunctionalInterface
+public interface NetworkReceiver<T> {
+	void receive(T value, PacketContext context);
 }

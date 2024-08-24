@@ -14,9 +14,8 @@ package me.pandamods.pandalib.event;
 
 import dev.architectury.event.events.client.ClientPlayerEvent;
 import dev.architectury.event.events.common.PlayerEvent;
-import dev.architectury.platform.Platform;
-import dev.architectury.utils.Env;
-import me.pandamods.pandalib.network.ConfigNetworking;
+import me.pandamods.pandalib.core.network.ConfigNetworking;
+import me.pandamods.pandalib.platform.Services;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.server.level.ServerPlayer;
 
@@ -24,7 +23,7 @@ public class EventHandler {
 	public static void Register() {
 		PlayerEvent.PLAYER_JOIN.register(EventHandler::onServerPlayerJoin);
 
-		if (Platform.getEnvironment().equals(Env.CLIENT)) {
+		if (Services.PLATFORM.getGame().isClient()) {
 			ClientPlayerEvent.CLIENT_PLAYER_JOIN.register(EventHandler::onClientPlayerJoin);
 		}
 	}

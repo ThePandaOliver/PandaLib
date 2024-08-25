@@ -13,9 +13,11 @@
 package me.pandamods.pandalib.platform;
 
 import me.pandamods.pandalib.networking.NetworkHandler;
+import me.pandamods.pandalib.registry.ReloadListenerRegistry;
 
 public interface Platform {
 	ModLoader getModLoader();
 	GameUtils getGame();
 	NetworkHandler getNetwork();
+	ReloadListenerRegistry getReloadListenerRegistry();
 }

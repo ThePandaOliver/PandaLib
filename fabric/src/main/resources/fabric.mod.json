@@ -26,8 +26,7 @@
   "depends": {
     "fabric": "*",
     "fabric-api": "*",
-    "minecraft": "${fabricCompatibleVersions}",
-    "architectury": "*"
+    "minecraft": "${fabricCompatibleVersions}"
   },
 	"custom": {
 		"modmenu": {

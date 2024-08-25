@@ -12,7 +12,7 @@
 
 package me.pandamods.pandalib;
 
-import me.pandamods.pandalib.event.EventHandler;
+import me.pandamods.pandalib.core.event.EventHandler;
 import me.pandamods.pandalib.core.network.ConfigNetworking;
 import net.minecraft.resources.ResourceLocation;
 
@@ -24,7 +24,7 @@ public class PandaLib {
 		EventHandler.Register();
     }
 
-	public static ResourceLocation LOCATION(String path) {
+	public static ResourceLocation location(String path) {
 		#if MC_VER >= MC_1_21
 			return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
 		#else

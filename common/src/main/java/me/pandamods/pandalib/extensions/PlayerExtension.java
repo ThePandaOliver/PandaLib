@@ -12,11 +12,9 @@
 
 package me.pandamods.pandalib.extensions;
 
-import com.google.gson.JsonObject;
-import me.pandamods.pandalib.api.config.ConfigData;
-import me.pandamods.pandalib.api.config.PandaLibConfig;
-import me.pandamods.pandalib.api.config.holders.ClientConfigHolder;
-import me.pandamods.pandalib.api.config.holders.ConfigHolder;
+import me.pandamods.pandalib.config.ConfigData;
+import me.pandamods.pandalib.config.PandaLibConfig;
+import me.pandamods.pandalib.config.holders.ConfigHolder;
 import net.minecraft.resources.ResourceLocation;
 
 public interface PlayerExtension {

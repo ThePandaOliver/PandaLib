@@ -26,10 +26,3 @@ mandatory = true
 versionRange = "${forgeCompatibleVersions}"
 ordering = "NONE"
 side = "BOTH"
-
-[[dependencies.${modId}]]
-modId = "architectury"
-mandatory = true
-versionRange = "*"
-ordering = "AFTER"
-side = "BOTH"

@@ -12,10 +12,10 @@
 
 package me.pandamods.pandalib.mixin;
 
-import me.pandamods.pandalib.api.config.ConfigData;
-import me.pandamods.pandalib.api.config.PandaLibConfig;
-import me.pandamods.pandalib.api.config.holders.ClientConfigHolder;
-import me.pandamods.pandalib.api.config.holders.ConfigHolder;
+import me.pandamods.pandalib.config.ConfigData;
+import me.pandamods.pandalib.config.PandaLibConfig;
+import me.pandamods.pandalib.config.holders.ClientConfigHolder;
+import me.pandamods.pandalib.config.holders.ConfigHolder;
 import me.pandamods.pandalib.extensions.PlayerExtension;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;

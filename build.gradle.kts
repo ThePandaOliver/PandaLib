@@ -65,8 +65,6 @@ val lwjglVersion: String by project
 val jomlVersion = properties["jomlVersion"]
 val manifoldVersion: String by project
 
-val architecturyVersion: String by project
-
 val fabricCompatibleVersions: String by project
 val forgeCompatibleVersions: String by project
 val neoForgeCompatibleVersions: String by project
@@ -352,8 +350,6 @@ publishMods {
 
 			if (loaderName == "fabric")
 				requires("fabric-api")
-
-			requires("architectury-api")
 		}
 
 		modrinth("modrinth_" + loaderName) {
@@ -375,8 +371,6 @@ publishMods {
 
 			if (loaderName == "fabric")
 				requires("fabric-api")
-
-			requires("architectury-api")
 		}
 	}
 

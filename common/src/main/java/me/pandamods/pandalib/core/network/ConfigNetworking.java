@@ -12,10 +12,10 @@
 
 package me.pandamods.pandalib.core.network;
 
-import me.pandamods.pandalib.api.config.ConfigData;
-import me.pandamods.pandalib.api.config.PandaLibConfig;
-import me.pandamods.pandalib.api.config.holders.ClientConfigHolder;
-import me.pandamods.pandalib.api.config.holders.CommonConfigHolder;
+import me.pandamods.pandalib.config.ConfigData;
+import me.pandamods.pandalib.config.PandaLibConfig;
+import me.pandamods.pandalib.config.holders.ClientConfigHolder;
+import me.pandamods.pandalib.config.holders.CommonConfigHolder;
 #if MC_VER >= MC_1_20_5
 import me.pandamods.pandalib.core.network.packets.ClientConfigPacketData;
 import me.pandamods.pandalib.core.network.packets.CommonConfigPacketData;

@@ -10,18 +10,19 @@
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package me.pandamods.pandalib.forge.client;
+package me.pandamods.pandalib.forge.event;
 
-import me.pandamods.pandalib.client.PandaLibClient;
-import me.pandamods.pandalib.forge.event.EventHandlerClientImpl;
+import me.pandamods.pandalib.forge.event.events.client.ClientPlayerEventsImpl;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.eventbus.api.IEventBus;
 
-public class PandaLibClientForge {
-    public PandaLibClientForge() {
-		PandaLibClient.init();
+@OnlyIn(Dist.CLIENT)
+public class EventHandlerClientImpl {
+	public static void register() {
+		IEventBus bus = MinecraftForge.EVENT_BUS;
 
-		EventHandlerClientImpl.register();
-    }
+		bus.register(ClientPlayerEventsImpl.class);
+	}
 }

@@ -6,12 +6,12 @@ architectury {
 	neoForge()
 }
 
-configurations {
-	getByName("developmentNeoForge").extendsFrom(configurations["common"])
-}
-
 loom {
 	accessWidenerPath.set(project(":common").loom.accessWidenerPath)
+}
+
+configurations {
+	getByName("developmentNeoForge").extendsFrom(configurations["common"])
 }
 
 dependencies {

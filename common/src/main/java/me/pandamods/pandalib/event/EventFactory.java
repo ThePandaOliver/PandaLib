@@ -20,8 +20,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
@@ -34,9 +32,9 @@ public final class EventFactory {
 
 	@SafeVarargs
 	@SuppressWarnings("unchecked")
-	public static <T> Event<T> createLoop(T... typeGetter) {
+	public static <T> Event<T> createEvent(T... typeGetter) {
 		if (typeGetter.length != 0) throw new IllegalStateException("array must be empty!");
-		return createLoop((Class<T>) typeGetter.getClass().getComponentType());
+		return createEvent((Class<T>) typeGetter.getClass().getComponentType());
 	}
 
 	@SuppressWarnings("unchecked")
@@ -46,7 +44,7 @@ public final class EventFactory {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static <T> Event<T> createLoop(Class<T> clazz) {
+	public static <T> Event<T> createEvent(Class<T> clazz) {
 		return of(listeners -> (T) Proxy.newProxyInstance(EventFactory.class.getClassLoader(), new Class[]{clazz}, new AbstractInvocationHandler() {
 			@Override
 			protected Object handleInvocation(@NotNull Object proxy, @NotNull Method method, Object @NotNull [] args) throws Throwable {

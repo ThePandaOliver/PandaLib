@@ -20,8 +20,8 @@ import net.minecraft.server.level.ServerPlayer;
 
 @Environment(EnvType.CLIENT)
 public interface PlayerEvents {
-	Event<PlayerJoin> PLAYER_JOIN = EventFactory.createLoop();
-	Event<PlayerQuit> PLAYER_QUIT = EventFactory.createLoop();
+	Event<PlayerJoin> PLAYER_JOIN = EventFactory.createEvent();
+	Event<PlayerQuit> PLAYER_QUIT = EventFactory.createEvent();
 
 	interface PlayerJoin {
 		void join(ServerPlayer player);

@@ -12,6 +12,7 @@
 
 package me.pandamods.pandalib.neoforge.event;
 
+import me.pandamods.pandalib.neoforge.event.events.common.BlockEventsImpl;
 import me.pandamods.pandalib.neoforge.event.events.common.PlayerEventsImpl;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.common.NeoForge;
@@ -21,5 +22,6 @@ public class EventHandlerImpl {
 		IEventBus bus = NeoForge.EVENT_BUS;
 
 		bus.register(PlayerEventsImpl.class);
+		bus.register(BlockEventsImpl.class);
 	}
 }

@@ -7,7 +7,9 @@
 		"client.MinecraftMixin"
 	],
 	"mixins": [
-		"PlayerListMixin"
+		"MixinBlockItem",
+		"PlayerListMixin",
+		"ServerPlayerGameModeMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

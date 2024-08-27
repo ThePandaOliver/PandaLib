@@ -13,7 +13,9 @@
 package me.pandamods.pandalib.neoforge;
 
 import me.pandamods.pandalib.PandaLib;
+import me.pandamods.pandalib.neoforge.client.PandaLibClientNeoForge;
 import me.pandamods.pandalib.neoforge.event.EventHandlerImpl;
+import me.pandamods.pandalib.platform.Services;
 import net.neoforged.fml.common.Mod;
 
 @Mod(PandaLib.MOD_ID)
@@ -24,7 +26,7 @@ public class PandaLibNeoForge {
 		EventHandlerImpl.register();
 
 		#if MC_VER < MC_1_21
-		if (Platform.getEnvironment().equals(Env.CLIENT))
+		if (Services.PLATFORM.getGame().isClient())
 			new PandaLibClientNeoForge();
 		#endif
     }

@@ -15,9 +15,6 @@ loom {
 		convertAccessWideners.set(true)
 		extraAccessWideners.add(loom.accessWidenerPath.get().asFile.name)
 
-		// Fixes Mixin Patcher issue with Forge
-		useCustomMixin.set(true)
-
 		mixinConfig("${modId}-common.mixins.json")
 		mixinConfig("${modId}.mixins.json")
 	}

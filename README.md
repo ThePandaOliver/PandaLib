@@ -12,26 +12,27 @@
 This Library was created to easily share code between The Panda Oliver's mods.
 
 ### Current Features:
-- Embedded Joml for 1.19.2
+- Embedded JOML
 - Config API
-  - Automatic Config synchronisation
+  - Automatic Config synchronization
+- Multi-Loader Framework
 
 ### Planned Features:
 - Custom Model Rendering API
 - Config Menu API
 - And more to come
 
-If you have any of your own questions, please leave them [here](https://github.com/PandaDap2006/PandaLib/discussions/q-a).
-
-You can also join my [Discord](https://discord.gg/wjPt4vEfXb)
-
 ---
 ## Support me
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/S6S0WO38H)
 
-You can also support me by clicking the link below and signing up, every purchased server will help support me and the development of my mods.  
+## Advertisement
+Thanks to **Jetbrains** for supporting this project with their open source program.\
+<img src="https://resources.jetbrains.com/storage/products/company/brand/logos/jetbrains.svg" width=300px>
+
+Thanks to **Kinetic Hosting** for supporting this project 
 ![Partner Banner](https://github.com/PandaDap2006/PandaDap2006/blob/main/assets_for_readme/kinetic_hosting_banner_v2.png?raw=true)
-**[Sign up](https://t.ly/B1Kui)**
+**[Click here and use code "PANDA" to get 15% of your first month](https://t.ly/B1Kui)**
 
 ## License
 The project is licensed under the GNU GPLv3

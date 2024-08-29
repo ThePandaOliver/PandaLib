@@ -12,7 +12,15 @@
 
 package me.pandamods.pandalib.networking;
 
+import io.netty.buffer.ByteBuf;
+
 @FunctionalInterface
+#if MC_VER > MC_1_20_5
 public interface NetworkReceiver<T> {
 	void receive(T value, PacketContext context);
 }
+#else
+public interface NetworkReceiver {
+	void receive(ByteBuf buf, PacketContext context);
+}
+#endif

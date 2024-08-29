@@ -12,6 +12,7 @@
 
 package me.pandamods.pandalib.forge.platform;
 
+import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import me.pandamods.pandalib.PandaLib;
 import me.pandamods.pandalib.forge.platform.hooks.EventBusesHooks;
@@ -23,6 +24,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.Connection;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.network.NetworkEvent;
+import net.minecraftforge.network.NetworkRegistry;
+import net.minecraftforge.network.simple.SimpleChannel;
+#if MC_VER >= MC_1_20_5
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -31,12 +39,14 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.event.network.CustomPayloadEvent;
 import net.minecraftforge.network.ChannelBuilder;
 import net.minecraftforge.network.EventNetworkChannel;
+#endif
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
 public class NetworkHandlerImpl extends NetworkHandler {
+	#if MC_VER > MC_1_20_5
 	private final Map<CustomPacketPayload.Type<?>, Message<?>> CHANNELS = new HashMap<>();
 
 	@SuppressWarnings("unchecked")
@@ -124,4 +134,53 @@ public class NetworkHandlerImpl extends NetworkHandler {
 	}
 
 	public record Message<T extends CustomPacketPayload>(EventNetworkChannel channel, BiConsumer<T, RegistryFriendlyByteBuf> encoder) {}
+	#else
+	private final Map<ResourceLocation, SimpleChannel> CHANNELS = new HashMap<>();
+
+	@Override
+	public void sendToServer(ResourceLocation packetId, ByteBuf buf) {
+
+	}
+
+	@Override
+	public void sendToPlayer(ServerPlayer player, ResourceLocation packetId, ByteBuf buf) {
+
+	}
+
+	@Override
+	public void registerC2SReceiver(ResourceLocation packetId, NetworkReceiver receiver) {
+
+	}
+
+	@Override
+	public void registerS2CReceiver(ResourceLocation packetId, NetworkReceiver receiver) {
+
+	}
+
+	private void registerReceiver(ResourceLocation packetId, NetworkReceiver receiver) {
+		if (!CHANNELS.containsKey(packetId)) {
+			String version = "1";
+			SimpleChannel channel = NetworkRegistry.newSimpleChannel(packetId, () -> version, version::equals, version::equals);
+		}
+	}
+
+	private PacketContext context(Player player, NetworkEvent.Context taskQueue, boolean client) {
+		return new PacketContext() {
+			@Override
+			public Player getPlayer() {
+				return player;
+			}
+
+			@Override
+			public void queue(Runnable runnable) {
+				taskQueue.enqueueWork(runnable);
+			}
+
+			@Override
+			public Env getEnvironment() {
+				return client ? Env.CLIENT : Env.SERVER;
+			}
+		};
+	}
+	#endif
 }

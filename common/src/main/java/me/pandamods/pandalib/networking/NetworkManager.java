@@ -12,17 +12,20 @@
 
 package me.pandamods.pandalib.networking;
 
+import io.netty.buffer.ByteBuf;
 import me.pandamods.pandalib.platform.Services;
+#if MC_VER > MC_1_20_5
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+#endif
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-
-import java.util.function.Supplier;
 
 public class NetworkManager {
 	public static final NetworkHandler INSTANCE = Services.PLATFORM.getNetwork();
 
+	#if MC_VER > MC_1_20_5
 	public static <T extends CustomPacketPayload> void sendToServer(T payload) {
 		INSTANCE.sendToServer(payload);
 	}
@@ -48,4 +51,27 @@ public class NetworkManager {
 																		   NetworkReceiver<T> receiver) {
 		INSTANCE.registerS2CReceiver(type, codec, receiver);
 	}
+	#else
+	public static void sendToServer(ResourceLocation packetId, ByteBuf buf) {
+		INSTANCE.sendToServer(packetId, buf);
+	}
+
+	public static void sendToPlayer(ServerPlayer player, ResourceLocation packetId, ByteBuf buf) {
+		INSTANCE.sendToPlayer(player, packetId, buf);
+	}
+
+	public static void sendToPlayers(Iterable<ServerPlayer> players, ResourceLocation packetId, ByteBuf buf) {
+		for (ServerPlayer player : players) {
+			sendToPlayer(player, packetId, buf);
+		}
+	}
+
+	public static void registerC2SReceiver(ResourceLocation packetId, NetworkReceiver receiver) {
+		INSTANCE.registerC2SReceiver(packetId, receiver);
+	}
+
+	public static void registerS2CReceiver(ResourceLocation packetId, NetworkReceiver receiver) {
+		INSTANCE.registerS2CReceiver(packetId, receiver);
+	}
+	#endif
 }

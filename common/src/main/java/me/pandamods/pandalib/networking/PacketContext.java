@@ -25,6 +25,4 @@ public interface PacketContext {
 	void queue(Runnable runnable);
 
 	Env getEnvironment();
-
-	RegistryAccess registryAccess();
 }

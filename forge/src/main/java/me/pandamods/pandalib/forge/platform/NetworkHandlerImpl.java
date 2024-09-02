@@ -24,12 +24,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.Connection;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.PacketListener;
+import net.minecraft.network.protocol.Packet;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.network.NetworkEvent;
-import net.minecraftforge.network.NetworkRegistry;
-import net.minecraftforge.network.simple.SimpleChannel;
 #if MC_VER >= MC_1_20_5
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -39,6 +38,10 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.event.network.CustomPayloadEvent;
 import net.minecraftforge.network.ChannelBuilder;
 import net.minecraftforge.network.EventNetworkChannel;
+#else
+import net.minecraftforge.network.NetworkEvent;
+import net.minecraftforge.network.NetworkRegistry;
+import net.minecraftforge.network.simple.SimpleChannel;
 #endif
 
 import java.util.HashMap;
@@ -139,7 +142,17 @@ public class NetworkHandlerImpl extends NetworkHandler {
 
 	@Override
 	public void sendToServer(ResourceLocation packetId, ByteBuf buf) {
+		Connection connection = Minecraft.getInstance().getConnection().getConnection();
+		connection.getPacketListener().send(new Packet<PacketListener>() {
+			@Override
+			public void write(FriendlyByteBuf buffer) {
 
+			}
+
+			@Override
+			public void handle(PacketListener handler) {
+			}
+		});
 	}
 
 	@Override

@@ -10,18 +10,12 @@
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package me.pandamods.pandalib.config;
+package me.pandamods.testmod.config;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import me.pandamods.pandalib.config.Config;
+import me.pandamods.pandalib.config.ConfigData;
+import me.pandamods.testmod.TestMod;
 
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-public @interface Config {
-	String modId();
-	String name();
-	String directory() default "";
-	boolean synchronize() default false;
+@Config(modId = TestMod.MOD_ID, name = "common_test_config", directory = "test_configs", synchronize = true)
+public class CommonTestConfig extends BaseTestConfig implements ConfigData {
 }

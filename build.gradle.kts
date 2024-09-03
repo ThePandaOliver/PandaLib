@@ -80,10 +80,10 @@ allprojects {
 }
 
 subprojects {
-	val isMinecraftSubProject = findProject(":common") != project
-	val isFabric = findProject(":fabric") == project
-	val isForge = findProject(":forge") == project
-	val isNeoForge = findProject(":neoforge") == project
+	val isMinecraftSubProject = findProject(":common") != project && findProject(":testmod-common") != project
+	val isFabric = findProject(":fabric") == project || findProject(":testmod-fabric") == project
+	val isForge = findProject(":forge") == project || findProject(":testmod-forge") == project
+	val isNeoForge = findProject(":neoforge") == project || findProject(":testmod-neoforge") == project
 
 	apply(plugin = "architectury-plugin")
 	apply(plugin = "dev.architectury.loom")

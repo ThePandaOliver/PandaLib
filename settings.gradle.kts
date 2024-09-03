@@ -56,8 +56,8 @@ loadProperties()
 
 rootProject.name = "PandaLib"
 
-include("common")
+include("common", "testmod-common")
 gradle.extra.properties["supportedModLoaders"].toString().split(",").forEach {
 	println("Adding loader ${it}")
-	include(it)
+	include(it, "testmod-${it}")
 }

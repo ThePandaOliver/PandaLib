@@ -73,7 +73,7 @@ public class ConfigHolder<T extends ConfigData> {
 
 	public Path getConfigPath() {
 		Path path = Services.PLATFORM.getGame().getConfigPath();
-		if (!definition.parentDirectory().isBlank()) path = path.resolve(definition.parentDirectory());
+		if (!definition.directory().isBlank()) path = path.resolve(definition.directory());
 		return path.resolve(definition.name() + ".json");
 	}
 

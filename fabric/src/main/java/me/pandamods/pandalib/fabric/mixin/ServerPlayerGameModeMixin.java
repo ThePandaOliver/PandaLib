@@ -39,7 +39,7 @@ public class ServerPlayerGameModeMixin {
 					ordinal = 0
 			), cancellable = true)
 	public void onBlockBreak(BlockPos blockPos, CallbackInfoReturnable<Boolean> cir, @Local BlockState state) {
-		if (BlockEvents.DESTROY.invoker().destroy(this.level, blockPos, state, this.player))
+		if (!BlockEvents.DESTROY.invoker().destroy(this.level, blockPos, state, this.player))
 			cir.setReturnValue(true);
 	}
 }

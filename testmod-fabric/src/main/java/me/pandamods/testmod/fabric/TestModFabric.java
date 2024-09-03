@@ -10,18 +10,14 @@
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package me.pandamods.pandalib.config;
+package me.pandamods.testmod.fabric;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import me.pandamods.testmod.TestMod;
+import net.fabricmc.api.ModInitializer;
 
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-public @interface Config {
-	String modId();
-	String name();
-	String directory() default "";
-	boolean synchronize() default false;
+public class TestModFabric implements ModInitializer {
+	@Override
+	public void onInitialize() {
+		TestMod.init();
+	}
 }

@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+	"id": "testmod",
+	"version": "${modVersion}",
+	"name": "${modName} - Test",
+	"description": "${modDescription}",
+	"authors": [
+		"${modAuthor}"
+	],
+	"contact": {
+		"issues": "https://github.com/PandaDap2006/PandaLib/issues",
+		"sources": "https://github.com/PandaDap2006/PandaLib"
+	},
+  "license": "GPL-3",
+	"icon": "assets/${modId}/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+			"me.pandamods.testmod.fabric.TestModFabric"
+    ]
+  },
+  "mixins": [
+  ],
+  "depends": {
+    "fabric": "*",
+    "fabric-api": "*",
+    "minecraft": "${fabricCompatibleVersions}"
+  },
+	"custom": {
+		"modmenu": {
+			"links": {
+				"modmenu.discord": "https://discord.gg/wjPt4vEfXb",
+				"modmenu.kofi": "https://ko-fi.com/pandamods",
+				"modmenu.curseforge": "https://www.curseforge.com/minecraft/mc-mods/pandalib",
+				"modmenu.modrinth": "https://modrinth.com/mod/pandalib",
+				"modmenu.github_releases": "https://github.com/PandaDap2006/PandaLib/releases"
+			},
+			"badges": ["library"],
+			"update_checker": true
+		}
+	}
+}

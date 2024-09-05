@@ -28,7 +28,7 @@ This Library was created to easily share code between The Panda Oliver's mods.
 
 ## Advertisement
 Thanks to **Jetbrains** for supporting this project with their open source program.\
-<img src="https://resources.jetbrains.com/storage/products/company/brand/logos/jetbrains.svg" width=300px>
+[<img src="https://resources.jetbrains.com/storage/products/company/brand/logos/jetbrains.svg" width=300px>](https://jb.gg/OpenSourceSupport)
 
 Thanks to **Kinetic Hosting** for supporting this project 
 ![Partner Banner](https://github.com/PandaDap2006/PandaDap2006/blob/main/assets_for_readme/kinetic_hosting_banner_v2.png?raw=true)

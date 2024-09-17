@@ -1,8 +1,3 @@
-// gradle.properties
-val modId: String by project
-
-val forgeVersion: String by project
-
 architectury {
 	platformSetupLoomIde()
 	forge()
@@ -15,8 +10,8 @@ loom {
 		convertAccessWideners.set(true)
 		extraAccessWideners.add(loom.accessWidenerPath.get().asFile.name)
 
-		mixinConfig("${modId}-common.mixins.json")
-		mixinConfig("${modId}.mixins.json")
+		mixinConfig("${properties["mod_id"]}-common.mixins.json")
+		mixinConfig("${properties["mod_id"]}.mixins.json")
 	}
 }
 
@@ -27,7 +22,7 @@ configurations {
 }
 
 dependencies {
-	forge("net.minecraftforge:forge:${forgeVersion}")
+	forge("net.minecraftforge:forge:${properties["forge_version"]}")
 
 	"common"(project(":common", "namedElements")) { isTransitive = false }
 	"shadowBundle"(project(":common", "transformProductionForge"))

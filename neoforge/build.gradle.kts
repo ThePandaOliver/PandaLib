@@ -1,6 +1,3 @@
-// gradle.properties
-val neoForgeVersion: String by project
-
 architectury {
 	platformSetupLoomIde()
 	neoForge()
@@ -15,7 +12,7 @@ configurations {
 }
 
 dependencies {
-	neoForge("net.neoforged:neoforge:${neoForgeVersion}")
+	neoForge("net.neoforged:neoforge:${properties["neoforge_version"]}")
 
 	"common"(project(":common", "namedElements")) { isTransitive = false }
 	"shadowBundle"(project(":common", "transformProductionNeoForge"))

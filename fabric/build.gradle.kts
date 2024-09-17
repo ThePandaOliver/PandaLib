@@ -1,9 +1,3 @@
-// gradle.properties
-val fabricLoaderVersion: String by project
-val fabricApiVersion: String by project
-
-val modmenuVersion: String by project
-
 architectury {
 	platformSetupLoomIde()
 	fabric()
@@ -22,10 +16,10 @@ repositories {
 }
 
 dependencies {
-	modImplementation("net.fabricmc:fabric-loader:${fabricLoaderVersion}")
-	modApi("net.fabricmc.fabric-api:fabric-api:${fabricApiVersion}")
+	modImplementation("net.fabricmc:fabric-loader:${properties["fabric_version"]}")
+	modApi("net.fabricmc.fabric-api:fabric-api:${properties["fabric_api_version"]}")
 
-	modApi("com.terraformersmc:modmenu:${modmenuVersion}")
+	modApi("com.terraformersmc:modmenu:${properties["deps_modmenu_version"]}")
 
 	"common"(project(":common", "namedElements")) { isTransitive = false }
 	"shadowBundle"(project(":common", "transformProductionFabric"))

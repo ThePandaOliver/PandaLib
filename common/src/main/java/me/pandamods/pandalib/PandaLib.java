@@ -24,7 +24,7 @@ public class PandaLib {
 		EventHandler.Register();
     }
 
-	public static ResourceLocation location(String path) {
+	public static ResourceLocation resourceLocation(String path) {
 		#if MC_VER >= MC_1_21
 			return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
 		#else

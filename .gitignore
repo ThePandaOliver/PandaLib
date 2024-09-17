@@ -6,7 +6,7 @@ build.properties
 .architectury-transformer
 
 ### Minecraft ###
-run/
+.runs/
 
 ### IntelliJ IDEA ###
 .idea/

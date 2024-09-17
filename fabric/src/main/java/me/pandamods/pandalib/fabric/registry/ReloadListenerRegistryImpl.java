@@ -38,7 +38,7 @@ public class ReloadListenerRegistryImpl implements ReloadListenerRegistry {
 		byte[] bytes = new byte[8];
 		RANDOM.nextBytes(bytes);
 		ResourceLocation id = listenerId != null ? listenerId :
-				PandaLib.location("reload_" + StringUtils.leftPad(Math.abs(Longs.fromByteArray(bytes)) + "", 19, '0'));
+				PandaLib.resourceLocation("reload_" + StringUtils.leftPad(Math.abs(Longs.fromByteArray(bytes)) + "", 19, '0'));
 
 		ResourceManagerHelper.get(type).registerReloadListener(new IdentifiableResourceReloadListener() {
 			@Override

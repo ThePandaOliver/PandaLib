@@ -207,7 +207,7 @@ subprojects {
 	tasks.processResources {
 		val props = mapOf(
 			"java_version" to properties["java_version"],
-			"supported_mod_loaders" to properties["java_version"],
+			"supported_mod_loaders" to properties["supported_mod_loaders"],
 
 			"maven_group" to properties["maven_group"],
 			"mod_id" to properties["mod_id"],
@@ -221,9 +221,9 @@ subprojects {
 			"project_modrinth_slug" to properties["project_modrinth_slug"],
 			"project_github_repo" to properties["project_github_repo"],
 
-			"fabric_version_range" to properties["project_github_repo"],
-			"forge_version_range" to properties["project_github_repo"],
-			"neoforge_version_range" to properties["project_github_repo"],
+			"fabric_version_range" to properties["fabric_version_range"],
+			"forge_version_range" to properties["forge_version_range"],
+			"neoforge_version_range" to properties["neoforge_version_range"],
 		)
 
 		inputs.properties(props)

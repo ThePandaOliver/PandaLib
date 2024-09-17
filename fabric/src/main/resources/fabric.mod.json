@@ -23,8 +23,8 @@
 		]
   },
 	"mixins": [
-		"${modId}.mixins.json",
-		"${modId}-common.mixins.json"
+		"${mod_id}.mixins.json",
+		"${mod_id}-common.mixins.json"
 	],
   "depends": {
     "fabric": "*",

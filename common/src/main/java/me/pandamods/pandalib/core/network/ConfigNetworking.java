@@ -12,6 +12,7 @@
 
 package me.pandamods.pandalib.core.network;
 
+import me.pandamods.pandalib.PandaLib;
 import me.pandamods.pandalib.config.ConfigData;
 import me.pandamods.pandalib.config.PandaLibConfig;
 import me.pandamods.pandalib.config.holders.ClientConfigHolder;
@@ -30,18 +31,18 @@ import net.minecraft.server.level.ServerPlayer;
 
 public class ConfigNetworking {
 	#if MC_VER <= MC_1_20
-		public static final ResourceLocation CONFIG_PACKET = PandaLib.LOCATION("config_sync");
+		public static final ResourceLocation CONFIG_PACKET = PandaLib.resourceLocation("config_sync");
 	#endif
 
 	public static void registerPackets() {
 		#if MC_VER >= MC_1_20_5
 			NetworkManager.registerS2CReceiver(CommonConfigPacketData.TYPE, CommonConfigPacketData.STREAM_CODEC, ConfigNetworking::CommonConfigReceiver);
 
-		NetworkManager.registerC2SReceiver(ClientConfigPacketData.TYPE, ClientConfigPacketData.STREAM_CODEC, ConfigNetworking::ClientConfigReceiver);
+			NetworkManager.registerC2SReceiver(ClientConfigPacketData.TYPE, ClientConfigPacketData.STREAM_CODEC, ConfigNetworking::ClientConfigReceiver);
 		#else
-			NetworkHelper.registerS2C(CONFIG_PACKET, ConfigNetworking::CommonConfigReceiver);
+			NetworkManager.registerS2CReceiver(CONFIG_PACKET, ConfigNetworking::CommonConfigReceiver);
 
-			NetworkHelper.registerC2S(CONFIG_PACKET, ConfigNetworking::ClientConfigReceiver);
+			NetworkManager.registerC2SReceiver(CONFIG_PACKET, ConfigNetworking::ClientConfigReceiver);
 		#endif
 	}
 
@@ -104,7 +105,7 @@ public class ConfigNetworking {
 			});
 		}
 	#else
-		private static void ClientConfigReceiver(FriendlyByteBuf buf, NetworkManager.PacketContext context) {
+		private static void ClientConfigReceiver(FriendlyByteBuf buf, PacketContext context) {
 			ResourceLocation resourceLocation = buf.readResourceLocation();
 			PandaLibConfig.getConfig(resourceLocation).ifPresent(configHolder -> {
 				if (configHolder instanceof ClientConfigHolder<? extends ConfigData> clientConfigHolder) {
@@ -115,7 +116,7 @@ public class ConfigNetworking {
 			});
 		}
 
-		private static void CommonConfigReceiver(FriendlyByteBuf buf, NetworkManager.PacketContext context) {
+		private static void CommonConfigReceiver(FriendlyByteBuf buf, PacketContext context) {
 			ResourceLocation resourceLocation = buf.readResourceLocation();
 			PandaLibConfig.getConfig(resourceLocation).ifPresent(configHolder -> {
 				if (configHolder instanceof CommonConfigHolder<? extends ConfigData> commonConfigHolder) {

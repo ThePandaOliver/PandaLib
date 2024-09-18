@@ -13,6 +13,7 @@
 package me.pandamods.pandalib.networking;
 
 import io.netty.buffer.ByteBuf;
+import net.minecraft.network.FriendlyByteBuf;
 
 @FunctionalInterface
 #if MC_VER > MC_1_20_5
@@ -21,6 +22,6 @@ public interface NetworkReceiver<T> {
 }
 #else
 public interface NetworkReceiver {
-	void receive(ByteBuf buf, PacketContext context);
+	void receive(FriendlyByteBuf buf, PacketContext context);
 }
 #endif

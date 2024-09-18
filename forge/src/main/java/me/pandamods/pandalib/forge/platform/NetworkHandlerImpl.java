@@ -143,10 +143,10 @@ public class NetworkHandlerImpl extends NetworkHandler {
 	@Override
 	public void sendToServer(ResourceLocation packetId, ByteBuf buf) {
 		Connection connection = Minecraft.getInstance().getConnection().getConnection();
-		connection.getPacketListener().send(new Packet<PacketListener>() {
+		connection.send(new Packet<>() {
 			@Override
 			public void write(FriendlyByteBuf buffer) {
-
+				buffer.writeBytes(buf);
 			}
 
 			@Override

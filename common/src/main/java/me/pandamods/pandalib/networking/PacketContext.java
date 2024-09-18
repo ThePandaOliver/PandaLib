@@ -26,5 +26,7 @@ public interface PacketContext {
 
 	Env getEnvironment();
 
+	#if MC_VER >= MC_1_20_5
 	RegistryAccess registryAccess();
+	#endif
 }

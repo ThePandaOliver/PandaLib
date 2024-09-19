@@ -24,4 +24,6 @@ public interface ModLoader {
 	default boolean isForgeLike() {
 		return isMinecraftForge() || isNeoForge();
 	}
+
+	boolean isDevelopmentEnvironment();
 }

@@ -37,4 +37,9 @@ public class ModLoaderImpl implements ModLoader {
 	public boolean isNeoForge() {
 		return false;
 	}
+
+	@Override
+	public boolean isDevelopmentEnvironment() {
+		return FabricLoader.getInstance().isDevelopmentEnvironment();
+	}
 }

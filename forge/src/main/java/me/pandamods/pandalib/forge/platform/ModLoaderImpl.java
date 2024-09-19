@@ -14,6 +14,9 @@ package me.pandamods.pandalib.forge.platform;
 
 import me.pandamods.pandalib.platform.ModLoader;
 import net.minecraftforge.fml.ModList;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.minecraftforge.fml.loading.FMLLoader;
 
 public class ModLoaderImpl implements ModLoader {
 	@Override
@@ -34,5 +37,10 @@ public class ModLoaderImpl implements ModLoader {
 	@Override
 	public boolean isNeoForge() {
 		return true;
+	}
+
+	@Override
+	public boolean isDevelopmentEnvironment() {
+		return FMLLoader.isProduction();
 	}
 }

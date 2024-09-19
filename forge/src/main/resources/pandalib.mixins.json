@@ -1,6 +1,6 @@
 {
 	"required": true,
-	"package": "${maven_group}.${mod_id}.forge.mixin",
+	"package": "me.pandamods.pandalib.forge.mixin",
 	"compatibilityLevel": "JAVA_${java_version}",
 	"minVersion": "0.8",
 	"client": [

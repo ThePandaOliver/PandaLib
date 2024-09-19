@@ -1,6 +1,6 @@
 {
 	"required": true,
-	"package": "${maven_group}.${mod_id}.mixin",
+	"package": "me.pandamods.pandalib.mixin",
 	"compatibilityLevel": "JAVA_${java_version}",
 	"minVersion": "0.8",
 	"client": [],

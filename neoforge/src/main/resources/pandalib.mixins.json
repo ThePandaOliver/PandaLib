@@ -1,6 +1,6 @@
 {
   "required": true,
-  "package": "${maven_group}.${mod_id}.neoforge.mixin",
+  "package": "me.pandamods.pandalib.neoforge.mixin",
 	"compatibilityLevel": "JAVA_${java_version}",
   "minVersion": "0.8",
   "client": [

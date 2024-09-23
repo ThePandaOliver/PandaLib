@@ -5,11 +5,7 @@
 	"minVersion": "0.8",
 	"client": [],
 	"mixins": [
-		"PlayerMixin",
-		"client.networking.ClientPacketListenerMixin",
-		"client.networking.accessor.ClientboundCustomPayloadPacketAccessor",
-		"networking.ServerGamePacketListenerImplMixin",
-		"networking.accessor.ServerboundCustomPayloadPacketAccessor"
+		"PlayerMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

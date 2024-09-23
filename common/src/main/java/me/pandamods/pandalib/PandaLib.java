@@ -12,14 +12,21 @@
 
 package me.pandamods.pandalib;
 
+import me.pandamods.pandalib.config.Config;
+import me.pandamods.pandalib.config.ConfigData;
+import me.pandamods.pandalib.config.PandaLibConfig;
+import me.pandamods.pandalib.config.holders.CommonConfigHolder;
 import me.pandamods.pandalib.core.event.EventHandler;
+import me.pandamods.pandalib.core.network.ConfigNetworking;
 import net.minecraft.resources.ResourceLocation;
 
 public class PandaLib {
     public static final String MOD_ID = "pandalib";
+	// Todo Remove before release
+	private static final CommonConfigHolder<TestConfig> TEST_CONFIG = PandaLibConfig.registerCommon(TestConfig.class);
 
     public static void init() {
-//		ConfigNetworking.registerPackets();
+		ConfigNetworking.registerPackets();
 		EventHandler.Register();
     }
 
@@ -29,5 +36,10 @@ public class PandaLib {
 		#else
 			return new ResourceLocation(MOD_ID, path);
 		#endif
+	}
+
+	// Todo Remove before release
+	@Config(modId = MOD_ID, synchronize = true, name = "test")
+	public static class TestConfig implements ConfigData {
 	}
 }

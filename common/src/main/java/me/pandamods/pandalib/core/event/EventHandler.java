@@ -12,7 +12,7 @@
 
 package me.pandamods.pandalib.core.event;
 
-//import me.pandamods.pandalib.core.network.ConfigNetworking;
+import me.pandamods.pandalib.core.network.ConfigNetworking;
 import me.pandamods.pandalib.event.events.client.PlayerEvents;
 import me.pandamods.pandalib.event.events.common.ClientPlayerEvents;
 import me.pandamods.pandalib.platform.Services;
@@ -21,18 +21,18 @@ import net.minecraft.server.level.ServerPlayer;
 
 public class EventHandler {
 	public static void Register() {
-//		PlayerEvents.PLAYER_JOIN.register(EventHandler::onServerPlayerJoin);
-//
-//		if (Services.PLATFORM.getGame().isClient()) {
-//			ClientPlayerEvents.PLAYER_JOIN.register(EventHandler::onClientPlayerJoin);
-//		}
+		PlayerEvents.PLAYER_JOIN.register(EventHandler::onServerPlayerJoin);
+
+		if (Services.PLATFORM.getGame().isClient()) {
+			ClientPlayerEvents.PLAYER_JOIN.register(EventHandler::onClientPlayerJoin);
+		}
 	}
 
-//	private static void onServerPlayerJoin(ServerPlayer serverPlayer) {
-//		ConfigNetworking.SyncCommonConfigs(serverPlayer);
-//	}
-//
-//	private static void onClientPlayerJoin(LocalPlayer localPlayer) {
-//		ConfigNetworking.SyncClientConfigs();
-//	}
+	private static void onServerPlayerJoin(ServerPlayer serverPlayer) {
+		ConfigNetworking.SyncCommonConfigs(serverPlayer);
+	}
+
+	private static void onClientPlayerJoin(LocalPlayer localPlayer) {
+		ConfigNetworking.SyncClientConfigs();
+	}
 }

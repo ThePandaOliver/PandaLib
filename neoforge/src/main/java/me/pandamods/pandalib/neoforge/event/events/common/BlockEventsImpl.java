@@ -23,7 +23,7 @@ public class BlockEventsImpl {
 	@SubscribeEvent(priority = EventPriority.HIGH)
 	public static void onBlockPlace(BlockEvent.EntityPlaceEvent event) {
 		if (event.getLevel() instanceof Level level) {
-			if (BlockEvents.PLACE.invoker().place(level, event.getPos(), event.getState(), event.getEntity()))
+			if (BlockEvents.PLACE.invoker().place(level, event.getPos(), event.getState(), event.getEntity()).isFalse())
 				event.setCanceled(true);
 		}
 	}
@@ -31,7 +31,7 @@ public class BlockEventsImpl {
 	@SubscribeEvent(priority = EventPriority.HIGH)
 	public static void onBlockDestroy(BlockEvent.BreakEvent event) {
 		if (event.getPlayer() instanceof ServerPlayer serverPlayer && event.getLevel() instanceof Level level) {
-			if (BlockEvents.DESTROY.invoker().destroy(level, event.getPos(), event.getState(), serverPlayer))
+			if (BlockEvents.DESTROY.invoker().destroy(level, event.getPos(), event.getState(), serverPlayer).isFalse())
 				event.setCanceled(true);
 		}
 	}

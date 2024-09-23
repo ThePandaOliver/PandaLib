@@ -14,6 +14,7 @@ package me.pandamods.pandalib.event.events.common;
 
 import me.pandamods.pandalib.event.Event;
 import me.pandamods.pandalib.event.EventFactory;
+import me.pandamods.pandalib.event.EventResult;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -22,14 +23,14 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
 public interface BlockEvents {
-	Event<Place> PLACE = EventFactory.createEvent();
-	Event<Destroy> DESTROY = EventFactory.createEvent();
+	Event<Place> PLACE = EventFactory.createEventResult();
+	Event<Destroy> DESTROY = EventFactory.createEventResult();
 
 	interface Place {
-		boolean place(Level level, BlockPos pos, BlockState state, @Nullable Entity placer);
+		EventResult place(Level level, BlockPos pos, BlockState state, @Nullable Entity placer);
 	}
 
 	interface Destroy {
-		boolean destroy(Level level, BlockPos pos, BlockState state, ServerPlayer destroyer);
+		EventResult destroy(Level level, BlockPos pos, BlockState state, ServerPlayer destroyer);
 	}
 }

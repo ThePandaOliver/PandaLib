@@ -13,13 +13,11 @@
 package me.pandamods.pandalib.fabric.platform;
 
 import me.pandamods.pandalib.fabric.registry.ReloadListenerRegistryImpl;
-import me.pandamods.pandalib.networking.NetworkHandler;
+import me.pandamods.pandalib.platform.NetworkHandler;
 import me.pandamods.pandalib.platform.GameUtils;
 import me.pandamods.pandalib.platform.ModLoader;
 import me.pandamods.pandalib.platform.Platform;
 import me.pandamods.pandalib.registry.ReloadListenerRegistry;
-
-import java.util.function.Supplier;
 
 public class PlatformImpl implements Platform {
 	private final ModLoader modLoader = new ModLoaderImpl();

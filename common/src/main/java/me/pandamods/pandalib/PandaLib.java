@@ -13,14 +13,13 @@
 package me.pandamods.pandalib;
 
 import me.pandamods.pandalib.core.event.EventHandler;
-import me.pandamods.pandalib.core.network.ConfigNetworking;
 import net.minecraft.resources.ResourceLocation;
 
 public class PandaLib {
     public static final String MOD_ID = "pandalib";
 
     public static void init() {
-		ConfigNetworking.registerPackets();
+//		ConfigNetworking.registerPackets();
 		EventHandler.Register();
     }
 

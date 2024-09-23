@@ -80,7 +80,7 @@ subprojects {
 				programArgs("--username=Dev")
 			}
 			named("server") {
-				client()
+				server()
 				configName = "Server"
 				ideConfigGenerated(true)
 				runDir("../.runs/server")
@@ -205,7 +205,7 @@ subprojects {
 	}
 
 	tasks.processResources {
-		val props = mapOf(
+		val props = mutableMapOf(
 			"java_version" to properties["java_version"],
 			"supported_mod_loaders" to properties["supported_mod_loaders"],
 
@@ -220,11 +220,16 @@ subprojects {
 			"project_curseforge_slug" to properties["project_curseforge_slug"],
 			"project_modrinth_slug" to properties["project_modrinth_slug"],
 			"project_github_repo" to properties["project_github_repo"],
-
-			"fabric_version_range" to properties["fabric_version_range"],
-			"forge_version_range" to properties["forge_version_range"],
-			"neoforge_version_range" to properties["neoforge_version_range"],
 		)
+
+		if (properties["fabric_version_range"] != null)
+			props["fabric_version_range"] = properties["fabric_version_range"] as String
+
+		if (properties["forge_version_range"] != null)
+			props["forge_version_range"] = properties["forge_version_range"] as String
+
+		if (properties["neoforge_version_range"] != null)
+			props["neoforge_version_range"] = properties["neoforge_version_range"] as String
 
 		inputs.properties(props)
 		filesMatching(listOf("pack.mcmeta", "fabric.mod.json", "META-INF/mods.toml", "META-INF/neoforge.mods.toml", "*.mixins.json")) {

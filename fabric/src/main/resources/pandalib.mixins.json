@@ -4,13 +4,8 @@
 	"compatibilityLevel": "JAVA_${java_version}",
 	"minVersion": "0.8",
 	"client": [
-		"client.ClientPacketListenerMixin",
-		"client.MinecraftMixin"
 	],
 	"mixins": [
-		"MixinBlockItem",
-		"PlayerListMixin",
-		"ServerPlayerGameModeMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

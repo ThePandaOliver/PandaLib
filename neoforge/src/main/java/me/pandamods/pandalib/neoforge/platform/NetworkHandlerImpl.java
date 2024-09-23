@@ -14,7 +14,7 @@ package me.pandamods.pandalib.neoforge.platform;
 
 import me.pandamods.pandalib.PandaLib;
 import me.pandamods.pandalib.neoforge.platform.hooks.EventBusesHooks;
-import me.pandamods.pandalib.networking.NetworkHandler;
+import me.pandamods.pandalib.platform.NetworkHandler;
 import me.pandamods.pandalib.networking.NetworkReceiver;
 import me.pandamods.pandalib.networking.PacketContext;
 import me.pandamods.pandalib.utils.Env;

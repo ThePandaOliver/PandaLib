@@ -13,7 +13,7 @@
 package me.pandamods.pandalib.neoforge.platform;
 
 import me.pandamods.pandalib.neoforge.registry.ReloadListenerRegistryImpl;
-import me.pandamods.pandalib.networking.NetworkHandler;
+import me.pandamods.pandalib.platform.NetworkHandler;
 import me.pandamods.pandalib.platform.GameUtils;
 import me.pandamods.pandalib.platform.ModLoader;
 import me.pandamods.pandalib.platform.Platform;

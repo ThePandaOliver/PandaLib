@@ -38,4 +38,9 @@ public class ModLoaderImpl implements ModLoader {
 	public boolean isNeoForge() {
 		return true;
 	}
+
+	@Override
+	public boolean isDevelopmentEnvironment() {
+		return !FMLLoader.isProduction();
+	}
 }

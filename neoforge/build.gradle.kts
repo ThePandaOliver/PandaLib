@@ -18,10 +18,6 @@ dependencies {
 	"shadowBundle"(project(":common", "transformProductionNeoForge"))
 }
 
-tasks.shadowJar {
-	exclude("fabric.mod.json")
-}
-
 tasks.remapJar {
 	injectAccessWidener = true
 	atAccessWideners.add(loom.accessWidenerPath.get().asFile.name)

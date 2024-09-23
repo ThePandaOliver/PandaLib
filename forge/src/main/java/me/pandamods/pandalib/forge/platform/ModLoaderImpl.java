@@ -41,6 +41,6 @@ public class ModLoaderImpl implements ModLoader {
 
 	@Override
 	public boolean isDevelopmentEnvironment() {
-		return FMLLoader.isProduction();
+		return !FMLLoader.isProduction();
 	}
 }

@@ -3,15 +3,8 @@
 	"package": "me.pandamods.pandalib.mixin",
 	"compatibilityLevel": "JAVA_${java_version}",
 	"minVersion": "0.8",
-	"client": [
-		"networking.client.ClientCommonPacketListenerMixin",
-		"networking.client.ClientPacketListenerMixin"
-	],
-	"mixins": [
-		"PlayerMixin",
-		"networking.ServerCommonPacketListenerImplMixin",
-		"networking.ServerGamePacketListenerImplMixin"
-	],
+	"client": [],
+	"mixins": [],
 	"injectors": {
 		"defaultRequire": 1
 	}

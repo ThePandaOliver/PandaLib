@@ -23,8 +23,6 @@ import me.pandamods.pandalib.core.network.packets.ServerConfigPacketData;
 import net.minecraft.network.FriendlyByteBuf;
 import io.netty.buffer.Unpooled;
 #endif
-import me.pandamods.pandalib.networking.NetworkManager;
-import me.pandamods.pandalib.networking.PacketContext;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 

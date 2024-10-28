@@ -20,7 +20,5 @@ public class PandaLibClientFabric implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		PandaLibClient.init();
-
-		EventHandlerClientImpl.register();
 	}
 }

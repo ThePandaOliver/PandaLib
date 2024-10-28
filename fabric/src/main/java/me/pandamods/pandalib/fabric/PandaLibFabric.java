@@ -20,7 +20,5 @@ public class PandaLibFabric implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		PandaLib.init();
-
-		EventHandlerImpl.register();
 	}
 }

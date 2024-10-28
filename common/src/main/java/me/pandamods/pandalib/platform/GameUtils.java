@@ -12,8 +12,6 @@
 
 package me.pandamods.pandalib.platform;
 
-import me.pandamods.pandalib.utils.Env;
-
 import java.nio.file.Path;
 
 public interface GameUtils {

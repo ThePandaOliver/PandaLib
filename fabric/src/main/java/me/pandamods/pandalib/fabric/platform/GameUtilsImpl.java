@@ -13,7 +13,6 @@
 package me.pandamods.pandalib.fabric.platform;
 
 import me.pandamods.pandalib.platform.GameUtils;
-import me.pandamods.pandalib.utils.Env;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
 

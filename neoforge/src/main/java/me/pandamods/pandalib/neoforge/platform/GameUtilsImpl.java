@@ -13,7 +13,6 @@
 package me.pandamods.pandalib.neoforge.platform;
 
 import me.pandamods.pandalib.platform.GameUtils;
-import me.pandamods.pandalib.utils.Env;
 import net.neoforged.fml.loading.FMLLoader;
 
 import java.nio.file.Path;

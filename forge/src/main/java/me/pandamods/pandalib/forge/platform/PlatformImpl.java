@@ -22,7 +22,6 @@ import me.pandamods.pandalib.registry.ReloadListenerRegistry;
 public class PlatformImpl implements Platform {
 	private final ModLoader modLoader = new ModLoaderImpl();
 	private final GameUtils gameUtils = new GameUtilsImpl();
-	private final NetworkHandler networkHandler = new NetworkHandlerImpl();
 	private final ReloadListenerRegistry reloadListenerRegistry = new ReloadListenerRegistryImpl();
 
 	@Override
@@ -33,11 +32,6 @@ public class PlatformImpl implements Platform {
 	@Override
 	public GameUtils getGame() {
 		return this.gameUtils;
-	}
-
-	@Override
-	public NetworkHandler getNetwork() {
-		return this.networkHandler;
 	}
 
 	@Override

@@ -17,6 +17,5 @@ import me.pandamods.pandalib.registry.ReloadListenerRegistry;
 public interface Platform {
 	ModLoader getModLoader();
 	GameUtils getGame();
-	NetworkHandler getNetwork();
 	ReloadListenerRegistry getReloadListenerRegistry();
 }

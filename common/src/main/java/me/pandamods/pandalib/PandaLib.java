@@ -15,6 +15,7 @@ package me.pandamods.pandalib;
 import me.pandamods.pandalib.config.Config;
 import me.pandamods.pandalib.config.ConfigData;
 import me.pandamods.pandalib.config.PandaLibConfig;
+import me.pandamods.pandalib.config.holders.ClientConfigHolder;
 import me.pandamods.pandalib.config.holders.CommonConfigHolder;
 import me.pandamods.pandalib.core.event.EventHandler;
 import me.pandamods.pandalib.core.network.ConfigNetworking;
@@ -24,6 +25,7 @@ public class PandaLib {
     public static final String MOD_ID = "pandalib";
 	// Todo Remove before release
 	private static final CommonConfigHolder<TestConfig> TEST_CONFIG = PandaLibConfig.registerCommon(TestConfig.class);
+//	private static final ClientConfigHolder<TestConfig> TEST_CONFIG = PandaLibConfig.registerClient(TestConfig.class);
 
     public static void init() {
 		ConfigNetworking.registerPackets();
@@ -41,5 +43,9 @@ public class PandaLib {
 	// Todo Remove before release
 	@Config(modId = MOD_ID, synchronize = true, name = "test")
 	public static class TestConfig implements ConfigData {
+		public String aString = "Hello World!";
+		public float aFloat = 1.0f;
+		public int anInt = 1;
+		public boolean aBoolean = true;
 	}
 }

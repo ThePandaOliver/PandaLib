@@ -27,7 +27,7 @@ public class PandaLib {
 
     public static void init() {
 		ConfigNetworking.registerPackets();
-		EventHandler.Register();
+		EventHandler.init();
     }
 
 	public static ResourceLocation resourceLocation(String path) {

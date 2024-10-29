@@ -13,7 +13,6 @@
 package me.pandamods.pandalib.fabric;
 
 import me.pandamods.pandalib.PandaLib;
-import me.pandamods.pandalib.fabric.event.EventHandlerImpl;
 import net.fabricmc.api.ModInitializer;
 
 public class PandaLibFabric implements ModInitializer {

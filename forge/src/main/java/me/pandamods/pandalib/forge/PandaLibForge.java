@@ -12,10 +12,9 @@
 
 package me.pandamods.pandalib.forge;
 
+import dev.architectury.platform.forge.EventBuses;
 import me.pandamods.pandalib.PandaLib;
 import me.pandamods.pandalib.forge.client.PandaLibClientForge;
-import me.pandamods.pandalib.forge.event.EventHandlerImpl;
-import me.pandamods.pandalib.forge.platform.EventBuses;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
@@ -26,8 +25,6 @@ public class PandaLibForge {
     public PandaLibForge() {
 		EventBuses.registerModEventBus(PandaLib.MOD_ID, FMLJavaModLoadingContext.get().getModEventBus());
 		PandaLib.init();
-
-		EventHandlerImpl.register();
 
 		DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> PandaLibClientForge::new);
     }

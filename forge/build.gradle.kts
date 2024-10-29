@@ -24,8 +24,10 @@ configurations {
 dependencies {
 	forge("net.minecraftforge:forge:${properties["forge_version"]}")
 
-	"common"(project(":common", "namedElements")) { isTransitive = false }
-	"shadowBundle"(project(":common", "transformProductionForge"))
+	modApi("dev.architectury:architectury-forge:${properties["deps_architectury_version"]}")
+
+	common(project(":common", "namedElements")) { isTransitive = false }
+	shadowBundle(project(":common", "transformProductionForge"))
 }
 
 tasks.remapJar {

@@ -12,10 +12,10 @@
 
 package me.pandamods.pandalib.neoforge;
 
+import dev.architectury.platform.Platform;
+import dev.architectury.utils.Env;
 import me.pandamods.pandalib.PandaLib;
 import me.pandamods.pandalib.neoforge.client.PandaLibClientNeoForge;
-import me.pandamods.pandalib.neoforge.event.EventHandlerImpl;
-import me.pandamods.pandalib.platform.Services;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -26,14 +26,12 @@ public class PandaLibNeoForge {
 		eventBus.addListener(PandaLibNeoForge::commonSetup);
 
 		#if MC_VER < MC_1_21
-		if (Services.PLATFORM.getGame().isClient())
+		if (Platform.getEnvironment().equals(Env.CLIENT))
 			new PandaLibClientNeoForge(eventBus);
 		#endif
     }
 
 	public static void commonSetup(FMLCommonSetupEvent event) {
 		PandaLib.init();
-
-		EventHandlerImpl.register();
 	}
 }

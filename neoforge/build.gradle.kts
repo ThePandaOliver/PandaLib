@@ -14,8 +14,10 @@ configurations {
 dependencies {
 	neoForge("net.neoforged:neoforge:${properties["neoforge_version"]}")
 
-	"common"(project(":common", "namedElements")) { isTransitive = false }
-	"shadowBundle"(project(":common", "transformProductionNeoForge"))
+	modApi("dev.architectury:architectury-neoforge:${properties["deps_architectury_version"]}")
+
+	common(project(":common", "namedElements")) { isTransitive = false }
+	shadowBundle(project(":common", "transformProductionNeoForge"))
 }
 
 tasks.remapJar {

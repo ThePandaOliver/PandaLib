@@ -119,7 +119,8 @@ subprojects {
 		mavenCentral()
 		mavenLocal()
 
-		maven("https://maven.parchmentmc.org")
+		maven("https://maven.architectury.dev/")
+		maven("https://maven.parchmentmc.org/")
 		maven("https://maven.fabricmc.net/")
 		maven("https://maven.minecraftforge.net/")
 		maven("https://maven.neoforged.net/releases/")
@@ -257,9 +258,9 @@ subprojects {
 	// Maven Publishing
 	publishing {
 		publications {
-			create<MavenPublication>("mod") {
+			register("mavenJava", MavenPublication::class) {
 				groupId = properties["maven_group"] as String
-				artifactId = "${{properties["mod_id"]}}-${project.name}"
+				artifactId = "${properties["mod_id"]}-${project.name}"
 				version = project.version as String
 
 				from(components["java"])
@@ -272,12 +273,12 @@ subprojects {
 }
 
 tasks.register("publishLocallyAll") {
-	val availableVersions = properties["availableVersions"] as List<String>
+	val availableVersions = properties["available_versions"] as List<String>
 
 	availableVersions.forEach { version ->
 		doLast {
 			exec {
-				commandLine = listOf("gradlew.bat", "-PminecraftVersion=$version", "publishToMavenLocal")
+				commandLine = listOf("gradlew.bat", "-Pminecraft_version=$version", "publishToMavenLocal")
 			}
 		}
 	}
@@ -344,6 +345,7 @@ publishMods {
 
 			if (loaderName == "fabric")
 				requires("fabric-api")
+			requires("architectury-api")
 		}
 
 		modrinth("modrinth_" + loaderName) {
@@ -365,6 +367,7 @@ publishMods {
 
 			if (loaderName == "fabric")
 				requires("fabric-api")
+			requires("architectury-api")
 		}
 	}
 

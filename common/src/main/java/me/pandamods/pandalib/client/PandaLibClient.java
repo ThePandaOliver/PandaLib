@@ -12,8 +12,9 @@
 
 package me.pandamods.pandalib.client;
 
+import dev.architectury.registry.ReloadListenerRegistry;
 import me.pandamods.pandalib.PandaLib;
-import me.pandamods.pandalib.registry.ReloadListenerRegistry;
+import me.pandamods.pandalib.core.client.event.EventHandlerClient;
 import me.pandamods.pandalib.resource.AssimpResources;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -24,5 +25,6 @@ import net.minecraft.server.packs.PackType;
 public class PandaLibClient {
     public static void init() {
 		ReloadListenerRegistry.register(PackType.CLIENT_RESOURCES, new AssimpResources(), PandaLib.resourceLocation("assimp_loader"));
+		EventHandlerClient.init();
     }
 }

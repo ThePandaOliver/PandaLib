@@ -14,12 +14,10 @@ package me.pandamods.pandalib.neoforge.client;
 
 import me.pandamods.pandalib.PandaLib;
 import me.pandamods.pandalib.client.PandaLibClient;
-import me.pandamods.pandalib.neoforge.event.EventHandlerClientImpl;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
-import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 
 #if MC_VER >= MC_1_21
 @Mod(value = PandaLib.MOD_ID, dist = Dist.CLIENT)
@@ -31,7 +29,5 @@ public class PandaLibClientNeoForge {
 
 	public static void clientSetup(FMLClientSetupEvent event) {
 		PandaLibClient.init();
-
-		EventHandlerClientImpl.register();
 	}
 }

@@ -9,7 +9,7 @@
 	],
 	"contact": {
 		"issues": "https://github.com/${project_github_repo}/issues",
-		"sources": "https://github.com/${project_github_repo}/PandaLib"
+		"sources": "https://github.com/${project_github_repo}"
 	},
   "license": "${mod_license}",
 	"icon": "assets/${mod_id}/icon.png",
@@ -29,7 +29,8 @@
   "depends": {
     "fabric": "*",
     "fabric-api": "*",
-    "minecraft": "${fabric_version_range}"
+    "minecraft": "${fabric_version_range}",
+		"architectury": "*"
   },
 	"custom": {
 		"modmenu": {

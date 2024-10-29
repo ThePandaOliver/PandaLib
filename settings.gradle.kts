@@ -21,6 +21,8 @@ pluginManagement.repositories {
 	gradlePluginPortal()
 }
 
+val minecraft_version: String by settings
+
 fun loadProperties() {
 	val defaultVersion = "1.21"
 
@@ -32,10 +34,10 @@ fun loadProperties() {
 	availableVersions.sort()
 	println("Available Minecraft versions: ${availableVersions}")
 
-	var selectedVersion = settings.extra["minecraft_version"].toString()
-	var versionIndex = availableVersions.indexOf(settings.extra["minecraft_version"].toString())
+	var selectedVersion = minecraft_version
+	var versionIndex = availableVersions.indexOf(minecraft_version)
 	if (versionIndex == -1) {
-		println("No 'minecraft_version' set or the set 'minecraft_version' is invalid! Defaulting to ${defaultVersion}.")
+		println("No 'minecraft_version' set or the set 'minecraft_Version' is invalid! Defaulting to ${defaultVersion}.")
 		selectedVersion = defaultVersion
 		versionIndex = availableVersions.indexOf(defaultVersion)
 	}

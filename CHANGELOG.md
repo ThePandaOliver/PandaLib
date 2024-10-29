@@ -1,11 +1,7 @@
-## Changelog 0.5 Beta
-### Dependency changes
-* Architectury API is no longer necessary as a dependency
+# Changelog 0.5 Beta
 
-### Technical changes
-* Restructured some classes
-* Added an Event system
-  * Added Player Join and Quit events
-  * Added Block Place and Destroy events
-* Added Reload Listener registration
-* Added more platforms to replace Architectury
+## Technical changes
+* Restructured the whole project
+
+## License Update
+* Reverted license to GNU LGPLv3 (previously GNU GPLv3)

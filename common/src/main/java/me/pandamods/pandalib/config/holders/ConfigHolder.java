@@ -15,9 +15,9 @@ package me.pandamods.pandalib.config.holders;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
+import dev.architectury.platform.Platform;
 import me.pandamods.pandalib.config.Config;
 import me.pandamods.pandalib.config.ConfigData;
-import me.pandamods.pandalib.platform.Services;
 import me.pandamods.pandalib.utils.ClassUtils;
 import net.minecraft.resources.ResourceLocation;
 import org.slf4j.Logger;
@@ -72,7 +72,7 @@ public class ConfigHolder<T extends ConfigData> {
 	}
 
 	public Path getConfigPath() {
-		Path path = Services.PLATFORM.getGame().getConfigPath();
+		Path path = Platform.getConfigFolder();
 		if (!definition.directory().isBlank()) path = path.resolve(definition.directory());
 		return path.resolve(definition.name() + ".json");
 	}

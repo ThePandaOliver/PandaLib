@@ -9,6 +9,7 @@
 ## License Update
 * Reverted license to GNU LGPLv3 (previously GNU GPLv3)
 
-# Developer Info
+## Developer Info
 * Replaced the old config codecs with a new `ConfigCodec` class
 * Added a new util class `NBTUtils` which contains conversion functions for converting between nbt tags and gson json elements
+* Renamed the `MathUtils` methods `rotateByPivot` to `rotateAroundOrigin` 

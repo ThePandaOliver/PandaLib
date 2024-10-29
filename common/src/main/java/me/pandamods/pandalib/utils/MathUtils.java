@@ -63,16 +63,16 @@ public class MathUtils {
 		return stack;
 	}
 
-	public static Vector3f rotateByPivot(Vector3f target, Vector3f pivot, Vector3f rotation) {
-		target.add(pivot);
+	public static Vector3f rotateAroundOrigin(Vector3f target, Vector3f origin, Vector3f rotation) {
+		target.add(origin);
 		rotateVector(target, rotation);
-		return target.sub(pivot);
+		return target.sub(origin);
 	}
 
-	public static PoseStack rotateByPivot(PoseStack stack, Vector3f pivot, Vector3f rotation) {
-		stack.translate(pivot.x, pivot.y, pivot.z);
+	public static PoseStack rotateAroundOrigin(PoseStack stack, Vector3f origin, Vector3f rotation) {
+		stack.translate(origin.x, origin.y, origin.z);
 		rotateVector(stack, rotation);
-		stack.translate(-pivot.x, -pivot.y, -pivot.z);
+		stack.translate(-origin.x, -origin.y, -origin.z);
 		return stack;
 	}
 }

@@ -23,8 +23,8 @@ import net.minecraft.resources.ResourceLocation;
 
 public class PandaLib {
     public static final String MOD_ID = "pandalib";
-	// Todo Remove before release
-	private static final CommonConfigHolder<TestConfig> TEST_CONFIG = PandaLibConfig.registerCommon(TestConfig.class);
+
+//	private static final CommonConfigHolder<TestConfig> TEST_CONFIG = PandaLibConfig.registerCommon(TestConfig.class);
 //	private static final ClientConfigHolder<TestConfig> TEST_CONFIG = PandaLibConfig.registerClient(TestConfig.class);
 
     public static void init() {
@@ -40,12 +40,11 @@ public class PandaLib {
 		#endif
 	}
 
-	// Todo Remove before release
-	@Config(modId = MOD_ID, synchronize = true, name = "test")
-	public static class TestConfig implements ConfigData {
-		public String aString = "Hello World!";
-		public float aFloat = 1.0f;
-		public int anInt = 1;
-		public boolean aBoolean = true;
-	}
+//	@Config(modId = MOD_ID, synchronize = true, name = "test")
+//	public static class TestConfig implements ConfigData {
+//		public String aString = "Hello World!";
+//		public float aFloat = 1.0f;
+//		public int anInt = 1;
+//		public boolean aBoolean = true;
+//	}
 }

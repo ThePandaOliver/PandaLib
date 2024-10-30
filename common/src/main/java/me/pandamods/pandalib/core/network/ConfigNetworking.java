@@ -20,8 +20,11 @@ import me.pandamods.pandalib.config.holders.CommonConfigHolder;
 #if MC_VER >= MC_1_20_5
 import me.pandamods.pandalib.core.network.packets.ConfigPacketData;
 #else
+import me.pandamods.pandalib.utils.NBTUtils;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import io.netty.buffer.Unpooled;
+import me.pandamods.pandalib.PandaLib;
 #endif
 import me.pandamods.pandalib.utils.NetworkHelper;
 import net.minecraft.resources.ResourceLocation;
@@ -57,7 +60,7 @@ public class ConfigNetworking {
 		#else
 			FriendlyByteBuf byteBuf = new FriendlyByteBuf(Unpooled.buffer());
 			byteBuf.writeResourceLocation(holder.resourceLocation());
-			byteBuf.writeUtf(holder.getGson().toJson(holder.get()));
+			byteBuf.writeNbt((CompoundTag) NBTUtils.convertJsonToTag(holder.getGson().toJsonTree(holder.get())));
 			NetworkManager.sendToPlayer(serverPlayer, CONFIG_PACKET, byteBuf);
 		#endif
 	}
@@ -75,7 +78,7 @@ public class ConfigNetworking {
 		#else
 			FriendlyByteBuf byteBuf = new FriendlyByteBuf(Unpooled.buffer());
 			byteBuf.writeResourceLocation(holder.resourceLocation());
-			byteBuf.writeUtf(holder.getGson().toJson(holder.get()));
+			byteBuf.writeNbt((CompoundTag) NBTUtils.convertJsonToTag(holder.getGson().toJsonTree(holder.get())));
 			NetworkManager.sendToServer(CONFIG_PACKET, byteBuf);
 		#endif
 	}
@@ -109,7 +112,8 @@ public class ConfigNetworking {
 				if (configHolder instanceof ClientConfigHolder<? extends ConfigData> clientConfigHolder) {
 					configHolder.logger.info("Received client config '{}' from {}",
 							configHolder.resourceLocation().toString(), context.getPlayer().getDisplayName().getString());
-					clientConfigHolder.putConfig(context.getPlayer(), configHolder.getGson().fromJson(buf.readUtf(), configHolder.getConfigClass()));
+					clientConfigHolder.putConfig(context.getPlayer(),
+							configHolder.getGson().fromJson(NBTUtils.convertTagToJson(buf.readNbt()), configHolder.getConfigClass()));
 				}
 			});
 		}
@@ -119,7 +123,8 @@ public class ConfigNetworking {
 			PandaLibConfig.getConfig(resourceLocation).ifPresent(configHolder -> {
 				if (configHolder instanceof CommonConfigHolder<? extends ConfigData> commonConfigHolder) {
 					configHolder.logger.info("Received common config '{}' from server", configHolder.resourceLocation().toString());
-					commonConfigHolder.setCommonConfig(configHolder.getGson().fromJson(buf.readUtf(), configHolder.getConfigClass()));
+					commonConfigHolder.setCommonConfig(
+							  configHolder.getGson().fromJson(NBTUtils.convertTagToJson(buf.readNbt()), configHolder.getConfigClass()));
 				}
 			});
 		}

@@ -265,6 +265,14 @@ subprojects {
 
 				from(components["java"])
 			}
+
+			register("mavenJavaDev", MavenPublication::class) {
+				groupId = properties["maven_group"] as String
+				artifactId = "${properties["mod_id"]}-${project.name}"
+				version = "${project.version}+dev.${properties["dev_version"]}"
+
+				from(components["java"])
+			}
 		}
 
 		repositories {

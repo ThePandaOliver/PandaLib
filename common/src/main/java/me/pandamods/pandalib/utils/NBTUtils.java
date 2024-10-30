@@ -36,7 +36,7 @@ public class NBTUtils {
 		} else if (jsonElement.isJsonObject()) {
 			CompoundTag compound = new CompoundTag();
 			JsonObject object = jsonElement.getAsJsonObject();
-			object.asMap().forEach((key, value) -> compound.put(key, convertJsonToTag(value)));
+			object.entrySet().forEach(entry -> compound.put(entry.getKey(), convertJsonToTag(entry.getValue())));
 			return compound;
 		}
 		return null;
@@ -48,16 +48,18 @@ public class NBTUtils {
 		else if (tag instanceof DoubleTag) {
 			return new JsonPrimitive(((DoubleTag) tag).getAsDouble());
 		} else if (tag instanceof ByteTag byteTag) {
-			if (byteTag == ByteTag.ONE)
-				return new JsonPrimitive(true);
-			return new JsonPrimitive(false);
+			return new JsonPrimitive(byteTag == ByteTag.ONE);
 		} else if (tag instanceof CompoundTag compoundTag) {
 			JsonObject object = new JsonObject();
 			compoundTag.getAllKeys().forEach(key ->
-					object.add(key, convertTagToJson(compoundTag.get(key))));
+					object.add(key, convertTagToJson(compoundTag.get(key)))
+			);
+			return object;
 		} else if (tag instanceof ListTag listTag) {
 			JsonArray array = new JsonArray();
-			listTag.forEach(element -> array.add(convertTagToJson(element)));
+			listTag.forEach(element ->
+					array.add(convertTagToJson(element))
+			);
 			return array;
 		}
 		return null;

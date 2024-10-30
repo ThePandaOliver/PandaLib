@@ -9,7 +9,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-
+#if MC_VER >= MC_1_20_5
 package me.pandamods.pandalib.core.network;
 
 import me.pandamods.pandalib.core.network.packets.ConfigPacketData;
@@ -31,3 +31,4 @@ public class ConfigCodec implements StreamCodec<FriendlyByteBuf, ConfigPacketDat
 		byteBuf.writeNbt(NBTUtils.convertJsonToTag(packetData.data()));
 	}
 }
+#endif

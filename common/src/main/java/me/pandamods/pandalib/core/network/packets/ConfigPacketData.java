@@ -9,7 +9,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-#if MC_VER >= MC_1_20_5
 package me.pandamods.pandalib.core.network.packets;
 
 import com.google.gson.JsonElement;
@@ -26,4 +25,3 @@ public record ConfigPacketData(ResourceLocation resourceLocation, JsonElement da
 		return TYPE;
 	}
 }
-#endif

@@ -37,7 +37,6 @@ public interface AnimationController<T extends Animatable> {
 	}
 
 	default void processBoneTransform(Node node, AnimatableInstance instance) {
-//		node.setLocalTransform(instance.getState().getBoneTransform(node));
 		node.getRelativeTransform().set(instance.getState().getBoneTransform(node));
 	}
 }

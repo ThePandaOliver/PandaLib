@@ -1,10 +1,6 @@
 package me.pandamods.pandalib.core.client.event;
 
 import dev.architectury.event.events.client.ClientPlayerEvent;
-import dev.architectury.event.events.common.PlayerEvent;
-import dev.architectury.platform.Platform;
-import dev.architectury.utils.Env;
-import me.pandamods.pandalib.core.event.EventHandler;
 import me.pandamods.pandalib.core.network.ConfigNetworking;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;

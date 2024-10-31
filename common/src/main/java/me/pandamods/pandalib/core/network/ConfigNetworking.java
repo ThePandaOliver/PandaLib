@@ -17,34 +17,16 @@ import me.pandamods.pandalib.config.ConfigData;
 import me.pandamods.pandalib.config.PandaLibConfig;
 import me.pandamods.pandalib.config.holders.ClientConfigHolder;
 import me.pandamods.pandalib.config.holders.CommonConfigHolder;
-#if MC_VER >= MC_1_20_5
 import me.pandamods.pandalib.core.network.packets.ConfigPacketData;
-#else
-import me.pandamods.pandalib.utils.NBTUtils;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
-import io.netty.buffer.Unpooled;
-import me.pandamods.pandalib.PandaLib;
-#endif
 import me.pandamods.pandalib.utils.NetworkHelper;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
 public class ConfigNetworking {
-	#if MC_VER <= MC_1_20
-	public static final ResourceLocation CONFIG_PACKET = PandaLib.resourceLocation("config_sync");
-	#endif
-
 	public static void registerPackets() {
-		#if MC_VER >= MC_1_20_5
-			NetworkHelper.registerS2C(ConfigPacketData.TYPE, ConfigCodec.INSTANCE, ConfigNetworking::CommonConfigReceiver);
+		NetworkHelper.registerS2C(ConfigPacketData.TYPE, ConfigCodec.INSTANCE, ConfigNetworking::CommonConfigReceiver);
 
-			NetworkHelper.registerC2S(ConfigPacketData.TYPE, ConfigCodec.INSTANCE, ConfigNetworking::ClientConfigReceiver);
-		#else
-			NetworkHelper.registerS2C(CONFIG_PACKET, ConfigNetworking::CommonConfigReceiver);
-
-			NetworkHelper.registerC2S(CONFIG_PACKET, ConfigNetworking::ClientConfigReceiver);
-		#endif
+		NetworkHelper.registerC2S(ConfigPacketData.TYPE, ConfigCodec.INSTANCE, ConfigNetworking::ClientConfigReceiver);
 	}
 
 	public static void SyncCommonConfigs(ServerPlayer serverPlayer) {
@@ -55,14 +37,7 @@ public class ConfigNetworking {
 
 	public static void SyncCommonConfig(ServerPlayer serverPlayer, CommonConfigHolder<?> holder) {
 		holder.logger.info("Sending common config '{}' to {}", holder.resourceLocation().toString(), serverPlayer.getDisplayName().getString());
-		#if MC_VER >= MC_1_20_5
-			NetworkManager.sendToPlayer(serverPlayer, new ConfigPacketData(holder.resourceLocation(), holder.getGson().toJsonTree(holder.get())));
-		#else
-			FriendlyByteBuf byteBuf = new FriendlyByteBuf(Unpooled.buffer());
-			byteBuf.writeResourceLocation(holder.resourceLocation());
-			byteBuf.writeNbt((CompoundTag) NBTUtils.convertJsonToTag(holder.getGson().toJsonTree(holder.get())));
-			NetworkManager.sendToPlayer(serverPlayer, CONFIG_PACKET, byteBuf);
-		#endif
+		NetworkManager.sendToPlayer(serverPlayer, new ConfigPacketData(holder.resourceLocation(), holder.getGson().toJsonTree(holder.get())));
 	}
 
 	public static void SyncClientConfigs() {
@@ -73,60 +48,28 @@ public class ConfigNetworking {
 
 	public static void SyncClientConfig(ClientConfigHolder<?> holder) {
 		holder.logger.info("Sending client config '{}' to server", holder.resourceLocation().toString());
-		#if MC_VER >= MC_1_20_5
-			NetworkManager.sendToServer(new ConfigPacketData(holder.resourceLocation(), holder.getGson().toJsonTree(holder.get())));
-		#else
-			FriendlyByteBuf byteBuf = new FriendlyByteBuf(Unpooled.buffer());
-			byteBuf.writeResourceLocation(holder.resourceLocation());
-			byteBuf.writeNbt((CompoundTag) NBTUtils.convertJsonToTag(holder.getGson().toJsonTree(holder.get())));
-			NetworkManager.sendToServer(CONFIG_PACKET, byteBuf);
-		#endif
+		NetworkManager.sendToServer(new ConfigPacketData(holder.resourceLocation(), holder.getGson().toJsonTree(holder.get())));
 	}
 
-	#if MC_VER >= MC_1_20_5
-		private static void ClientConfigReceiver(ConfigPacketData packetData, NetworkManager.PacketContext packetContext) {
-			ResourceLocation resourceLocation = packetData.resourceLocation();
-			PandaLibConfig.getConfig(resourceLocation).ifPresent(configHolder -> {
-				if (configHolder instanceof ClientConfigHolder<? extends ConfigData> clientConfigHolder) {
-					configHolder.logger.info("Received client config '{}' from {}",
-							configHolder.resourceLocation().toString(), packetContext.getPlayer().getDisplayName().getString());
-					clientConfigHolder.putConfig(packetContext.getPlayer(), configHolder.getGson()
-							.fromJson(packetData.data(), configHolder.getConfigClass()));
-				}
-			});
-		}
+	private static void ClientConfigReceiver(ConfigPacketData packetData, NetworkManager.PacketContext packetContext) {
+		ResourceLocation resourceLocation = packetData.resourceLocation();
+		PandaLibConfig.getConfig(resourceLocation).ifPresent(configHolder -> {
+			if (configHolder instanceof ClientConfigHolder<? extends ConfigData> clientConfigHolder) {
+				configHolder.logger.info("Received client config '{}' from {}",
+						configHolder.resourceLocation().toString(), packetContext.getPlayer().getDisplayName().getString());
+				clientConfigHolder.putConfig(packetContext.getPlayer(), configHolder.getGson()
+						.fromJson(packetData.data(), configHolder.getConfigClass()));
+			}
+		});
+	}
 
-		private static void CommonConfigReceiver(ConfigPacketData packetData, NetworkManager.PacketContext packetContext) {
-			ResourceLocation resourceLocation = packetData.resourceLocation() ;
-			PandaLibConfig.getConfig(resourceLocation).ifPresent(configHolder -> {
-				if (configHolder instanceof CommonConfigHolder<? extends ConfigData> commonConfigHolder) {
-					configHolder.logger.info("Received common config '{}' from server", configHolder.resourceLocation().toString());
-					commonConfigHolder.setCommonConfig(configHolder.getGson().fromJson(packetData.data(), configHolder.getConfigClass()));
-				}
-			});
-		}
-	#else
-		private static void ClientConfigReceiver(FriendlyByteBuf buf, NetworkManager.PacketContext context) {
-			ResourceLocation resourceLocation = buf.readResourceLocation();
-			PandaLibConfig.getConfig(resourceLocation).ifPresent(configHolder -> {
-				if (configHolder instanceof ClientConfigHolder<? extends ConfigData> clientConfigHolder) {
-					configHolder.logger.info("Received client config '{}' from {}",
-							configHolder.resourceLocation().toString(), context.getPlayer().getDisplayName().getString());
-					clientConfigHolder.putConfig(context.getPlayer(),
-							configHolder.getGson().fromJson(NBTUtils.convertTagToJson(buf.readNbt()), configHolder.getConfigClass()));
-				}
-			});
-		}
-
-		private static void CommonConfigReceiver(FriendlyByteBuf buf, NetworkManager.PacketContext context) {
-			ResourceLocation resourceLocation = buf.readResourceLocation();
-			PandaLibConfig.getConfig(resourceLocation).ifPresent(configHolder -> {
-				if (configHolder instanceof CommonConfigHolder<? extends ConfigData> commonConfigHolder) {
-					configHolder.logger.info("Received common config '{}' from server", configHolder.resourceLocation().toString());
-					commonConfigHolder.setCommonConfig(
-							  configHolder.getGson().fromJson(NBTUtils.convertTagToJson(buf.readNbt()), configHolder.getConfigClass()));
-				}
-			});
-		}
-	#endif
+	private static void CommonConfigReceiver(ConfigPacketData packetData, NetworkManager.PacketContext packetContext) {
+		ResourceLocation resourceLocation = packetData.resourceLocation() ;
+		PandaLibConfig.getConfig(resourceLocation).ifPresent(configHolder -> {
+			if (configHolder instanceof CommonConfigHolder<? extends ConfigData> commonConfigHolder) {
+				configHolder.logger.info("Received common config '{}' from server", configHolder.resourceLocation().toString());
+				commonConfigHolder.setCommonConfig(configHolder.getGson().fromJson(packetData.data(), configHolder.getConfigClass()));
+			}
+		});
+	}
 }

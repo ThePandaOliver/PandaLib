@@ -19,21 +19,33 @@ import me.pandamods.pandalib.config.holders.ClientConfigHolder;
 import me.pandamods.pandalib.config.holders.CommonConfigHolder;
 import me.pandamods.pandalib.core.event.EventHandler;
 import me.pandamods.pandalib.core.network.ConfigNetworking;
+import me.pandamods.pandalib.networking.NetworkingPlatform;
+import me.pandamods.pandalib.networking.PandaLibNetworking;
 import net.minecraft.resources.ResourceLocation;
 
 public class PandaLib {
     public static final String MOD_ID = "pandalib";
+	private static PandaLib instance;
+
+	public final NetworkingPlatform networkingPlatform;
 
 //	private static final CommonConfigHolder<TestConfig> TEST_CONFIG = PandaLibConfig.registerCommon(TestConfig.class);
 //	private static final ClientConfigHolder<TestConfig> TEST_CONFIG = PandaLibConfig.registerClient(TestConfig.class);
 
-    public static void init() {
+    public PandaLib(NetworkingPlatform networkingPlatform) {
+		this.networkingPlatform = networkingPlatform;
+
 		ConfigNetworking.registerPackets();
 		EventHandler.init();
+		instance = this;
     }
 
 	public static ResourceLocation resourceLocation(String path) {
 		return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
+	}
+
+	public static PandaLib getInstance() {
+		return instance;
 	}
 
 //	@Config(modId = MOD_ID, synchronize = true, name = "test")

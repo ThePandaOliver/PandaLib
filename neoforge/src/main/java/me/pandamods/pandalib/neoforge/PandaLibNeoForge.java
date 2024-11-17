@@ -24,6 +24,6 @@ public class PandaLibNeoForge {
     }
 
 	public static void commonSetup(FMLCommonSetupEvent event) {
-		PandaLib.init();
+		new PandaLib();
 	}
 }

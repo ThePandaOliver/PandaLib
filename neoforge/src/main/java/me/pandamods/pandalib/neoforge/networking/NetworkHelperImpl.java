@@ -31,9 +31,9 @@ import java.util.List;
 import java.util.Map;
 
 public class NetworkHelperImpl implements INetworkHelper {
-	private final Map<CustomPacketPayload.Type<? super CustomPacketPayload>, NetworkRegistryEntry<? super CustomPacketPayload>> clientReceivers = new HashMap<>();
-	private final Map<CustomPacketPayload.Type<? super CustomPacketPayload>, NetworkRegistryEntry<? super CustomPacketPayload>> serverReceivers = new HashMap<>();
-	private final Map<CustomPacketPayload.Type<? super CustomPacketPayload>, NetworkRegistryEntry<? super CustomPacketPayload>> biReceivers = new HashMap<>();
+	private final Map<CustomPacketPayload.Type<? extends CustomPacketPayload>, NetworkRegistryEntry<? extends CustomPacketPayload>> clientReceivers = new HashMap<>();
+	private final Map<CustomPacketPayload.Type<? extends CustomPacketPayload>, NetworkRegistryEntry<? extends CustomPacketPayload>> serverReceivers = new HashMap<>();
+	private final Map<CustomPacketPayload.Type<? extends CustomPacketPayload>, NetworkRegistryEntry<? extends CustomPacketPayload>> biReceivers = new HashMap<>();
 
 	@Override
 	public <T extends CustomPacketPayload> void registerC2SReceiver(CustomPacketPayload.Type<T> type,
@@ -60,7 +60,7 @@ public class NetworkHelperImpl implements INetworkHelper {
 		PayloadRegistrar registrar = event.registrar("1");
 
 		clientReceivers.forEach((type, entry) -> {
-			registrar.playToClient(entry.type(), entry.codec(), new DirectionalPayloadHandler<>(
+			registrar.playToClient(type, entry.codec(), new DirectionalPayloadHandler<>(
 					(arg, ctx) -> entry.receiver().receive(createContext(ctx.player()), arg),
 					(arg, ctx) -> entry.receiver().receive(createContext(ctx.player()), arg)
 			));

@@ -12,10 +12,18 @@
 
 package me.pandamods.pandalib.networking;
 
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 
 public interface NetworkingPlatform {
-	<T extends CustomPacketPayload> void registerC2SReceiver(CustomPacketPayload.Type<T> type, NetworkReceiver<T> receiver);
-	<T extends CustomPacketPayload> void registerS2CReceiver(CustomPacketPayload.Type<T> type, NetworkReceiver<T> receiver);
-	<T extends CustomPacketPayload> void registerBothReceiver(CustomPacketPayload.Type<T> type, NetworkReceiver<T> receiver);
+	<T extends CustomPacketPayload> void registerC2SReceiver(CustomPacketPayload.Type<T> type,
+															 StreamCodec<RegistryFriendlyByteBuf, T> codec,
+															 NetworkReceiver<T> receiver);
+	<T extends CustomPacketPayload> void registerS2CReceiver(CustomPacketPayload.Type<T> type,
+															 StreamCodec<RegistryFriendlyByteBuf, T> codec,
+															 NetworkReceiver<T> receiver);
+	<T extends CustomPacketPayload> void registerBothReceiver(CustomPacketPayload.Type<T> type,
+															  StreamCodec<RegistryFriendlyByteBuf, T> codec,
+															  NetworkReceiver<T> receiver);
 }

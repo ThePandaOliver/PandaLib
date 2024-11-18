@@ -19,20 +19,20 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 
 public class PandaLibNetworking {
 	public static <T extends CustomPacketPayload> void registerC2SReceiver(CustomPacketPayload.Type<T> type,
-																		   StreamCodec<RegistryFriendlyByteBuf, T> codec,
+																		   StreamCodec<? super RegistryFriendlyByteBuf, T> codec,
 																		   NetworkReceiver<T> receiver) {
-		PandaLib.getInstance().networkingPlatform.registerC2SReceiver(type, codec, receiver);
+		PandaLib.getInstance().INetworkHelper.registerC2SReceiver(type, codec, receiver);
 	}
 
 	public static <T extends CustomPacketPayload> void registerS2CReceiver(CustomPacketPayload.Type<T> type,
-																		   StreamCodec<RegistryFriendlyByteBuf, T> codec,
+																		   StreamCodec<? super RegistryFriendlyByteBuf, T> codec,
 																		   NetworkReceiver<T> receiver) {
-		PandaLib.getInstance().networkingPlatform.registerS2CReceiver(type, codec, receiver);
+		PandaLib.getInstance().INetworkHelper.registerS2CReceiver(type, codec, receiver);
 	}
 
 	public static <T extends CustomPacketPayload> void registerBothReceiver(CustomPacketPayload.Type<T> type,
-																			StreamCodec<RegistryFriendlyByteBuf, T> codec,
+																			StreamCodec<? super RegistryFriendlyByteBuf, T> codec,
 																			NetworkReceiver<T> receiver) {
-		PandaLib.getInstance().networkingPlatform.registerBothReceiver(type, codec, receiver);
+		PandaLib.getInstance().INetworkHelper.registerBothReceiver(type, codec, receiver);
 	}
 }

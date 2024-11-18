@@ -18,15 +18,18 @@ import me.pandamods.pandalib.config.PandaLibConfig;
 import me.pandamods.pandalib.config.holders.ClientConfigHolder;
 import me.pandamods.pandalib.config.holders.CommonConfigHolder;
 import me.pandamods.pandalib.core.network.packets.ConfigPacketData;
+import me.pandamods.pandalib.networking.PandaLibNetworking;
 import me.pandamods.pandalib.utils.NetworkHelper;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
 public class ConfigNetworking {
 	public static void registerPackets() {
-		NetworkHelper.registerS2C(ConfigPacketData.TYPE, ConfigCodec.INSTANCE, ConfigNetworking::CommonConfigReceiver);
-
-		NetworkHelper.registerC2S(ConfigPacketData.TYPE, ConfigCodec.INSTANCE, ConfigNetworking::ClientConfigReceiver);
+//		NetworkHelper.registerS2C(ConfigPacketData.TYPE, ConfigCodec.INSTANCE, ConfigNetworking::CommonConfigReceiver);
+//
+//		NetworkHelper.registerC2S(ConfigPacketData.TYPE, ConfigCodec.INSTANCE, ConfigNetworking::ClientConfigReceiver);
+		PandaLibNetworking.registerC2SReceiver(ConfigPacketData.TYPE, ConfigCodec.INSTANCE, (ctx, configPacketData) -> {});
 	}
 
 	public static void SyncCommonConfigs(ServerPlayer serverPlayer) {

@@ -16,14 +16,16 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 
-public interface NetworkingPlatform {
+public interface INetworkHelper {
 	<T extends CustomPacketPayload> void registerC2SReceiver(CustomPacketPayload.Type<T> type,
-															 StreamCodec<RegistryFriendlyByteBuf, T> codec,
+															 StreamCodec<? super RegistryFriendlyByteBuf, T> codec,
 															 NetworkReceiver<T> receiver);
+
 	<T extends CustomPacketPayload> void registerS2CReceiver(CustomPacketPayload.Type<T> type,
-															 StreamCodec<RegistryFriendlyByteBuf, T> codec,
+															 StreamCodec<? super RegistryFriendlyByteBuf, T> codec,
 															 NetworkReceiver<T> receiver);
+
 	<T extends CustomPacketPayload> void registerBothReceiver(CustomPacketPayload.Type<T> type,
-															  StreamCodec<RegistryFriendlyByteBuf, T> codec,
+															  StreamCodec<? super RegistryFriendlyByteBuf, T> codec,
 															  NetworkReceiver<T> receiver);
 }

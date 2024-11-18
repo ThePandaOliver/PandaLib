@@ -12,28 +12,22 @@
 
 package me.pandamods.pandalib;
 
-import me.pandamods.pandalib.config.Config;
-import me.pandamods.pandalib.config.ConfigData;
-import me.pandamods.pandalib.config.PandaLibConfig;
-import me.pandamods.pandalib.config.holders.ClientConfigHolder;
-import me.pandamods.pandalib.config.holders.CommonConfigHolder;
 import me.pandamods.pandalib.core.event.EventHandler;
 import me.pandamods.pandalib.core.network.ConfigNetworking;
-import me.pandamods.pandalib.networking.NetworkingPlatform;
-import me.pandamods.pandalib.networking.PandaLibNetworking;
+import me.pandamods.pandalib.networking.INetworkHelper;
 import net.minecraft.resources.ResourceLocation;
 
 public class PandaLib {
     public static final String MOD_ID = "pandalib";
 	private static PandaLib instance;
 
-	public final NetworkingPlatform networkingPlatform;
+	public final INetworkHelper INetworkHelper;
 
 //	private static final CommonConfigHolder<TestConfig> TEST_CONFIG = PandaLibConfig.registerCommon(TestConfig.class);
 //	private static final ClientConfigHolder<TestConfig> TEST_CONFIG = PandaLibConfig.registerClient(TestConfig.class);
 
-    public PandaLib(NetworkingPlatform networkingPlatform) {
-		this.networkingPlatform = networkingPlatform;
+    public PandaLib(INetworkHelper INetworkHelper) {
+		this.INetworkHelper = INetworkHelper;
 
 		ConfigNetworking.registerPackets();
 		EventHandler.init();

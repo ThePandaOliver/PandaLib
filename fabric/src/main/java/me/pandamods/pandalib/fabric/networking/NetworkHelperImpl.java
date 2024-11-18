@@ -13,42 +13,45 @@
 package me.pandamods.pandalib.fabric.networking;
 
 import dev.architectury.platform.Platform;
+import dev.architectury.utils.Env;
 import me.pandamods.pandalib.networking.NetworkContext;
 import me.pandamods.pandalib.networking.NetworkReceiver;
-import me.pandamods.pandalib.networking.NetworkingPlatform;
+import me.pandamods.pandalib.networking.INetworkHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.world.entity.player.Player;
 
-public class NetworkingPlatformImpl implements NetworkingPlatform {
+public class NetworkHelperImpl implements INetworkHelper {
 	@Override
 	public <T extends CustomPacketPayload> void registerC2SReceiver(CustomPacketPayload.Type<T> type,
-																	StreamCodec<RegistryFriendlyByteBuf, T> codec,
+																	StreamCodec<? super RegistryFriendlyByteBuf, T> codec,
 																	NetworkReceiver<T> receiver) {
 		PayloadTypeRegistry.playC2S().register(type, codec);
-		ServerPlayNetworking.registerReceiver(type, (t, context) -> receiver.receive(createContext(null), t));
+		ServerPlayNetworking.registerGlobalReceiver(type, (t, context) -> receiver.receive(createContext(context.player()), t));
 	}
 
 	@Override
 	public <T extends CustomPacketPayload> void registerS2CReceiver(CustomPacketPayload.Type<T> type,
-																	StreamCodec<RegistryFriendlyByteBuf, T> codec,
+																	StreamCodec<? super RegistryFriendlyByteBuf, T> codec,
 																	NetworkReceiver<T> receiver) {
 		PayloadTypeRegistry.playS2C().register(type, codec);
-		ClientPlayNetworking.registerReceiver(type, (t, context) -> receiver.receive(createContext(context.player()), t));
+		ClientPlayNetworking.registerGlobalReceiver(type, (t, context) -> receiver.receive(createContext(context.player()), t));
 	}
 
 	@Override
 	public <T extends CustomPacketPayload> void registerBothReceiver(CustomPacketPayload.Type<T> type,
-																	 StreamCodec<RegistryFriendlyByteBuf, T> codec,
+																	 StreamCodec<? super RegistryFriendlyByteBuf, T> codec,
 																	 NetworkReceiver<T> receiver) {
-
+		registerC2SReceiver(type, codec, receiver);
+		if (Platform.getEnvironment() == Env.CLIENT)
+			registerS2CReceiver(type, codec, receiver);
 	}
 
-	private NetworkContext createContext(LocalPlayer player) {
+	private NetworkContext createContext(Player player) {
 		return new NetworkContext(player, Platform.getEnvironment());
 	}
 }

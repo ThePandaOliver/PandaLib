@@ -12,22 +12,13 @@
 
 package me.pandamods.pandalib.networking;
 
-import dev.architectury.platform.Platform;
-import dev.architectury.utils.Env;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.server.level.ServerPlayer;
 
-public class NetworkContext {
-	private final Player player;
+public interface IPacketDistributor {
+	<T extends CustomPacketPayload> void sendToServer(T payload);
 
-	public NetworkContext(Player player) {
-		this.player = player;
-	}
+	<T extends CustomPacketPayload> void sendToPlayer(ServerPlayer player, T payload);
 
-	public Player getPlayer() {
-		return player;
-	}
-
-	public Env getEnvironment() {
-		return Platform.getEnvironment();
-	}
+	<T extends CustomPacketPayload> void sendToAllPlayers(T payload);
 }

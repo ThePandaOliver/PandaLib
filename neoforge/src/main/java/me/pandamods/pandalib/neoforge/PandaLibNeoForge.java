@@ -13,24 +13,21 @@
 package me.pandamods.pandalib.neoforge;
 
 import me.pandamods.pandalib.PandaLib;
-import me.pandamods.pandalib.neoforge.networking.NetworkHelperImpl;
+import me.pandamods.pandalib.event.events.NetworkingEvents;
+import me.pandamods.pandalib.neoforge.networking.NetworkingRegistryImpl;
+import me.pandamods.pandalib.neoforge.networking.PacketDistributorImpl;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
-import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
 @Mod(PandaLib.MOD_ID)
 public class PandaLibNeoForge {
     public PandaLibNeoForge(IEventBus eventBus) {
-		eventBus.addListener(FMLCommonSetupEvent.class, event -> commonSetup(event, eventBus));
+		eventBus.addListener(FMLCommonSetupEvent.class, PandaLibNeoForge::commonSetup);
+		eventBus.addListener(NetworkingRegistryImpl::registerPackets);
     }
 
-	private static void commonSetup(final FMLCommonSetupEvent event, IEventBus eventBus) {
-		NetworkHelperImpl networkHelper = new NetworkHelperImpl();
-
-		eventBus.addListener(networkHelper::registerPackets);
-
-		new PandaLib(networkHelper);
+	private static void commonSetup(final FMLCommonSetupEvent event) {
+		new PandaLib(new PacketDistributorImpl());
 	}
 }

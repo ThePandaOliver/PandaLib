@@ -26,7 +26,7 @@ public class PandaLibNeoForge {
 		eventBus.addListener(FMLCommonSetupEvent.class, event -> commonSetup(event, eventBus));
     }
 
-	public static void commonSetup(final FMLCommonSetupEvent event, IEventBus eventBus) {
+	private static void commonSetup(final FMLCommonSetupEvent event, IEventBus eventBus) {
 		NetworkHelperImpl networkHelper = new NetworkHelperImpl();
 
 		eventBus.addListener(networkHelper::registerPackets);

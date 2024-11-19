@@ -65,9 +65,8 @@ public class AssimpResources implements PreparableReloadListener {
 	}
 
 	@Override
-	public @NotNull CompletableFuture<Void> reload(PreparationBarrier preparationBarrier, ResourceManager resourceManager,
-												   ProfilerFiller preparationsProfiler, ProfilerFiller reloadProfiler,
-												   Executor backgroundExecutor, Executor gameExecutor) {
+	public CompletableFuture<Void> reload(PreparationBarrier preparationBarrier, ResourceManager resourceManager,
+										  Executor backgroundExecutor, Executor gameExecutor) {
 		List<AIScene> scenes = new ObjectArrayList<>();
 
 		Map<ResourceLocation, Model> models = new Object2ObjectOpenHashMap<>();

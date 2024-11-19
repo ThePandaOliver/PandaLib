@@ -13,41 +13,25 @@
 package me.pandamods.pandalib.utils;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-#if MC_VER <= MC_1_19_2
-import com.mojang.math.Quaternion;
-#else
 import com.mojang.math.Axis;
-#endif
 import net.minecraft.world.level.block.DirectionalBlock;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.AttachFace;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import org.joml.Math;
 
 public class BlockUtils {
 	public static void translateBlock(BlockState blockState, PoseStack poseStack) {
 		poseStack.translate(0.5f, 0.5f, 0.5f);
 		float direction = getYRotation(blockState);
-		#if MC_VER <= MC_1_19_2
-			poseStack.mulPose(Quaternion.fromXYZ(0, Math.toRadians(direction), 0));
-		#else
-			poseStack.mulPose(Axis.YP.rotationDegrees(direction));
-		#endif
+		poseStack.mulPose(Axis.YP.rotationDegrees(direction));
 		
 		if (blockState.hasProperty(BlockStateProperties.ATTACH_FACE)) {
 			AttachFace face = blockState.getValue(BlockStateProperties.ATTACH_FACE);
-			#if MC_VER <= MC_1_19_2
-				switch (face) {
-					case CEILING -> poseStack.mulPose(Quaternion.fromXYZ(Math.toRadians(180), 0, 0));
-					case WALL -> poseStack.mulPose(Quaternion.fromXYZ(Math.toRadians(90), 0, 0));
-				}
-			#else
-				switch (face) {
-					case CEILING -> poseStack.mulPose(Axis.XP.rotationDegrees(180));
-					case WALL -> poseStack.mulPose(Axis.XP.rotationDegrees(90));
-				}
-			#endif
+			switch (face) {
+				case CEILING -> poseStack.mulPose(Axis.XP.rotationDegrees(180));
+				case WALL -> poseStack.mulPose(Axis.XP.rotationDegrees(90));
+			}
 		}
 		poseStack.translate(0, -0.5f, 0);
 	}

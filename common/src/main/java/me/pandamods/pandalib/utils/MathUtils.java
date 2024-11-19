@@ -13,9 +13,6 @@
 package me.pandamods.pandalib.utils;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-#if MC_VER <= MC_1_19_2
-import com.mojang.math.Quaternion;
-#endif
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
@@ -55,24 +52,20 @@ public class MathUtils {
 
 	public static PoseStack rotateVector(PoseStack stack, Vector3f rotation) {
 		Quaternionf quaternionf = new Quaternionf().rotateZYX(rotation.z, rotation.y, rotation.x);
-		#if MC_VER > MC_1_19_2
-			stack.mulPose(quaternionf);
-		#else
-			stack.mulPose(new Quaternion(quaternionf.x, quaternionf.y, quaternionf.z, quaternionf.w));
-		#endif
+		stack.mulPose(quaternionf);
 		return stack;
 	}
 
-	public static Vector3f rotateByPivot(Vector3f target, Vector3f pivot, Vector3f rotation) {
-		target.add(pivot);
+	public static Vector3f rotateAroundOrigin(Vector3f target, Vector3f origin, Vector3f rotation) {
+		target.add(origin);
 		rotateVector(target, rotation);
-		return target.sub(pivot);
+		return target.sub(origin);
 	}
 
-	public static PoseStack rotateByPivot(PoseStack stack, Vector3f pivot, Vector3f rotation) {
-		stack.translate(pivot.x, pivot.y, pivot.z);
+	public static PoseStack rotateAroundOrigin(PoseStack stack, Vector3f origin, Vector3f rotation) {
+		stack.translate(origin.x, origin.y, origin.z);
 		rotateVector(stack, rotation);
-		stack.translate(-pivot.x, -pivot.y, -pivot.z);
+		stack.translate(-origin.x, -origin.y, -origin.z);
 		return stack;
 	}
 }

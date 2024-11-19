@@ -12,7 +12,7 @@
 
 package me.pandamods.pandalib.utils;
 
-import me.pandamods.pandalib.api.model.resource.model.Node;
+import me.pandamods.pandalib.resource.model.Node;
 import org.joml.*;
 import org.lwjgl.assimp.*;
 

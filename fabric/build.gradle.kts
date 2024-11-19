@@ -1,8 +1,5 @@
-// gradle.properties
-val fabricLoaderVersion: String by project
-val fabricApiVersion: String by project
-
-val modmenuVersion: String by project
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+import net.fabricmc.loom.task.RemapJarTask
 
 architectury {
 	platformSetupLoomIde()
@@ -18,19 +15,25 @@ configurations {
 }
 
 repositories {
-	maven { url = uri("https://maven.terraformersmc.com/releases/") }
+	maven("https://maven.terraformersmc.com/releases/")
 }
 
 dependencies {
-	modImplementation("net.fabricmc:fabric-loader:${fabricLoaderVersion}")
-	modApi("net.fabricmc.fabric-api:fabric-api:${fabricApiVersion}")
+	modImplementation("net.fabricmc:fabric-loader:${properties["fabric_version"]}")
+	modApi("net.fabricmc.fabric-api:fabric-api:${properties["fabric_api_version"]}")
 
-	modApi("com.terraformersmc:modmenu:${modmenuVersion}")
+	modApi("dev.architectury:architectury-fabric:${properties["deps_architectury_version"]}")
+	modApi("com.terraformersmc:modmenu:${properties["deps_modmenu_version"]}")
 
-	"common"(project(":common", "namedElements")) { isTransitive = false }
-	"shadowBundle"(project(":common", "transformProductionFabric"))
+	common(project(":common", "namedElements")) { isTransitive = false }
+	shadowBundle(project(":common", "transformProductionFabric"))
 }
 
 tasks.remapJar {
 	injectAccessWidener.set(true)
+}
+
+tasks.withType<RemapJarTask> {
+	val shadowJar = tasks.getByName<ShadowJar>("shadowJar")
+	inputFile.set(shadowJar.archiveFile)
 }

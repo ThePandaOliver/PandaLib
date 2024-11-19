@@ -9,83 +9,26 @@ plugins {
 	id("dev.architectury.loom") version "1.7-SNAPSHOT" apply false
 
 	id("com.github.johnrengelman.shadow") version "8.1.1" apply false
-	id("systems.manifold.manifold-gradle-plugin") version "0.0.2-alpha"
 
 	id("maven-publish")
 	id("me.modmuss50.mod-publish-plugin") version "0.6.3"
 }
 
-/**
- * Borrowed from Distant Horizons
- */
-fun writeBuildGradlePredefine(AvailableVersion: List<String>, versionIndex: Int) {
-	val sb = StringBuilder()
-
-	sb.append("# DON'T TOUCH THIS FILE, This is handled by the build script\n")
-
-	for ((index, s) in AvailableVersion.withIndex()) {
-		val versionString = s.replace(".", "_")
-		sb.append("MC_${versionString}=${index}\n")
-		ext.set("MC_${versionString}", index.toString())
-
-		if (versionIndex == index) {
-			sb.append("MC_VER=${index}\n")
-			ext.set("MC_VER", index.toString())
-		}
-	}
-
-	File(projectDir, "build.properties").writeText(sb.toString())
-}
-
-project.gradle.extra.properties.forEach { prop ->
-	ext.set(prop.key, prop.value)
-}
-
-writeBuildGradlePredefine(project.properties["availableVersions"] as List<String>, project.properties["versionIndex"] as Int)
-
-// gradle.properties
-val supportedModLoaders: String by project
-
-val projectArchivesName: String by project
-val projectGroup: String by project
-
-val modId: String by project
-val modVersion: String by project
-val projectJavaVersion: String by project
-val modName: String by project
-val modDescription: String by project
-val modAuthor: String by project
-
-val minecraftVersion: String by project
-
-val parchmentVersion: String by project
-val parchmentMinecraftVersion: String by project
-
-val lwjglVersion: String by project
-val jomlVersion = properties["jomlVersion"]
-val manifoldVersion: String by project
-
-val architecturyVersion: String by project
-
-val fabricCompatibleVersions: String by project
-val forgeCompatibleVersions: String by project
-val neoForgeCompatibleVersions: String by project
-
-architectury.minecraft = minecraftVersion
+architectury.minecraft = properties["minecraft_version"] as String
 
 allprojects {
 	apply(plugin = "java")
 
-	tasks { base.archivesName = projectArchivesName }
-	version = "${modVersion}-${minecraftVersion}"
-	group = projectGroup
+	base { archivesName = properties["mod_id"] as String }
+	version = "${properties["mod_version"]}-${properties["minecraft_version"]}"
+	group = properties["maven_group"] as String
 }
 
 subprojects {
-	val isMinecraftSubProject = findProject(":common") != project
-	val isFabric = findProject(":fabric") == project
-	val isForge = findProject(":forge") == project
-	val isNeoForge = findProject(":neoforge") == project
+	val isMinecraftSubProject = findProject(":common") != project && findProject(":testmod-common") != project
+	val isFabric = findProject(":fabric") == project || findProject(":testmod-fabric") == project
+	val isForge = findProject(":forge") == project || findProject(":testmod-forge") == project
+	val isNeoForge = findProject(":neoforge") == project || findProject(":testmod-neoforge") == project
 
 	apply(plugin = "architectury-plugin")
 	apply(plugin = "dev.architectury.loom")
@@ -93,10 +36,29 @@ subprojects {
 	apply(plugin = "maven-publish")
 	apply(plugin = "com.github.johnrengelman.shadow")
 
-	tasks { base.archivesName = "${projectArchivesName}-${project.name}" }
+	base { archivesName = "${properties["mod_id"]}-${project.name}" }
 
 	val loom = project.extensions.getByName<LoomGradleExtensionAPI>("loom")
 	loom.silentMojangMappingsLicense()
+	if (isMinecraftSubProject) {
+		loom.runs {
+			named("client") {
+				client()
+				configName = "Client"
+				ideConfigGenerated(true)
+				runDir("../.runs/client")
+				source(sourceSets["main"])
+				programArgs("--username=Dev")
+			}
+			named("server") {
+				server()
+				configName = "Server"
+				ideConfigGenerated(true)
+				runDir("../.runs/server")
+				source(sourceSets["main"])
+			}
+		}
+	}
 
 	configurations {
 		create("common") {
@@ -128,7 +90,8 @@ subprojects {
 		mavenCentral()
 		mavenLocal()
 
-		maven("https://maven.parchmentmc.org")
+		maven("https://maven.architectury.dev/")
+		maven("https://maven.parchmentmc.org/")
 		maven("https://maven.fabricmc.net/")
 		maven("https://maven.minecraftforge.net/")
 		maven("https://maven.neoforged.net/releases/")
@@ -136,117 +99,117 @@ subprojects {
 
 	@Suppress("UnstableApiUsage")
 	dependencies {
-		"minecraft"("com.mojang:minecraft:${minecraftVersion}")
+		"minecraft"("com.mojang:minecraft:${properties["minecraft_version"]}") {
+			exclude(group = "org.joml", module = "joml")
+		}
 		"mappings"(loom.layered {
 			officialMojangMappings()
-			parchment("org.parchmentmc.data:parchment-${parchmentMinecraftVersion}:${parchmentVersion}@zip")
+			parchment("org.parchmentmc.data:parchment-${properties["parchment_minecraft_version"]}:${properties["parchment_version"]}@zip")
 		})
 
-		if (isMinecraftSubProject) {
-			"modApi"("dev.architectury:architectury-${project.name}:${architecturyVersion}")
-		} else {
-			"modApi"("dev.architectury:architectury:${architecturyVersion}")
-		}
-
 		// Assimp Library
-		"jarShadow"("org.lwjgl:lwjgl-assimp:${lwjglVersion}") {
+		"jarShadow"("org.lwjgl:lwjgl-assimp:${properties["deps_lwjgl_version"]}") {
 			exclude(group = "org.lwjgl", module = "lwjgl")
 		}
 		if (isMinecraftSubProject) {
 			// Assimp natives
-			"jarShadow"("org.lwjgl:lwjgl-assimp:${lwjglVersion}:natives-windows") {
+			"jarShadow"("org.lwjgl:lwjgl-assimp:${properties["deps_lwjgl_version"]}:natives-windows") {
 				exclude(group = "org.lwjgl", module = "lwjgl")
 			}
 
-			"jarShadow"("org.lwjgl:lwjgl-assimp:${lwjglVersion}:natives-linux") {
+			"jarShadow"("org.lwjgl:lwjgl-assimp:${properties["deps_lwjgl_version"]}:natives-linux") {
 				exclude(group = "org.lwjgl", module = "lwjgl")
 			}
 
-			"jarShadow"("org.lwjgl:lwjgl-assimp:${lwjglVersion}:natives-macos") {
+			"jarShadow"("org.lwjgl:lwjgl-assimp:${properties["deps_lwjgl_version"]}:natives-macos") {
 				exclude(group = "org.lwjgl", module = "lwjgl")
 			}
 		}
 
-		if (jomlVersion != null) {
-			"jarShadow"("org.joml:joml:${jomlVersion}")
-		}
+		// Embed joml
+		"jarShadow"("org.joml:joml:${properties["deps_joml_version"]}")
 
 		compileOnly("org.jetbrains:annotations:24.1.0")
-		annotationProcessor("systems.manifold:manifold-preprocessor:${manifoldVersion}")
 	}
 
 	if (isMinecraftSubProject) {
 		tasks.withType<ShadowJar> {
-			configurations = listOf(project.configurations.getByName("shadowBundle"), project.configurations.getByName("jarShadow"))
-			archiveClassifier.set("dev-shadow")
-
 			exclude("architectury.common.json")
-		}
-
-		tasks.withType<RemapJarTask> {
-			val shadowJar = tasks.getByName<ShadowJar>("shadowJar")
-			inputFile.set(shadowJar.archiveFile)
 		}
 	}
 
 	tasks.withType<ShadowJar> {
+		configurations = listOf(project.configurations.getByName("shadowBundle"), project.configurations.getByName("jarShadow"))
+		archiveClassifier.set("dev-shadow")
+
 		// Relocate assimp so it will not cause any conflicts with other mods also using it.
-		relocate("org.lwjgl.assimp", "$projectGroup.assimp")
+		relocate("org.lwjgl.assimp", "${properties["maven_group"]}.assimp")
 		// Relocate natives
-		relocate("windows.x64.org.lwjgl.assimp", "windows.x64.$projectGroup.assimp")
-		relocate("linux.x64.org.lwjgl.assimp", "linux.x64.$projectGroup.assimp")
-		relocate("macos.x64.org.lwjgl.assimp", "macos.x64.$projectGroup.assimp")
+		relocate("windows.x64.org.lwjgl.assimp", "windows.x64.${properties["maven_group"]}.assimp")
+		relocate("linux.x64.org.lwjgl.assimp", "linux.x64.${properties["maven_group"]}.assimp")
+		relocate("macos.x64.org.lwjgl.assimp", "macos.x64.${properties["maven_group"]}.assimp")
 
-		relocate("META-INF.windows.arm64.org.lwjgl.assimp", "META-INF.windows.arm64.$projectGroup.assimp")
-		relocate("META-INF.windows.x64.org.lwjgl.assimp", "META-INF.windows.x64.$projectGroup.assimp")
-		relocate("META-INF.windows.x86.org.lwjgl.assimp", "META-INF.windows.x86.$projectGroup.assimp")
+		relocate("META-INF.windows.arm64.org.lwjgl.assimp", "META-INF.windows.arm64.${properties["maven_group"]}.assimp")
+		relocate("META-INF.windows.x64.org.lwjgl.assimp", "META-INF.windows.x64.${properties["maven_group"]}.assimp")
+		relocate("META-INF.windows.x86.org.lwjgl.assimp", "META-INF.windows.x86.${properties["maven_group"]}.assimp")
 
-		relocate("META-INF.linux.arm32.org.lwjgl.assimp", "META-INF.linux.arm32.$projectGroup.assimp")
-		relocate("META-INF.linux.arm64.org.lwjgl.assimp", "META-INF.linux.arm64.$projectGroup.assimp")
-		relocate("META-INF.linux.x64.org.lwjgl.assimp", "META-INF.linux.x64.$projectGroup.assimp")
+		relocate("META-INF.linux.arm32.org.lwjgl.assimp", "META-INF.linux.arm32.${properties["maven_group"]}.assimp")
+		relocate("META-INF.linux.arm64.org.lwjgl.assimp", "META-INF.linux.arm64.${properties["maven_group"]}.assimp")
+		relocate("META-INF.linux.x64.org.lwjgl.assimp", "META-INF.linux.x64.${properties["maven_group"]}.assimp")
 
-		relocate("META-INF.macos.arm64.org.lwjgl.assimp", "META-INF.macos.arm64.$projectGroup.assimp")
-		relocate("META-INF.macos.x64.org.lwjgl.assimp", "META-INF.macos.x64.$projectGroup.assimp")
+		relocate("META-INF.macos.arm64.org.lwjgl.assimp", "META-INF.macos.arm64.${properties["maven_group"]}.assimp")
+		relocate("META-INF.macos.x64.org.lwjgl.assimp", "META-INF.macos.x64.${properties["maven_group"]}.assimp")
 
-		if (jomlVersion != null)
-			relocate("org.joml", "$projectGroup.joml")
+		// Relocate joml as to not cause issues with Minecraft
+		relocate("org.joml", "${properties["maven_group"]}.joml")
 	}
 
 	tasks.withType<JavaCompile> {
 		options.encoding = "UTF-8"
-		options.release.set(JavaLanguageVersion.of(projectJavaVersion).asInt())
-		options.compilerArgs.add("-Xplugin:Manifold")
+		options.release.set(JavaLanguageVersion.of(properties["java_version"] as String).asInt())
 	}
 
 	tasks.processResources {
-		val properties = mapOf(
-				"minecraftVersion" to minecraftVersion,
+		val props = mutableMapOf(
+			"java_version" to properties["java_version"],
+			"supported_mod_loaders" to properties["supported_mod_loaders"],
 
-				"modId" to modId,
-				"modVersion" to modVersion,
-				"modName" to modName,
-				"modDescription" to modDescription,
-				"modAuthor" to modAuthor,
-		).toMutableMap()
+			"maven_group" to properties["maven_group"],
+			"mod_id" to properties["mod_id"],
+			"mod_version" to properties["mod_version"],
+			"mod_name" to properties["mod_name"],
+			"mod_description" to properties["mod_description"],
+			"mod_author" to properties["mod_author"],
+			"mod_license" to properties["mod_license"],
 
-		if (isFabric) properties["fabricCompatibleVersions"] = fabricCompatibleVersions
-		if (isForge) properties["forgeCompatibleVersions"] = forgeCompatibleVersions
-		if (isNeoForge) properties["neoForgeCompatibleVersions"] = neoForgeCompatibleVersions
+			"project_curseforge_slug" to properties["project_curseforge_slug"],
+			"project_modrinth_slug" to properties["project_modrinth_slug"],
+			"project_github_repo" to properties["project_github_repo"],
+		)
 
-		inputs.properties(properties)
-		filesMatching(listOf("META-INF/mods.toml", "META-INF/neoforge.mods.toml", "pack.mcmeta", "fabric.mod.json")) {
-			expand(properties)
+		if (properties["fabric_version_range"] != null)
+			props["fabric_version_range"] = properties["fabric_version_range"] as String
+
+		if (properties["forge_version_range"] != null)
+			props["forge_version_range"] = properties["forge_version_range"] as String
+
+		if (properties["neoforge_version_range"] != null)
+			props["neoforge_version_range"] = properties["neoforge_version_range"] as String
+
+		inputs.properties(props)
+		filesMatching(listOf("pack.mcmeta", "fabric.mod.json", "META-INF/mods.toml", "META-INF/neoforge.mods.toml", "*.mixins.json")) {
+			expand(props)
 		}
 	}
 
 	tasks.jar {
 		manifest {
 			attributes(mapOf(
-					"Specification-Title" to modName,
-					"Specification-Vendor" to modAuthor,
-					"Specification-Version" to modVersion,
+					"Specification-Title" to properties["mod_name"],
+					"Specification-Vendor" to properties["mod_author"],
+					"Specification-Version" to properties["mod_version"],
 					"Implementation-Title" to name,
-					"Implementation-Vendor" to modAuthor,
+					"Implementation-Vendor" to properties["mod_author"],
 					"Implementation-Version" to archiveVersion
 			))
 		}
@@ -259,10 +222,18 @@ subprojects {
 	// Maven Publishing
 	publishing {
 		publications {
-			create<MavenPublication>("mod") {
-				groupId = projectGroup
-				artifactId = "${projectArchivesName}-${project.name}"
+			register("mavenJava", MavenPublication::class) {
+				groupId = properties["maven_group"] as String
+				artifactId = "${properties["mod_id"]}-${project.name}"
 				version = project.version as String
+
+				from(components["java"])
+			}
+
+			register("mavenJavaDev", MavenPublication::class) {
+				groupId = properties["maven_group"] as String
+				artifactId = "${properties["mod_id"]}-${project.name}"
+				version = "${project.version}+dev.${properties["dev_version"]}"
 
 				from(components["java"])
 			}
@@ -273,56 +244,33 @@ subprojects {
 	}
 }
 
-tasks.register("publishLocallyAll") {
-	val availableVersions = project.properties["availableVersions"] as List<String>
-
-	availableVersions.forEach { version ->
-		doLast {
-			exec {
-				commandLine = listOf("gradlew.bat", "-PminecraftVersion=$version", "publishToMavenLocal")
-			}
-		}
-	}
-}
-
 // Mod Publishing
-val publishingDryRun: String by project
-val publishingReleaseType: String by project
-
-val publishingMinecraftVersion: String by project
-val publishingLatestMinecraftVersion = properties["publishingLatestMinecraftVersion"]
-
-val publishingCurseForgeProjectId: String by project
-val publishingModrinthProjectId: String by project
-
-val publishingGitHubRepo: String by project
-
 var curseForgeAPIKey = providers.environmentVariable("CURSEFORGE_API_KEY")
 var modrinthAPIKey = providers.environmentVariable("MODRINTH_API_KEY")
 var githubAPIKey = providers.environmentVariable("GITHUB_API_KEY")
 
 publishMods {
-	dryRun = publishingDryRun.toBoolean()
+	dryRun = properties["publishing_dry_run"].toString().toBoolean()
 
-	version = modVersion
+	version = properties["mod_version"] as String
 	changelog = rootProject.file("CHANGELOG.md").readText()
 
 	// Set the release type
-	type = when (publishingReleaseType.toInt()) {
+	type = when (properties["publishing_release_type"].toString().toInt()) {
 		2 -> ALPHA
 		1 -> BETA
 		else -> STABLE
 	}
 
-	val isRangedVersion = publishingLatestMinecraftVersion != null
+	val isRangedVersion = properties["publishing_latest_minecraft_version"] != null
 	val minecraftVersionStr = if (isRangedVersion) {
-		"${publishingMinecraftVersion}-${publishingLatestMinecraftVersion}"
+		"${properties["publishing_minecraft_version"]}-${properties["publishing_latest_minecraft_version"]}"
 	} else {
-		publishingMinecraftVersion
+		properties["publishing_minecraft_version"]
 	}
 
 	// Creates publish options for each supported mod loader
-	supportedModLoaders.toString().split(",").forEach {
+	properties["supported_mod_loaders"].toString().split(",").forEach {
 		val loaderName = it
 		val loaderDisplayName = when (it) {
 			"fabric" -> "Fabric"
@@ -331,24 +279,24 @@ publishMods {
 			else -> it
 		}
 
-		val remapJar = project(":" + loaderName).tasks.getByName<RemapJarTask>("remapJar")
+		val remapJar = rootProject.project(":" + loaderName).tasks.getByName<RemapJarTask>("remapJar")
 
 		curseforge("curseforge_${loaderName}") {
 			accessToken = curseForgeAPIKey
-			displayName = "[${loaderDisplayName} ${minecraftVersionStr}] v${modVersion}"
+			displayName = "[${loaderDisplayName} ${minecraftVersionStr}] v${properties["mod_version"]}"
 
-			projectId = publishingCurseForgeProjectId
+			projectId = properties["project_curseforge_id"] as String
 
 			modLoaders.add(loaderName)
 			file = remapJar.archiveFile
 
 			if (isRangedVersion)
 				minecraftVersionRange {
-					start = publishingMinecraftVersion
-					end = publishingLatestMinecraftVersion as String
+					start = properties["publishing_minecraft_version"] as String
+					end = properties["publishing_latest_minecraft_version"] as String
 				}
 			else
-				minecraftVersions.add(publishingMinecraftVersion)
+				minecraftVersions.add(properties["publishing_minecraft_version"] as String)
 
 			javaVersions.add(JavaVersion.VERSION_21)
 
@@ -357,53 +305,51 @@ publishMods {
 
 			if (loaderName == "fabric")
 				requires("fabric-api")
-
 			requires("architectury-api")
 		}
 
 		modrinth("modrinth_" + loaderName) {
 			accessToken = modrinthAPIKey
-			displayName = "[${loaderDisplayName} ${minecraftVersionStr}] v${modVersion}"
+			displayName = "[${loaderDisplayName} ${minecraftVersionStr}] v${properties["mod_version"]}"
 
-			projectId = publishingModrinthProjectId
+			projectId = properties["project_modrinth_id"] as String
 
 			modLoaders.add(loaderName)
 			file = remapJar.archiveFile
 
 			if (isRangedVersion)
 				minecraftVersionRange {
-					start = publishingMinecraftVersion
-					end = publishingLatestMinecraftVersion as String
+					start = properties["publishing_minecraft_version"] as String
+					end = properties["publishing_latest_minecraft_version"] as String
 				}
 			else
-				minecraftVersions.add(publishingMinecraftVersion)
+				minecraftVersions.add(properties["publishing_minecraft_version"] as String)
 
 			if (loaderName == "fabric")
 				requires("fabric-api")
-
 			requires("architectury-api")
 		}
 	}
 
-	var githubRepository = publishingGitHubRepo
-	var releaseType = when (publishingReleaseType.toInt()) {
+	val githubRepository = properties["project_github_repo"] as String
+	val releaseType = when (properties["publishing_release_type"].toString().toInt()) {
 		2 -> "alpha"
 		1 -> "beta"
 		else -> "stable"
 	}
-	var githubTagName = "${releaseType}/${modVersion}-${minecraftVersionStr}"
+	val githubTagName = "${releaseType}/${properties["mod_version"]}-${minecraftVersionStr}"
 	github {
-		displayName = "${modName} ${modVersion} MC${minecraftVersionStr}"
+		displayName = "${properties["mod_name"]} ${properties["mod_version"]} MC${minecraftVersionStr}"
 		accessToken = githubAPIKey
 		repository = githubRepository
 		tagName = githubTagName
 		commitish = "main"
 
-		modLoaders.addAll(supportedModLoaders.trim().split(","))
+		modLoaders.addAll(properties["supported_mod_loaders"].toString().trim().split(","))
 		val commonRemapJar = project(":common").tasks.getByName<RemapJarTask>("remapJar")
 		file = commonRemapJar.archiveFile
 
-		supportedModLoaders.toString().split(",").forEach {
+		properties["supported_mod_loaders"].toString().split(",").forEach {
 			val modRemapJar = project(":$it").tasks.getByName<RemapJarTask>("remapJar")
 			additionalFiles.from(modRemapJar.archiveFile)
 		}

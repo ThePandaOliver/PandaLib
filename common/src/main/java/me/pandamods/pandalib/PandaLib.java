@@ -1,29 +1,58 @@
+/*
+ * Copyright (C) 2024 Oliver Froberg (The Panda Oliver)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  any later version.
+ *
+ * You should have received a copy of the GNU General Public License
+ *  along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package me.pandamods.pandalib;
 
-import com.mojang.logging.LogUtils;
-import dev.architectury.event.events.client.ClientReloadShadersEvent;
-import dev.architectury.registry.ReloadListenerRegistry;
-import me.pandamods.pandalib.api.model.resource.AssimpResources;
-import me.pandamods.pandalib.event.EventHandler;
-import me.pandamods.pandalib.network.ConfigNetworking;
+import me.pandamods.pandalib.config.Config;
+import me.pandamods.pandalib.config.ConfigData;
+import me.pandamods.pandalib.config.PandaLibConfig;
+import me.pandamods.pandalib.config.holders.CommonConfigHolder;
+import me.pandamods.pandalib.core.event.EventHandler;
+import me.pandamods.pandalib.core.network.ConfigNetworking;
+import me.pandamods.pandalib.event.events.NetworkingEvents;
+import me.pandamods.pandalib.networking.IPacketDistributor;
+import me.pandamods.pandalib.networking.PacketDistributor;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.PackType;
-import org.slf4j.Logger;
 
 public class PandaLib {
     public static final String MOD_ID = "pandalib";
-    public static final Logger LOGGER = LogUtils.getLogger();
+	private static PandaLib instance;
 
-    public static void init() {
-		ConfigNetworking.registerPackets();
-		EventHandler.Register();
+	public final IPacketDistributor packetDistributor;
+
+	private static final CommonConfigHolder<TestConfig> TEST_CONFIG = PandaLibConfig.registerCommon(TestConfig.class);
+//	private static final ClientConfigHolder<TestConfig> TEST_CONFIG = PandaLibConfig.registerClient(TestConfig.class);
+
+    public PandaLib(IPacketDistributor packetDistributor) {
+		this.packetDistributor = packetDistributor;
+		NetworkingEvents.PACKET_PAYLOAD_REGISTRY.register(ConfigNetworking::registerPackets);
+
+		EventHandler.init();
+		instance = this;
     }
 
-	public static ResourceLocation LOCATION(String path) {
-		#if MC_VER >= MC_1_21
-			return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
-		#else
-			return new ResourceLocation(MOD_ID, path);
-		#endif
+	public static ResourceLocation resourceLocation(String path) {
+		return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
+	}
+
+	public static PandaLib getInstance() {
+		return instance;
+	}
+
+	@Config(modId = MOD_ID, synchronize = true, name = "test")
+	public static class TestConfig implements ConfigData {
+		public String aString = "Hello World!";
+		public float aFloat = 1.0f;
+		public int anInt = 1;
+		public boolean aBoolean = true;
 	}
 }

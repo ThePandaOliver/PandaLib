@@ -1,42 +1,45 @@
 {
   "schemaVersion": 1,
-	"id": "${modId}",
-	"version": "${modVersion}",
-	"name": "${modName}",
-	"description": "${modDescription}",
+	"id": "${mod_id}",
+	"version": "${mod_version}",
+	"name": "${mod_name}",
+	"description": "${mod_description}",
 	"authors": [
-		"${modAuthor}"
+		"${mod_author}"
 	],
 	"contact": {
-		"issues": "https://github.com/PandaDap2006/PandaLib/issues",
-		"sources": "https://github.com/PandaDap2006/PandaLib"
+		"issues": "https://github.com/${project_github_repo}/issues",
+		"sources": "https://github.com/${project_github_repo}"
 	},
-  "license": "GPL-3",
-	"icon": "assets/${modId}/icon.png",
+  "license": "${mod_license}",
+	"icon": "assets/${mod_id}/icon.png",
   "environment": "*",
   "entrypoints": {
     "main": [
 			"me.pandamods.pandalib.fabric.PandaLibFabric"
-    ]
+    ],
+		"client": [
+			"me.pandamods.pandalib.fabric.client.PandaLibClientFabric"
+		]
   },
-  "mixins": [
-		"${modId}.mixins.json",
-    "${modId}-common.mixins.json"
-  ],
+	"mixins": [
+		"${mod_id}.mixins.json",
+		"${mod_id}-common.mixins.json"
+	],
   "depends": {
     "fabric": "*",
     "fabric-api": "*",
-    "minecraft": "${fabricCompatibleVersions}",
-    "architectury": "*"
+    "minecraft": "${fabric_version_range}",
+		"architectury": "*"
   },
 	"custom": {
 		"modmenu": {
 			"links": {
 				"modmenu.discord": "https://discord.gg/wjPt4vEfXb",
 				"modmenu.kofi": "https://ko-fi.com/pandamods",
-				"modmenu.curseforge": "https://www.curseforge.com/minecraft/mc-mods/pandalib",
-				"modmenu.modrinth": "https://modrinth.com/mod/pandalib",
-				"modmenu.github_releases": "https://github.com/PandaDap2006/PandaLib/releases"
+				"modmenu.curseforge": "https://www.curseforge.com/minecraft/mc-mods/${project_curseforge_slug}",
+				"modmenu.modrinth": "https://modrinth.com/mod/${project_modrinth_slug}",
+				"modmenu.github_releases": "https://github.com/${project_github_repo}/releases"
 			},
 			"badges": ["library"],
 			"update_checker": true

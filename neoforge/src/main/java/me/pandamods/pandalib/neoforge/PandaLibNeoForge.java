@@ -14,12 +14,8 @@ package me.pandamods.pandalib.neoforge;
 
 import me.pandamods.pandalib.PandaLib;
 import me.pandamods.pandalib.neoforge.platform.NetworkHelperImpl;
-import me.pandamods.pandalib.neoforge.platform.RegistrationHelperImpl;
-import me.pandamods.pandalib.platform.Services;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
-import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.neoforged.neoforge.registries.RegistryBuilder;
 
 @Mod(PandaLib.MOD_ID)
 public class PandaLibNeoForge {
@@ -27,6 +23,5 @@ public class PandaLibNeoForge {
 		new PandaLib();
 
 		eventBus.addListener(NetworkHelperImpl::registerPackets);
-		eventBus.addListener(RegistrationHelperImpl::registerObjects);
     }
 }

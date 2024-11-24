@@ -10,24 +10,25 @@
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package me.pandamods.pandalib.neoforge.networking;
+package me.pandamods.pandalib.neoforge.platform;
 
-import dev.architectury.platform.Platform;
 import dev.architectury.utils.Env;
 import me.pandamods.pandalib.event.events.NetworkingEvents;
 import me.pandamods.pandalib.networking.NetworkContext;
 import me.pandamods.pandalib.networking.NetworkReceiver;
-import me.pandamods.pandalib.networking.NetworkingRegistry;
+import me.pandamods.pandalib.platform.Services;
+import me.pandamods.pandalib.platform.services.INetworkHelper;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
+import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.handling.DirectionalPayloadHandler;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
-public class NetworkingRegistryImpl extends PayloadRegistrar implements NetworkingRegistry {
-	public NetworkingRegistryImpl() {
+public class NetworkHelperImpl extends PayloadRegistrar implements INetworkHelper {
+	public NetworkHelperImpl() {
 		super("1");
 	}
 
@@ -57,6 +58,21 @@ public class NetworkingRegistryImpl extends PayloadRegistrar implements Networki
 	}
 
 	public static void registerPackets(final RegisterPayloadHandlersEvent event) {
-		NetworkingEvents.PACKET_PAYLOAD_REGISTRY.invoker().register(new NetworkingRegistryImpl());
+		NetworkingEvents.PACKET_PAYLOAD_REGISTRY.invoker().register(Services.NETWORK_HELPER);
+	}
+
+	@Override
+	public <T extends CustomPacketPayload> void sendToServer(T payload) {
+		PacketDistributor.sendToServer(payload);
+	}
+
+	@Override
+	public <T extends CustomPacketPayload> void sendToPlayer(ServerPlayer player, T payload) {
+		PacketDistributor.sendToPlayer(player, payload);
+	}
+
+	@Override
+	public <T extends CustomPacketPayload> void sendToAllPlayers(T payload) {
+		PacketDistributor.sendToAllPlayers(payload);
 	}
 }

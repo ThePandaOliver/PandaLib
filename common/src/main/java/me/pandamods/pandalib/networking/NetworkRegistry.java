@@ -16,7 +16,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 
-public interface NetworkingRegistry {
+public interface NetworkRegistry {
 	<T extends CustomPacketPayload> void registerClientReceiver(CustomPacketPayload.Type<T> type,
 																StreamCodec<? super RegistryFriendlyByteBuf, T> codec,
 																NetworkReceiver<T> receiver);

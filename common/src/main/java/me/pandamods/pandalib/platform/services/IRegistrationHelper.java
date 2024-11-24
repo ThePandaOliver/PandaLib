@@ -10,10 +10,10 @@
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package me.pandamods.pandalib.registry;
+package me.pandamods.pandalib.platform.services;
 
-import net.minecraft.resources.ResourceKey;
+import me.pandamods.pandalib.registries.DeferredObject;
 
-public interface RegistryHandler<T> {
-	T register(ResourceKey<T> resourceKey);
+public interface IRegistrationHelper {
+	<T> void register(DeferredObject<T, ? extends T> deferredObject);
 }

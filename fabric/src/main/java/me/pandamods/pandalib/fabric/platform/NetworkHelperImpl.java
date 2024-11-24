@@ -10,13 +10,14 @@
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package me.pandamods.pandalib.fabric.networking;
+package me.pandamods.pandalib.fabric.platform;
 
 import dev.architectury.platform.Platform;
 import dev.architectury.utils.Env;
+import me.pandamods.pandalib.fabric.PandaLibFabric;
 import me.pandamods.pandalib.networking.NetworkContext;
 import me.pandamods.pandalib.networking.NetworkReceiver;
-import me.pandamods.pandalib.networking.NetworkingRegistry;
+import me.pandamods.pandalib.platform.services.INetworkHelper;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
@@ -25,9 +26,9 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
 
-public class NetworkingRegistryImpl implements NetworkingRegistry {
+public class NetworkHelperImpl implements INetworkHelper {
 	@Override
 	@Environment(EnvType.CLIENT)
 	public <T extends CustomPacketPayload> void registerClientReceiver(CustomPacketPayload.Type<T> type,
@@ -67,5 +68,22 @@ public class NetworkingRegistryImpl implements NetworkingRegistry {
 		registerServerReceiver(type, codec, serverReceiver);
 		if (Platform.getEnvironment() == Env.CLIENT)
 			registerClientReceiver(type, codec, clientReceiver);
+	}
+
+	@Override
+	public <T extends CustomPacketPayload> void sendToServer(T payload) {
+		ClientPlayNetworking.send(payload);
+	}
+
+	@Override
+	public <T extends CustomPacketPayload> void sendToPlayer(ServerPlayer player, T payload) {
+		ServerPlayNetworking.send(player, payload);
+	}
+
+	@Override
+	public <T extends CustomPacketPayload> void sendToAllPlayers(T payload) {
+		for (ServerPlayer player : PandaLibFabric.server.getPlayerList().getPlayers()) {
+			sendToPlayer(player, payload);
+		}
 	}
 }

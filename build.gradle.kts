@@ -225,7 +225,7 @@ subprojects {
 			register("mavenJava", MavenPublication::class) {
 				groupId = properties["maven_group"] as String
 				artifactId = "${properties["mod_id"]}-${project.name}"
-				version = "${project.version}-build${project.findProperty("buildNumber") ?: "-1"}"
+				version = "${project.version}-build.${project.findProperty("buildNumber") ?: "-1"}"
 
 				from(components["java"])
 			}

@@ -10,12 +10,13 @@
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package me.pandamods.pandalib.networking;
+package me.pandamods.pandalib.platform.services;
 
+import me.pandamods.pandalib.networking.NetworkRegistry;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
 
-public interface IPacketDistributor {
+public interface INetworkHelper extends NetworkRegistry {
 	<T extends CustomPacketPayload> void sendToServer(T payload);
 
 	<T extends CustomPacketPayload> void sendToPlayer(ServerPlayer player, T payload);

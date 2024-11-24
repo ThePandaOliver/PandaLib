@@ -19,21 +19,17 @@ import me.pandamods.pandalib.config.holders.CommonConfigHolder;
 import me.pandamods.pandalib.core.event.EventHandler;
 import me.pandamods.pandalib.core.network.ConfigNetworking;
 import me.pandamods.pandalib.event.events.NetworkingEvents;
-import me.pandamods.pandalib.networking.IPacketDistributor;
-import me.pandamods.pandalib.networking.PacketDistributor;
+import me.pandamods.pandalib.platform.Services;
 import net.minecraft.resources.ResourceLocation;
 
 public class PandaLib {
     public static final String MOD_ID = "pandalib";
 	private static PandaLib instance;
 
-	public final IPacketDistributor packetDistributor;
-
 	private static final CommonConfigHolder<TestConfig> TEST_CONFIG = PandaLibConfig.registerCommon(TestConfig.class);
 //	private static final ClientConfigHolder<TestConfig> TEST_CONFIG = PandaLibConfig.registerClient(TestConfig.class);
 
-    public PandaLib(IPacketDistributor packetDistributor) {
-		this.packetDistributor = packetDistributor;
+    public PandaLib() {
 		NetworkingEvents.PACKET_PAYLOAD_REGISTRY.register(ConfigNetworking::registerPackets);
 
 		EventHandler.init();

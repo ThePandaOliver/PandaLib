@@ -17,6 +17,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 
+import java.rmi.registry.RegistryHandler;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,17 +44,22 @@ public class DeferredRegister<T> {
 		this.registryKey = registryKey;
 	}
 
-	public <V extends T> DeferredObject<T, V> register(String name, V object) {
-		return register(ResourceLocation.fromNamespaceAndPath(namespace, name), object);
+	public <V extends T> DeferredObject<T, V> register(String name, RegistryHandler<T, V> handler) {
+		return register(ResourceLocation.fromNamespaceAndPath(namespace, name), handler);
 	}
 
-	public <V extends T> DeferredObject<T, V> register(ResourceLocation name, V object) {
-		DeferredObject<T, V> entry = new DeferredObject<>(object, ResourceKey.create(registryKey, name));
+	public <V extends T> DeferredObject<T, V> register(ResourceLocation name, RegistryHandler<T, V> handler) {
+		ResourceKey<T> resourceKey = ResourceKey.create(registryKey, name);
+		DeferredObject<T, V> entry = new DeferredObject<>(handler.register(resourceKey), resourceKey);
 		entries.add(entry);
 		return entry;
 	}
 
 	public void register() {
 		entries.forEach(Services.REGISTRATION_HELPER::register);
+	}
+
+	public interface RegistryHandler<T, V extends T> {
+		V register(ResourceKey<T> key);
 	}
 }

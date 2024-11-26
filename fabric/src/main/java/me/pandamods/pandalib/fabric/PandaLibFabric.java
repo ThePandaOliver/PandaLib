@@ -27,6 +27,6 @@ public class PandaLibFabric implements ModInitializer {
 		ServerLifecycleEvents.SERVER_STARTED.register(server -> PandaLibFabric.server = server);
 
 		new PandaLib();
-		NetworkingEvents.PACKET_PAYLOAD_REGISTRY.invoker().register(Services.NETWORK_HELPER);
+		NetworkingEvents.PACKET_PAYLOAD_REGISTRY.invoker().register(Services.NETWORK);
 	}
 }

@@ -12,21 +12,20 @@
 
 package me.pandamods.pandalib.networking;
 
-import me.pandamods.pandalib.PandaLib;
 import me.pandamods.pandalib.platform.Services;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
 
 public class PacketDistributor {
 	public static <T extends CustomPacketPayload> void sendToServer(T payload) {
-		Services.NETWORK_HELPER.sendToServer(payload);
+		Services.NETWORK.sendToServer(payload);
 	}
 
 	public static <T extends CustomPacketPayload> void sendToPlayer(ServerPlayer player, T payload) {
-		Services.NETWORK_HELPER.sendToPlayer(player, payload);
+		Services.NETWORK.sendToPlayer(player, payload);
 	}
 
 	public static <T extends CustomPacketPayload> void sendToAllPlayers(T payload) {
-		Services.NETWORK_HELPER.sendToAllPlayers(payload);
+		Services.NETWORK.sendToAllPlayers(payload);
 	}
 }

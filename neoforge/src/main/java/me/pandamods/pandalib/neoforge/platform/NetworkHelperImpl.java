@@ -58,7 +58,7 @@ public class NetworkHelperImpl extends PayloadRegistrar implements INetworkHelpe
 	}
 
 	public static void registerPackets(final RegisterPayloadHandlersEvent event) {
-		NetworkingEvents.PACKET_PAYLOAD_REGISTRY.invoker().register(Services.NETWORK_HELPER);
+		NetworkingEvents.PACKET_PAYLOAD_REGISTRY.invoker().register(Services.NETWORK);
 	}
 
 	@Override

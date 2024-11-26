@@ -22,24 +22,24 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class DeferredRegistry<T> {
+public class DeferredRegister<T> {
 	private final String namespace;
 	private final ResourceKey<? extends Registry<T>> registryKey;
 	private final Map<DeferredObject<? extends T>, Supplier<? extends T>> entries = new HashMap<>();
 
-	public static <T> DeferredRegistry<T> create(String namespace, ResourceLocation registryLocation) {
+	public static <T> DeferredRegister<T> create(String namespace, ResourceLocation registryLocation) {
 		return create(namespace, ResourceKey.createRegistryKey(registryLocation));
 	}
 
-	public static <T> DeferredRegistry<T> create(String namespace, Registry<T> registry) {
+	public static <T> DeferredRegister<T> create(String namespace, Registry<T> registry) {
 		return create(namespace, registry.key());
 	}
 
-	public static <T> DeferredRegistry<T> create(String namespace, ResourceKey<? extends Registry<T>> registryKey) {
-		return new DeferredRegistry<>(namespace, registryKey);
+	public static <T> DeferredRegister<T> create(String namespace, ResourceKey<? extends Registry<T>> registryKey) {
+		return new DeferredRegister<>(namespace, registryKey);
 	}
 
-	private DeferredRegistry(String namespace, ResourceKey<? extends Registry<T>> registryKey) {
+	private DeferredRegister(String namespace, ResourceKey<? extends Registry<T>> registryKey) {
 		this.namespace = namespace;
 		this.registryKey = registryKey;
 	}

@@ -23,7 +23,7 @@ import net.minecraft.server.packs.PackType;
 
 @Environment(EnvType.CLIENT)
 public class PandaLibClient {
-    public static void init() {
+    public PandaLibClient() {
 		ReloadListenerRegistry.register(PackType.CLIENT_RESOURCES, new AssimpResources(), PandaLib.resourceLocation("assimp_loader"));
 		EventHandlerClient.init();
     }

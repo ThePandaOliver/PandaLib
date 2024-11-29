@@ -27,6 +27,6 @@ public class PandaLibClientNeoForge {
     }
 
 	public static void clientSetup(FMLClientSetupEvent event) {
-		PandaLibClient.init();
+		new PandaLibClient();
 	}
 }

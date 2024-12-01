@@ -1,6 +1,7 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import net.fabricmc.loom.api.LoomGradleExtensionAPI
 import net.fabricmc.loom.task.RemapJarTask
+import org.gradle.kotlin.dsl.named
 
 plugins {
 	java
@@ -25,10 +26,7 @@ allprojects {
 }
 
 subprojects {
-	val isMinecraftSubProject = findProject(":common") != project && findProject(":testmod-common") != project
-	val isFabric = findProject(":fabric") == project || findProject(":testmod-fabric") == project
-	val isForge = findProject(":forge") == project || findProject(":testmod-forge") == project
-	val isNeoForge = findProject(":neoforge") == project || findProject(":testmod-neoforge") == project
+	val isMinecraftSubProject = findProject(":common") != project && findProject(":common-testmod") != project
 
 	apply(plugin = "architectury-plugin")
 	apply(plugin = "dev.architectury.loom")

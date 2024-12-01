@@ -26,9 +26,6 @@ public class PandaLib {
     public static final String MOD_ID = "pandalib";
 	private static PandaLib instance;
 
-	private static final CommonConfigHolder<TestConfig> TEST_CONFIG = PandaLibConfig.registerCommon(TestConfig.class);
-//	private static final ClientConfigHolder<TestConfig> TEST_CONFIG = PandaLibConfig.registerClient(TestConfig.class);
-
     public PandaLib() {
 		NetworkingEvents.PACKET_PAYLOAD_REGISTRY.register(ConfigNetworking::registerPackets);
 
@@ -42,13 +39,5 @@ public class PandaLib {
 
 	public static PandaLib getInstance() {
 		return instance;
-	}
-
-	@Config(modId = MOD_ID, synchronize = true, name = "test")
-	public static class TestConfig implements ConfigData {
-		public String aString = "Hello World!";
-		public float aFloat = 1.0f;
-		public int anInt = 1;
-		public boolean aBoolean = true;
 	}
 }

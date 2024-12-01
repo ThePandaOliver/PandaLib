@@ -29,12 +29,12 @@ public abstract class BasePLScreen<T extends ParentUIComponent> extends Screen {
 	protected void init() {
 		if (rootComponent == null) {
 			this.rootComponent = rootComponentSupplier.get();
+			build(this.rootComponent);
+		} else {
+			this.rootComponent.mount(null);
+			this.rootComponent.position(0, 0);
+			this.rootComponent.size(this.width, this.height);
 		}
-		this.rootComponent.setX(0);
-		this.rootComponent.setY(0);
-		this.rootComponent.setWidth(this.width);
-		this.rootComponent.setHeight(this.height);
-		build(this.rootComponent);
 	}
 
 	@Override

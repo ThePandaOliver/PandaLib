@@ -32,12 +32,5 @@ public class TestScreen extends BasePLScreen<StackContainer> {
 
 	@Override
 	public void tick() {
-		if (stack == null) return;
-		if (stack.getChildren().size() > 10) {
-			stack.getChildren().getFirst().unmount();
-		}
-		TextUIComponent text = new TextUIComponent();
-		text.setText("Hello World! " + ++i);
-		text.mount(stack);
 	}
 }

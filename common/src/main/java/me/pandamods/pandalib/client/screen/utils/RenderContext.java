@@ -12,6 +12,8 @@
 
 package me.pandamods.pandalib.client.screen.utils;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 
 public class RenderContext {
@@ -25,5 +27,13 @@ public class RenderContext {
 		graphics.enableScissor(minX, minY, maxX, maxY);
 		render.run();
 		graphics.disableScissor();
+	}
+
+	public PoseStack getPoseStack() {
+		return graphics.pose();
+	}
+
+	public double getDeltaSeconds() {
+		return 1f / Minecraft.getInstance().getFps();
 	}
 }

@@ -14,23 +14,27 @@ package me.pandamods.test.client.screen;
 
 import me.pandamods.pandalib.client.screen.BasePLScreen;
 import me.pandamods.pandalib.client.screen.components.TextUIComponent;
+import me.pandamods.pandalib.client.screen.components.VanillaUIComponent;
 import me.pandamods.pandalib.client.screen.layouts.StackContainer;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.network.chat.Component;
 
 public class TestScreen extends BasePLScreen<StackContainer> {
-	private StackContainer stack;
-
 	public TestScreen() {
 		super(StackContainer::new);
 	}
 
 	@Override
 	protected void build(StackContainer rootComponent) {
-		this.stack = rootComponent;
-	}
+		VanillaUIComponent vanillaTestButton = new VanillaUIComponent(Button.builder(Component.literal("Test Vanilla Button"),
+				button -> System.out.println("Test click"))
+				.width(200)
+				.build());
 
-	int i = 0;
+		vanillaTestButton.mount(rootComponent);
 
-	@Override
-	public void tick() {
+		TextUIComponent textUIComponent = new TextUIComponent(Minecraft.getInstance().font, Component.literal("Test Text"));
+		textUIComponent.mount(rootComponent);
 	}
 }

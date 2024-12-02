@@ -24,7 +24,7 @@ public class StackContainer extends BaseParentUIComponent {
 	private final List<UIComponent> children = new ArrayList<>();
 	private final List<UIComponent> viewChildren = Collections.unmodifiableList(children);
 
-	private boolean realign = false;
+	private boolean realign = true;
 	private int stackLength = 0;
 
 	@Override

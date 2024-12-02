@@ -17,10 +17,9 @@ dependencies {
 
 	modApi("dev.architectury:architectury-neoforge:${properties["deps_architectury_version"]}")
 
+	implementation(project(":neoforge", "namedElements")) { isTransitive = false }
 	common(project(":common", "namedElements")) { isTransitive = false }
-	shadowBundle(project(":common", "transformProductionNeoForge"))
 	common(project(":common-testmod", "namedElements")) { isTransitive = false }
-	shadowBundle(project(":common-testmod", "transformProductionNeoForge"))
 }
 
 tasks.remapJar {

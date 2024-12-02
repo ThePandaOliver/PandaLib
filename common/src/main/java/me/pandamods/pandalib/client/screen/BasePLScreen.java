@@ -1,9 +1,7 @@
 package me.pandamods.pandalib.client.screen;
 
-import com.mojang.blaze3d.Blaze3D;
 import me.pandamods.pandalib.client.screen.core.ParentUIComponent;
 import me.pandamods.pandalib.client.screen.utils.RenderContext;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -12,7 +10,7 @@ import java.util.function.Supplier;
 
 public abstract class BasePLScreen<T extends ParentUIComponent> extends Screen {
 	private final Supplier<T> rootComponentSupplier;
-	private T rootComponent;
+	protected T rootComponent;
 
 	protected BasePLScreen(Component title, Supplier<T> rootComponentSupplier) {
 		super(title);
@@ -30,11 +28,11 @@ public abstract class BasePLScreen<T extends ParentUIComponent> extends Screen {
 		if (rootComponent == null) {
 			this.rootComponent = rootComponentSupplier.get();
 			build(this.rootComponent);
-		} else {
-			this.rootComponent.mount(null);
-			this.rootComponent.position(0, 0);
-			this.rootComponent.size(this.width, this.height);
 		}
+
+		this.rootComponent.mount(null);
+		this.rootComponent.position(0, 0);
+		this.rootComponent.size(this.width, this.height);
 	}
 
 	@Override

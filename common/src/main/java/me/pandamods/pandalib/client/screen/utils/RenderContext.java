@@ -17,20 +17,20 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 
 public class RenderContext {
-	public final GuiGraphics graphics;
+	public final GuiGraphics guiGraphics;
 
-	public RenderContext(GuiGraphics graphics) {
-		this.graphics = graphics;
+	public RenderContext(GuiGraphics guiGraphics) {
+		this.guiGraphics = guiGraphics;
 	}
 
 	public void scissor(int minX, int minY, int maxX, int maxY, Runnable render) {
-		graphics.enableScissor(minX, minY, maxX, maxY);
+		guiGraphics.enableScissor(minX, minY, maxX, maxY);
 		render.run();
-		graphics.disableScissor();
+		guiGraphics.disableScissor();
 	}
 
 	public PoseStack getPoseStack() {
-		return graphics.pose();
+		return guiGraphics.pose();
 	}
 
 	public double getDeltaSeconds() {

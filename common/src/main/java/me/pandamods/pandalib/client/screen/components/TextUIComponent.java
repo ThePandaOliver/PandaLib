@@ -46,7 +46,7 @@ public class TextUIComponent extends BaseUIComponent {
 
 	@Override
 	public void render(RenderContext context, int mouseX, int mouseY, float partialTicks) {
-		GuiGraphics graphics = context.graphics;
+		GuiGraphics graphics = context.guiGraphics;
 		graphics.drawString(this.font, this.text, this.x, this.y, color.getRGB());
 	}
 

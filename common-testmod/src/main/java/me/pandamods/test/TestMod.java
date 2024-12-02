@@ -14,9 +14,7 @@ package me.pandamods.test;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import dev.architectury.event.EventResult;
-import dev.architectury.event.events.client.ClientLifecycleEvent;
 import dev.architectury.event.events.client.ClientScreenInputEvent;
-import dev.architectury.event.events.client.ClientTickEvent;
 import dev.architectury.registry.client.keymappings.KeyMappingRegistry;
 import me.pandamods.pandalib.config.PandaLibConfig;
 import me.pandamods.pandalib.config.holders.ClientConfigHolder;
@@ -25,7 +23,6 @@ import me.pandamods.test.client.screen.TestScreen;
 import me.pandamods.test.config.ClientTestConfig;
 import me.pandamods.test.config.CommonTestConfig;
 import net.minecraft.client.KeyMapping;
-import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 
 public class TestMod {

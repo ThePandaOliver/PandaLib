@@ -13,7 +13,8 @@ dependencies {
 	modImplementation("net.fabricmc:fabric-loader:${properties["fabric_version"]}")
 
 	modApi("dev.architectury:architectury:${properties["deps_architectury_version"]}")
-	implementation(project(":common"))
+
+	implementation(project(":common", "namedElements"))
 }
 
 tasks.withType<RemapJarTask> {

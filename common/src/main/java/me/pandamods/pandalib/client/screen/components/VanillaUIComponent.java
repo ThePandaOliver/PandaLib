@@ -23,6 +23,8 @@ public class VanillaUIComponent extends BaseUIComponent {
 
 	public VanillaUIComponent(AbstractWidget widget) {
 		this.widget = widget;
+		this.x = widget.getX();
+		this.y = widget.getY();
 		this.width = widget.getWidth();
 		this.height = widget.getHeight();
 	}
@@ -40,14 +42,26 @@ public class VanillaUIComponent extends BaseUIComponent {
 	}
 
 	@Override
-	public void position(int x, int y) {
-		super.position(x, y);
+	public void setX(int x) {
+		super.setX(x);
 		applyToWidget();
 	}
 
 	@Override
-	public void size(int width, int height) {
-		super.size(width, height);
+	public void setY(int y) {
+		super.setY(y);
+		applyToWidget();
+	}
+
+	@Override
+	public void setWidth(int width) {
+		super.setWidth(width);
+		applyToWidget();
+	}
+
+	@Override
+	public void setHeight(int height) {
+		super.setHeight(height);
 		applyToWidget();
 	}
 

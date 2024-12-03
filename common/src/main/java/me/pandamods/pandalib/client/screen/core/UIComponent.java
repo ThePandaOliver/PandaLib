@@ -34,6 +34,10 @@ public interface UIComponent {
 	int getWidth();
 	int getHeight();
 
+	default boolean isInBoundingBox(double x, double y) {
+		return x >= getX() && y >= getY() && x < getX() + getWidth() && y < getY() + getHeight();
+	}
+
 	default void position(int x, int y) {
 		setX(x);
 		setY(y);
@@ -45,4 +49,26 @@ public interface UIComponent {
 	default void size(int size) {
 		size(size, size);
 	}
+
+	default boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+		return false;
+	}
+
+	default boolean keyRelease(int keyCode, int scanCode, int modifiers) {
+		return false;
+	}
+
+	default boolean mousePressed(double mouseX, double mouseY, int button) {
+		return false;
+	}
+
+	default boolean mouseReleased(double mouseX, double mouseY, int button) {
+		return false;
+	}
+
+	default boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+		return false;
+	}
+
+	default void mouseMoved(double mouseX, double mouseY) { }
 }

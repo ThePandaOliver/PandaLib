@@ -14,9 +14,13 @@ package me.pandamods.pandalib.client.screen;
 
 import me.pandamods.pandalib.client.screen.core.ParentUIComponent;
 import me.pandamods.pandalib.client.screen.core.UIComponent;
+import me.pandamods.pandalib.client.screen.utils.FocusHandler;
 import me.pandamods.pandalib.client.screen.utils.RenderContext;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class BaseParentUIComponent extends BaseUIComponent implements ParentUIComponent {
+	private FocusHandler focusHandler = new FocusHandler(this);
+
 	@Override
 	public void render(RenderContext context, int mouseX, int mouseY, float partialTicks) {
 		Runnable renderChildren = () -> renderChildren(context, mouseX, mouseY, partialTicks);
@@ -37,16 +41,24 @@ public abstract class BaseParentUIComponent extends BaseUIComponent implements P
 	}
 
 	@Override
-	public void updateChildState(UIComponent UIComponent) {
-		if (UIComponent.getParent() == this) {
-			if (!getChildren().contains(UIComponent)) {
-				addChild(UIComponent);
+	public void updateChildState(UIComponent uiComponent) {
+		if (uiComponent.getParent() == this) {
+			if (!getChildren().contains(uiComponent)) {
+				addChild(uiComponent);
 			}
 		} else {
-			removeChild(UIComponent);
+			removeChild(uiComponent);
 		}
 	}
 
 	protected abstract void addChild(UIComponent UIComponent);
 	protected abstract void removeChild(UIComponent UIComponent);
+
+	@Override
+	public @Nullable FocusHandler getFocusHandler() {
+		if (this.hasParent()) {
+			return super.getFocusHandler();
+		}
+		return this.focusHandler;
+	}
 }

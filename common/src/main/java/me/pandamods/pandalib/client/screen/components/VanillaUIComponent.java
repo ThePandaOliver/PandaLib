@@ -21,12 +21,16 @@ import net.minecraft.client.gui.components.AbstractWidget;
 public class VanillaUIComponent extends BaseUIComponent {
 	private final AbstractWidget widget;
 
-	public VanillaUIComponent(AbstractWidget widget) {
+	protected VanillaUIComponent(AbstractWidget widget) {
 		this.widget = widget;
 		this.x = widget.getX();
 		this.y = widget.getY();
 		this.width = widget.getWidth();
 		this.height = widget.getHeight();
+	}
+
+	public static VanillaUIComponent of(AbstractWidget widget) {
+		return new VanillaUIComponent(widget);
 	}
 
 	@Override
@@ -36,8 +40,8 @@ public class VanillaUIComponent extends BaseUIComponent {
 	}
 
 	@Override
-	public void unmount() {
-		super.unmount();
+	public void dismount() {
+		super.dismount();
 		this.applyToWidget();
 	}
 
@@ -78,5 +82,33 @@ public class VanillaUIComponent extends BaseUIComponent {
 		widget.render(context.guiGraphics, mouseX, mouseY, partialTicks);
 	}
 
-	// Todo: Add compatibility with Abstract widget Events
+	@Override
+	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+		return this.widget.keyPressed(keyCode, scanCode, modifiers);
+	}
+
+	@Override
+	public boolean keyReleased(int keyCode, int scanCode, int modifiers) {
+		return this.widget.keyReleased(keyCode, scanCode, modifiers);
+	}
+
+	@Override
+	public boolean charTyped(char codePoint, int modifiers) {
+		return this.widget.charTyped(codePoint, modifiers);
+	}
+
+	@Override
+	public boolean mousePressed(double mouseX, double mouseY, int button) {
+		return this.widget.mouseClicked(mouseX, mouseY, button);
+	}
+
+	@Override
+	public boolean mouseReleased(double mouseX, double mouseY, int button) {
+		return this.widget.mouseReleased(mouseX, mouseY, button);
+	}
+
+	@Override
+	public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+		return this.widget.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
+	}
 }

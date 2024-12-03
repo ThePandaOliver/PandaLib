@@ -27,7 +27,7 @@ public class TestScreen extends BasePLScreen<StackContainer> {
 
 	@Override
 	protected void build(StackContainer rootComponent) {
-		VanillaUIComponent vanillaTestButton = new VanillaUIComponent(Button.builder(Component.literal("Test Vanilla Button"),
+		VanillaUIComponent vanillaTestButton = VanillaUIComponent.of(Button.builder(Component.literal("Test Vanilla Button"),
 				button -> System.out.println("Test click"))
 				.width(200)
 				.build());

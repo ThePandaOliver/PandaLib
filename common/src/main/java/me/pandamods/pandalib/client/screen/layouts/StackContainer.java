@@ -46,8 +46,8 @@ public class StackContainer extends BaseParentUIComponent {
 	}
 
 	@Override
-	public void updateChildState(UIComponent UIComponent) {
-		super.updateChildState(UIComponent);
+	public void updateChildState(UIComponent uiComponent) {
+		super.updateChildState(uiComponent);
 		align();
 	}
 

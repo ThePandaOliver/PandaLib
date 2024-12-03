@@ -14,6 +14,8 @@ package me.pandamods.pandalib.client.screen;
 
 import me.pandamods.pandalib.client.screen.core.ParentUIComponent;
 import me.pandamods.pandalib.client.screen.core.UIComponent;
+import me.pandamods.pandalib.client.screen.utils.FocusHandler;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class BaseUIComponent implements UIComponent {
 	protected ParentUIComponent parent = null;
@@ -37,11 +39,13 @@ public abstract class BaseUIComponent implements UIComponent {
 	}
 
 	@Override
-	public void unmount() {
-		ParentUIComponent parent = this.parent;
-		this.parent = null;
-		if (parent != null)
-			parent.updateChildState(this);
+	public void dismount() {
+		mount(null);
+	}
+
+	@Override
+	public @Nullable FocusHandler getFocusHandler() {
+		return this.hasParent() ? this.getParent().getFocusHandler() : null;
 	}
 
 	@Override

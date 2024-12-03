@@ -12,15 +12,29 @@
 
 package me.pandamods.pandalib.client.screen.core;
 
+import me.pandamods.pandalib.client.screen.utils.FocusHandler;
 import me.pandamods.pandalib.client.screen.utils.RenderContext;
+import org.jetbrains.annotations.Nullable;
 
 public interface UIComponent {
 	void render(RenderContext context, int mouseX, int mouseY, float partialTicks);
 
 	ParentUIComponent getParent();
 
+	default boolean hasParent() {
+		return this.getParent() != null;
+	}
+
 	void mount(ParentUIComponent parent);
-	void unmount();
+	void dismount();
+
+	default ParentUIComponent root() {
+		ParentUIComponent root = this.getParent();
+		while (root.hasParent()) root = root.getParent();
+		return root;
+	}
+
+	@Nullable FocusHandler getFocusHandler();
 
 	void setX(int x);
 	void setY(int y);
@@ -54,7 +68,11 @@ public interface UIComponent {
 		return false;
 	}
 
-	default boolean keyRelease(int keyCode, int scanCode, int modifiers) {
+	default boolean keyReleased(int keyCode, int scanCode, int modifiers) {
+		return false;
+	}
+
+	default boolean charTyped(char codePoint, int modifiers) {
 		return false;
 	}
 
@@ -69,6 +87,4 @@ public interface UIComponent {
 	default boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
 		return false;
 	}
-
-	default void mouseMoved(double mouseX, double mouseY) { }
 }

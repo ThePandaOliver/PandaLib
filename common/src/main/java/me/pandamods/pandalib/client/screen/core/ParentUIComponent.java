@@ -42,8 +42,8 @@ public interface ParentUIComponent extends UIComponent {
 	}
 
 	@Override
-	default boolean keyRelease(int keyCode, int scanCode, int modifiers) {
-		return UIComponent.super.keyRelease(keyCode, scanCode, modifiers);
+	default boolean keyReleased(int keyCode, int scanCode, int modifiers) {
+		return UIComponent.super.keyReleased(keyCode, scanCode, modifiers);
 	}
 
 	@Override
@@ -68,11 +68,11 @@ public interface ParentUIComponent extends UIComponent {
 
 	@Override
 	default boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
-		return UIComponent.super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
-	}
+		for (UIComponent child : getChildren()) {
+			if (!child.isInBoundingBox(getX() + mouseX, getY() + mouseY)) continue;
+			if (child.mouseScrolled(mouseX, mouseY, scrollX, scrollY)) return true;
+		}
 
-	@Override
-	default void mouseMoved(double mouseX, double mouseY) {
-		UIComponent.super.mouseMoved(mouseX, mouseY);
+		return UIComponent.super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
 	}
 }

@@ -56,9 +56,9 @@ public abstract class BaseParentUIComponent extends BaseUIComponent implements P
 
 	@Override
 	public @Nullable FocusHandler getFocusHandler() {
-		if (this.hasParent()) {
-			return super.getFocusHandler();
-		}
-		return this.focusHandler;
+		FocusHandler focusHandler = super.getFocusHandler();
+		if (focusHandler == null)
+			focusHandler = this.focusHandler;
+		return focusHandler;
 	}
 }

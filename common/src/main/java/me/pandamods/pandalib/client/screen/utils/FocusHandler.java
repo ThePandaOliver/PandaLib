@@ -14,6 +14,7 @@ package me.pandamods.pandalib.client.screen.utils;
 
 import me.pandamods.pandalib.client.screen.core.ParentUIComponent;
 import me.pandamods.pandalib.client.screen.core.UIComponent;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 
 public class FocusHandler {

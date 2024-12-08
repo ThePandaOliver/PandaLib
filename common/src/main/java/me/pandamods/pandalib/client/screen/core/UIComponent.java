@@ -12,9 +12,10 @@
 
 package me.pandamods.pandalib.client.screen.core;
 
+import me.pandamods.pandalib.client.screen.BasePLScreen;
 import me.pandamods.pandalib.client.screen.utils.FocusHandler;
 import me.pandamods.pandalib.client.screen.utils.RenderContext;
-import org.jetbrains.annotations.Nullable;
+import net.minecraft.client.Minecraft;
 
 public interface UIComponent {
 	void render(RenderContext context, int mouseX, int mouseY, float partialTicks);
@@ -28,13 +29,19 @@ public interface UIComponent {
 	void mount(ParentUIComponent parent);
 	void dismount();
 
+	default boolean isMounted() {
+		return this.hasParent();
+	}
+
 	default ParentUIComponent root() {
 		ParentUIComponent root = this.getParent();
 		while (root.hasParent()) root = root.getParent();
 		return root;
 	}
 
-	@Nullable FocusHandler getFocusHandler();
+	default FocusHandler getFocusHandler() {
+		return this.hasParent() ? this.getParent().getFocusHandler() : null;
+	}
 
 	void setX(int x);
 	void setY(int y);
@@ -56,6 +63,7 @@ public interface UIComponent {
 		setX(x);
 		setY(y);
 	}
+
 	default void size(int width, int height) {
 		setWidth(width);
 		setHeight(height);
@@ -87,4 +95,7 @@ public interface UIComponent {
 	default boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
 		return false;
 	}
+
+	default void onFocusGained() {}
+	default void onFocusLost() {}
 }

@@ -12,30 +12,41 @@
 
 package me.pandamods.pandalib.client.screen.utils;
 
+import me.pandamods.pandalib.client.screen.BaseParentUIComponent;
 import me.pandamods.pandalib.client.screen.core.ParentUIComponent;
 import me.pandamods.pandalib.client.screen.core.UIComponent;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 
 public class FocusHandler {
-	protected final ParentUIComponent root;
+	private final ParentUIComponent root;
 
-	protected UIComponent focusedComponent;
+	@Nullable
+	protected UIComponent focused;
 
 	public FocusHandler(ParentUIComponent root) {
 		this.root = root;
 	}
 
-	public void setFocused(UIComponent component) {
-		this.focusedComponent = component;
+	public void focus(UIComponent focused) {
+		if (this.focused != null) this.focused.onFocusLost();
+		this.focused = focused;
+		if (this.focused != null) this.focused.onFocusGained();
+	}
+
+	public void clearFocus() {
+		focus(null);
 	}
 
 	@Nullable
-	public UIComponent getFocusedComponent() {
-		return focusedComponent;
+	public UIComponent getFocused() {
+		return focused;
 	}
 
-	public boolean isFocusing() {
-		return getFocusedComponent() != null;
+	public boolean isFocused(UIComponent component) {
+		return focused == component;
+	}
+
+	public ParentUIComponent getRoot() {
+		return root;
 	}
 }

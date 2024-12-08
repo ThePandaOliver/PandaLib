@@ -19,15 +19,16 @@ import me.pandamods.pandalib.client.screen.utils.RenderContext;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class BaseParentUIComponent extends BaseUIComponent implements ParentUIComponent {
-	private FocusHandler focusHandler = new FocusHandler(this);
+	protected FocusHandler focusHandler = new FocusHandler(this);
 
 	@Override
 	public void render(RenderContext context, int mouseX, int mouseY, float partialTicks) {
 		Runnable renderChildren = () -> renderChildren(context, mouseX, mouseY, partialTicks);
-		if (this.isOverflowAllowed())
+		if (this.isOverflowAllowed()) {
 			renderChildren.run();
-		else
+		}else {
 			context.scissor(this.getX(), this.getY(), this.getX() + this.getWidth(), this.getY() + this.getHeight(), renderChildren);
+		}
 	}
 
 	protected void renderChildren(RenderContext context, int mouseX, int mouseY, float partialTicks) {
@@ -53,12 +54,4 @@ public abstract class BaseParentUIComponent extends BaseUIComponent implements P
 
 	protected abstract void addChild(UIComponent UIComponent);
 	protected abstract void removeChild(UIComponent UIComponent);
-
-	@Override
-	public @Nullable FocusHandler getFocusHandler() {
-		FocusHandler focusHandler = super.getFocusHandler();
-		if (focusHandler == null)
-			focusHandler = this.focusHandler;
-		return focusHandler;
-	}
 }

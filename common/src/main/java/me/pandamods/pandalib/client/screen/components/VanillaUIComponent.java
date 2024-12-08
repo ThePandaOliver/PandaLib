@@ -111,4 +111,14 @@ public class VanillaUIComponent extends BaseUIComponent {
 	public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
 		return this.widget.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
 	}
+
+	@Override
+	public void onFocusGained() {
+		this.widget.setFocused(true);
+	}
+
+	@Override
+	public void onFocusLost() {
+		this.widget.setFocused(false);
+	}
 }

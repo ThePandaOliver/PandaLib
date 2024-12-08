@@ -12,6 +12,8 @@
 
 package me.pandamods.pandalib.client.screen.core;
 
+import me.pandamods.pandalib.client.screen.utils.FocusHandler;
+
 import java.util.List;
 
 public interface ParentUIComponent extends UIComponent {
@@ -37,20 +39,15 @@ public interface ParentUIComponent extends UIComponent {
 	}
 
 	@Override
-	default boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-		return UIComponent.super.keyPressed(keyCode, scanCode, modifiers);
-	}
-
-	@Override
-	default boolean keyReleased(int keyCode, int scanCode, int modifiers) {
-		return UIComponent.super.keyReleased(keyCode, scanCode, modifiers);
-	}
-
-	@Override
 	default boolean mousePressed(double mouseX, double mouseY, int button) {
 		for (UIComponent child : getChildren()) {
 			if (!child.isInBoundingBox(getX() + mouseX, getY() + mouseY)) continue;
-			if (child.mousePressed(mouseX, mouseY, button)) return true;
+			if (child.mousePressed(mouseX, mouseY, button)) {
+				FocusHandler focusHandler = getFocusHandler();
+				if (focusHandler != null)
+					focusHandler.focus(child);
+				return true;
+			}
 		}
 
 		return UIComponent.super.mousePressed(mouseX, mouseY, button);

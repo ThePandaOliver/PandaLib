@@ -62,25 +62,19 @@ public abstract class BasePLScreen<T extends ParentUIComponent> extends Screen {
 
 	@Override
 	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-		FocusHandler focusHandler = this.rootComponent.getFocusHandler();
-		if (focusHandler != null && focusHandler.isFocusing() && focusHandler.getFocusedComponent().keyPressed(keyCode, scanCode, modifiers))
-			return true;
+		if (this.rootComponent.keyPressed(keyCode, scanCode, modifiers)) return true;
 		return super.keyPressed(keyCode, scanCode, modifiers);
 	}
 
 	@Override
 	public boolean keyReleased(int keyCode, int scanCode, int modifiers) {
-		FocusHandler focusHandler = this.rootComponent.getFocusHandler();
-		if (focusHandler != null && focusHandler.isFocusing() && focusHandler.getFocusedComponent().keyReleased(keyCode, scanCode, modifiers))
-			return true;
+		if (this.rootComponent.keyReleased(keyCode, scanCode, modifiers)) return true;
 		return super.keyReleased(keyCode, scanCode, modifiers);
 	}
 
 	@Override
 	public boolean charTyped(char codePoint, int modifiers) {
-		FocusHandler focusHandler = this.rootComponent.getFocusHandler();
-		if (focusHandler != null && focusHandler.isFocusing() && focusHandler.getFocusedComponent().charTyped(codePoint, modifiers))
-			return true;
+		if (this.rootComponent.charTyped(codePoint, modifiers)) return true;
 		return super.charTyped(codePoint, modifiers);
 	}
 }

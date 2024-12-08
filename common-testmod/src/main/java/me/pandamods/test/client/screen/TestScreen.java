@@ -18,6 +18,7 @@ import me.pandamods.pandalib.client.screen.components.VanillaUIComponent;
 import me.pandamods.pandalib.client.screen.layouts.StackContainer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
 
 public class TestScreen extends BasePLScreen<StackContainer> {
@@ -31,8 +32,11 @@ public class TestScreen extends BasePLScreen<StackContainer> {
 				button -> System.out.println("Test click"))
 				.width(200)
 				.build());
-
 		vanillaTestButton.mount(rootComponent);
+
+		EditBox editBox = new EditBox(Minecraft.getInstance().font, 0, 0, 200, 20, Component.literal("Test TextField"));
+		VanillaUIComponent vanillaTestTextField = VanillaUIComponent.of(editBox);
+		vanillaTestTextField.mount(rootComponent);
 
 		TextUIComponent textUIComponent = new TextUIComponent(Minecraft.getInstance().font, Component.literal("Test Text"));
 		textUIComponent.mount(rootComponent);

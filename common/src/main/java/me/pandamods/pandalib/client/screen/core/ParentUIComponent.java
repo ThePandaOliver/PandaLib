@@ -72,4 +72,12 @@ public interface ParentUIComponent extends UIComponent {
 
 		return UIComponent.super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
 	}
+
+	@Override
+	default void mouseMoved(double mouseX, double mouseY) {
+		for (UIComponent child : getChildren()) {
+			child.mouseMoved(mouseX, mouseY);
+		}
+		UIComponent.super.mouseMoved(mouseX, mouseY);
+	}
 }

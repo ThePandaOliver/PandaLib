@@ -54,4 +54,10 @@ public abstract class BaseParentUIComponent extends BaseUIComponent implements P
 
 	protected abstract void addChild(UIComponent UIComponent);
 	protected abstract void removeChild(UIComponent UIComponent);
+
+	@Override
+	public FocusHandler getFocusHandler() {
+		FocusHandler focusHandler = super.getFocusHandler();
+		return focusHandler != null ? focusHandler : this.focusHandler;
+	}
 }

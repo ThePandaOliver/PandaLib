@@ -21,6 +21,10 @@ import net.minecraft.client.gui.components.AbstractWidget;
 public class VanillaUIComponent extends BaseUIComponent {
 	private final AbstractWidget widget;
 
+	private boolean dragging = false;
+	private int draggingButton = 0;
+	private double lastMouseX, lastMouseY;
+
 	protected VanillaUIComponent(AbstractWidget widget) {
 		this.widget = widget;
 		this.x = widget.getX();
@@ -99,17 +103,34 @@ public class VanillaUIComponent extends BaseUIComponent {
 
 	@Override
 	public boolean mousePressed(double mouseX, double mouseY, int button) {
+		if (!dragging) {
+			dragging = true;
+			draggingButton = button;
+		}
 		return this.widget.mouseClicked(mouseX, mouseY, button);
 	}
 
 	@Override
 	public boolean mouseReleased(double mouseX, double mouseY, int button) {
+		dragging = false;
 		return this.widget.mouseReleased(mouseX, mouseY, button);
 	}
 
 	@Override
 	public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
 		return this.widget.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
+	}
+
+	@Override
+	public void mouseMoved(double mouseX, double mouseY) {
+		this.widget.mouseMoved(mouseX, mouseY);
+		if (dragging) {
+			double dragX = mouseX - lastMouseX;
+			double dragY = mouseY - lastMouseY;
+			this.widget.mouseDragged(mouseX, mouseY, draggingButton, dragX, dragY);
+		}
+		this.lastMouseX = mouseX;
+		this.lastMouseY = mouseY;
 	}
 
 	@Override

@@ -23,7 +23,11 @@ import net.minecraft.network.chat.Component;
 
 public class TestScreen extends BasePLScreen<StackContainer> {
 	public TestScreen() {
-		super(StackContainer::new);
+		super(() -> {
+			StackContainer stack = StackContainer.createVerticalLayout();
+			stack.setGapSize(4);
+			return stack;
+		});
 	}
 
 	@Override

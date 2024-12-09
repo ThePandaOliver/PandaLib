@@ -12,22 +12,15 @@
 
 package me.pandamods.pandalib.client.screen.utils;
 
-import me.pandamods.pandalib.client.screen.BaseParentUIComponent;
-import me.pandamods.pandalib.client.screen.core.ParentUIComponent;
 import me.pandamods.pandalib.client.screen.core.UIComponent;
 import org.jetbrains.annotations.Nullable;
 
 public class FocusHandler {
-	private final ParentUIComponent root;
-
 	@Nullable
 	protected UIComponent focused;
 
-	public FocusHandler(ParentUIComponent root) {
-		this.root = root;
-	}
-
 	public void focus(UIComponent focused) {
+		if (this.focused == focused) return;
 		if (this.focused != null) this.focused.onFocusLost();
 		this.focused = focused;
 		if (this.focused != null) this.focused.onFocusGained();
@@ -44,9 +37,5 @@ public class FocusHandler {
 
 	public boolean isFocused(UIComponent component) {
 		return focused == component;
-	}
-
-	public ParentUIComponent getRoot() {
-		return root;
 	}
 }

@@ -14,30 +14,34 @@ package me.pandamods.pandalib.client.screen.layouts;
 
 import me.pandamods.pandalib.client.screen.BaseParentUIComponent;
 import me.pandamods.pandalib.client.screen.core.UIComponent;
-import me.pandamods.pandalib.client.screen.utils.RenderContext;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public class StackContainer extends BaseParentUIComponent {
 	private final List<UIComponent> children = new ArrayList<>();
 	private final List<UIComponent> viewChildren = Collections.unmodifiableList(children);
 
-	private boolean realign = true;
-	private int stackLength = 0;
+	protected Direction direction;
+	protected int gapSize = 0;
 
-	@Override
-	protected void renderChildren(RenderContext context, int mouseX, int mouseY, float partialTicks) {
-		if (realign) stackLength = 0;
-		super.renderChildren(context, mouseX, mouseY, partialTicks);
+	private int contentWidth = 0;
+	private int contentHeight = 0;
+
+	public static StackContainer createHorizontalLayout() {
+		return new StackContainer(Direction.HORIZONTAL);
 	}
 
-	@Override
-	public void renderChild(UIComponent child, RenderContext context, int mouseX, int mouseY, float partialTicks) {
-		if (realign) child.setY(stackLength);
-		super.renderChild(child, context, mouseX, mouseY, partialTicks);
-		if (realign) stackLength += child.getHeight();
+	public static StackContainer createVerticalLayout() {
+		return new StackContainer(Direction.VERTICAL);
+	}
+
+	public StackContainer(Direction direction) {
+		this.direction = direction;
 	}
 
 	@Override
@@ -61,10 +65,64 @@ public class StackContainer extends BaseParentUIComponent {
 		children.remove(UIComponent);
 	}
 
-	/**
-	 * Realigns children next frame
-	 */
+	public void setDirection(Direction direction) {
+		this.direction = direction;
+		this.align();
+	}
+
+	public Direction getDirection() {
+		return direction;
+	}
+
+	public void setGapSize(int gapSize) {
+		this.gapSize = gapSize;
+	}
+
+	public int getGapSize() {
+		return gapSize;
+	}
+
 	public void align() {
-		realign = true;
+		int contentLength = 0;
+		int contentSize = 0;
+
+		Iterator<UIComponent> iterator = this.children.iterator();
+		while (iterator.hasNext()) {
+			UIComponent child = iterator.next();
+			Consumer<Integer> setPos = this.direction == Direction.HORIZONTAL ? child::setX : child::setY;
+			Supplier<Integer> getLength = this.direction == Direction.HORIZONTAL ? child::getWidth : child::getHeight;
+			Supplier<Integer> getSize = this.direction == Direction.HORIZONTAL ? child::getHeight : child::getWidth;
+
+			setPos.accept(contentLength);
+			contentLength += getLength.get();
+			if (iterator.hasNext()) {
+				contentLength += gapSize;
+			}
+			contentSize = Math.max(contentSize, getSize.get());
+		}
+
+		switch (this.direction) {
+			case HORIZONTAL -> {
+				contentWidth = contentLength;
+				contentHeight = contentSize;
+			}
+			case VERTICAL -> {
+				contentHeight = contentLength;
+				contentWidth = contentSize;
+			}
+		}
+	}
+
+	public int getContentWidth() {
+		return contentWidth;
+	}
+
+	public int getContentHeight() {
+		return contentHeight;
+	}
+
+	public enum Direction {
+		HORIZONTAL,
+		VERTICAL
 	}
 }

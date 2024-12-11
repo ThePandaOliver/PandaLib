@@ -10,9 +10,8 @@
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package me.pandamods.pandalib.client.screen.layouts;
+package me.pandamods.pandalib.client.screen.containers;
 
-import me.pandamods.pandalib.client.screen.BaseParentUIComponent;
 import me.pandamods.pandalib.client.screen.core.UIComponent;
 
 import java.util.ArrayList;
@@ -22,47 +21,29 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public class StackContainer extends BaseParentUIComponent {
-	private final List<UIComponent> children = new ArrayList<>();
-	private final List<UIComponent> viewChildren = Collections.unmodifiableList(children);
-
+public class StackLayout extends UIContainer {
 	protected Direction direction;
 	protected int gapSize = 0;
 
 	private int contentWidth = 0;
 	private int contentHeight = 0;
 
-	public static StackContainer createHorizontalLayout() {
-		return new StackContainer(Direction.HORIZONTAL);
+	public static StackLayout createHorizontalLayout() {
+		return new StackLayout(Direction.HORIZONTAL);
 	}
 
-	public static StackContainer createVerticalLayout() {
-		return new StackContainer(Direction.VERTICAL);
+	public static StackLayout createVerticalLayout() {
+		return new StackLayout(Direction.VERTICAL);
 	}
 
-	public StackContainer(Direction direction) {
+	public StackLayout(Direction direction) {
 		this.direction = direction;
 	}
-
-	@Override
-	public List<UIComponent> getChildren() {
-		return viewChildren;
-	}
-
+	
 	@Override
 	public void updateChildState(UIComponent uiComponent) {
 		super.updateChildState(uiComponent);
 		align();
-	}
-
-	@Override
-	protected void addChild(UIComponent UIComponent) {
-		children.add(UIComponent);
-	}
-
-	@Override
-	protected void removeChild(UIComponent UIComponent) {
-		children.remove(UIComponent);
 	}
 
 	public void setDirection(Direction direction) {

@@ -15,23 +15,23 @@ package me.pandamods.test.client.screen;
 import me.pandamods.pandalib.client.screen.BasePLScreen;
 import me.pandamods.pandalib.client.screen.components.TextUIComponent;
 import me.pandamods.pandalib.client.screen.components.VanillaUIComponent;
-import me.pandamods.pandalib.client.screen.layouts.StackContainer;
+import me.pandamods.pandalib.client.screen.containers.StackLayout;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
 
-public class TestScreen extends BasePLScreen<StackContainer> {
+public class TestScreen extends BasePLScreen<StackLayout> {
 	public TestScreen() {
 		super(() -> {
-			StackContainer stack = StackContainer.createVerticalLayout();
+			StackLayout stack = StackLayout.createVerticalLayout();
 			stack.setGapSize(4);
 			return stack;
 		});
 	}
 
 	@Override
-	protected void build(StackContainer rootComponent) {
+	protected void build(StackLayout rootComponent) {
 		VanillaUIComponent vanillaTestButton = VanillaUIComponent.of(Button.builder(Component.literal("Test Vanilla Button"),
 				button -> System.out.println("Test click"))
 				.width(200)

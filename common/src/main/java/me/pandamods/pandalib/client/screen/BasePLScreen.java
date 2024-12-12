@@ -10,24 +10,24 @@ import net.minecraft.network.chat.Component;
 import java.util.function.Supplier;
 
 public abstract class BasePLScreen<T extends ParentUIComponent> extends Screen {
-	private final Supplier<T> rootComponentSupplier;
 	protected T rootComponent;
 
-	protected BasePLScreen(Component title, Supplier<T> rootComponentSupplier) {
+	protected BasePLScreen(Component title) {
 		super(title);
-		this.rootComponentSupplier = rootComponentSupplier;
 	}
 
-	protected BasePLScreen(Supplier<T> rootComponentSupplier) {
-		this(Component.empty(), rootComponentSupplier);
+	protected BasePLScreen() {
+		this(Component.empty());
 	}
 
 	protected abstract void build(T rootComponent);
+	
+	protected abstract T createRootComponent();
 
 	@Override
 	protected void init() {
 		if (rootComponent == null) {
-			this.rootComponent = rootComponentSupplier.get();
+			this.rootComponent = createRootComponent();
 			build(this.rootComponent);
 		}
 

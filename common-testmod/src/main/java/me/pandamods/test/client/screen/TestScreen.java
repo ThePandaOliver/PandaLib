@@ -21,15 +21,9 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
 
-public class TestScreen extends BasePLScreen<StackLayout> {
-	public TestScreen() {
-		super(() -> {
-			StackLayout stack = StackLayout.createVerticalLayout();
-			stack.setGapSize(4);
-			return stack;
-		});
-	}
+import java.util.function.Supplier;
 
+public class TestScreen extends BasePLScreen<StackLayout> {
 	@Override
 	protected void build(StackLayout rootComponent) {
 		VanillaUIComponent vanillaTestButton = VanillaUIComponent.of(Button.builder(Component.literal("Test Vanilla Button"),
@@ -44,5 +38,12 @@ public class TestScreen extends BasePLScreen<StackLayout> {
 
 		TextUIComponent textUIComponent = new TextUIComponent(Minecraft.getInstance().font, Component.literal("Test Text"));
 		textUIComponent.mount(rootComponent);
+	}
+
+	@Override
+	protected StackLayout createRootComponent() {
+		StackLayout stack = StackLayout.createVerticalLayout();
+		stack.setGapSize(4);
+		return stack;
 	}
 }

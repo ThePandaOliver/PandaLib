@@ -27,6 +27,7 @@ allprojects {
 
 subprojects {
 	val isMinecraftSubProject = findProject(":common") != project && findProject(":common-testmod") != project
+	val isTestProject = findProject(":common-testmod") != project && findProject(":neoforge-testmod") != project
 
 	apply(plugin = "architectury-plugin")
 	apply(plugin = "dev.architectury.loom")
@@ -219,23 +220,25 @@ subprojects {
 
 	// Maven Publishing
 	publishing {
-		publications {
-			register("mavenJava", MavenPublication::class) {
-				groupId = properties["maven_group"] as String
-				artifactId = "${properties["mod_id"]}-${project.name}"
-				version = "${project.version}-build.${project.findProperty("buildNumber") ?: "-1"}"
+		if (!isTestProject) {
+			publications {
+				register("mavenJava", MavenPublication::class) {
+					groupId = properties["maven_group"] as String
+					artifactId = "${properties["mod_id"]}-${project.name}"
+					version = "${project.version}-build.${project.findProperty("buildNumber") ?: "-1"}"
 
-				from(components["java"])
+					from(components["java"])
+				}
 			}
-		}
 
-		repositories {
-			maven {
-				name = "GitHubPackages"
-				url = uri("https://maven.pkg.github.com/PandaMods-Dev/PandaLib")
-				credentials {
-					username = project.findProperty("gpr.user") as String? ?: System.getenv("USERNAME")
-					password = project.findProperty("gpr.key") as String? ?: System.getenv("TOKEN")
+			repositories {
+				maven {
+					name = "GitHubPackages"
+					url = uri("https://maven.pkg.github.com/PandaMods-Dev/PandaLib")
+					credentials {
+						username = project.findProperty("gpr.user") as String? ?: System.getenv("USERNAME")
+						password = project.findProperty("gpr.key") as String? ?: System.getenv("TOKEN")
+					}
 				}
 			}
 		}

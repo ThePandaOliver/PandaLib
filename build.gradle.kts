@@ -27,7 +27,7 @@ allprojects {
 
 subprojects {
 	val isMinecraftSubProject = findProject(":common") != project && findProject(":common-testmod") != project
-	val isTestProject = findProject(":common-testmod") != project && findProject(":neoforge-testmod") != project
+	val isTestProject = findProject(":common-testmod") == project && findProject(":neoforge-testmod") == project
 
 	apply(plugin = "architectury-plugin")
 	apply(plugin = "dev.architectury.loom")

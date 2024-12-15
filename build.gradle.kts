@@ -105,22 +105,16 @@ subprojects {
 			parchment("org.parchmentmc.data:parchment-${properties["parchment_minecraft_version"]}:${properties["parchment_version"]}@zip")
 		})
 
-		// Assimp Library
+		
 		"jarShadow"("org.lwjgl:lwjgl-assimp:${properties["deps_lwjgl_version"]}") {
 			exclude(group = "org.lwjgl", module = "lwjgl")
 		}
+		
 		if (isMinecraftSubProject) {
-			// Assimp natives
-			"jarShadow"("org.lwjgl:lwjgl-assimp:${properties["deps_lwjgl_version"]}:natives-windows") {
-				exclude(group = "org.lwjgl", module = "lwjgl")
-			}
-
-			"jarShadow"("org.lwjgl:lwjgl-assimp:${properties["deps_lwjgl_version"]}:natives-linux") {
-				exclude(group = "org.lwjgl", module = "lwjgl")
-			}
-
-			"jarShadow"("org.lwjgl:lwjgl-assimp:${properties["deps_lwjgl_version"]}:natives-macos") {
-				exclude(group = "org.lwjgl", module = "lwjgl")
+			for (natives in arrayOf("natives-windows", "natives-linux", "natives-macos")) {
+				"jarShadow"("org.lwjgl:lwjgl-assimp:${properties["deps_lwjgl_version"]}:${natives}") {
+					exclude(group = "org.lwjgl", module = "lwjgl")
+				}
 			}
 		}
 

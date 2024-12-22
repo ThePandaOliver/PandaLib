@@ -38,13 +38,15 @@ public class PandaLibConfig {
 		holders.put(configClass, holder);
 		return holder;
 	}
-
+	
 	public static <T extends ConfigData> ClientConfigHolder<T> registerClient(Class<T> configClass) {
-		return PandaLibConfig.register(configClass, ClientConfigHolder::new);
+		// Explicit type is required at compile time for some reason.
+		return PandaLibConfig.<T, ClientConfigHolder<T>>register(configClass, ClientConfigHolder::new);
 	}
 
 	public static <T extends ConfigData> CommonConfigHolder<T> registerCommon(Class<T> configClass) {
-		return PandaLibConfig.register(configClass, CommonConfigHolder::new);
+		// Explicit type is required at compile time for some reason.
+		return PandaLibConfig.<T, CommonConfigHolder<T>>register(configClass, CommonConfigHolder::new);
 	}
 
 	public static Optional<ConfigHolder<? extends ConfigData>> getConfig(ResourceLocation resourceLocation) {

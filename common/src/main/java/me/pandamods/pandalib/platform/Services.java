@@ -21,6 +21,7 @@ import org.slf4j.Logger;
 
 import java.util.ServiceLoader;
 
+@SuppressWarnings("unused")
 public class Services {
 	private static final Logger LOGGER = LogUtils.getLogger();
 

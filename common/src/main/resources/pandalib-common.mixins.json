@@ -3,9 +3,7 @@
 	"package": "me.pandamods.pandalib.mixin",
 	"compatibilityLevel": "JAVA_21",
 	"minVersion": "0.8",
-	"client": [
-		"accessor.AbstractWidgetAccessor"
-	],
+	"client": [],
 	"mixins": [],
 	"injectors": {
 		"defaultRequire": 1

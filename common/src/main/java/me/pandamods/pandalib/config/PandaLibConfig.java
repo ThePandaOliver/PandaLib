@@ -40,11 +40,11 @@ public class PandaLibConfig {
 	}
 
 	public static <T extends ConfigData> ClientConfigHolder<T> registerClient(Class<T> configClass) {
-		return PandaLibConfig.<T, ClientConfigHolder<T>>register(configClass, ClientConfigHolder::new);
+		return PandaLibConfig.register(configClass, ClientConfigHolder::new);
 	}
 
 	public static <T extends ConfigData> CommonConfigHolder<T> registerCommon(Class<T> configClass) {
-		return PandaLibConfig.<T, CommonConfigHolder<T>>register(configClass, CommonConfigHolder::new);
+		return PandaLibConfig.register(configClass, CommonConfigHolder::new);
 	}
 
 	public static Optional<ConfigHolder<? extends ConfigData>> getConfig(ResourceLocation resourceLocation) {
@@ -72,7 +72,7 @@ public class PandaLibConfig {
 	 *
 	 * @param modID the mod ID of the configuration
 	 * @return the configuration screen
-	 * @deprecated The config menu screen api is still in development, this is just here for quick support with future versions,
+	 * @deprecated The config menu api will be added in the future, this is just here for quick support with future versions,
 	 * this method is deprecated and returns null.
 	 */
 	@Deprecated
@@ -86,7 +86,7 @@ public class PandaLibConfig {
 	 * @param parent the parent screen
 	 * @param modID  the mod ID of the configuration
 	 * @return the configuration screen
-	 * @deprecated The config menu screen API is still in development, this is just here for quick support with future versions,
+	 * @deprecated The config menu api will be added in the future, this is just here for quick support with future versions,
 	 * this method is deprecated and returns null.
 	 */
 	@Deprecated
@@ -99,7 +99,7 @@ public class PandaLibConfig {
 	 *
 	 * @param configClass the class of the config data
 	 * @return the configuration screen
-	 * @deprecated The config menu screen API is still in development, this is just here for quick support with future versions,
+	 * @deprecated The config menu api will be added in the future, this is just here for quick support with future versions,
 	 * this method is deprecated and returns null.
 	 */
 	@Deprecated
@@ -113,7 +113,7 @@ public class PandaLibConfig {
 	 * @param parent      the parent screen
 	 * @param configClass the class of the config data
 	 * @return the configuration screen
-	 * @deprecated The config menu screen API is still in development, this is just here for quick support with future versions,
+	 * @deprecated The config menu api will be added in the future, this is just here for quick support with future versions,
 	 * this method is deprecated and returns null.
 	 */
 	@Deprecated

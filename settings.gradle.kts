@@ -19,5 +19,5 @@ pluginManagement.repositories {
 }
 
 include("common", "common-testmod")
-include("fabric")
+include("fabric", "fabric-testmod")
 include("neoforge", "neoforge-testmod")

@@ -14,7 +14,11 @@ package me.pandamods.pandalib.fabric.platform;
 
 import me.pandamods.pandalib.platform.services.RegistrationHelper;
 import me.pandamods.pandalib.registry.DeferredObject;
+import net.minecraft.core.RegistrationInfo;
 import net.minecraft.core.Registry;
+import net.minecraft.core.WritableRegistry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.function.Supplier;
 
@@ -23,5 +27,14 @@ public class RegistrationHelperImpl implements RegistrationHelper {
 	@SuppressWarnings("unchecked")
 	public <T> void register(DeferredObject<? extends T> deferredObject, Supplier<? extends T> supplier) {
 		Registry.register((Registry<T>) deferredObject.getRegistry(), deferredObject.getId(), supplier.get());
+	}
+
+	@Override
+	public <T> void registerNewRegistry(Registry<T> registry) {
+		ResourceLocation registryName = registry.key().location();
+		if (BuiltInRegistries.REGISTRY.containsKey(registryName))
+			throw new IllegalStateException("Attempted duplicate registration of registry " + registryName);
+		
+		((WritableRegistry) BuiltInRegistries.REGISTRY).register(registry.key(), registry, RegistrationInfo.BUILT_IN);
 	}
 }

@@ -12,7 +12,6 @@
 
 package me.pandamods.testmod.neoforge.client;
 
-import me.pandamods.pandalib.PandaLib;
 import me.pandamods.test.TestMod;
 import me.pandamods.test.client.TestModClient;
 import net.neoforged.api.distmarker.Dist;

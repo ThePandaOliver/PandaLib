@@ -25,7 +25,9 @@ public class PandaLibNeoForge {
 		new PandaLib();
 
 		eventBus.addListener(NetworkHelperImpl::registerPackets);
-		if (Services.REGISTRATION instanceof RegistrationHelperImpl helper)
+		if (Services.REGISTRATION instanceof RegistrationHelperImpl helper) {
 			eventBus.addListener(helper::registerEvent);
+			eventBus.addListener(helper::registerNewRegistryEvent);
+		}
     }
 }

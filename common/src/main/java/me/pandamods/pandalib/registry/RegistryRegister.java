@@ -10,15 +10,16 @@
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package me.pandamods.pandalib.platform.services;
+package me.pandamods.pandalib.registry;
 
-import me.pandamods.pandalib.registry.DeferredObject;
+import me.pandamods.pandalib.platform.Services;
 import net.minecraft.core.Registry;
 
-import java.util.function.Supplier;
-
-public interface RegistrationHelper {
-	<T> void register(DeferredObject<? extends T> deferredObject, Supplier<? extends T> supplier);
-	
-	<T> void registerNewRegistry(Registry<T> registry);
+@SuppressWarnings("unused")
+public class RegistryRegister<T> {
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public static <T> Registry<T> register(Registry<T> registry) {
+		Services.REGISTRATION.registerNewRegistry(registry);
+		return registry;
+	}
 }

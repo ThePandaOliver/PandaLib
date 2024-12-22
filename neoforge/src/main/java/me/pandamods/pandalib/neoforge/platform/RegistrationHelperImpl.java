@@ -16,14 +16,18 @@ import me.pandamods.pandalib.platform.services.RegistrationHelper;
 import me.pandamods.pandalib.registry.DeferredObject;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
+import net.neoforged.neoforge.registries.NewRegistryEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
 public class RegistrationHelperImpl implements RegistrationHelper {
 	private final Map<ResourceKey<? extends Registry<?>>, PendingRegistries<?>> pendingRegistries = new HashMap<>();
+	private final List<Registry<?>> pendingRegistryTypes = new ArrayList<>();
 
 	@Override
 	@SuppressWarnings("unchecked")
@@ -34,8 +38,17 @@ public class RegistrationHelperImpl implements RegistrationHelper {
 		pending.add(deferredObject, supplier);
 	}
 
+	@Override
+	public <T> void registerNewRegistry(Registry<T> registry) {
+		pendingRegistryTypes.add(registry);
+	}
+
 	public void registerEvent(RegisterEvent event) {
 		pendingRegistries.values().forEach(pending -> pending.register(event));
+	}
+	
+	public void registerNewRegistryEvent(NewRegistryEvent event) {
+		pendingRegistryTypes.forEach(event::register);
 	}
 
 	private static class PendingRegistries<T> {

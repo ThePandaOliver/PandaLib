@@ -12,7 +12,6 @@
 
 package me.pandamods.testmod.neoforge;
 
-import me.pandamods.pandalib.PandaLib;
 import me.pandamods.test.TestMod;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;

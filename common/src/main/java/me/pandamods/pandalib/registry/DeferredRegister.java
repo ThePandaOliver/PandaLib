@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+@SuppressWarnings("unused")
 public class DeferredRegister<T> {
 	private final String namespace;
 	private final ResourceKey<? extends Registry<T>> registryKey;

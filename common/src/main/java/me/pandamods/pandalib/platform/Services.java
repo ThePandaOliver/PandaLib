@@ -13,8 +13,10 @@
 package me.pandamods.pandalib.platform;
 
 import com.mojang.logging.LogUtils;
-import me.pandamods.pandalib.platform.services.INetworkHelper;
-import me.pandamods.pandalib.platform.services.IRegistrationHelper;
+import me.pandamods.pandalib.platform.services.GameHelper;
+import me.pandamods.pandalib.platform.services.ModLoaderHelper;
+import me.pandamods.pandalib.platform.services.NetworkHelper;
+import me.pandamods.pandalib.platform.services.RegistrationHelper;
 import org.slf4j.Logger;
 
 import java.util.ServiceLoader;
@@ -22,8 +24,10 @@ import java.util.ServiceLoader;
 public class Services {
 	private static final Logger LOGGER = LogUtils.getLogger();
 
-	public static final INetworkHelper NETWORK = load(INetworkHelper.class);
-	public static final IRegistrationHelper REGISTRATION = load(IRegistrationHelper.class);
+	public static final NetworkHelper NETWORK = load(NetworkHelper.class);
+	public static final RegistrationHelper REGISTRATION = load(RegistrationHelper.class);
+	public static final GameHelper GAME = load(GameHelper.class);
+	public static final ModLoaderHelper MOD_LOADER = load(ModLoaderHelper.class);
 
 	private static <T> T load(Class<T> serviceClass) {
 		final T loadedService = ServiceLoader.load(serviceClass).findFirst().orElseThrow(() ->

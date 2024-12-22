@@ -12,10 +12,16 @@
 
 package me.pandamods.pandalib.platform.services;
 
-import me.pandamods.pandalib.registry.DeferredObject;
+import java.nio.file.Path;
 
-import java.util.function.Supplier;
-
-public interface IRegistrationHelper {
-	<T> void register(DeferredObject<? extends T> deferredObject, Supplier<? extends T> supplier);
+public interface GameHelper {
+	boolean isDevelopmentEnvironment();
+	boolean isProductionEnvironment();
+	
+	boolean isClient();
+	boolean isServer();
+	
+	Path getGameDir();
+	Path getConfigDir();
+	Path getModDir();
 }

@@ -12,7 +12,7 @@
 
 package me.pandamods.pandalib.neoforge.platform;
 
-import me.pandamods.pandalib.platform.services.IRegistrationHelper;
+import me.pandamods.pandalib.platform.services.RegistrationHelper;
 import me.pandamods.pandalib.registry.DeferredObject;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
-public class RegistrationHelperImpl implements IRegistrationHelper {
+public class RegistrationHelperImpl implements RegistrationHelper {
 	private final Map<ResourceKey<? extends Registry<?>>, PendingRegistries<?>> pendingRegistries = new HashMap<>();
 
 	@Override

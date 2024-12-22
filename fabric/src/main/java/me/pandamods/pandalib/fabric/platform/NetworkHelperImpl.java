@@ -17,7 +17,7 @@ import dev.architectury.utils.Env;
 import me.pandamods.pandalib.fabric.PandaLibFabric;
 import me.pandamods.pandalib.networking.NetworkContext;
 import me.pandamods.pandalib.networking.NetworkReceiver;
-import me.pandamods.pandalib.platform.services.INetworkHelper;
+import me.pandamods.pandalib.platform.services.NetworkHelper;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
@@ -28,7 +28,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
 
-public class NetworkHelperImpl implements INetworkHelper {
+public class NetworkHelperImpl implements NetworkHelper {
 	@Override
 	@Environment(EnvType.CLIENT)
 	public <T extends CustomPacketPayload> void registerClientReceiver(CustomPacketPayload.Type<T> type,

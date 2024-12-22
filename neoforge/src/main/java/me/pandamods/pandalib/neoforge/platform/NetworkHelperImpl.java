@@ -17,7 +17,7 @@ import me.pandamods.pandalib.event.events.NetworkingEvents;
 import me.pandamods.pandalib.networking.NetworkContext;
 import me.pandamods.pandalib.networking.NetworkReceiver;
 import me.pandamods.pandalib.platform.Services;
-import me.pandamods.pandalib.platform.services.INetworkHelper;
+import me.pandamods.pandalib.platform.services.NetworkHelper;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -27,7 +27,7 @@ import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.handling.DirectionalPayloadHandler;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
-public class NetworkHelperImpl extends PayloadRegistrar implements INetworkHelper {
+public class NetworkHelperImpl extends PayloadRegistrar implements NetworkHelper {
 	public NetworkHelperImpl() {
 		super("1");
 	}

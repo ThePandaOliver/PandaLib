@@ -10,18 +10,12 @@
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package me.pandamods.pandalib.fabric.platform;
+package me.pandamods.pandalib.platform.services;
 
-import me.pandamods.pandalib.platform.services.RegistrationHelper;
 import me.pandamods.pandalib.registry.DeferredObject;
-import net.minecraft.core.Registry;
 
 import java.util.function.Supplier;
 
-public class RegistrationHelperImpl implements RegistrationHelper {
-	@Override
-	@SuppressWarnings("unchecked")
-	public <T> void register(DeferredObject<? extends T> deferredObject, Supplier<? extends T> supplier) {
-		Registry.register((Registry<T>) deferredObject.getRegistry(), deferredObject.getId(), supplier.get());
-	}
+public interface RegistrationHelper {
+	<T> void register(DeferredObject<? extends T> deferredObject, Supplier<? extends T> supplier);
 }

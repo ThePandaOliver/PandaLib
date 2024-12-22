@@ -12,14 +12,19 @@
 
 package me.pandamods.pandalib.platform.services;
 
-import me.pandamods.pandalib.networking.NetworkRegistry;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.server.level.ServerPlayer;
+import java.util.List;
 
-public interface INetworkHelper extends NetworkRegistry {
-	<T extends CustomPacketPayload> void sendToServer(T payload);
-
-	<T extends CustomPacketPayload> void sendToPlayer(ServerPlayer player, T payload);
-
-	<T extends CustomPacketPayload> void sendToAllPlayers(T payload);
+public interface ModLoaderHelper {
+	boolean isModLoaded(String modId);
+	Mod getMod(String modId);
+	List<Mod> getMods();
+	List<String> getModIds();
+	
+	interface Mod {
+		String getId();
+		String getDisplayName();
+		String getDescription();
+		List<String> getAuthors();
+		String getVersion();
+	}
 }

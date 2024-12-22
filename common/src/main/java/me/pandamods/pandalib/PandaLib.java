@@ -22,6 +22,8 @@ import me.pandamods.pandalib.event.events.NetworkingEvents;
 import me.pandamods.pandalib.platform.Services;
 import net.minecraft.resources.ResourceLocation;
 
+import java.awt.*;
+
 public class PandaLib {
     public static final String MOD_ID = "pandalib";
 	private static PandaLib instance;

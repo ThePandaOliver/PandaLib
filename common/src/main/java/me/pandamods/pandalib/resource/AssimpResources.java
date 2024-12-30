@@ -21,8 +21,6 @@ import me.pandamods.pandalib.resource.model.Model;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.util.profiling.ProfilerFiller;
-import org.jetbrains.annotations.NotNull;
 import org.lwjgl.assimp.*;
 
 import java.io.FileNotFoundException;

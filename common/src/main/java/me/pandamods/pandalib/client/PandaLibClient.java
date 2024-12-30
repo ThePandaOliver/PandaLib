@@ -12,9 +12,9 @@
 
 package me.pandamods.pandalib.client;
 
-import dev.architectury.registry.ReloadListenerRegistry;
 import me.pandamods.pandalib.PandaLib;
 import me.pandamods.pandalib.core.client.event.EventHandlerClient;
+import me.pandamods.pandalib.registry.ReloadListenerRegistry;
 import me.pandamods.pandalib.resource.AssimpResources;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;

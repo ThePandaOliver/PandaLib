@@ -10,20 +10,25 @@
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package me.pandamods.pandalib.platform.services;
+package me.pandamods.pandalib.registry;
 
-import me.pandamods.pandalib.registry.DeferredObject;
-import net.minecraft.core.Registry;
+import me.pandamods.pandalib.platform.Services;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 
 import java.util.List;
-import java.util.function.Supplier;
 
-public interface RegistrationHelper {
-	<T> void register(DeferredObject<? extends T> deferredObject, Supplier<? extends T> supplier);
-	<T> void registerNewRegistry(Registry<T> registry);
-
-	void registerReloadListener(PackType packType, PreparableReloadListener listener, ResourceLocation id, List<ResourceLocation> dependencies);
+public class ReloadListenerRegistry {
+	public static void register(PackType packType, PreparableReloadListener listener) {
+		register(packType, listener, null);
+	}
+	
+	public static void register(PackType packType, PreparableReloadListener listener, ResourceLocation id) {
+		register(packType, listener, id, List.of());
+	}
+	
+	public static void register(PackType packType, PreparableReloadListener listener, ResourceLocation id, List<ResourceLocation> dependencies) {
+		Services.REGISTRATION.registerReloadListener(packType, listener, id, dependencies);
+	}
 }

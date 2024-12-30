@@ -18,16 +18,18 @@ import me.pandamods.pandalib.neoforge.platform.RegistrationHelperImpl;
 import me.pandamods.pandalib.platform.Services;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.common.NeoForge;
 
 @Mod(PandaLib.MOD_ID)
 public class PandaLibNeoForge {
     public PandaLibNeoForge(IEventBus eventBus) {
 		new PandaLib();
-
+		
 		eventBus.addListener(NetworkHelperImpl::registerPackets);
 		if (Services.REGISTRATION instanceof RegistrationHelperImpl helper) {
 			eventBus.addListener(helper::registerEvent);
 			eventBus.addListener(helper::registerNewRegistryEvent);
+			NeoForge.EVENT_BUS.addListener(helper::addReloadListenerEvent);
 		}
     }
 }

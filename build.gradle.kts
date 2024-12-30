@@ -1,7 +1,6 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import net.fabricmc.loom.api.LoomGradleExtensionAPI
 import net.fabricmc.loom.task.RemapJarTask
-import org.gradle.kotlin.dsl.named
 
 plugins {
 	java
@@ -109,12 +108,10 @@ subprojects {
 		"jarShadow"("org.lwjgl:lwjgl-assimp:${properties["deps_lwjgl_version"]}") {
 			exclude(group = "org.lwjgl", module = "lwjgl")
 		}
-		
-		if (isMinecraftSubProject) {
-			for (natives in arrayOf("natives-windows", "natives-linux", "natives-macos")) {
-				"jarShadow"("org.lwjgl:lwjgl-assimp:${properties["deps_lwjgl_version"]}:${natives}") {
-					exclude(group = "org.lwjgl", module = "lwjgl")
-				}
+
+		for (natives in arrayOf("natives-windows", "natives-linux", "natives-macos")) {
+			"jarShadow"("org.lwjgl:lwjgl-assimp:${properties["deps_lwjgl_version"]}:${natives}") {
+				exclude(group = "org.lwjgl", module = "lwjgl")
 			}
 		}
 

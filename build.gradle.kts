@@ -104,24 +104,14 @@ subprojects {
 			parchment("org.parchmentmc.data:parchment-${properties["parchment_minecraft_version"]}:${properties["parchment_version"]}@zip")
 		})
 
-		// Embed joml
-		"jarShadow"("org.joml:joml:${properties["deps_joml_version"]}")
-
 		compileOnly("org.jetbrains:annotations:24.1.0")
-	}
-
-	if (isMinecraftSubProject) {
-		tasks.withType<ShadowJar> {
-			exclude("architectury.common.json")
-		}
 	}
 
 	tasks.withType<ShadowJar> {
 		configurations = listOf(project.configurations.getByName("shadowBundle"), project.configurations.getByName("jarShadow"))
 		archiveClassifier.set("dev-shadow")
 
-		// Relocate joml as to not cause issues with Minecraft
-		relocate("org.joml", "${properties["maven_group"]}.joml")
+		exclude("architectury.common.json")
 	}
 
 	tasks.withType<JavaCompile> {

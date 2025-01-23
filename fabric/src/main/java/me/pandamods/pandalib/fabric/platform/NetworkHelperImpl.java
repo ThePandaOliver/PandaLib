@@ -12,14 +12,13 @@
 
 package me.pandamods.pandalib.fabric.platform;
 
-import dev.architectury.platform.Platform;
 import dev.architectury.utils.Env;
 import me.pandamods.pandalib.fabric.PandaLibFabric;
+import me.pandamods.pandalib.fabric.platform.utils.ClientPlayPayloadHandler;
 import me.pandamods.pandalib.networking.NetworkContext;
 import me.pandamods.pandalib.networking.NetworkReceiver;
 import me.pandamods.pandalib.platform.services.NetworkHelper;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
+import me.pandamods.pandalib.utils.EnvRunner;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -30,27 +29,13 @@ import net.minecraft.server.level.ServerPlayer;
 
 public class NetworkHelperImpl implements NetworkHelper {
 	@Override
-	@Environment(EnvType.CLIENT)
 	public <T extends CustomPacketPayload> void registerClientReceiver(CustomPacketPayload.Type<T> type,
 																	   StreamCodec<? super RegistryFriendlyByteBuf, T> codec,
 																	   NetworkReceiver<T> receiver) {
 		PayloadTypeRegistry.playS2C().register(type, codec);
-		ClientPlayNetworking.registerGlobalReceiver(type, new ClientPlayPayloadHandler<>(receiver));
-	}
-
-	@Environment(EnvType.CLIENT)
-	private static class ClientPlayPayloadHandler<T extends CustomPacketPayload> implements ClientPlayNetworking.PlayPayloadHandler<T> {
-		private final NetworkReceiver<T> receiver;
-
-		ClientPlayPayloadHandler(NetworkReceiver<T> receiver) {
-			this.receiver = receiver;
-		}
-
-		@Override
-		public void receive(T payload, ClientPlayNetworking.Context context) {
-			NetworkContext networkContext = new NetworkContext(context.player(), Env.CLIENT);
-			receiver.receive(networkContext, payload);
-		}
+		EnvRunner.runIf(Env.CLIENT, () -> () ->
+				ClientPlayNetworking.registerGlobalReceiver(type, (payload, context) -> ClientPlayPayloadHandler.receivePlay(receiver, payload, context))
+		);
 	}
 
 	@Override
@@ -66,8 +51,7 @@ public class NetworkHelperImpl implements NetworkHelper {
 																			  StreamCodec<? super RegistryFriendlyByteBuf, T> codec,
 																			  NetworkReceiver<T> clientReceiver, NetworkReceiver<T> serverReceiver) {
 		registerServerReceiver(type, codec, serverReceiver);
-		if (Platform.getEnvironment() == Env.CLIENT)
-			registerClientReceiver(type, codec, clientReceiver);
+		registerClientReceiver(type, codec, clientReceiver);
 	}
 
 	@Override

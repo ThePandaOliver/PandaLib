@@ -12,6 +12,7 @@
 
 package me.pandamods.pandalib.neoforge.platform;
 
+import dev.architectury.utils.Env;
 import me.pandamods.pandalib.platform.services.GameHelper;
 import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.fml.loading.FMLPaths;
@@ -27,6 +28,14 @@ public class GameHelperImpl implements GameHelper {
 	@Override
 	public boolean isProductionEnvironment() {
 		return FMLLoader.isProduction();
+	}
+
+	@Override
+	public Env getEnvironment() {
+		return switch (FMLLoader.getDist()) {
+			case CLIENT -> Env.CLIENT;
+			case DEDICATED_SERVER -> Env.SERVER;
+		};
 	}
 
 	@Override

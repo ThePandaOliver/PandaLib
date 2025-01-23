@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 Oliver Froberg (The Panda Oliver)
+ * Copyright (C) 2025 Oliver Froberg (The Panda Oliver)
  *
  * This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU Lesser General Public License as published by
@@ -10,21 +10,16 @@
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package me.pandamods.pandalib.platform.services;
+package me.pandamods.pandalib.utils;
 
 import dev.architectury.utils.Env;
+import me.pandamods.pandalib.platform.Services;
 
-import java.nio.file.Path;
+import java.util.function.Supplier;
 
-public interface GameHelper {
-	boolean isDevelopmentEnvironment();
-	boolean isProductionEnvironment();
-
-	Env getEnvironment();
-	boolean isClient();
-	boolean isServer();
-	
-	Path getGameDir();
-	Path getConfigDir();
-	Path getModDir();
+public class EnvRunner {
+	public static void runIf(Env env, Supplier<Runnable> task) {
+		if (Services.GAME.getEnvironment() == env)
+			task.get().run();
+	}
 }

@@ -12,6 +12,7 @@
 
 package me.pandamods.pandalib.fabric.platform;
 
+import dev.architectury.utils.Env;
 import me.pandamods.pandalib.platform.services.GameHelper;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
@@ -27,6 +28,14 @@ public class GameHelperImpl implements GameHelper {
 	@Override
 	public boolean isProductionEnvironment() {
 		return !FabricLoader.getInstance().isDevelopmentEnvironment();
+	}
+
+	@Override
+	public Env getEnvironment() {
+		return switch (FabricLoader.getInstance().getEnvironmentType()) {
+			case CLIENT -> Env.CLIENT;
+			case SERVER -> Env.SERVER;
+		};
 	}
 
 	@Override

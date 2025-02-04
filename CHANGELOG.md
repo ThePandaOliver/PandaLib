@@ -1,7 +1,7 @@
-# Version 0.5 Beta
+# Version 0.5.1 Beta
 
-## User Changelog
-It seems like there is nothing new.
+## Bug Fixes
+* Fixed forge crash happening on 0.5, it was caused by a remapping issue.
 
 
 ## Developer Changelog

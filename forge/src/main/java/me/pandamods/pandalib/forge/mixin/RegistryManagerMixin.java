@@ -21,7 +21,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(value = RegistryManager.class, remap = false)
+@Mixin(value = RegistryManager.class)
 public class RegistryManagerMixin {
 	@Inject(method = "postNewRegistryEvent", at = @At(value = "INVOKE", target = "Lnet/minecraft/core/Registry;keySet()Ljava/util/Set;"))
 	private static void registerRegistries(CallbackInfo ci) {

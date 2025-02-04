@@ -1,4 +1,4 @@
-![banner.png](https://github.com/PandaDap2006/PandaLib/blob/main/assets_for_readme/banner.png?raw=true)
+![banner.png](https://github.com/ThePandaOliver/Readme-Assets/blob/main/pandalib/banner.png?raw=true)
 
 [![Discord](https://img.shields.io/discord/1021703635178115122?style=for-the-badge&logo=discord&label=Discord&labelColor=black&color=lightblue)](https://discord.gg/wjPt4vEfXb)
 [![Modrinth](https://img.shields.io/modrinth/dt/mEEGbEIu?style=for-the-badge&logo=modrinth&label=Modrinth&labelColor=black&color=green)](https://modrinth.com/mod/pandalib)

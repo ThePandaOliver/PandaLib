@@ -13,7 +13,6 @@
 package me.pandamods.test;
 
 import com.mojang.serialization.Lifecycle;
-import dev.architectury.event.events.client.ClientLifecycleEvent;
 import me.pandamods.pandalib.config.PandaLibConfig;
 import me.pandamods.pandalib.config.holders.ClientConfigHolder;
 import me.pandamods.pandalib.config.holders.CommonConfigHolder;
@@ -22,6 +21,7 @@ import me.pandamods.pandalib.registry.DeferredRegister;
 import me.pandamods.pandalib.registry.RegistryRegister;
 import me.pandamods.test.config.ClientTestConfig;
 import me.pandamods.test.config.CommonTestConfig;
+import me.pandamods.test.register.TestEntityRegister;
 import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
@@ -44,6 +44,7 @@ public class TestMod {
 	public TestMod() {
 		instance = this;
 		TEST_REGISTER.register();
+		TestEntityRegister.ENTITIES.register();
 	}
 
 	public static ResourceLocation resourceLocation(String path) {

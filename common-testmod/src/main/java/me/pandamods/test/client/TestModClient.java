@@ -12,11 +12,15 @@
 
 package me.pandamods.test.client;
 
+import dev.architectury.registry.client.level.entity.EntityRendererRegistry;
+import me.pandamods.test.client.render.SandWormRenderer;
+import me.pandamods.test.register.TestEntityRegister;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
 @Environment(EnvType.CLIENT)
 public class TestModClient {
     public TestModClient() {
+		EntityRendererRegistry.register(TestEntityRegister.SAND_WORM, SandWormRenderer::new);
     }
 }

@@ -17,6 +17,7 @@ import me.pandamods.pandalib.registry.ReloadListenerRegistry;
 import me.pandamods.pandalib.resource.ModelManager;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.server.packs.PackType;
 
 @Environment(EnvType.CLIENT)
 public class PandaLibClient {

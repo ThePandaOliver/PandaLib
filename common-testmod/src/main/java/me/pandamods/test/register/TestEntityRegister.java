@@ -23,7 +23,8 @@ import net.minecraft.world.entity.MobCategory;
 public class TestEntityRegister {
 	public static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(TestMod.MOD_ID, Registries.ENTITY_TYPE);
 
-	public static final DeferredObject<EntityType<SandWorm>> SAND_WORM = ENTITIES.register("sand_worm", resourceKey -> EntityType.Builder.of(SandWorm::new, MobCategory.MONSTER)
+	public static final DeferredObject<EntityType<SandWorm>> SAND_WORM = ENTITIES.register("sand_worm", resourceKey -> EntityType.Builder
+			.of(SandWorm::new, MobCategory.MONSTER)
 			.sized(0.75F, 0.75F)
 			.build(resourceKey));
 }

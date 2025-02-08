@@ -12,9 +12,9 @@
 
 package me.pandamods.pandalib.client;
 
+import me.pandamods.pandalib.client.resource.AssimpResources;
 import me.pandamods.pandalib.core.client.event.EventHandlerClient;
 import me.pandamods.pandalib.registry.ReloadListenerRegistry;
-import me.pandamods.pandalib.resource.ModelManager;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.server.packs.PackType;
@@ -23,13 +23,13 @@ import net.minecraft.server.packs.PackType;
 public class PandaLibClient {
 	private static PandaLibClient INSTANCE;
 	
-	public final ModelManager modelManager = new ModelManager();
+	public final AssimpResources assimpResources = new AssimpResources();
 	
     public PandaLibClient() {
 		INSTANCE = this;
 		EventHandlerClient.init();
 
-		ReloadListenerRegistry.register(PackType.CLIENT_RESOURCES, modelManager);
+		ReloadListenerRegistry.register(PackType.CLIENT_RESOURCES, assimpResources);
     }
 
 	public static PandaLibClient getInstance() {

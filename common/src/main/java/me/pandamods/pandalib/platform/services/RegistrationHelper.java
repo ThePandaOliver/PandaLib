@@ -13,6 +13,7 @@
 package me.pandamods.pandalib.platform.services;
 
 import me.pandamods.pandalib.registry.DeferredObject;
+import me.pandamods.pandalib.registry.IdentifiableResourceReloadListener;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
@@ -25,5 +26,5 @@ public interface RegistrationHelper {
 	<T> void register(DeferredObject<? extends T> deferredObject, Supplier<? extends T> supplier);
 	<T> void registerNewRegistry(Registry<T> registry);
 
-	void registerReloadListener(PackType packType, PreparableReloadListener listener, ResourceLocation id, List<ResourceLocation> dependencies);
+	void registerReloadListener(PackType packType, IdentifiableResourceReloadListener listener);
 }

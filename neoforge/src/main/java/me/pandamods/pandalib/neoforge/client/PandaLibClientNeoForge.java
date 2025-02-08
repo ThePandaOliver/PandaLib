@@ -14,14 +14,20 @@ package me.pandamods.pandalib.neoforge.client;
 
 import me.pandamods.pandalib.PandaLib;
 import me.pandamods.pandalib.client.PandaLibClient;
+import me.pandamods.pandalib.neoforge.platform.RegistrationHelperImpl;
+import me.pandamods.pandalib.platform.Services;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
-import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.neoforge.common.NeoForge;
 
 @Mod(value = PandaLib.MOD_ID, dist = Dist.CLIENT)
 public class PandaLibClientNeoForge {
     public PandaLibClientNeoForge(IEventBus eventBus) {
 		new PandaLibClient();
+
+		if (Services.REGISTRATION instanceof RegistrationHelperImpl helper) {
+			eventBus.addListener(helper::addClientReloadListenerEvent);
+		}
     }
 }

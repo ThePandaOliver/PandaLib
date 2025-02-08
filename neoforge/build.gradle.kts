@@ -12,6 +12,7 @@ loom {
 
 configurations {
 	getByName("developmentNeoForge").extendsFrom(configurations["common"])
+	forgeRuntimeLibrary.get().extendsFrom(configurations["forgeJarShadow"])
 }
 
 dependencies {

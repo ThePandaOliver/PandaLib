@@ -49,11 +49,11 @@ public class RegistrationHelperImpl implements RegistrationHelper {
 	}
 	
 	@Override
-	public void registerReloadListener(PackType packType, PreparableReloadListener listener, ResourceLocation id, List<ResourceLocation> dependencies) {
+	public void registerReloadListener(PackType packType, me.pandamods.pandalib.registry.IdentifiableResourceReloadListener listener) {
 		ResourceManagerHelper.get(packType).registerReloadListener(new IdentifiableResourceReloadListener() {
 			@Override
 			public ResourceLocation getFabricId() {
-				return id;
+				return listener.getResourceID();
 			}
 
 			@Override
@@ -63,7 +63,7 @@ public class RegistrationHelperImpl implements RegistrationHelper {
 
 			@Override
 			public Collection<ResourceLocation> getFabricDependencies() {
-				return dependencies;
+				return listener.getResourceDependencies();
 			}
 
 			@Override

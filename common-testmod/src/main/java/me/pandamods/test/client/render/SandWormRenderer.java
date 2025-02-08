@@ -13,8 +13,10 @@
 package me.pandamods.test.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import me.pandamods.pandalib.client.model.Model;
-import me.pandamods.pandalib.resource.ModelManager;
+import me.pandamods.pandalib.client.render.ModelRenderer;
+import me.pandamods.pandalib.client.render.TriangleRenderType;
+import me.pandamods.pandalib.client.resource.model.Model;
+import me.pandamods.pandalib.client.resource.AssimpResources;
 import me.pandamods.test.TestMod;
 import me.pandamods.test.entities.SandWorm;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -22,6 +24,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import org.jetbrains.annotations.NotNull;
 
 public class SandWormRenderer extends EntityRenderer<SandWorm, SandWormRenderer.SandWormRenderState> {
@@ -32,9 +35,10 @@ public class SandWormRenderer extends EntityRenderer<SandWorm, SandWormRenderer.
 	@Override
 	public void render(SandWormRenderState renderState, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
 		super.render(renderState, poseStack, bufferSource, packedLight);
-		Model model = ModelManager.getModel(TestMod.resourceLocation("pandalib/model/sand_worm.plm"));
+		Model model = AssimpResources.getModel(TestMod.resourceLocation("assimp/model/sand_worm.fbx"));
 		if (model != null) {
-			model.render(poseStack, s -> bufferSource.getBuffer(RenderType.entityCutout(TestMod.resourceLocation("textures/entity/sand_worm.png"))));
+			ModelRenderer.render(model, poseStack, OverlayTexture.NO_OVERLAY, packedLight, s ->
+					bufferSource.getBuffer(TriangleRenderType.getRenderType(RenderType.entityCutout(TestMod.resourceLocation("textures/entity/sand_worm2.png")))));
 		}
 	}
 

@@ -26,7 +26,7 @@ public class PandaLib {
 
 		EventHandler.init();
 		INSTANCE = this;
-    }
+	}
 
 	public static ResourceLocation resourceLocation(String path) {
 		return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);

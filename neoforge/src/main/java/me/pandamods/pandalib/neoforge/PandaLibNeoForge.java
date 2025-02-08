@@ -29,7 +29,7 @@ public class PandaLibNeoForge {
 		if (Services.REGISTRATION instanceof RegistrationHelperImpl helper) {
 			eventBus.addListener(helper::registerEvent);
 			eventBus.addListener(helper::registerNewRegistryEvent);
-			NeoForge.EVENT_BUS.addListener(helper::addReloadListenerEvent);
+			NeoForge.EVENT_BUS.addListener(helper::addServerReloadListenerEvent);
 		}
     }
 }

@@ -14,14 +14,14 @@ package me.pandamods.pandalib.neoforge.platform;
 
 import me.pandamods.pandalib.platform.services.RegistrationHelper;
 import me.pandamods.pandalib.registry.DeferredObject;
-import net.minecraft.client.Minecraft;
+import me.pandamods.pandalib.registry.IdentifiableResourceReloadListener;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
-import net.minecraft.server.packs.resources.ReloadableResourceManager;
-import net.neoforged.neoforge.event.AddReloadListenerEvent;
+import net.neoforged.neoforge.client.event.AddClientReloadListenersEvent;
+import net.neoforged.neoforge.event.AddServerReloadListenersEvent;
 import net.neoforged.neoforge.registries.NewRegistryEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
 
@@ -34,7 +34,8 @@ import java.util.function.Supplier;
 public class RegistrationHelperImpl implements RegistrationHelper {
 	private final Map<ResourceKey<? extends Registry<?>>, PendingRegistries<?>> pendingRegistries = new HashMap<>();
 	private final List<Registry<?>> pendingRegistryTypes = new ArrayList<>();
-	private final List<PreparableReloadListener> serverDataReloadListeners = new ArrayList<>();
+	private final List<IdentifiableResourceReloadListener> serverDataReloadListeners = new ArrayList<>();
+	private final List<IdentifiableResourceReloadListener> clientDataReloadListeners = new ArrayList<>();
 
 	@Override
 	@SuppressWarnings("unchecked")
@@ -51,11 +52,11 @@ public class RegistrationHelperImpl implements RegistrationHelper {
 	}
 
 	@Override
-	public void registerReloadListener(PackType packType, PreparableReloadListener listener, ResourceLocation id, List<ResourceLocation> dependencies) {
+	public void registerReloadListener(PackType packType, IdentifiableResourceReloadListener listener) {
 		if (packType == PackType.SERVER_DATA) {
 			serverDataReloadListeners.add(listener);
 		} else {
-			((ReloadableResourceManager) Minecraft.getInstance().getResourceManager()).registerReloadListener(listener);
+			clientDataReloadListeners.add(listener);
 		}
 	}
 
@@ -67,8 +68,22 @@ public class RegistrationHelperImpl implements RegistrationHelper {
 		pendingRegistryTypes.forEach(event::register);
 	}
 	
-	public void addReloadListenerEvent(AddReloadListenerEvent event) {
-		serverDataReloadListeners.forEach(event::addListener);
+	public void addClientReloadListenerEvent(AddClientReloadListenersEvent event) {
+		for (IdentifiableResourceReloadListener listener : clientDataReloadListeners) {
+			event.addListener(listener.getResourceID(), listener);
+			for (ResourceLocation resourceDependency : listener.getResourceDependencies()) {
+				event.addDependency(resourceDependency, listener.getResourceID());
+			}
+		}
+	}
+
+	public void addServerReloadListenerEvent(AddServerReloadListenersEvent event) {
+		for (IdentifiableResourceReloadListener listener : serverDataReloadListeners) {
+			event.addListener(listener.getResourceID(), listener);
+			for (ResourceLocation resourceDependency : listener.getResourceDependencies()) {
+				event.addDependency(resourceDependency, listener.getResourceID());
+			}
+		}
 	}
 
 	private static class PendingRegistries<T> {

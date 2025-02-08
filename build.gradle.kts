@@ -78,6 +78,13 @@ subprojects {
 		}
 		implementation.get().extendsFrom(configurations["jarShadow"])
 
+		create("forgeJarShadow") {
+			isCanBeResolved = true
+			isCanBeConsumed = false
+		}
+		implementation.get().extendsFrom(configurations["forgeJarShadow"])
+		configurations["jarShadow"].extendsFrom(configurations["forgeJarShadow"])
+
 		create("modShadow")
 		getByName("modImplementation").extendsFrom(configurations["modShadow"])
 		getByName("include").extendsFrom(configurations["modShadow"])
@@ -103,6 +110,18 @@ subprojects {
 			officialMojangMappings()
 			parchment("org.parchmentmc.data:parchment-${properties["parchment_minecraft_version"]}:${properties["parchment_version"]}@zip")
 		})
+
+		"forgeJarShadow"("org.lwjgl", "lwjgl-assimp", "${properties["deps_lwjgl_version"]}") {
+			exclude(group = "org.lwjgl", module = "lwjgl")
+		}
+		for (native in arrayOf("natives-windows", "natives-linux", "natives-macos")) {
+//			runtimeOnly("org.lwjgl", "lwjgl-assimp", "${properties["deps_lwjgl_version"]}", classifier = native) {
+//				exclude(group = "org.lwjgl", module = "lwjgl")
+//			}
+			"forgeJarShadow"("org.lwjgl", "lwjgl-assimp", "${properties["deps_lwjgl_version"]}", classifier = native) {
+				exclude(group = "org.lwjgl", module = "lwjgl")
+			}
+		}
 
 		compileOnly("org.jetbrains:annotations:24.1.0")
 	}

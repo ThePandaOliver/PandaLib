@@ -220,7 +220,7 @@ publishMods {
 			else -> it
 		}
 
-		val remapJar = rootProject.project(":" + loaderName).tasks.getByName<RemapJarTask>("remapJar")
+		val remapJar = rootProject.project(":$loaderName").tasks.getByName<RemapJarTask>("remapJar")
 
 		curseforge("curseforge_${loaderName}") {
 			accessToken = curseForgeAPIKey

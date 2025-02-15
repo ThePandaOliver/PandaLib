@@ -1,6 +1,8 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import net.fabricmc.loom.task.RemapJarTask
 
+val isSnapshot = project.findProperty("snapshot") == "true"
+
 architectury {
 	common(properties["supported_mod_loaders"].toString().split(","))
 }
@@ -25,7 +27,7 @@ publishing {
 		register("mavenJava", MavenPublication::class) {
 			groupId = properties["maven_group"] as String
 			artifactId = "${properties["mod_id"]}-${project.name}"
-			version = "${project.version}-build.${project.findProperty("buildNumber") ?: "-1"}"
+			version = "${project.version}"
 
 			from(components["java"])
 		}
@@ -33,12 +35,16 @@ publishing {
 
 	repositories {
 		maven {
-			name = "GitHubPackages"
-			url = uri("https://maven.pkg.github.com/PandaMods-Dev/PandaLib")
+			name = "Nexus"
+			url = if (isSnapshot)
+				uri("https://nexus.pandasystems.dev/repository/maven-snapshots/")
+			else
+				uri("https://nexus.pandasystems.dev/repository/maven-releases/")
 			credentials {
-				username = project.findProperty("gpr.user") as String? ?: System.getenv("USERNAME")
-				password = project.findProperty("gpr.key") as String? ?: System.getenv("TOKEN")
+				username = System.getenv("NEXUS_USERNAME")
+				password = System.getenv("NEXUS_PASSWORD")
 			}
+			isAllowInsecureProtocol = true
 		}
 	}
 }

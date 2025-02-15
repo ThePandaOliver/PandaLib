@@ -21,18 +21,18 @@ import net.minecraft.server.packs.PackType;
 
 @Environment(EnvType.CLIENT)
 public class PandaLibClient {
-	private static PandaLibClient INSTANCE;
+	private static PandaLibClient instance;
 	
 	public final AssimpResources assimpResources = new AssimpResources();
 	
     public PandaLibClient() {
-		INSTANCE = this;
+		instance = this;
 		EventHandlerClient.init();
 
 		ReloadListenerRegistry.register(PackType.CLIENT_RESOURCES, assimpResources);
     }
 
 	public static PandaLibClient getInstance() {
-		return INSTANCE;
+		return instance;
 	}
 }

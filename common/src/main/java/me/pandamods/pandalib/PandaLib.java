@@ -19,13 +19,13 @@ import net.minecraft.resources.ResourceLocation;
 
 public class PandaLib {
     public static final String MOD_ID = "pandalib";
-	private static PandaLib INSTANCE;
+	private static PandaLib instance;
 
     public PandaLib() {
+		instance = this;
 		NetworkingEvents.PACKET_PAYLOAD_REGISTRY.register(ConfigNetworking::registerPackets);
 
 		EventHandler.init();
-		INSTANCE = this;
 	}
 
 	public static ResourceLocation resourceLocation(String path) {
@@ -33,6 +33,6 @@ public class PandaLib {
 	}
 
 	public static PandaLib getInstance() {
-		return INSTANCE;
+		return instance;
 	}
 }

@@ -20,7 +20,14 @@ import net.fabricmc.api.Environment;
 
 @Environment(EnvType.CLIENT)
 public class TestModClient {
+	private static TestModClient instance;
+
     public TestModClient() {
+		instance = this;
 		EntityRendererRegistry.register(TestEntityRegister.SAND_WORM, SandWormRenderer::new);
     }
+
+	public static TestModClient getInstance() {
+		return instance;
+	}
 }

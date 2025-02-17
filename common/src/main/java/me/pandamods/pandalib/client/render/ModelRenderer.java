@@ -14,128 +14,126 @@ package me.pandamods.pandalib.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import me.pandamods.pandalib.client.resource.model.Bone;
 import me.pandamods.pandalib.client.resource.model.Mesh;
 import me.pandamods.pandalib.client.resource.model.Model;
-import me.pandamods.pandalib.client.resource.model.Node;
+import net.minecraft.client.Camera;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import org.joml.*;
+import net.minecraft.world.entity.Display;
+import org.joml.Quaterniond;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
-import java.awt.*;
-import java.util.List;
 import java.util.function.Function;
 
 public class ModelRenderer {
 	public static void render(Model model, PoseStack poseStack, int overlayUV, int lightmapUV, Function<String, VertexConsumer> vertexConsumerProvider) {
-		List<Mesh> meshes = model.getMeshes();
+		int previousTextureIndex = -1;
+		VertexConsumer consumer = null;
+		for (Mesh mesh : model.getMeshes()) {
+			if (previousTextureIndex != mesh.textureIndex() || consumer == null) {
+				consumer = vertexConsumerProvider.apply(model.getTextures().get(mesh.textureIndex()));
+			}
+			previousTextureIndex = mesh.textureIndex();
+			if (consumer == null) continue;
 
-		renderNode(model, model.getRootNode(), poseStack, overlayUV, lightmapUV, vertexConsumerProvider, meshes);
-	}
-
-	public static void renderNode(Model model, Node node, PoseStack poseStack, int overlayUV, int lightmapUV,
-								  Function<String, VertexConsumer> vertexConsumerProvider, List<Mesh> meshes) {
-		if (node.isVisible()) {
-			for (Integer meshIndex : node.getMeshIndexes()) {
-				Mesh mesh = meshes.get(meshIndex);
-				renderMesh(model, mesh, node, poseStack, overlayUV, lightmapUV, vertexConsumerProvider.apply(mesh.getMaterialName()));
+			for (Mesh.Vertex vertex : mesh.vertices()) {
+				consumer.addVertex(poseStack.last(), vertex.x(), vertex.y(), vertex.z())
+						.setColor(vertex.color().getRGB())
+						.setUv(vertex.texU(), 1 - vertex.texV())
+						.setOverlay(overlayUV)
+						.setLight(lightmapUV)
+						.setNormal(poseStack.last(), vertex.normX(), vertex.normY(), vertex.normZ());
 			}
 		}
-		node.getChildren().forEach(child -> renderNode(model, child, poseStack, overlayUV, lightmapUV, vertexConsumerProvider, meshes));
 	}
 
-	public static void renderMesh(Model model, Mesh mesh, Node meshNode, PoseStack poseStack, int overlayUV, int lightmapUV, VertexConsumer vertexConsumer) {
-		Vector2f uvCoords = new Vector2f();
-
-		Vector3f position = new Vector3f();
-		Vector3f normal = new Vector3f();
-
-		for (Integer i : mesh.getIndices()) {
-			float posX = mesh.getVertices()[i * 3];
-			float posY = mesh.getVertices()[i * 3 + 1];
-			float posZ = mesh.getVertices()[i * 3 + 2];
-			position.set(posX, posY, posZ).mulPosition(meshNode.getGlobalTransform());
-
-			float u = mesh.getUvs()[i * 2];
-			float v = mesh.getUvs()[i * 2 + 1];
-			uvCoords.set(u, v);
-
-			float normX = mesh.getNormals()[i * 3];
-			float normY = mesh.getNormals()[i * 3 + 1];
-			float normZ = mesh.getNormals()[i * 3 + 2];
-			normal.set(normX, normY, normZ).mulDirection(meshNode.getGlobalTransform());
-
-			if (mesh.getBoneIndices() != null && mesh.getBoneWeights() != null) {
-				Vector3f finalPosition = new Vector3f();
-				Vector3f finalNormal = new Vector3f();
-
-				boolean hasWeights = false;
-
-				for (int j = 0; j < 4; j++) {
-					int boneIndex = mesh.getBoneIndices()[i * 4 + j];
-					float boneWeight = mesh.getBoneWeights()[i * 4 + j];
-					if (boneIndex == -1 || boneWeight == 0) continue;
-					hasWeights = true;
-
-					Node boneNode = model.getNodes().get(boneIndex);
-					Matrix4f boneTransform = boneNode.getGlobalTransform();
-					Matrix4f inverseBoneTransform = new Matrix4f(boneNode.getInitialGlobalTransform()).invert();
-
-					Vector3f bonePosition = new Vector3f(position).mulPosition(inverseBoneTransform).mulPosition(boneTransform);
-					Vector3f boneNormal = new Vector3f(normal).mulDirection(inverseBoneTransform).mulDirection(boneTransform);
-
-					finalPosition.add(bonePosition.mul(boneWeight));
-					finalNormal.add(boneNormal.mul(boneWeight));
-				}
-
-				if (hasWeights) {
-					position.set(finalPosition);
-					normal.set(finalNormal);
-				}
-			}
-
-			vertexConsumer
-					.addVertex(poseStack.last(), position.x(), position.y(), position.z())
-					.setColor(1f, 1f, 1f, 1f)
-					.setUv(uvCoords.x(), uvCoords.y())
-					.setOverlay(overlayUV)
-					.setLight(lightmapUV)
-					.setNormal(poseStack.last(), normal.x(), normal.y(), normal.z());
-		}
+	public static void renderArmature(Model model, PoseStack poseStack, MultiBufferSource bufferSource) {
+		VertexConsumer consumer = bufferSource.getBuffer(RenderType.lines());
+		model.getBones().values().forEach(bone -> addJoint(bone, poseStack, consumer));
 	}
 
-	public static void renderModelDebug(Model model, PoseStack poseStack, MultiBufferSource bufferSource) {
-		model.getNodes().forEach(node -> renderNodeDebug(node, poseStack, bufferSource));
-	}
-
-	private static void renderNodeDebug(Node node, PoseStack poseStack, MultiBufferSource bufferSource) {
+	private static void addJoint(Bone bone, PoseStack poseStack, VertexConsumer consumer) {
 		poseStack.pushPose();
-		poseStack.mulPose(node.getGlobalTransform());
-
-		float length = 0.9f;
-
-		VertexConsumer vertexConsumer = bufferSource.getBuffer(RenderType.debugLineStrip(1));
-
-		vertexConsumer.addVertex(poseStack.last(), 0, 0, 0);
-		vertexConsumer.setColor(Color.green.getRGB());
-
-		vertexConsumer.addVertex(poseStack.last(), 0, length, 0);
-		vertexConsumer.setColor(Color.green.getRGB());
-
-		vertexConsumer = bufferSource.getBuffer(RenderType.debugLineStrip(1));
-
-		vertexConsumer.addVertex(poseStack.last(), 0, 0, 0);
-		vertexConsumer.setColor(Color.red.getRGB());
-
-		vertexConsumer.addVertex(poseStack.last(), length, 0, 0);
-		vertexConsumer.setColor(Color.red.getRGB());
-
-		vertexConsumer = bufferSource.getBuffer(RenderType.debugLineStrip(1));
-
-		vertexConsumer.addVertex(poseStack.last(), 0, 0, 0);
-		vertexConsumer.setColor(Color.blue.getRGB());
-
-		vertexConsumer.addVertex(poseStack.last(), 0, 0, length);
-		vertexConsumer.setColor(Color.blue.getRGB());
+		poseStack.mulPose(bone.getGlobalTransform());
+		addJointBall(poseStack, consumer);
 		poseStack.popPose();
+
+		if (bone.getParent() != null) {
+			Bone parent = bone.getParent();
+			Vector3f rootPos = bone.getGlobalTransform().getTranslation(new Vector3f());
+			Vector3f parentPos = parent.getGlobalTransform().getTranslation(new Vector3f());
+
+			float length = rootPos.distance(parentPos);
+
+			poseStack.pushPose();
+			poseStack.mulPose(parent.getGlobalTransform());
+			final float size = 0.1f;
+			for (int i = 0; i < 4; i++) {
+				Vector3f midPos = new Vector3f(size, length * 0.2f, size).rotateY((float) (i * Math.PI / 2));
+
+				// Top
+				consumer.addVertex(poseStack.last(), 0, length, 0)
+						.setColor(0f, 1f, 0f, 1f)
+						.setNormal(poseStack.last(), 0, 0, 0);
+
+				consumer.addVertex(poseStack.last(), midPos)
+						.setColor(1f, 1f, 1f, 1f)
+						.setNormal(poseStack.last(), 0, 0, 0);
+
+				// Bottom
+				consumer.addVertex(poseStack.last(), midPos)
+						.setColor(0f, 1f, 0f, 1f)
+						.setNormal(poseStack.last(), 0, 0, 0);
+
+				consumer.addVertex(poseStack.last(), 0, 0, 0)
+						.setColor(0f, 1f, 0f, 1f)
+						.setNormal(poseStack.last(), 0, 0, 0);
+			}
+			poseStack.popPose();
+		}
+	}
+
+	private static void addJointBall(PoseStack poseStack, VertexConsumer consumer) {
+		final float size = 0.1f;
+
+		for (int i = 0; i < 8; i++) {
+			for (int j = 0; j < 2; j++) {
+				float x = (float) Math.cos((i + j) * Math.PI / 4) * size;
+				float z = (float) Math.sin((i + j) * Math.PI / 4) * size;
+
+				Vector3f pos = new Vector3f(x, 0, z);
+				Vector3f normal = new Vector3f(0, 0, 0);
+				consumer.addVertex(poseStack.last(), pos)
+						.setColor(0f, 0f, 1f, 1f)
+						.setNormal(poseStack.last(), normal);
+			}
+		}
+
+		for (int i = 0; i < 8; i++) {
+			for (int j = 0; j < 2; j++) {
+				float x = (float) Math.cos((i + j) * Math.PI / 4) * size;
+				float y = (float) Math.sin((i + j) * Math.PI / 4) * size;
+
+				Vector3f pos = new Vector3f(x, y, 0);
+				consumer.addVertex(poseStack.last(), pos)
+						.setColor(0f, 1f, 0f, 1f)
+						.setNormal(poseStack.last(), 0, 0, 0);
+			}
+		}
+
+		for (int i = 0; i < 8; i++) {
+			for (int j = 0; j < 2; j++) {
+				float y = (float) Math.cos((i + j) * Math.PI / 4) * size;
+				float z = (float) Math.sin((i + j) * Math.PI / 4) * size;
+
+				Vector3f pos = new Vector3f(0, y, z);
+				consumer.addVertex(poseStack.last(), pos)
+						.setColor(1f, 0f, 0f, 1f)
+						.setNormal(poseStack.last(), 0, 0, 0);
+			}
+		}
 	}
 }

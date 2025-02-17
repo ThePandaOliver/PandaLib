@@ -12,7 +12,6 @@
 
 package me.pandamods.pandalib.utils;
 
-import me.pandamods.pandalib.client.resource.model.Node;
 import org.joml.*;
 import org.lwjgl.assimp.*;
 
@@ -53,7 +52,7 @@ public class AssimpUtils {
 	}
 
 	// Equals methods
-	
+
 	public static boolean AINodeEqualsAINode(AINode node1, AINode node2) {
 		boolean namesEqual = Objects.equals(node1.mName().dataString(), node2.mName().dataString());
 		boolean parentsEqual = (node1.mParent() != null) == (node2.mParent() != null);
@@ -62,17 +61,6 @@ public class AssimpUtils {
 		}
 		boolean childrenEqual = node1.mNumChildren() == node2.mNumChildren();
 		boolean meshesEqual = node1.mNumMeshes() == node2.mNumMeshes();
-		return namesEqual && parentsEqual && childrenEqual && meshesEqual;
-	}
-	
-	public static boolean AINodeEqualsNode(AINode aiNode, Node node) {
-		boolean namesEqual = Objects.equals(aiNode.mName().dataString(), node.getName());
-		boolean parentsEqual = (aiNode.mParent() != null) == (node.getParent() != null);
-		if (aiNode.mParent() != null && node.getParent() != null) {
-			parentsEqual = Objects.equals(aiNode.mParent().mName().dataString(), node.getParent().getName());
-		}
-		boolean childrenEqual = aiNode.mNumChildren() == node.getChildren().size();
-		boolean meshesEqual = aiNode.mNumMeshes() == node.getMeshIndexes().size();
 		return namesEqual && parentsEqual && childrenEqual && meshesEqual;
 	}
 }

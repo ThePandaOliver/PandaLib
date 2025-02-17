@@ -10,9 +10,16 @@
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package me.pandamods.pandalib.client.animation;
+package me.pandamods.pandalib.utils;
 
-public interface Animatable {
-	AnimatableInstance getAnimatableInstance();
-	float getTick();
+import java.util.Collection;
+
+@SuppressWarnings("unused")
+public class CollectionsUtils {
+	public static int findIndexOf(Collection<?> collection, Object object) {
+		for (int i = 0; i < collection.size(); i++) {
+			if (collection.toArray()[i].equals(object)) return i;
+		}
+		return -1;
+	}
 }

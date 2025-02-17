@@ -15,14 +15,10 @@ package me.pandamods.pandalib.client.resource;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import me.pandamods.pandalib.PandaLib;
-import me.pandamods.pandalib.client.PandaLibClient;
-import me.pandamods.pandalib.client.resource.animation.Animation;
 import me.pandamods.pandalib.client.resource.model.Model;
-import me.pandamods.pandalib.client.resource.loader.AnimationLoader;
 import me.pandamods.pandalib.client.resource.loader.ModelLoader;
 import me.pandamods.pandalib.registry.IdentifiableResourceReloadListener;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.server.packs.resources.ResourceManager;
 import org.lwjgl.assimp.*;
 
@@ -36,38 +32,10 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public class AssimpResources implements IdentifiableResourceReloadListener {
-	private static Map<ResourceLocation, Model> MODELS = new Object2ObjectOpenHashMap<>();
-	private static Map<ResourceLocation, Animation> ANIMATIONS = new Object2ObjectOpenHashMap<>();
+	private static Map<ResourceLocation, Model> MODELS = new HashMap<>();
 
-	/**
-	 * Retrieves a Model object associated with the given resource location.
-	 *
-	 * @param resourceLocation The resource location of the mode.
-	 * @return The Model object associated with the resource location.
-	 * Mesh object might be empty if the Mesh was never loaded.
-	 */
 	public static Model getModel(ResourceLocation resourceLocation) {
-		Model model = MODELS.get(resourceLocation);
-		if (model == null) MODELS.put(resourceLocation, model = new Model());
-		return model;
-	}
-
-	/**
-	 * Retrieves an Animation object associated with the given resource location.
-	 *
-	 * @param resourceLocation The resource location of the animation.
-	 * @return The Animation object associated with the resource location.
-	 * Animation object might be empty if the Animation was never loaded.
-	 */
-	public static Animation getAnimation(ResourceLocation resourceLocation) {
-		Animation animation = ANIMATIONS.get(resourceLocation);
-		if (animation == null) ANIMATIONS.put(resourceLocation, animation = new Animation());
-		return animation;
-	}
-
-	@Override
-	public ResourceLocation getResourceID() {
-		return PandaLib.resourceLocation("assimp_resource_loader");
+		return MODELS.get(resourceLocation);
 	}
 
 	@Override
@@ -75,22 +43,19 @@ public class AssimpResources implements IdentifiableResourceReloadListener {
 										  Executor backgroundExecutor, Executor gameExecutor) {
 		List<AIScene> scenes = new ObjectArrayList<>();
 
-		Map<ResourceLocation, Model> models = new Object2ObjectOpenHashMap<>();
-		Map<ResourceLocation, Animation> animations = new Object2ObjectOpenHashMap<>();
+		Map<ResourceLocation, Model> models = new HashMap<>();
 
-		return CompletableFuture.allOf(loadAssimpScene(backgroundExecutor, resourceManager, scenes::add, models::put, animations::put))
+		return CompletableFuture.allOf(loadAssimpScene(backgroundExecutor, resourceManager, scenes::add, models::put))
 				.thenCompose(preparationBarrier::wait)
 				.thenAcceptAsync(unused -> {
 					MODELS = models;
-					ANIMATIONS = animations;
 					scenes.forEach(Assimp::aiReleaseImport);
 				}, gameExecutor);
 	}
 
 	private CompletableFuture<Void> loadAssimpScene(Executor executor, ResourceManager resourceManager,
 													Consumer<AIScene> addScene,
-													BiConsumer<ResourceLocation, Model> putModel,
-													BiConsumer<ResourceLocation, Animation> putAnimation
+													BiConsumer<ResourceLocation, Model> putModel
 	) {
 		return CompletableFuture.supplyAsync(() -> resourceManager.listResources("assimp", resource -> true), executor)
 				.thenApplyAsync(resources -> {
@@ -108,19 +73,8 @@ public class AssimpResources implements IdentifiableResourceReloadListener {
 						ResourceLocation resourceLocation = entry.getKey();
 						AIScene scene = entry.getValue().join();
 
-						Model model = ModelLoader.loadScene(AssimpResources.getModel(resourceLocation), scene);
+						Model model = ModelLoader.loadScene(scene);
 						putModel.accept(resourceLocation, model);
-
-						for (int i = 0; i < scene.mNumAnimations(); i++) {
-							AIAnimation aiAnimation = AIAnimation.create(scene.mAnimations().get(i));
-							ResourceLocation animationLocation = resourceLocation;
-							if (scene.mNumAnimations() > 1) {
-								animationLocation = animationLocation.withSuffix("/" + aiAnimation.mName().dataString());
-							}
-
-							Animation animation = AnimationLoader.loadAnimation(AssimpResources.getAnimation(animationLocation), aiAnimation);
-							putAnimation.accept(animationLocation, animation);
-						}
 					}
 				}, executor);
 	}
@@ -137,5 +91,10 @@ public class AssimpResources implements IdentifiableResourceReloadListener {
 		catch (Exception e) {
 			throw new RuntimeException(new FileNotFoundException(resourceLocation.toString()));
 		}
+	}
+
+	@Override
+	public ResourceLocation getResourceID() {
+		return PandaLib.resourceLocation("assimp_resource_loader");
 	}
 }

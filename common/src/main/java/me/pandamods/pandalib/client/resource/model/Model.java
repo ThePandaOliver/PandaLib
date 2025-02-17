@@ -12,37 +12,30 @@
 
 package me.pandamods.pandalib.client.resource.model;
 
-import java.util.*;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 public class Model {
-	private List<Mesh> meshes = new ArrayList<>();
-	private List<Node> nodes = new ArrayList<>();
+	private final List<Mesh> meshes;
+	private final List<String> textures;
+	private final Map<String, Bone> bones;
 
-	private Node rootNode;
-
-	public Model() {}
-
-	public Model(Node rootNode, List<Mesh> meshes, List<Node> nodes) {
-		set(rootNode, meshes, nodes);
-	}
-
-	public Model set(Node rootNode, List<Mesh> meshes, List<Node> nodes) {
-		this.meshes = meshes;
-		this.rootNode = rootNode;
-		this.nodes = nodes;
-		return this;
+	public Model(List<Mesh> meshes, List<String> textures, Map<String, Bone> bones) {
+		this.meshes = Collections.unmodifiableList(meshes);
+		this.textures = Collections.unmodifiableList(textures);
+		this.bones = Collections.unmodifiableMap(bones);
 	}
 
 	public List<Mesh> getMeshes() {
 		return meshes;
 	}
 
-	public List<Node> getNodes() {
-		return nodes;
+	public List<String> getTextures() {
+		return textures;
 	}
 
-	public Node getRootNode() {
-		return rootNode;
+	public Map<String, Bone> getBones() {
+		return bones;
 	}
 }

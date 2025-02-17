@@ -12,152 +12,125 @@
 
 package me.pandamods.pandalib.client.resource.loader;
 
+import me.pandamods.pandalib.client.resource.model.Bone;
 import me.pandamods.pandalib.client.resource.model.Mesh;
 import me.pandamods.pandalib.client.resource.model.Model;
-import me.pandamods.pandalib.client.resource.model.Node;
 import me.pandamods.pandalib.utils.AssimpUtils;
+import me.pandamods.pandalib.utils.CollectionsUtils;
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
+import org.lwjgl.PointerBuffer;
 import org.lwjgl.assimp.*;
 
+import java.awt.*;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ModelLoader {
-	public static Model loadScene(Model model, AIScene scene) {
+	public static Model loadScene(AIScene scene) {
 		List<Mesh> meshes = new ArrayList<>();
-		List<String> materials = new ArrayList<>();
-		List<Node> nodes = new ArrayList<>();
+		List<String> textures = new ArrayList<>();
+		Map<String, Bone> bones = new HashMap<>();
 
-		// Build Node Tree
-		Node rootNode = buildNodeTree(scene.mRootNode(), null, nodes);
+		AINode rootNode = scene.mRootNode();
+		if (rootNode != null)
+			buildBoneHierarchy(rootNode, null, bones);
 
-		// Process Materials
-		for (int i = 0; i < scene.mNumMaterials(); i++) {
-			AIMaterial material = AIMaterial.create(scene.mMaterials().get(i));
-			AIString materialName = AIString.create();
-			Assimp.aiGetMaterialString(material, Assimp.AI_MATKEY_NAME, Assimp.aiTextureType_NONE, 0, materialName);
-			String materialNameStr = materialName.dataString();
-			materials.add(materialNameStr);
-		}
-
-		// Process Meshes
-		for (int i = 0; i < scene.mNumMeshes(); i++) {
-			AIMesh aiMesh = AIMesh.create(scene.mMeshes().get(i));
-			Mesh mesh = processMesh(aiMesh, materials, nodes);
-			meshes.add(mesh);
-		}
-
-		return model.set(rootNode, meshes, nodes);
-	}
-
-	public static Node buildNodeTree(AINode aiNode, Node parent, List<Node> nodes) {
-		String name = aiNode.mName().dataString();
-		Node node = new Node(name, AssimpUtils.toMatrix4f(aiNode.mTransformation()), parent);
-		nodes.add(node);
-
-		for (int i = 0; i < aiNode.mNumMeshes(); i++) {
-			node.getMeshIndexes().add(aiNode.mMeshes().get(i));
-		}
-
-		for (int i = 0; i < aiNode.mNumChildren(); i++) {
-			AINode childNode = AINode.create(aiNode.mChildren().get(i));
-			buildNodeTree(childNode, node, nodes);
-		}
-		return node;
-	}
-
-	// Mesh Processing Section
-	public static Mesh processMesh(AIMesh aiMesh, List<String> materials, List<Node> nodes) {
-		int[] indices = processIndices(aiMesh);
-		float[] vertices = processVertices(aiMesh);
-		float[] uvs = processUVCoords(aiMesh);
-		float[] normals = processNormals(aiMesh);
-		int[] boneIndices = new int[vertices.length / 3 * 4];
-		float[] boneWeights = new float[vertices.length / 3 * 4];
-
-		processBones(aiMesh, nodes, boneIndices, boneWeights);
-
-		return new Mesh(indices, vertices, uvs, normals, boneIndices, boneWeights, materials.get(aiMesh.mMaterialIndex()));
-	}
-
-	private static int[] processIndices(AIMesh aiMesh) {
-		List<Integer> indices = new ArrayList<>();
-		for (AIFace face : aiMesh.mFaces()) {
-			for (int i = 0; i < face.mNumIndices(); i++) {
-				indices.add(face.mIndices().get(i));
+		PointerBuffer materialsPointer = scene.mMaterials();
+		if (materialsPointer != null) {
+			for (int i = 0; i < scene.mNumMaterials(); i++) {
+				AIMaterial aiMaterial = AIMaterial.create(materialsPointer.get(i));
+				AIString materialName = AIString.create();
+				Assimp.aiGetMaterialString(aiMaterial, Assimp.AI_MATKEY_NAME, Assimp.aiTextureType_NONE, 0, materialName);
+				String materialNameStr = materialName.dataString();
+				textures.add(materialNameStr);
 			}
 		}
-		return indices.stream().mapToInt(Integer::intValue).toArray();
-	}
 
-	private static float[] processVertices(AIMesh aiMesh) {
-		AIVector3D.Buffer buffer = aiMesh.mVertices();
-		float[] data = new float[buffer.remaining() * 3];
-		int pos = 0;
-		while (buffer.remaining() > 0) {
-			AIVector3D vector = buffer.get();
-			data[pos++] = vector.x();
-			data[pos++] = vector.y();
-			data[pos++] = vector.z();
+		PointerBuffer meshesPointer = scene.mMeshes();
+		if (meshesPointer != null) {
+			for (int i = 0; i < scene.mNumMeshes(); i++) {
+				AIMesh aiMesh = AIMesh.create(meshesPointer.get(i));
+				meshes.add(processMesh(aiMesh, bones));
+			}
 		}
-		return data;
+
+		return new Model(meshes, textures, bones);
 	}
 
-	private static float[] processUVCoords(AIMesh aiMesh) {
-		AIVector3D.Buffer buffer = aiMesh.mTextureCoords(0);
-		float[] data = new float[buffer.remaining() * 2];
-		int pos = 0;
-		while (buffer.remaining() > 0) {
-			AIVector3D vector = buffer.get();
-			data[pos++] = vector.x();
-			data[pos++] = 1 - vector.y();
+	private static void buildBoneHierarchy(AINode aiNode, Bone parent, Map<String, Bone> bones) {
+		String boneName = aiNode.mName().dataString();
+		Matrix4f offsetTransform = AssimpUtils.toMatrix4f(aiNode.mTransformation());
+
+		Bone bone = new Bone(boneName, parent, offsetTransform);
+		bones.put(boneName, bone);
+
+		PointerBuffer nodeChildrenPointer = aiNode.mChildren();
+		if (nodeChildrenPointer != null) {
+			for (int i = 0; i < aiNode.mNumChildren(); i++) {
+				AINode aiChildNode = AINode.create(nodeChildrenPointer.get(i));
+				buildBoneHierarchy(aiChildNode, bone, bones);
+			}
 		}
-		return data;
 	}
 
-	private static float[] processNormals(AIMesh aiMesh) {
-		AIVector3D.Buffer buffer = aiMesh.mNormals();
-		float[] data = new float[buffer.remaining() * 3];
-		int pos = 0;
-		while (buffer.remaining() > 0) {
-			AIVector3D vector = buffer.get();
-			data[pos++] = vector.x();
-			data[pos++] = vector.y();
-			data[pos++] = vector.z();
+	private static Mesh processMesh(AIMesh aiMesh, Map<String, Bone> bones) {
+		List<Mesh.Vertex> vertices = new ArrayList<>();
+		List<List<Mesh.VertexWeight>> vertexWeights = new ArrayList<>();
+
+		for (int i = 0; i < aiMesh.mNumVertices(); i++) {
+			vertexWeights.add(new ArrayList<>());
 		}
-		return data;
-	}
 
-	private static void processBones(AIMesh aiMesh, List<Node> nodes, int[] boneIndices, float[] boneWeights) {
-		Arrays.fill(boneIndices, -1);
-		Arrays.fill(boneWeights, 0.0f);
+		PointerBuffer bonesPointer = aiMesh.mBones();
+		if (bonesPointer != null) {
+			for (int i = 0; i < aiMesh.mNumBones(); i++) {
+				AIBone aiBone = AIBone.create(bonesPointer.get(i));
 
-		for (int i = 0; i < aiMesh.mNumBones(); i++) {
-			AIBone aiBone = AIBone.create(aiMesh.mBones().get(i));
-			Node boneNode = findNode(aiBone.mNode(), nodes);
-
-			for (int j = 0; j < aiBone.mNumWeights(); j++) {
-				AIVertexWeight aiVertexWeight = aiBone.mWeights().get(j);
-				int vertexId = aiVertexWeight.mVertexId();
-				float weight = aiVertexWeight.mWeight();
-
-				for (int k = 0; k < 4; k++) {
-					if (boneWeights[vertexId * 4 + k] == 0) {
-						boneIndices[vertexId * 4 + k] = nodes.indexOf(boneNode);
-						boneWeights[vertexId * 4 + k] = weight;
-						break;
-					}
+				for (int j = 0; j < aiBone.mNumWeights(); j++) {
+					AIVertexWeight aiVertexWeight = aiBone.mWeights().get(j);
+					int boneIndex = CollectionsUtils.findIndexOf(bones.keySet(), aiBone.mName().dataString());
+					// Todo: Fix bone index so its not the index of bones affecting this mesh
+					vertexWeights.get(aiVertexWeight.mVertexId()).add(new Mesh.VertexWeight(boneIndex, aiVertexWeight.mWeight()));
 				}
 			}
 		}
-	}
 
-	private static Node findNode(AINode aiNode, List<Node> nodes) {
-		for (Node node : nodes) {
-			if (AssimpUtils.AINodeEqualsNode(aiNode, node)) {
-				return node;
+		for (int i = 0; i < aiMesh.mNumVertices(); i++) {
+			AIVector3D aiPosition = aiMesh.mVertices().get(i);
+			AIVector3D aiNormal = aiMesh.mNormals().get(i);
+			AIVector3D aiTextureCoords = aiMesh.mTextureCoords(0).get(i);
+
+			Color color = Color.WHITE;
+
+			AIColor4D.Buffer aiColorBuffer = aiMesh.mColors(0);
+			if (aiColorBuffer != null) {
+				AIColor4D aiColor = aiColorBuffer.get(i);
+				color = new Color(aiColor.r(), aiColor.g(), aiColor.b(), aiColor.a());
+			}
+
+			Vector3f position = new Vector3f(aiPosition.x(), aiPosition.y(), aiPosition.z());
+			Vector3f normal = new Vector3f(aiNormal.x(), aiNormal.y(), aiNormal.z());
+
+			vertices.add(new Mesh.Vertex(
+					position.x(), position.y(), position.z(),
+					normal.x(), normal.y(), normal.z(),
+					aiTextureCoords.x(), aiTextureCoords.y(), color,
+					vertexWeights.get(i)
+			));
+		}
+
+		List<Mesh.Vertex> finalVertices = new ArrayList<>();
+		for (int i = 0; i < aiMesh.mNumFaces(); i++) {
+			AIFace aiFace = aiMesh.mFaces().get(i);
+			for (int j = 0; j < aiFace.mNumIndices(); j++) {
+				int index = aiFace.mIndices().get(j);
+				finalVertices.add(vertices.get(index));
 			}
 		}
-		return null;
+
+		return new Mesh(finalVertices, aiMesh.mMaterialIndex());
 	}
 }

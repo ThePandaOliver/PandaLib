@@ -97,4 +97,8 @@ public class Bone {
 	public Bone getParent() {
 		return parent;
 	}
+
+	public String getName() {
+		return name;
+	}
 }

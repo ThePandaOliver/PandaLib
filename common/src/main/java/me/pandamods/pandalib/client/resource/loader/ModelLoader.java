@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Map;
 
 public class ModelLoader {
-	public static Model loadScene(AIScene scene) {
+	public static Model loadFromScene(AIScene scene) {
 		List<Mesh> meshes = new ArrayList<>();
 		List<String> textures = new ArrayList<>();
 		Map<String, Bone> bones = new HashMap<>();

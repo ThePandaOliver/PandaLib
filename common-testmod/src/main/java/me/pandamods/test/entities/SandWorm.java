@@ -12,6 +12,8 @@
 
 package me.pandamods.test.entities;
 
+import me.pandamods.pandalib.client.animation.Animatable;
+import me.pandamods.pandalib.client.animation.AnimationInstance;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
@@ -19,7 +21,9 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.level.Level;
 
-public class SandWorm extends Entity {
+public class SandWorm extends Entity implements Animatable {
+	private final AnimationInstance animationInstance = new AnimationInstance();
+
 	public SandWorm(EntityType<? extends Entity> entityType, Level level) {
 		super(entityType, level);
 	}
@@ -42,5 +46,10 @@ public class SandWorm extends Entity {
 	@Override
 	protected void addAdditionalSaveData(CompoundTag tag) {
 
+	}
+
+	@Override
+	public AnimationInstance getAnimationInstance() {
+		return animationInstance;
 	}
 }

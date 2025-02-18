@@ -12,9 +12,10 @@
 
 package me.pandamods.pandalib.client.resource;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import me.pandamods.pandalib.PandaLib;
+import me.pandamods.pandalib.client.resource.animation.Animation;
+import me.pandamods.pandalib.client.resource.loader.AnimationLoader;
 import me.pandamods.pandalib.client.resource.model.Model;
 import me.pandamods.pandalib.client.resource.loader.ModelLoader;
 import me.pandamods.pandalib.registry.IdentifiableResourceReloadListener;
@@ -33,9 +34,14 @@ import java.util.function.Consumer;
 
 public class AssimpResources implements IdentifiableResourceReloadListener {
 	private static Map<ResourceLocation, Model> MODELS = new HashMap<>();
+	private static Map<ResourceLocation, Animation> ANIMATIONS = new HashMap<>();
 
 	public static Model getModel(ResourceLocation resourceLocation) {
 		return MODELS.get(resourceLocation);
+	}
+
+	public static Animation getAnimation(ResourceLocation resourceLocation) {
+		return ANIMATIONS.get(resourceLocation);
 	}
 
 	@Override
@@ -44,18 +50,21 @@ public class AssimpResources implements IdentifiableResourceReloadListener {
 		List<AIScene> scenes = new ObjectArrayList<>();
 
 		Map<ResourceLocation, Model> models = new HashMap<>();
+		Map<ResourceLocation, Animation> animations = new HashMap<>();
 
-		return CompletableFuture.allOf(loadAssimpScene(backgroundExecutor, resourceManager, scenes::add, models::put))
+		return CompletableFuture.allOf(loadAssimpScene(backgroundExecutor, resourceManager, scenes::add, models::put, animations::put))
 				.thenCompose(preparationBarrier::wait)
 				.thenAcceptAsync(unused -> {
 					MODELS = models;
+					ANIMATIONS = animations;
 					scenes.forEach(Assimp::aiReleaseImport);
 				}, gameExecutor);
 	}
 
 	private CompletableFuture<Void> loadAssimpScene(Executor executor, ResourceManager resourceManager,
 													Consumer<AIScene> addScene,
-													BiConsumer<ResourceLocation, Model> putModel
+													BiConsumer<ResourceLocation, Model> putModel,
+													BiConsumer<ResourceLocation, Animation> putAnimation
 	) {
 		return CompletableFuture.supplyAsync(() -> resourceManager.listResources("assimp", resource -> true), executor)
 				.thenApplyAsync(resources -> {
@@ -73,8 +82,16 @@ public class AssimpResources implements IdentifiableResourceReloadListener {
 						ResourceLocation resourceLocation = entry.getKey();
 						AIScene scene = entry.getValue().join();
 
-						Model model = ModelLoader.loadScene(scene);
+						Model model = ModelLoader.loadFromScene(scene);
 						putModel.accept(resourceLocation, model);
+
+						for (int i = 0; i < scene.mNumAnimations(); i++) {
+							AIAnimation aiAnimation = AIAnimation.create(scene.mAnimations().get(i));
+							Animation animation = AnimationLoader.load(aiAnimation, model);
+
+							ResourceLocation animLocation = ResourceLocation.fromNamespaceAndPath(resourceLocation.getNamespace(), resourceLocation.getPath() + "/" + aiAnimation.mName().dataString());
+							putAnimation.accept(animLocation, animation);
+						}
 					}
 				}, executor);
 	}

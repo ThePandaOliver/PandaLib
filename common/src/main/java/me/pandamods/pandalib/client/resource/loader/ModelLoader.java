@@ -96,6 +96,16 @@ public class ModelLoader {
 					vertexWeights.get(aiVertexWeight.mVertexId()).add(new Mesh.VertexWeight(boneIndex, aiVertexWeight.mWeight()));
 				}
 			}
+
+			for (List<Mesh.VertexWeight> weights : vertexWeights) {
+				float totalWeight = (float) weights.stream().mapToDouble(Mesh.VertexWeight::weight).sum();
+				if (totalWeight > 0.0f) {
+					for (int k = 0; k < weights.size(); k++) {
+						Mesh.VertexWeight weight = weights.get(k);
+						weights.set(k, new Mesh.VertexWeight(weight.boneIndex(), weight.weight() / totalWeight));
+					}
+				}
+			}
 		}
 
 		for (int i = 0; i < aiMesh.mNumVertices(); i++) {

@@ -25,11 +25,11 @@ public class Bone {
 
 	// the offset from the parent bone
 	private final Matrix4f offsetTransform;
+	private final Matrix4f globalOffsetTransform = new Matrix4f();
 
 	private final Matrix4f localTransform = new Matrix4f();
 
 	// Needs to be calculated before use.
-	private final Matrix4f globalOffsetTransform = new Matrix4f();
 	private final Matrix4f globalTransform = new Matrix4f();
 	private boolean isDirty = true;
 
@@ -46,17 +46,16 @@ public class Bone {
 		if (parent != null) {
 			parent.children.add(this);
 		}
+
+		if (parent != null) {
+			globalOffsetTransform.mul(parent.getGlobalOffsetTransform());
+		}
+		globalOffsetTransform.mul(offsetTransform);
 	}
 
 	public void markDirty() {
 		isDirty = true;
 		children.forEach(Bone::markDirty);
-	}
-
-	private void calculateTransforms() {
-		calculateGlobalTransform();
-		calculateGlobalOffsetTransform();
-		isDirty = false;
 	}
 
 	private void calculateGlobalTransform() {
@@ -65,14 +64,7 @@ public class Bone {
 			globalTransform.mul(parent.getGlobalTransform());
 		}
 		globalTransform.mul(offsetTransform).mul(localTransform);
-	}
-
-	private void calculateGlobalOffsetTransform() {
-		globalOffsetTransform.identity();
-		if (parent != null) {
-			globalOffsetTransform.mul(parent.getGlobalOffsetTransform());
-		}
-		globalOffsetTransform.mul(offsetTransform);
+		isDirty = false;
 	}
 
 	public Matrix4f getGlobalTransform() {
@@ -82,8 +74,6 @@ public class Bone {
 	}
 
 	public Matrix4f getGlobalOffsetTransform() {
-		if (isDirty)
-			calculateGlobalOffsetTransform();
 		return globalOffsetTransform;
 	}
 

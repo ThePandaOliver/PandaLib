@@ -18,14 +18,9 @@ import me.pandamods.pandalib.client.resource.model.Bone;
 import me.pandamods.pandalib.client.resource.model.Mesh;
 import me.pandamods.pandalib.client.resource.model.Model;
 import me.pandamods.pandalib.utils.CollectionsUtils;
-import net.minecraft.client.Camera;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.world.entity.Display;
 import org.joml.Matrix4f;
-import org.joml.Quaterniond;
-import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
 import java.util.Collections;
@@ -45,7 +40,7 @@ public class ModelRenderer {
 			for (Mesh.Vertex vertex : mesh.vertices()) {
 				Vector3f finalPos = new Vector3f();
 				Vector3f finalNorm = new Vector3f();
-				boolean hasWeight = false;
+				boolean hasWeights = false;
 
 				for (Mesh.VertexWeight weight : vertex.weights()) {
 					Bone bone = CollectionsUtils.getEntryByIndex(model.getBones().values(), weight.boneIndex());
@@ -53,19 +48,24 @@ public class ModelRenderer {
 					Vector3f tempNorm = new Vector3f(vertex.normX(), vertex.normY(), vertex.normZ());
 
 					Matrix4f boneTransform = bone.getGlobalTransform();
+					Matrix4f inverseOffsetTransform = new Matrix4f(bone.getGlobalOffsetTransform()).invert();
 
-					boneTransform.transformPosition(tempPos);
+					// Position
+					tempPos.mulPosition(inverseOffsetTransform);
+					tempPos.mulPosition(boneTransform);
 					tempPos.mul(weight.weight());
 
-					boneTransform.transformDirection(tempNorm);
+					// Normal
+					tempNorm.mulDirection(inverseOffsetTransform);
+					tempNorm.mulDirection(boneTransform);
 					tempNorm.mul(weight.weight());
 
 					finalPos.add(tempPos);
 					finalNorm.add(tempNorm);
-					hasWeight = true;
+					hasWeights = true;
 				}
 
-				if (!hasWeight) {
+				if (!hasWeights) {
 					finalPos.set(vertex.x(), vertex.y(), vertex.z());
 					finalNorm.set(vertex.normX(), vertex.normY(), vertex.normZ());
 				}
@@ -81,7 +81,7 @@ public class ModelRenderer {
 	}
 
 	public static void renderArmature(Model model, PoseStack poseStack, MultiBufferSource bufferSource) {
-		VertexConsumer consumer = bufferSource.getBuffer(RenderType.lines());
+		VertexConsumer consumer = bufferSource.getBuffer(PLRenderType.debugLines(100));
 		model.getBones().values().forEach(bone -> addJoint(bone, poseStack, consumer));
 	}
 
@@ -106,21 +106,17 @@ public class ModelRenderer {
 
 				// Top
 				consumer.addVertex(poseStack.last(), 0, length, 0)
-						.setColor(1f, 1f, 1f, 1f)
-						.setNormal(poseStack.last(), 0, 0, 0);
+						.setColor(1f, 1f, 1f, 1f);
 
 				consumer.addVertex(poseStack.last(), midPos)
-						.setColor(1f, 1f, 1f, 1f)
-						.setNormal(poseStack.last(), 0, 0, 0);
+						.setColor(1f, 1f, 1f, 1f);
 
 				// Bottom
 				consumer.addVertex(poseStack.last(), midPos)
-						.setColor(1f, 1f, 1f, 1f)
-						.setNormal(poseStack.last(), 0, 0, 0);
+						.setColor(1f, 1f, 1f, 1f);
 
 				consumer.addVertex(poseStack.last(), 0, 0, 0)
-						.setColor(1f, 1f, 1f, 1f)
-						.setNormal(poseStack.last(), 0, 0, 0);
+						.setColor(1f, 1f, 1f, 1f);
 			}
 			poseStack.popPose();
 		}
@@ -135,10 +131,8 @@ public class ModelRenderer {
 				float z = (float) Math.sin((i + j) * Math.PI / 4) * size;
 
 				Vector3f pos = new Vector3f(x, 0, z);
-				Vector3f normal = new Vector3f(0, 0, 0);
 				consumer.addVertex(poseStack.last(), pos)
-						.setColor(0f, 0f, 1f, 1f)
-						.setNormal(poseStack.last(), normal);
+						.setColor(0f, 0f, 1f, 1f);
 			}
 		}
 
@@ -149,8 +143,7 @@ public class ModelRenderer {
 
 				Vector3f pos = new Vector3f(x, y, 0);
 				consumer.addVertex(poseStack.last(), pos)
-						.setColor(0f, 1f, 0f, 1f)
-						.setNormal(poseStack.last(), 0, 0, 0);
+						.setColor(0f, 1f, 0f, 1f);
 			}
 		}
 
@@ -161,8 +154,7 @@ public class ModelRenderer {
 
 				Vector3f pos = new Vector3f(0, y, z);
 				consumer.addVertex(poseStack.last(), pos)
-						.setColor(1f, 0f, 0f, 1f)
-						.setNormal(poseStack.last(), 0, 0, 0);
+						.setColor(1f, 0f, 0f, 1f);
 			}
 		}
 	}

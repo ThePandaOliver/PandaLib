@@ -47,8 +47,8 @@ public class SandWormRenderer extends EntityRenderer<SandWorm, SandWormRenderer.
 		Bone bone2 = model.getBones().get("Bone.002");
 
 		transform.rotateX((float) Math.toRadians(1));
-		bone1.setLocalTransform(transform);
-		bone2.setLocalTransform(transform);
+//		bone1.setLocalTransform(transform);
+//		bone2.setLocalTransform(transform);
 
 		ModelRenderer.render(model, poseStack, OverlayTexture.NO_OVERLAY, packedLight, s ->
 				bufferSource.getBuffer(TriangleRenderType.getRenderType(RenderType.entityCutout(TestMod.resourceLocation("textures/entity/debug.png")))));

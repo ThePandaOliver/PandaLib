@@ -79,6 +79,7 @@ public class ModelLoader {
 	private static Mesh processMesh(AIMesh aiMesh, Map<String, Bone> bones) {
 		List<Mesh.Vertex> vertices = new ArrayList<>();
 		List<List<Mesh.VertexWeight>> vertexWeights = new ArrayList<>();
+		Bone meshBone = bones.get(aiMesh.mName().dataString());
 
 		for (int i = 0; i < aiMesh.mNumVertices(); i++) {
 			vertexWeights.add(new ArrayList<>());
@@ -92,7 +93,6 @@ public class ModelLoader {
 				for (int j = 0; j < aiBone.mNumWeights(); j++) {
 					AIVertexWeight aiVertexWeight = aiBone.mWeights().get(j);
 					int boneIndex = CollectionsUtils.findIndexOf(bones.keySet(), aiBone.mName().dataString());
-					// Todo: Fix bone index so its not the index of bones affecting this mesh
 					vertexWeights.get(aiVertexWeight.mVertexId()).add(new Mesh.VertexWeight(boneIndex, aiVertexWeight.mWeight()));
 				}
 			}
@@ -113,6 +113,12 @@ public class ModelLoader {
 
 			Vector3f position = new Vector3f(aiPosition.x(), aiPosition.y(), aiPosition.z());
 			Vector3f normal = new Vector3f(aiNormal.x(), aiNormal.y(), aiNormal.z());
+
+			if (meshBone != null) {
+				Matrix4f boneTransform = meshBone.getGlobalTransform();
+				boneTransform.transformPosition(position);
+				boneTransform.transformDirection(normal);
+			}
 
 			vertices.add(new Mesh.Vertex(
 					position.x(), position.y(), position.z(),

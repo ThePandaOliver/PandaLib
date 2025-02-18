@@ -13,6 +13,7 @@
 package me.pandamods.pandalib.client.resource.model;
 
 import org.joml.Matrix4f;
+import org.joml.Matrix4fc;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,6 +29,7 @@ public class Bone {
 	private final Matrix4f localTransform = new Matrix4f();
 
 	// Needs to be calculated before use.
+	private final Matrix4f globalOffsetTransform = new Matrix4f();
 	private final Matrix4f globalTransform = new Matrix4f();
 	private boolean isDirty = true;
 
@@ -47,8 +49,14 @@ public class Bone {
 	}
 
 	public void markDirty() {
-		this.isDirty = true;
+		isDirty = true;
 		children.forEach(Bone::markDirty);
+	}
+
+	private void calculateTransforms() {
+		calculateGlobalTransform();
+		calculateGlobalOffsetTransform();
+		isDirty = false;
 	}
 
 	private void calculateGlobalTransform() {
@@ -59,10 +67,24 @@ public class Bone {
 		globalTransform.mul(offsetTransform).mul(localTransform);
 	}
 
+	private void calculateGlobalOffsetTransform() {
+		globalOffsetTransform.identity();
+		if (parent != null) {
+			globalOffsetTransform.mul(parent.getGlobalOffsetTransform());
+		}
+		globalOffsetTransform.mul(offsetTransform);
+	}
+
 	public Matrix4f getGlobalTransform() {
 		if (isDirty)
 			calculateGlobalTransform();
 		return globalTransform;
+	}
+
+	public Matrix4f getGlobalOffsetTransform() {
+		if (isDirty)
+			calculateGlobalOffsetTransform();
+		return globalOffsetTransform;
 	}
 
 	public Matrix4f getLocalTransform() {
@@ -74,6 +96,7 @@ public class Bone {
 	}
 
 	public void setLocalTransform(Matrix4f localTransform) {
+		markDirty();
 		this.localTransform.set(localTransform);
 	}
 

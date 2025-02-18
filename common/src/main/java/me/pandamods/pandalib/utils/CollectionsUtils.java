@@ -22,4 +22,13 @@ public class CollectionsUtils {
 		}
 		return -1;
 	}
+
+	public static <T> T getEntryByIndex(Collection<T> collection, int index) {
+		int i = 0;
+		for (T t : collection) {
+			if (i == index) return t;
+			i++;
+		}
+		return null;
+	}
 }

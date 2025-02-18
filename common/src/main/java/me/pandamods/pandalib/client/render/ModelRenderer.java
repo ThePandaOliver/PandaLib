@@ -17,15 +17,18 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import me.pandamods.pandalib.client.resource.model.Bone;
 import me.pandamods.pandalib.client.resource.model.Mesh;
 import me.pandamods.pandalib.client.resource.model.Model;
+import me.pandamods.pandalib.utils.CollectionsUtils;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.entity.Display;
+import org.joml.Matrix4f;
 import org.joml.Quaterniond;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
+import java.util.Collections;
 import java.util.function.Function;
 
 public class ModelRenderer {
@@ -40,12 +43,39 @@ public class ModelRenderer {
 			if (consumer == null) continue;
 
 			for (Mesh.Vertex vertex : mesh.vertices()) {
-				consumer.addVertex(poseStack.last(), vertex.x(), vertex.y(), vertex.z())
+				Vector3f finalPos = new Vector3f();
+				Vector3f finalNorm = new Vector3f();
+				boolean hasWeight = false;
+
+				for (Mesh.VertexWeight weight : vertex.weights()) {
+					Bone bone = CollectionsUtils.getEntryByIndex(model.getBones().values(), weight.boneIndex());
+					Vector3f tempPos = new Vector3f(vertex.x(), vertex.y(), vertex.z());
+					Vector3f tempNorm = new Vector3f(vertex.normX(), vertex.normY(), vertex.normZ());
+
+					Matrix4f boneTransform = bone.getGlobalTransform();
+
+					boneTransform.transformPosition(tempPos);
+					tempPos.mul(weight.weight());
+
+					boneTransform.transformDirection(tempNorm);
+					tempNorm.mul(weight.weight());
+
+					finalPos.add(tempPos);
+					finalNorm.add(tempNorm);
+					hasWeight = true;
+				}
+
+				if (!hasWeight) {
+					finalPos.set(vertex.x(), vertex.y(), vertex.z());
+					finalNorm.set(vertex.normX(), vertex.normY(), vertex.normZ());
+				}
+
+				consumer.addVertex(poseStack.last(), finalPos)
 						.setColor(vertex.color().getRGB())
 						.setUv(vertex.texU(), 1 - vertex.texV())
 						.setOverlay(overlayUV)
 						.setLight(lightmapUV)
-						.setNormal(poseStack.last(), vertex.normX(), vertex.normY(), vertex.normZ());
+						.setNormal(poseStack.last(), finalNorm.normalize());
 			}
 		}
 	}
@@ -76,7 +106,7 @@ public class ModelRenderer {
 
 				// Top
 				consumer.addVertex(poseStack.last(), 0, length, 0)
-						.setColor(0f, 1f, 0f, 1f)
+						.setColor(1f, 1f, 1f, 1f)
 						.setNormal(poseStack.last(), 0, 0, 0);
 
 				consumer.addVertex(poseStack.last(), midPos)
@@ -85,11 +115,11 @@ public class ModelRenderer {
 
 				// Bottom
 				consumer.addVertex(poseStack.last(), midPos)
-						.setColor(0f, 1f, 0f, 1f)
+						.setColor(1f, 1f, 1f, 1f)
 						.setNormal(poseStack.last(), 0, 0, 0);
 
 				consumer.addVertex(poseStack.last(), 0, 0, 0)
-						.setColor(0f, 1f, 0f, 1f)
+						.setColor(1f, 1f, 1f, 1f)
 						.setNormal(poseStack.last(), 0, 0, 0);
 			}
 			poseStack.popPose();

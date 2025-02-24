@@ -14,7 +14,6 @@ plugins {
 	id("me.modmuss50.mod-publish-plugin") version "0.6.3"
 }
 
-val modVersion = "${properties["mod_major_version"]}.${properties["mod_minor_version"]}.${properties["mod_patch_version"]}"
 val isSnapshot = project.findProperty("snapshot") == "true"
 
 architectury.minecraft = properties["minecraft_version"] as String
@@ -23,7 +22,7 @@ allprojects {
 	apply(plugin = "java")
 
 	base { archivesName = properties["mod_id"] as String }
-	version = "mc${properties["minecraft_version"]}-${modVersion}"
+	version = "mc${properties["minecraft_version"]}-${properties["mod_version"]}"
 	if (isSnapshot)
 		version = "${version}-SNAPSHOT"
 	group = properties["maven_group"] as String
@@ -141,7 +140,7 @@ subprojects {
 
 			"maven_group" to properties["maven_group"],
 			"mod_id" to properties["mod_id"],
-			"mod_version" to modVersion,
+			"mod_version" to properties["mod_version"],
 			"mod_name" to properties["mod_name"],
 			"mod_description" to properties["mod_description"],
 			"mod_author" to properties["mod_author"],
@@ -172,7 +171,7 @@ subprojects {
 			attributes(mapOf(
 					"Specification-Title" to properties["mod_name"],
 					"Specification-Vendor" to properties["mod_author"],
-					"Specification-Version" to modVersion,
+					"Specification-Version" to properties["mod_version"],
 					"Implementation-Title" to name,
 					"Implementation-Vendor" to properties["mod_author"],
 					"Implementation-Version" to archiveVersion
@@ -193,7 +192,7 @@ var githubAPIKey = providers.environmentVariable("GITHUB_API_KEY")
 publishMods {
 	dryRun = properties["publishing_dry_run"].toString().toBoolean()
 
-	version = modVersion
+	version = properties["mod_version"].toString()
 	changelog = rootProject.file("CHANGELOG.md").readText()
 
 	// Set the release type

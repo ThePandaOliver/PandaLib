@@ -12,7 +12,7 @@
 
 package me.pandamods.pandalib.networking;
 
-import dev.architectury.utils.Env;
+import me.pandamods.pandalib.utils.Env;
 import net.minecraft.world.entity.player.Player;
 
 public class NetworkContext {

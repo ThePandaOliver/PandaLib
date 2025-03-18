@@ -40,7 +40,7 @@ repositories {
 dependencies {
 	minecraft("net.minecraftforge:forge:${properties["minecraft_version"]}-${properties["forge_version"]}")
 
-	common(project(":common", "namedElements")) { isTransitive = false }
+	common(project(":common")) { isTransitive = false }
 	shadowBundle(project(":common"))
 
 	// Mixin for forge
@@ -70,3 +70,5 @@ sourceSets.forEach {
 tasks.assemble {
 	dependsOn("shadowJar")
 }
+
+tasks.getByName("downloadMcpConfig").dependsOn(tasks.getByName("convertAW2AT"))

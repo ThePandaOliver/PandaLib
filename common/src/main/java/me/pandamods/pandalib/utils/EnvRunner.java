@@ -12,7 +12,6 @@
 
 package me.pandamods.pandalib.utils;
 
-import dev.architectury.utils.Env;
 import me.pandamods.pandalib.platform.Services;
 
 import java.util.function.Supplier;

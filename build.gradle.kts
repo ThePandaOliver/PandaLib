@@ -157,17 +157,55 @@ subprojects {
 	tasks.build.get().finalizedBy(rootProject.tasks.getByName("mergeJars"))
 	tasks.assemble.get().finalizedBy(rootProject.tasks.getByName("mergeJars"))
 
-	// TODO: Make this less hardcoded
 	fun convertLine(line: String): String? {
-		if (line.startsWith("accessible class")) {
-			return "public " + line.substring("accessible class ".length)
+		if (line.startsWith("#") || line.isBlank()) {
+			return null // Ignore comments and blank lines
 		}
-		return null
+
+		val parts = line.split("\\s+".toRegex())
+		if (parts.size < 3) {
+			return null // Invalid line format
+		}
+
+		val access = parts[0]
+		val type = parts[1]
+		val className = parts[2].replace("/", ".")
+
+		return when (type) {
+			"class" -> {
+				when (access) {
+					"accessible" -> "public $className"
+					"extendable" -> "protected $className"
+					else -> null
+				}
+			}
+			"method" -> {
+				if (parts.size < 5) return null
+				val methodName = parts[3]
+				val methodDesc = parts[4]
+				val methodSignature = methodDesc.replace("/", ".")
+				when (access) {
+					"accessible" -> "public $className $methodName$methodSignature"
+					"extendable" -> "protected $className $methodName$methodSignature"
+					else -> null
+				}
+			}
+			"field" -> {
+				if (parts.size < 5) return null
+				val fieldName = parts[3]
+				when (access) {
+					"accessible" -> "public $className $fieldName"
+					"mutable" -> "protected $className $fieldName"
+					else -> null
+				}
+			}
+			else -> null
+		}
 	}
 
 	tasks.register("convertAW2AT") {
 		val inputFile = file("${project(":common").layout.projectDirectory}/src/main/resources/${properties["mod_id"]}.accesswidener")
-		val outputFile = file("${project.layout.projectDirectory}/src/main/resources/accesswidener.cfg")
+		val outputFile = file("${project.layout.projectDirectory}/src/main/resources/META-INF/accesstransformer.cfg")
 
 		inputs.file(inputFile)
 		outputs.file(outputFile)
@@ -180,7 +218,6 @@ subprojects {
 				val convertedLine = convertLine(it)
 				if (convertedLine != null) {
 					accessTransformerLines.add(convertedLine)
-					print(convertedLine)
 				}
 			}
 

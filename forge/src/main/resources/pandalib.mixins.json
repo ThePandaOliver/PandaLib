@@ -1,11 +1,12 @@
 {
 	"required": true,
-	"package": "me.pandamods.pandalib.neoforge.mixin",
+	"package": "me.pandamods.pandalib.forge.mixin",
 	"compatibilityLevel": "JAVA_21",
 	"minVersion": "0.8",
 	"client": [
 	],
 	"mixins": [
+		"RegistryManagerMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

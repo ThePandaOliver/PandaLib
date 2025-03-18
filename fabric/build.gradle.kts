@@ -46,7 +46,7 @@ dependencies {
 	modApi("dev.architectury:architectury-fabric:${properties["deps_architectury_version"]}")
 	modApi("com.terraformersmc:modmenu:${properties["deps_modmenu_version"]}")
 
-	common(project(":common", "namedElements")) { isTransitive = false }
+	common(project(":common")) { isTransitive = false }
 	shadowBundle(project(":common"))
 }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 Oliver Froberg (The Panda Oliver)
+ * Copyright (C) 2025 Oliver Froberg (The Panda Oliver)
  *
  * This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU Lesser General Public License as published by
@@ -10,20 +10,23 @@
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package me.pandamods.pandalib.neoforge.platform;
+package me.pandamods.pandalib.forge.platform;
 
 import me.pandamods.pandalib.platform.services.RegistrationHelper;
 import me.pandamods.pandalib.registry.DeferredObject;
 import me.pandamods.pandalib.registry.IdentifiableResourceReloadListener;
+import net.minecraft.core.MappedRegistry;
+import net.minecraft.core.RegistrationInfo;
 import net.minecraft.core.Registry;
+import net.minecraft.core.WritableRegistry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
-import net.minecraft.server.packs.resources.PreparableReloadListener;
-import net.neoforged.neoforge.client.event.AddClientReloadListenersEvent;
-import net.neoforged.neoforge.event.AddServerReloadListenersEvent;
-import net.neoforged.neoforge.registries.NewRegistryEvent;
-import net.neoforged.neoforge.registries.RegisterEvent;
+import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
+import net.minecraftforge.event.AddReloadListenerEvent;
+import net.minecraftforge.registries.NewRegistryEvent;
+import net.minecraftforge.registries.RegisterEvent;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,8 +44,8 @@ public class RegistrationHelperImpl implements RegistrationHelper {
 	@SuppressWarnings("unchecked")
 	public <T> void register(DeferredObject<? extends T> deferredObject, Supplier<? extends T> supplier) {
 		PendingRegistries<T> pending = (PendingRegistries<T>) pendingRegistries
-				.computeIfAbsent(deferredObject.getKey().registryKey(), k ->
-						new PendingRegistries<>(deferredObject.getKey().registryKey()));
+				.computeIfAbsent(deferredObject.getRegistryKey(), k ->
+						new PendingRegistries<>((ResourceKey<? extends Registry<T>>) deferredObject.getRegistryKey()));
 		pending.add(deferredObject, supplier);
 	}
 
@@ -63,26 +66,29 @@ public class RegistrationHelperImpl implements RegistrationHelper {
 	public void registerEvent(RegisterEvent event) {
 		pendingRegistries.values().forEach(pending -> pending.register(event));
 	}
-	
-	public void registerNewRegistryEvent(NewRegistryEvent event) {
-		pendingRegistryTypes.forEach(event::register);
+
+	@SuppressWarnings({"deprecation", "unchecked", "rawtypes"})
+	public void registerNewRegistries() {
+		if (BuiltInRegistries.REGISTRY instanceof MappedRegistry<?> rootRegistry)
+			rootRegistry.unfreeze();
+
+		for (Registry<?> registry : pendingRegistryTypes) {
+			((WritableRegistry) BuiltInRegistries.REGISTRY).register(registry.key(), registry, RegistrationInfo.BUILT_IN);
+		}
+
+		if (BuiltInRegistries.REGISTRY instanceof MappedRegistry<?> rootRegistry)
+			rootRegistry.freeze();
 	}
-	
-	public void addClientReloadListenerEvent(AddClientReloadListenersEvent event) {
+
+	public void addClientReloadListenerEvent(RegisterClientReloadListenersEvent event) {
 		for (IdentifiableResourceReloadListener listener : clientDataReloadListeners) {
-			event.addListener(listener.getResourceID(), listener);
-			for (ResourceLocation resourceDependency : listener.getResourceDependencies()) {
-				event.addDependency(resourceDependency, listener.getResourceID());
-			}
+			event.registerReloadListener(listener);
 		}
 	}
 
-	public void addServerReloadListenerEvent(AddServerReloadListenersEvent event) {
+	public void addServerReloadListenerEvent(AddReloadListenerEvent event) {
 		for (IdentifiableResourceReloadListener listener : serverDataReloadListeners) {
-			event.addListener(listener.getResourceID(), listener);
-			for (ResourceLocation resourceDependency : listener.getResourceDependencies()) {
-				event.addDependency(resourceDependency, listener.getResourceID());
-			}
+			event.addListener(listener);
 		}
 	}
 

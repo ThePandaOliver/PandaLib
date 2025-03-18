@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 Oliver Froberg (The Panda Oliver)
+ * Copyright (C) 2025 Oliver Froberg (The Panda Oliver)
  *
  * This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU Lesser General Public License as published by
@@ -10,12 +10,12 @@
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package me.pandamods.pandalib.neoforge.platform;
+package me.pandamods.pandalib.forge.platform;
 
-import dev.architectury.utils.Env;
 import me.pandamods.pandalib.platform.services.GameHelper;
-import net.neoforged.fml.loading.FMLLoader;
-import net.neoforged.fml.loading.FMLPaths;
+import me.pandamods.pandalib.utils.Env;
+import net.minecraftforge.fml.loading.FMLLoader;
+import net.minecraftforge.fml.loading.FMLPaths;
 
 import java.nio.file.Path;
 

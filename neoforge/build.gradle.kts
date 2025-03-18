@@ -12,6 +12,8 @@ neoForge {
 		minecraftVersion = properties["parchment_minecraft_version"] as String
 	}
 
+	validateAccessTransformers = true
+
 	runs {
 		create("client") {
 			client()
@@ -35,10 +37,12 @@ configurations {
 dependencies {
 	implementation("dev.architectury:architectury-neoforge:${properties["deps_architectury_version"]}")
 
-	common(project(":common", "namedElements")) { isTransitive = false }
+	common(project(":common")) { isTransitive = false }
 	shadowBundle(project(":common"))
 }
 
 tasks.assemble {
 	dependsOn(tasks.getByName<ShadowJar>("shadowJar"))
 }
+
+tasks.getByName("createMinecraftArtifacts").dependsOn(tasks.getByName("convertAW2AT"))

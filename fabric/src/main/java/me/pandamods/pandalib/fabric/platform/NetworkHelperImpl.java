@@ -12,12 +12,12 @@
 
 package me.pandamods.pandalib.fabric.platform;
 
-import dev.architectury.utils.Env;
 import me.pandamods.pandalib.fabric.PandaLibFabric;
 import me.pandamods.pandalib.fabric.platform.utils.ClientPlayPayloadHandler;
 import me.pandamods.pandalib.networking.NetworkContext;
 import me.pandamods.pandalib.networking.NetworkReceiver;
 import me.pandamods.pandalib.platform.services.NetworkHelper;
+import me.pandamods.pandalib.utils.Env;
 import me.pandamods.pandalib.utils.EnvRunner;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;

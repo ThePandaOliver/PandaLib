@@ -1,10 +1,16 @@
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
-import net.fabricmc.loom.task.RemapJarTask
-import org.gradle.kotlin.dsl.getByName
-import org.gradle.kotlin.dsl.withType
-
 plugins {
-	id("fabric-loom") version "1.10-SNAPSHOT"
+	id("net.neoforged.moddev") version("2.0.78")
+}
+
+neoForge {
+	neoFormVersion = properties["neoform_version"] as String
+
+	parchment {
+		mappingsVersion = properties["parchment_mappings_version"] as String
+		minecraftVersion = properties["parchment_minecraft_version"] as String
+	}
+
+	validateAccessTransformers = true
 }
 
 repositories {
@@ -12,25 +18,20 @@ repositories {
 		name = "ParchmentMC"
 		url = uri("https://maven.parchmentmc.org")
 	}
+	maven {
+		name = "Fabric"
+		url = uri("https://maven.fabricmc.net/")
+	}
 }
 
 @Suppress("UnstableApiUsage")
 dependencies {
-	minecraft("net.minecraft:minecraft:${properties["minecraft_version"]}")
-	mappings(loom.layered {
-		officialMojangMappings()
-		parchment("org.parchmentmc.data:parchment-${properties["parchment_minecraft_version"]}:${properties["parchment_mappings_version"]}@zip")
-	})
-	modImplementation("net.fabricmc:fabric-loader:${properties["fabric_version"]}")
+	implementation("net.fabricmc:fabric-loader:${properties["fabric_version"]}")
 
-	modApi("dev.architectury:architectury:${properties["deps_architectury_version"]}")
+	implementation("dev.architectury:architectury:${properties["deps_architectury_version"]}")
+
+	compileOnly("org.spongepowered:mixin:0.8.5")
+	compileOnly("io.github.llamalad7:mixinextras-common:0.4.1")
 }
 
-tasks.withType<ShadowJar> {
-	archiveClassifier.set("dev-shadow")
-}
-
-tasks.withType<RemapJarTask> {
-	val shadowJar = tasks.getByName<ShadowJar>("shadowJar")
-	inputFile.set(shadowJar.archiveFile)
-}
+tasks.getByName("createMinecraftArtifacts").dependsOn(tasks.getByName("convertAW2AT"))

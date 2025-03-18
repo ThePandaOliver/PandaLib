@@ -12,10 +12,10 @@
 
 package me.pandamods.pandalib.config.holders;
 
-import dev.architectury.platform.Platform;
-import dev.architectury.utils.Env;
 import me.pandamods.pandalib.config.Config;
 import me.pandamods.pandalib.config.ConfigData;
+import me.pandamods.pandalib.platform.Services;
+import me.pandamods.pandalib.utils.Env;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.HashMap;
@@ -31,7 +31,7 @@ public class ClientConfigHolder<T extends ConfigData> extends ConfigHolder<T> {
 
 	@Override
 	public void save() {
-		if (Platform.getEnvironment().equals(Env.CLIENT)) {
+		if (Services.GAME.getEnvironment().equals(Env.CLIENT)) {
 			super.save();
 		} else
 			this.logger.warn("Client config '{}' can't be saved on server", this.getDefinition().name());
@@ -39,7 +39,7 @@ public class ClientConfigHolder<T extends ConfigData> extends ConfigHolder<T> {
 
 	@Override
 	public boolean load() {
-		if (Platform.getEnvironment().equals(Env.CLIENT)) {
+		if (Services.GAME.getEnvironment().equals(Env.CLIENT)) {
 			return super.load();
 		}
 		return false;

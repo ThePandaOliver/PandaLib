@@ -12,8 +12,8 @@
 
 package me.pandamods.pandalib.fabric.platform;
 
-import dev.architectury.utils.Env;
 import me.pandamods.pandalib.platform.services.GameHelper;
+import me.pandamods.pandalib.utils.Env;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
 

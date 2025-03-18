@@ -15,11 +15,8 @@ package me.pandamods.pandalib.client;
 import me.pandamods.pandalib.client.resource.AssimpResources;
 import me.pandamods.pandalib.core.client.event.EventHandlerClient;
 import me.pandamods.pandalib.registry.ReloadListenerRegistry;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.server.packs.PackType;
 
-@Environment(EnvType.CLIENT)
 public class PandaLibClient {
 	private static PandaLibClient instance;
 	

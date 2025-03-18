@@ -12,8 +12,8 @@
 
 package me.pandamods.pandalib.neoforge.platform;
 
-import dev.architectury.utils.Env;
 import me.pandamods.pandalib.platform.services.GameHelper;
+import me.pandamods.pandalib.utils.Env;
 import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.fml.loading.FMLPaths;
 

@@ -13,11 +13,8 @@
 package me.pandamods.pandalib.utils;
 
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 
-@Environment(value=EnvType.CLIENT)
 @SuppressWarnings("unused")
 public final class PLSpriteCoordinateExpander implements VertexConsumer {
     private final VertexConsumer delegate;

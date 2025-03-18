@@ -12,10 +12,10 @@
 
 package me.pandamods.pandalib.config.holders;
 
-import dev.architectury.platform.Platform;
-import dev.architectury.utils.Env;
 import me.pandamods.pandalib.config.Config;
 import me.pandamods.pandalib.config.ConfigData;
+import me.pandamods.pandalib.platform.Services;
+import me.pandamods.pandalib.utils.Env;
 
 public class CommonConfigHolder<T extends ConfigData> extends ConfigHolder<T> {
 	private T commonConfig;
@@ -31,7 +31,7 @@ public class CommonConfigHolder<T extends ConfigData> extends ConfigHolder<T> {
 
 	@Override
 	public T get() {
-		if (Platform.getEnvironment().equals(Env.CLIENT) && this.commonConfig != null)
+		if (Services.GAME.getEnvironment().equals(Env.CLIENT) && this.commonConfig != null)
 			return this.commonConfig;
 		return super.get();
 	}

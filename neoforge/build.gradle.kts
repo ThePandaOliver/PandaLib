@@ -35,8 +35,6 @@ configurations {
 }
 
 dependencies {
-	implementation("dev.architectury:architectury-neoforge:${properties["deps_architectury_version"]}")
-
 	common(project(":common")) { isTransitive = false }
 	shadowBundle(project(":common"))
 }

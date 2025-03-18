@@ -43,7 +43,6 @@ dependencies {
 	modImplementation("net.fabricmc:fabric-loader:${properties["fabric_version"]}")
 	modApi("net.fabricmc.fabric-api:fabric-api:${properties["fabric_api_version"]}")
 
-	modApi("dev.architectury:architectury-fabric:${properties["deps_architectury_version"]}")
 	modApi("com.terraformersmc:modmenu:${properties["deps_modmenu_version"]}")
 
 	common(project(":common")) { isTransitive = false }

@@ -12,9 +12,9 @@
 
 package me.pandamods.pandalib.fabric.platform.utils;
 
-import dev.architectury.utils.Env;
 import me.pandamods.pandalib.networking.NetworkContext;
 import me.pandamods.pandalib.networking.NetworkReceiver;
+import me.pandamods.pandalib.utils.Env;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 

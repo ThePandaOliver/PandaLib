@@ -12,12 +12,12 @@
 
 package me.pandamods.pandalib.neoforge.platform;
 
-import dev.architectury.utils.Env;
 import me.pandamods.pandalib.event.events.NetworkingEvents;
 import me.pandamods.pandalib.networking.NetworkContext;
 import me.pandamods.pandalib.networking.NetworkReceiver;
 import me.pandamods.pandalib.platform.Services;
 import me.pandamods.pandalib.platform.services.NetworkHelper;
+import me.pandamods.pandalib.utils.Env;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;

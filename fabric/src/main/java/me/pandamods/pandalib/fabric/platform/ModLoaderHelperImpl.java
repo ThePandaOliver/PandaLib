@@ -12,16 +12,12 @@
 
 package me.pandamods.pandalib.fabric.platform;
 
-import dev.architectury.event.events.client.ClientLifecycleEvent;
 import me.pandamods.pandalib.platform.services.ModLoaderHelper;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.loader.api.metadata.ModMetadata;
 import net.fabricmc.loader.api.metadata.Person;
-import net.fabricmc.loader.impl.FabricLoaderImpl;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

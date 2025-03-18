@@ -26,10 +26,6 @@ repositories {
 
 @Suppress("UnstableApiUsage")
 dependencies {
-	implementation("net.fabricmc:fabric-loader:${properties["fabric_version"]}")
-
-	implementation("dev.architectury:architectury:${properties["deps_architectury_version"]}")
-
 	compileOnly("org.spongepowered:mixin:0.8.5")
 	compileOnly("io.github.llamalad7:mixinextras-common:0.4.1")
 }

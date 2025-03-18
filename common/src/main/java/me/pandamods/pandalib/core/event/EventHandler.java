@@ -12,13 +12,13 @@
 
 package me.pandamods.pandalib.core.event;
 
-import dev.architectury.event.events.common.PlayerEvent;
 import me.pandamods.pandalib.core.network.ConfigNetworking;
 import net.minecraft.server.level.ServerPlayer;
 
 public class EventHandler {
 	public static void init() {
-		PlayerEvent.PLAYER_JOIN.register(EventHandler::onServerPlayerJoin);
+		// TODO: Implement player join event
+//		PlayerEvent.PLAYER_JOIN.register(EventHandler::onServerPlayerJoin);
 	}
 
 	private static void onServerPlayerJoin(ServerPlayer serverPlayer) {

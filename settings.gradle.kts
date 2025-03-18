@@ -1,9 +1,5 @@
 pluginManagement.repositories {
 	maven {
-		name = "Architectury"
-		url = uri("https://maven.architectury.dev/")
-	}
-	maven {
 		name = "Fabric"
 		url = uri("https://maven.fabricmc.net/")
 	}
@@ -15,9 +11,13 @@ pluginManagement.repositories {
 		name = "NeoForge"
 		url = uri("https://maven.neoforged.net/releases/")
 	}
+	maven {
+		name = "ParchmentMC"
+		url = uri("https://maven.parchmentmc.org")
+	}
 	gradlePluginPortal()
 }
 
-include("common", "common-testmod")
-include("fabric", "fabric-testmod")
-include("neoforge", "neoforge-testmod")
+include("common")
+include("fabric")
+include("neoforge")

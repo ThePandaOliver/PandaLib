@@ -1,49 +1,35 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import net.fabricmc.loom.task.RemapJarTask
+import org.gradle.kotlin.dsl.getByName
+import org.gradle.kotlin.dsl.withType
 
-val isSnapshot = project.findProperty("snapshot") == "true"
-
-architectury {
-	common(properties["supported_mod_loaders"].toString().split(","))
+plugins {
+	id("fabric-loom") version "1.10-SNAPSHOT"
 }
 
-loom.accessWidenerPath.set(file("src/main/resources/${properties["mod_id"]}.accesswidener"))
+repositories {
+	maven {
+		name = "ParchmentMC"
+		url = uri("https://maven.parchmentmc.org")
+	}
+}
 
+@Suppress("UnstableApiUsage")
 dependencies {
-	// We depend on fabric loader here to use the fabric @Environment annotations and get the mixin dependencies
-	// Do NOT use other classes from fabric loader
-	modImplementation("net.fabricmc:fabric-loader:${properties["fabric_version"]}")
+	minecraft("net.minecraft:minecraft:${properties["minecraft_version"]}")
+	mappings(loom.layered {
+		officialMojangMappings()
+		parchment("org.parchmentmc.data:parchment-${properties["parchment_minecraft_version"]}:${properties["parchment_mappings_version"]}@zip")
+	})
 
 	modApi("dev.architectury:architectury:${properties["deps_architectury_version"]}")
+}
+
+tasks.withType<ShadowJar> {
+	archiveClassifier.set("dev-shadow")
 }
 
 tasks.withType<RemapJarTask> {
 	val shadowJar = tasks.getByName<ShadowJar>("shadowJar")
 	inputFile.set(shadowJar.archiveFile)
-}
-
-publishing {
-	publications {
-		register("mavenJava", MavenPublication::class) {
-			groupId = properties["maven_group"] as String
-			artifactId = "${properties["mod_id"]}-${project.name}"
-			version = "${project.version}"
-
-			from(components["java"])
-		}
-	}
-
-	repositories {
-		maven {
-			name = "Nexus"
-			url = if (isSnapshot)
-				uri("https://nexus.pandasystems.dev/repository/maven-snapshots/")
-			else
-				uri("https://nexus.pandasystems.dev/repository/maven-releases/")
-			credentials {
-				username = System.getenv("NEXUS_USERNAME")
-				password = System.getenv("NEXUS_PASSWORD")
-			}
-		}
-	}
 }

@@ -1,63 +1,44 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
-import net.fabricmc.loom.task.RemapJarTask
 
-val isSnapshot = project.findProperty("snapshot") == "true"
-
-architectury {
-	platformSetupLoomIde()
-	neoForge()
+plugins {
+	id("net.neoforged.moddev") version("2.0.78")
 }
 
-loom {
-	accessWidenerPath.set(project(":common").loom.accessWidenerPath)
+neoForge {
+	version = properties["neoforge_version"] as String
+
+	parchment {
+		mappingsVersion = properties["parchment_mappings_version"] as String
+		minecraftVersion = properties["parchment_minecraft_version"] as String
+	}
+
+	runs {
+		create("client") {
+			client()
+			gameDirectory = file("../.runs/client")
+			programArguments = listOf("--username", "dev")
+		}
+
+		create("server") {
+			server()
+			gameDirectory = file("../.runs/server")
+			programArgument("--nogui")
+		}
+	}
 }
 
+@Suppress("unstableApiUsage")
 configurations {
-	getByName("developmentNeoForge").extendsFrom(configurations["common"])
-	forgeRuntimeLibrary.get().extendsFrom(configurations["forgeJarShadow"])
+	configurations["additionalRuntimeClasspath"].extendsFrom(configurations["common"])
 }
 
 dependencies {
-	neoForge("net.neoforged:neoforge:${properties["neoforge_version"]}")
-
-	modApi("dev.architectury:architectury-neoforge:${properties["deps_architectury_version"]}")
+	implementation("dev.architectury:architectury-neoforge:${properties["deps_architectury_version"]}")
 	
 	common(project(":common", "namedElements")) { isTransitive = false }
 	shadowBundle(project(":common", "transformProductionNeoForge"))
 }
 
-tasks.remapJar {
-	injectAccessWidener = true
-	atAccessWideners.add(loom.accessWidenerPath.get().asFile.name)
-}
-
-tasks.withType<RemapJarTask> {
-	val shadowJar = tasks.getByName<ShadowJar>("shadowJar")
-	inputFile.set(shadowJar.archiveFile)
-}
-
-publishing {
-	publications {
-		register("mavenJava", MavenPublication::class) {
-			groupId = properties["maven_group"] as String
-			artifactId = "${properties["mod_id"]}-${project.name}"
-			version = "${project.version}"
-
-			from(components["java"])
-		}
-	}
-
-	repositories {
-		maven {
-			name = "Nexus"
-			url = if (isSnapshot)
-				uri("https://nexus.pandasystems.dev/repository/maven-snapshots/")
-			else
-				uri("https://nexus.pandasystems.dev/repository/maven-releases/")
-			credentials {
-				username = System.getenv("NEXUS_USERNAME")
-				password = System.getenv("NEXUS_PASSWORD")
-			}
-		}
-	}
+tasks.assemble {
+	dependsOn(tasks.getByName<ShadowJar>("shadowJar"))
 }

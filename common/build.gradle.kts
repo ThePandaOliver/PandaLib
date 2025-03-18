@@ -21,6 +21,7 @@ dependencies {
 		officialMojangMappings()
 		parchment("org.parchmentmc.data:parchment-${properties["parchment_minecraft_version"]}:${properties["parchment_mappings_version"]}@zip")
 	})
+	modImplementation("net.fabricmc:fabric-loader:${properties["fabric_version"]}")
 
 	modApi("dev.architectury:architectury:${properties["deps_architectury_version"]}")
 }

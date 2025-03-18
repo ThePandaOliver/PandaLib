@@ -1,4 +1,5 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+import java.nio.file.Files
 
 plugins {
 	java
@@ -10,6 +11,7 @@ plugins {
 
 allprojects {
 	apply(plugin = "java")
+	apply(plugin = "idea")
 
 	base {
 		archivesName = properties["mod_id"] as String
@@ -154,4 +156,35 @@ subprojects {
 
 	tasks.build.get().finalizedBy(rootProject.tasks.getByName("mergeJars"))
 	tasks.assemble.get().finalizedBy(rootProject.tasks.getByName("mergeJars"))
+
+	// TODO: Make this less hardcoded
+	fun convertLine(line: String): String? {
+		if (line.startsWith("accessible class")) {
+			return "public " + line.substring("accessible class ".length)
+		}
+		return null
+	}
+
+	tasks.register("convertAW2AT") {
+		val inputFile = file("${project(":common").layout.projectDirectory}/src/main/resources/${properties["mod_id"]}.accesswidener")
+		val outputFile = file("${project.layout.projectDirectory}/src/main/resources/accesswidener.cfg")
+
+		inputs.file(inputFile)
+		outputs.file(outputFile)
+
+		doLast {
+			val accessWidenerLines = Files.readAllLines(inputFile.toPath())
+			val accessTransformerLines = mutableListOf<String>()
+
+			accessWidenerLines.forEach {
+				val convertedLine = convertLine(it)
+				if (convertedLine != null) {
+					accessTransformerLines.add(convertedLine)
+					print(convertedLine)
+				}
+			}
+
+			Files.write(outputFile.toPath(), accessTransformerLines)
+		}
+	}
 }

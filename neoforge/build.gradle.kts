@@ -34,9 +34,9 @@ configurations {
 
 dependencies {
 	implementation("dev.architectury:architectury-neoforge:${properties["deps_architectury_version"]}")
-	
+
 	common(project(":common", "namedElements")) { isTransitive = false }
-	shadowBundle(project(":common", "transformProductionNeoForge"))
+	shadowBundle(project(":common"))
 }
 
 tasks.assemble {

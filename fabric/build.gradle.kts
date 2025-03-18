@@ -40,7 +40,6 @@ dependencies {
 		officialMojangMappings()
 		parchment("org.parchmentmc.data:parchment-${properties["parchment_minecraft_version"]}:${properties["parchment_mappings_version"]}@zip")
 	})
-
 	modImplementation("net.fabricmc:fabric-loader:${properties["fabric_version"]}")
 	modApi("net.fabricmc.fabric-api:fabric-api:${properties["fabric_api_version"]}")
 
@@ -48,7 +47,7 @@ dependencies {
 	modApi("com.terraformersmc:modmenu:${properties["deps_modmenu_version"]}")
 
 	common(project(":common", "namedElements")) { isTransitive = false }
-	shadowBundle(project(":common", "transformProductionFabric"))
+	shadowBundle(project(":common"))
 }
 
 tasks.withType<ShadowJar> {

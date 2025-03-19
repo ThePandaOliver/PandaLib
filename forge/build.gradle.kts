@@ -1,6 +1,3 @@
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
-import org.gradle.kotlin.dsl.getByName
-
 plugins {
 	id("net.minecraftforge.gradle") version("6.0.26")
 	id("org.spongepowered.mixin") version("0.7.+")
@@ -54,11 +51,11 @@ dependencies {
 }
 
 mixin {
-	add(sourceSets.main.get(), "mixins.${project.name}.refmap.json")
-	config("${project.name}.mixins.json")
+	add(sourceSets.main.get(), "mixins.${properties["mod_id"]}.refmap.json")
+	config("${properties["mod_id"]}.mixins.json")
 
-	add(sourceSets.main.get(), "mixins.${project.name}-common.refmap.json")
-	config("${project.name}-common.mixins.json")
+	add(sourceSets.main.get(), "mixins.${properties["mod_id"]}-common.refmap.json")
+	config("${properties["mod_id"]}-common.mixins.json")
 }
 
 sourceSets.forEach {
@@ -72,3 +69,4 @@ tasks.assemble {
 }
 
 tasks.getByName("downloadMcpConfig").dependsOn(tasks.getByName("convertAW2AT"))
+tasks.processResources.get().dependsOn(tasks.getByName("convertAW2AT"))

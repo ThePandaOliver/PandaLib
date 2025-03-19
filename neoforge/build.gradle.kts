@@ -44,3 +44,4 @@ tasks.assemble {
 }
 
 tasks.getByName("createMinecraftArtifacts").dependsOn(tasks.getByName("convertAW2AT"))
+tasks.processResources.get().dependsOn(tasks.getByName("convertAW2AT"))

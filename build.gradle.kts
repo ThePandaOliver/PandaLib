@@ -107,7 +107,6 @@ subprojects {
 	tasks.processResources {
 		val props = mutableMapOf(
 			"java_version" to properties["java_version"],
-			"supported_mod_loaders" to properties["supported_mod_loaders"],
 
 			"maven_group" to properties["maven_group"],
 			"mod_id" to properties["mod_id"],

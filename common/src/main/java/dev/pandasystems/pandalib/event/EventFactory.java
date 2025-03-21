@@ -37,10 +37,10 @@ public final class EventFactory {
 		});
 	}
 
-	public static <T> Event<T> createCancelable() {
+	public static <T> Event<T> createCancellable() {
 		return new EventImpl<T>(listeners -> new AbstractInvocationHandler() {
 			@Override
-			protected @Nullable Object handleInvocation(@NotNull Object proxy, @NotNull Method method, Object @NotNull [] args) throws Throwable {
+			protected @NotNull Object handleInvocation(@NotNull Object proxy, @NotNull Method method, Object @NotNull [] args) throws Throwable {
 				for (T listener : listeners) {
 					boolean result = (boolean) MethodHandles.lookup().unreflect(method).bindTo(listener).invokeWithArguments(args);
 					if (result)

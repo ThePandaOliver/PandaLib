@@ -8,72 +8,36 @@
 [![Fabric API](https://img.shields.io/badge/Fabric%20API-REQUIRED%20for%20Fabric-1?style=for-the-badge&labelColor=black&color=gold)](https://www.curseforge.com/minecraft/mc-mods/fabric-api)
 
 ## About:
+
 This Library was created to easily share code between The Panda Oliver's mods.
 
 ### Current Features:
-- Embedded JOML
-- Config API
-  - Automatic Config synchronization
 
-### In development:
-- Multi-Loader Framework
-- Custom Model Rendering API
+* Config API 
+  * Automatic Config synchronization
 
-### Planned Features:
-- Config Menu API
-- Wiki / Docs
-- And more to come
+### Future Features
+* **In development**
+  * Multi-Loader Framework (v1.0.0)
+  * Custom Model Rendering API
 
----
-## Developer
 
-Groovy DSL
-```groovy
-repository {
-	maven { url = "https://nexus.pandasystems.dev/repository/maven-public/" }
-}
-
-dependency {
-	// Fabric Loom / Architectury Loom
-	modApi "me.pandamods:pandalib-<Platform>:mc<MC Version>-<Mod Version>"
-	// NeoForge
-	implementation "me.pandamods:pandalib-<Platform>:mc<MC Version>-<Mod Version>"
-	// Forge
-	implementation fg.deobf("me.pandamods:pandalib-<Platform>:mc<MC Version>-<Mod Version>")
-}
-```
-
-Kotlin DSL
-```kotlin
-repository {
-	maven("https://nexus.pandasystems.dev/repository/maven-public/")
-}
-
-dependency {
-	// Fabric Loom / Architectury Loom
-	modApi("me.pandamods:pandalib-<Platform>:mc<MC Version>-<Mod Version>")
-	// NeoForge
-	implementation("me.pandamods:pandalib-<Platform>:mc<MC Version>-<Mod Version>")
-	// Forge
-	implementation(fg.deobf("me.pandamods:pandalib-<Platform>:mc<MC Version>-<Mod Version>"))
-}
-```
-Replace \<Platform> with either "common", "fabric", "forge" or "neoforge"\
-Replace \<MC Version> with your desired supported version of minecraft.\
-Replace \<Mod Version> with your desired version of PandaLib.
-
----
-## Support me
-[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/S6S0WO38H)
+* **Planned**
+  * Config Menu API
+  * Wiki / Docs
 
 ## Advertisement
-Thanks to **Jetbrains** for supporting this project with their open source program.\
-[<img src="https://resources.jetbrains.com/storage/products/company/brand/logos/jetbrains.svg" width=300px>](https://jb.gg/OpenSourceSupport)
 
-Thanks to **Kinetic Hosting** for supporting this project 
-![Partner Banner](https://github.com/PandaDap2006/PandaDap2006/blob/main/assets_for_readme/kinetic_hosting_banner_v2.png?raw=true)
+Thanks to **Jetbrains** for supporting this project with their open source program.
+
+[<img src="https://raw.githubusercontent.com/ThePandaOliver/Readme-Assets/e263e71e74a032bd3fec27ea5740dd0c1d9508c4/Support/jetbrains/jetbrains.svg" width=300px>](https://jb.gg/OpenSourceSupport)
+
+Thanks to **Kinetic Hosting** for supporting this project
+
+![Partner Banner](https://github.com/ThePandaOliver/Readme-Assets/blob/main/Support/Kinetic%20affiliate%20banner.png?raw=true)
 
 **[Click here and use code "PANDA" to get 15% of your first month](https://t.ly/B1Kui)**
 
 ## License
+
 The project is licensed under the GNU LGPLv3

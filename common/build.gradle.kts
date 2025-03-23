@@ -1,34 +1,21 @@
-plugins {
-	id("net.neoforged.moddev") version("2.0.78")
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+import net.fabricmc.loom.task.RemapJarTask
+
+architectury {
+	common(properties["supported_mod_loaders"].toString().split(","))
 }
 
-neoForge {
-	neoFormVersion = properties["neoform_version"] as String
-
-	parchment {
-		mappingsVersion = properties["parchment_mappings_version"] as String
-		minecraftVersion = properties["parchment_minecraft_version"] as String
-	}
-
-	validateAccessTransformers = true
+loom {
+	accessWidenerPath.set(file("src/main/resources/${properties["mod_id"]}.accesswidener"))
 }
 
-repositories {
-	maven {
-		name = "ParchmentMC"
-		url = uri("https://maven.parchmentmc.org")
-	}
-	maven {
-		name = "Fabric"
-		url = uri("https://maven.fabricmc.net/")
-	}
-}
-
-@Suppress("UnstableApiUsage")
 dependencies {
-	compileOnly("org.spongepowered:mixin:0.8.5")
-	compileOnly("io.github.llamalad7:mixinextras-common:0.4.1")
+	// We depend on fabric loader here to use the fabric @Environment annotations and get the mixin dependencies
+	// Do NOT use other classes from fabric loader
+	modImplementation("net.fabricmc:fabric-loader:${properties["fabric_version"]}")
 }
 
-tasks.getByName("createMinecraftArtifacts").dependsOn(tasks.getByName("convertAW2AT"))
-tasks.processResources.get().dependsOn(tasks.getByName("convertAW2AT"))
+tasks.withType<RemapJarTask> {
+	val shadowJar = tasks.getByName<ShadowJar>("shadowJar")
+	inputFile.set(shadowJar.archiveFile)
+}

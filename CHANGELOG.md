@@ -1,6 +1,7 @@
 # Version 1.0.0 Release
 
+* With the release of v1.0.0, versions for Minecraft 1.19.2 will now be obsolete.
+
 ## Developer Notes
-- Forge support.
-- Changed the maven group from `me.pandamods` to `dev.pandasystems`.
+* Changed the maven group from `me.pandamods` to `dev.pandasystems`.
 

@@ -1,47 +1,52 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+import net.fabricmc.loom.task.RemapJarTask
 
-plugins {
-	id("net.neoforged.moddev") version("2.0.78")
+architectury {
+	platformSetupLoomIde()
+	neoForge()
 }
 
-neoForge {
-	version = properties["neoforge_version"] as String
-
-	parchment {
-		mappingsVersion = properties["parchment_mappings_version"] as String
-		minecraftVersion = properties["parchment_minecraft_version"] as String
-	}
-
-	validateAccessTransformers = true
+loom {
+	accessWidenerPath.set(project(":common").loom.accessWidenerPath)
 
 	runs {
-		create("client") {
+		named("client") {
 			client()
-			gameDirectory = file("../.runs/client")
-			programArguments = listOf("--username", "dev")
+			configName = "Client"
+			ideConfigGenerated(true)
+			runDir("../.runs/client")
+			source(sourceSets["main"])
+			programArgs("--username=Dev")
 		}
-
-		create("server") {
+		named("server") {
 			server()
-			gameDirectory = file("../.runs/server")
-			programArgument("--nogui")
+			configName = "Server"
+			ideConfigGenerated(true)
+			runDir("../.runs/server")
+			source(sourceSets["main"])
 		}
 	}
 }
 
-@Suppress("unstableApiUsage")
+@Suppress("UnstableApiUsage")
 configurations {
-	configurations["additionalRuntimeClasspath"].extendsFrom(configurations["common"])
+	getByName("developmentNeoForge").extendsFrom(configurations["common"])
+	forgeRuntimeLibrary.get().extendsFrom(configurations["fullShadow"])
 }
 
 dependencies {
-	common(project(":common")) { isTransitive = false }
-	shadowBundle(project(":common"))
+	neoForge("net.neoforged:neoforge:${properties["neoforge_version"]}")
+
+	common(project(":common", "namedElements")) { isTransitive = false }
+	shadowBundle(project(":common", "transformProductionNeoForge"))
 }
 
-tasks.assemble {
-	dependsOn(tasks.getByName<ShadowJar>("shadowJar"))
+tasks.remapJar {
+	injectAccessWidener = true
+	atAccessWideners.add(loom.accessWidenerPath.get().asFile.name)
 }
 
-tasks.getByName("createMinecraftArtifacts").dependsOn(tasks.getByName("convertAW2AT"))
-tasks.processResources.get().dependsOn(tasks.getByName("convertAW2AT"))
+tasks.withType<RemapJarTask> {
+	val shadowJar = tasks.getByName<ShadowJar>("shadowJar")
+	inputFile.set(shadowJar.archiveFile)
+}

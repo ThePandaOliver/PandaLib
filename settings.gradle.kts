@@ -1,5 +1,9 @@
 pluginManagement.repositories {
 	maven {
+		name = "Architectury"
+		url = uri("https://maven.architectury.dev/")
+	}
+	maven {
 		name = "Fabric"
 		url = uri("https://maven.fabricmc.net/")
 	}
@@ -18,4 +22,4 @@ pluginManagement.repositories {
 	gradlePluginPortal()
 }
 
-include("common", "fabric", "forge", "neoforge")
+include("common", "fabric", "neoforge")

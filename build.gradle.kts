@@ -1,12 +1,19 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
-import java.nio.file.Files
+import net.fabricmc.loom.api.LoomGradleExtensionAPI
 
 plugins {
 	java
 	idea
 
-	id("com.gradleup.shadow") version "9.0.0-beta10" apply false
+	id("architectury-plugin") version "3.4-SNAPSHOT"
+	id("dev.architectury.loom") version "1.9-SNAPSHOT" apply false
+
+	id("com.github.johnrengelman.shadow") version "8.1.1" apply false
 	id("io.github.pacifistmc.forgix") version "1.2.9"
+}
+
+architectury {
+	minecraft = properties["minecraft_version"] as String
 }
 
 allprojects {
@@ -44,11 +51,17 @@ forgix {
 }
 
 subprojects {
-	apply(plugin = "com.gradleup.shadow")
+	apply(plugin = "architectury-plugin")
+	apply(plugin = "dev.architectury.loom")
+
+	apply(plugin = "com.github.johnrengelman.shadow")
 
 	base {
 		archivesName = "${properties["mod_id"]}-${project.name}"
 	}
+
+	val loom = project.extensions.getByName<LoomGradleExtensionAPI>("loom")
+	loom.silentMojangMappingsLicense()
 
 	@Suppress("UnstableApiUsage")
 	configurations {
@@ -70,7 +83,7 @@ subprojects {
 			isCanBeResolved = true
 			isCanBeConsumed = false
 		}
-		configurations["common"].extendsFrom(configurations["fullShadow"])
+		implementation.get().extendsFrom(configurations["fullShadow"])
 		configurations["shadowBundle"].extendsFrom(configurations["fullShadow"])
 	}
 
@@ -78,10 +91,22 @@ subprojects {
 		mavenCentral()
 		mavenLocal()
 
-		maven("https://maven.architectury.dev/")
+		maven("https://maven.parchmentmc.org/")
+		maven("https://maven.fabricmc.net/")
+		maven("https://maven.minecraftforge.net/")
+		maven("https://maven.neoforged.net/releases/")
 	}
 
+	@Suppress("UnstableApiUsage")
 	dependencies {
+		"minecraft"("com.mojang:minecraft:${properties["minecraft_version"]}") {
+			exclude(group = "org.joml", module = "joml")
+		}
+		"mappings"(loom.layered {
+			officialMojangMappings()
+			parchment("org.parchmentmc.data:parchment-${properties["parchment_minecraft_version"]}:${properties["parchment_mappings_version"]}@zip")
+		})
+
 		"fullShadow"("org.lwjgl", "lwjgl-assimp", "${properties["deps_lwjgl_version"]}") {
 			exclude(group = "org.lwjgl", module = "lwjgl")
 		}
@@ -96,7 +121,9 @@ subprojects {
 
 	tasks.withType<ShadowJar> {
 		configurations = listOf(project.configurations.getByName("shadowBundle"))
-		archiveClassifier.set("")
+		archiveClassifier.set("dev-shadow")
+
+		exclude("architectury.common.json")
 	}
 
 	tasks.withType<JavaCompile> {
@@ -107,6 +134,7 @@ subprojects {
 	tasks.processResources {
 		val props = mutableMapOf(
 			"java_version" to properties["java_version"],
+			"supported_mod_loaders" to properties["supported_mod_loaders"],
 
 			"maven_group" to properties["maven_group"],
 			"mod_id" to properties["mod_id"],
@@ -155,72 +183,4 @@ subprojects {
 
 	tasks.build.get().finalizedBy(rootProject.tasks.getByName("mergeJars"))
 	tasks.assemble.get().finalizedBy(rootProject.tasks.getByName("mergeJars"))
-
-	fun convertLine(line: String): String? {
-		if (line.startsWith("#") || line.isBlank()) {
-			return null // Ignore comments and blank lines
-		}
-
-		val parts = line.split("\\s+".toRegex())
-		if (parts.size < 3) {
-			return null // Invalid line format
-		}
-
-		val access = parts[0]
-		val type = parts[1]
-		val className = parts[2].replace("/", ".")
-
-		return when (type) {
-			"class" -> {
-				when (access) {
-					"accessible" -> "public $className"
-					"extendable" -> "protected $className"
-					else -> null
-				}
-			}
-			"method" -> {
-				if (parts.size < 5) return null
-				val methodName = parts[3]
-				val methodDesc = parts[4]
-				val methodSignature = methodDesc.replace("/", ".")
-				when (access) {
-					"accessible" -> "public $className $methodName$methodSignature"
-					"extendable" -> "protected $className $methodName$methodSignature"
-					else -> null
-				}
-			}
-			"field" -> {
-				if (parts.size < 5) return null
-				val fieldName = parts[3]
-				when (access) {
-					"accessible" -> "public $className $fieldName"
-					"mutable" -> "protected $className $fieldName"
-					else -> null
-				}
-			}
-			else -> null
-		}
-	}
-
-	tasks.register("convertAW2AT") {
-		val inputFile = file("${project(":common").layout.projectDirectory}/src/main/resources/${properties["mod_id"]}.accesswidener")
-		val outputFile = file("${project.layout.projectDirectory}/src/main/resources/META-INF/accesstransformer.cfg")
-
-		inputs.file(inputFile)
-		outputs.file(outputFile)
-
-		doLast {
-			val accessWidenerLines = Files.readAllLines(inputFile.toPath())
-			val accessTransformerLines = mutableListOf<String>()
-
-			accessWidenerLines.forEach {
-				val convertedLine = convertLine(it)
-				if (convertedLine != null) {
-					accessTransformerLines.add(convertedLine)
-				}
-			}
-
-			Files.write(outputFile.toPath(), accessTransformerLines)
-		}
-	}
 }

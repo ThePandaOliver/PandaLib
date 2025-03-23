@@ -1,11 +1,14 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import net.fabricmc.loom.task.RemapJarTask
 
-plugins {
-	id("fabric-loom") version "1.10-SNAPSHOT"
+architectury {
+	platformSetupLoomIde()
+	fabric()
 }
 
 loom {
+	accessWidenerPath.set(project(":common").loom.accessWidenerPath)
+
 	runs {
 		named("client") {
 			client()
@@ -25,32 +28,27 @@ loom {
 	}
 }
 
+@Suppress("UnstableApiUsage")
+configurations {
+	getByName("developmentFabric").extendsFrom(configurations["common"])
+}
+
 repositories {
-	maven {
-		name = "ParchmentMC"
-		url = uri("https://maven.parchmentmc.org")
-	}
 	maven("https://maven.terraformersmc.com/releases/")
 }
 
-@Suppress("UnstableApiUsage")
 dependencies {
-	minecraft("net.minecraft:minecraft:${properties["minecraft_version"]}")
-	mappings(loom.layered {
-		officialMojangMappings()
-		parchment("org.parchmentmc.data:parchment-${properties["parchment_minecraft_version"]}:${properties["parchment_mappings_version"]}@zip")
-	})
 	modImplementation("net.fabricmc:fabric-loader:${properties["fabric_version"]}")
 	modApi("net.fabricmc.fabric-api:fabric-api:${properties["fabric_api_version"]}")
 
 	modApi("com.terraformersmc:modmenu:${properties["deps_modmenu_version"]}")
 
-	common(project(":common")) { isTransitive = false }
-	shadowBundle(project(":common"))
+	common(project(":common", "namedElements")) { isTransitive = false }
+	shadowBundle(project(":common", "transformProductionFabric"))
 }
 
-tasks.withType<ShadowJar> {
-	archiveClassifier.set("dev-shadow")
+tasks.remapJar {
+	injectAccessWidener.set(true)
 }
 
 tasks.withType<RemapJarTask> {

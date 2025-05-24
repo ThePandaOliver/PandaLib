@@ -1,62 +1,46 @@
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
-import net.fabricmc.loom.task.RemapJarTask
+@file:Suppress("UnstableApiUsage")
+
+plugins {
+	java
+	alias(libs.plugins.architecturyPlugin)
+	alias(libs.plugins.architecturyLoom)
+}
 
 architectury {
+	minecraft = libs.versions.minecraft.get()
 	platformSetupLoomIde()
 	fabric()
 }
 
 loom {
-	accessWidenerPath.set(project(":common").loom.accessWidenerPath)
+	accessWidenerPath = project(":common").loom.accessWidenerPath
 }
 
 configurations {
-	getByName("developmentFabric").extendsFrom(configurations["common"])
+//	getByName("developmentFabric").extendsFrom(configurations["common"])
 }
 
 repositories {
+	mavenCentral()
 	maven("https://maven.terraformersmc.com/releases/")
 }
 
 dependencies {
-	modImplementation("net.fabricmc:fabric-loader:${properties["fabric_version"]}")
-	modApi("net.fabricmc.fabric-api:fabric-api:${properties["fabric_api_version"]}")
+	minecraft(libs.minecraft)
+	mappings(loom.layered {
+		officialMojangMappings()
+		parchment("${libs.parchment.get()}@zip")
+	})
+	modImplementation(libs.fabricLoader)
+	modApi(libs.fabricApi)
 
-	modApi("dev.architectury:architectury-fabric:${properties["deps_architectury_version"]}")
-	modApi("com.terraformersmc:modmenu:${properties["deps_modmenu_version"]}")
+	modApi(libs.architectury.fabric)
+	modApi(libs.modmenu)
 
-	common(project(":common", "namedElements")) { isTransitive = false }
-	shadowBundle(project(":common", "transformProductionFabric"))
+	implementation(libs.bundles.kotlin)
+	include(libs.bundles.kotlin)
 }
 
 tasks.remapJar {
 	injectAccessWidener.set(true)
-}
-
-tasks.withType<RemapJarTask> {
-	val shadowJar = tasks.getByName<ShadowJar>("shadowJar")
-	inputFile.set(shadowJar.archiveFile)
-}
-
-publishing {
-	publications {
-		register("mavenJava", MavenPublication::class) {
-			groupId = properties["maven_group"] as String
-			artifactId = "${properties["mod_id"]}-${project.name}"
-			version = "${project.version}-build.${project.findProperty("buildNumber") ?: "-1"}"
-
-			from(components["java"])
-		}
-	}
-
-	repositories {
-		maven {
-			name = "GitHubPackages"
-			url = uri("https://maven.pkg.github.com/PandaMods-Dev/PandaLib")
-			credentials {
-				username = project.findProperty("gpr.user") as String? ?: System.getenv("USERNAME")
-				password = project.findProperty("gpr.key") as String? ?: System.getenv("TOKEN")
-			}
-		}
-	}
 }

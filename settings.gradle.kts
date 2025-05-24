@@ -18,6 +18,6 @@ pluginManagement.repositories {
 	gradlePluginPortal()
 }
 
-include("common", "common-testmod")
-include("fabric", "fabric-testmod")
-include("neoforge", "neoforge-testmod")
+include("common")
+include("fabric")
+include("neoforge")

@@ -16,12 +16,16 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-			"me.pandamods.pandalib.fabric.PandaLibFabric"
-    ],
+			{
+				"value": "me.pandamods.pandalib.fabric.PandaLibFabric"
+			}
+		],
 		"client": [
-			"me.pandamods.pandalib.fabric.client.PandaLibClientFabric"
+			{
+				"value": "me.pandamods.pandalib.fabric.client.PandaLibClientFabric"
+			}
 		]
-  },
+	},
 	"mixins": [
 		"${mod_id}.mixins.json",
 		"${mod_id}-common.mixins.json"

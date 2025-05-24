@@ -1,44 +1,37 @@
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
-import net.fabricmc.loom.task.RemapJarTask
+@file:Suppress("UnstableApiUsage")
+
+plugins {
+	java
+	alias(libs.plugins.architecturyPlugin)
+	alias(libs.plugins.architecturyLoom)
+}
 
 architectury {
-	common(properties["supported_mod_loaders"].toString().split(","))
+	minecraft = libs.versions.minecraft.get()
+	common("neoforge", "fabric")
 }
 
-loom.accessWidenerPath.set(file("src/main/resources/${properties["mod_id"]}.accesswidener"))
+loom {
+	accessWidenerPath = file("src/main/resources/${properties["mod_id"]}.accesswidener")
+}
+
+repositories {
+	mavenCentral()
+}
 
 dependencies {
+	minecraft(libs.minecraft)
+	mappings(loom.layered {
+		officialMojangMappings()
+		parchment("${libs.parchment.get()}@zip")
+	})
+
 	// We depend on fabric loader here to use the fabric @Environment annotations and get the mixin dependencies
 	// Do NOT use other classes from fabric loader
-	modImplementation("net.fabricmc:fabric-loader:${properties["fabric_version"]}")
+	modImplementation(libs.fabricLoader)
 
-	modApi("dev.architectury:architectury:${properties["deps_architectury_version"]}")
-}
-
-tasks.withType<RemapJarTask> {
-	val shadowJar = tasks.getByName<ShadowJar>("shadowJar")
-	inputFile.set(shadowJar.archiveFile)
-}
-
-publishing {
-	publications {
-		register("mavenJava", MavenPublication::class) {
-			groupId = properties["maven_group"] as String
-			artifactId = "${properties["mod_id"]}-${project.name}"
-			version = "${project.version}-build.${project.findProperty("buildNumber") ?: "-1"}"
-
-			from(components["java"])
-		}
-	}
-
-	repositories {
-		maven {
-			name = "GitHubPackages"
-			url = uri("https://maven.pkg.github.com/PandaMods-Dev/PandaLib")
-			credentials {
-				username = project.findProperty("gpr.user") as String? ?: System.getenv("USERNAME")
-				password = project.findProperty("gpr.key") as String? ?: System.getenv("TOKEN")
-			}
-		}
-	}
+	modApi(libs.architectury.common)
+	
+	implementation(libs.bundles.kotlin)
+	include(libs.bundles.kotlin)
 }

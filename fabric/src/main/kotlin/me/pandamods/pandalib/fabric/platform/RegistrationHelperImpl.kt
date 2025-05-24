@@ -1,0 +1,73 @@
+/*
+ * Copyright (C) 2024 Oliver Froberg (The Panda Oliver)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU Lesser General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  any later version.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ *  along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+package me.pandamods.pandalib.fabric.platform
+
+import me.pandamods.pandalib.platform.services.RegistrationHelper
+import me.pandamods.pandalib.registry.DeferredObject
+import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener
+import net.fabricmc.fabric.api.resource.ResourceManagerHelper
+import net.minecraft.core.RegistrationInfo
+import net.minecraft.core.Registry
+import net.minecraft.core.WritableRegistry
+import net.minecraft.core.registries.BuiltInRegistries
+import net.minecraft.resources.ResourceKey
+import net.minecraft.resources.ResourceLocation
+import net.minecraft.server.packs.PackType
+import net.minecraft.server.packs.resources.PreparableReloadListener
+import net.minecraft.server.packs.resources.ResourceManager
+import java.util.concurrent.CompletableFuture
+import java.util.concurrent.Executor
+import java.util.function.Supplier
+
+class RegistrationHelperImpl : RegistrationHelper {
+	override fun <T> register(deferredObject: DeferredObject<out T>, supplier: Supplier<out T>) {
+		Registry.register(deferredObject.registry as Registry<T>, deferredObject.id, supplier.get())
+	}
+
+	override fun <T> registerNewRegistry(registry: Registry<T>) {
+		val registryName = registry.key().location()
+		check(!BuiltInRegistries.REGISTRY.containsKey(registryName)) { "Attempted duplicate registration of registry $registryName" }
+
+		@Suppress("UNCHECKED_CAST")
+		(BuiltInRegistries.REGISTRY as WritableRegistry<Registry<*>>).register(registry.key() as ResourceKey<Registry<*>>, registry, RegistrationInfo.BUILT_IN)
+	}
+
+	override fun registerReloadListener(
+		packType: PackType,
+		listener: PreparableReloadListener,
+		id: ResourceLocation,
+		dependencies: MutableList<ResourceLocation>
+	) {
+		ResourceManagerHelper.get(packType).registerReloadListener(object : IdentifiableResourceReloadListener {
+			override fun getFabricId(): ResourceLocation {
+				return id
+			}
+
+			override fun reload(
+				preparationBarrier: PreparableReloadListener.PreparationBarrier,
+				resourceManager: ResourceManager,
+				executor: Executor,
+				executor2: Executor
+			): CompletableFuture<Void> {
+				return listener.reload(preparationBarrier, resourceManager, executor, executor2)
+			}
+
+			override fun getFabricDependencies(): MutableCollection<ResourceLocation> {
+				return dependencies
+			}
+
+			override fun getName(): String {
+				return listener.getName()
+			}
+		})
+	}
+}

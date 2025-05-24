@@ -11,35 +11,33 @@
  */
 package me.pandamods.pandalib.config.holders
 
-import dev.architectury.platform.Platform
-import dev.architectury.utils.Env
 import me.pandamods.pandalib.config.Config
 import me.pandamods.pandalib.config.ConfigData
+import me.pandamods.pandalib.platform.Services
 import net.minecraft.world.entity.player.Player
 import java.util.*
 
 class ClientConfigHolder<T : ConfigData>(configClass: Class<T>, config: Config) : ConfigHolder<T>(configClass, config) {
-	private val configs: MutableMap<UUID?, T> = HashMap<UUID?, T>()
+	private val configs = mutableMapOf<UUID, T>()
 
-	public override fun save() {
-		if (Platform.getEnvironment() == Env.CLIENT) {
+	override fun save() {
+		if (Services.GAME.isClient) {
 			super.save()
-		} else this.logger.warn("Client config '{}' can't be saved on server", this.definition.name)
+		} else logger.warn("Client config '${definition.name}' can't be saved on server")
 	}
 
-	public override fun load(): Boolean {
-		if (Platform.getEnvironment() == Env.CLIENT) {
+	override fun load(): Boolean {
+		if (Services.GAME.isClient) {
 			return super.load()
 		}
 		return false
 	}
 
-	fun <C : ConfigData?> putConfig(player: Player, config: C?) {
-		configs.put(player.getUUID(), config as T)
+	fun putConfig(player: Player, config: T) {
+		configs.put(player.getUUID(), config)
 	}
 
 	fun getConfig(player: Player): T? {
-		if (configs.containsKey(player.getUUID())) return configs[player.getUUID()]
-		return this.get()
+		return configs[player.getUUID()]
 	}
 }

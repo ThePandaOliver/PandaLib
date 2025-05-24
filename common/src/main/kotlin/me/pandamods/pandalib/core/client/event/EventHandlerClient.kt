@@ -9,7 +9,7 @@ import net.minecraft.client.player.LocalPlayer
 @Environment(EnvType.CLIENT)
 object EventHandlerClient {
 	fun init() {
-		ClientPlayerEvent.CLIENT_PLAYER_JOIN.register(ClientPlayerEvent.ClientPlayerJoin { obj: LocalPlayer -> onClientPlayerJoin(obj) })
+		ClientPlayerEvent.CLIENT_PLAYER_JOIN.register(::onClientPlayerJoin)
 	}
 
 	private fun onClientPlayerJoin(localPlayer: LocalPlayer) {

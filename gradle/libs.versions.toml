@@ -5,7 +5,7 @@ architectury = "15.0.1"
 
 [plugins]
 kotlinJvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
-shadow = { id = "com.github.johnrengelman.shadow", version = "8.1.1" }
+shadow = { id = "com.gradleup.shadow", version = "8.3.6" }
 modPublish = { id = "me.modmuss50.mod-publish-plugin", version = "0.6.3" }
 architecturyPlugin = { id = "architectury-plugin", version = "3.4-SNAPSHOT" }
 architecturyLoom = { id = "dev.architectury.loom", version = "1.10-SNAPSHOT" }

@@ -70,50 +70,46 @@ fun interface Easing {
 
 		val easeInElastic: Easing = Easing { t: Double ->
 			val c4 = (2 * Math.PI) / 3
-			if (t == 0.0)
-				0.0
-			else
-				if (t == 1.0)
-					1.0
-				else
-					-2.0.pow(10 * t - 10) * sin((t * 10 - 10.75) * c4)
+			when (t) {
+				0.0 -> 0.0
+				1.0 -> 1.0
+				else -> (-2.0).pow(10 * t - 10) * sin((t * 10 - 10.75) * c4)
+			}
 		}
 		val easeOutElastic: Easing = Easing { t: Double ->
 			val c4 = (2 * Math.PI) / 3
-			if (t == 0.0)
-				0.0
-			else
-				if (t == 1.0)
-					1.0
-				else
-					2.0.pow(-10 * t) * sin((t * 10 - 0.75) * c4) + 1
+			when (t) {
+				0.0 -> 0.0
+				1.0 -> 1.0
+				else -> 2.0.pow(-10 * t) * sin((t * 10 - 0.75) * c4) + 1
+			}
 		}
 		val easeInOutElastic: Easing = Easing { t: Double ->
 			val c5 = (2 * Math.PI) / 4.5
-			if (t == 0.0)
-				0.0
-			else
-				if (t == 1.0)
-					1.0
-				else
+			when (t) {
+				0.0 -> 0.0
+				1.0 -> 1.0
+				else -> {
 					if (t < 0.5)
 						-(2.0.pow(20 * t - 10) * sin((20 * t - 11.125) * c5)) / 2
 					else
 						(2.0.pow(-20 * t + 10) * sin((20 * t - 11.125) * c5)) / 2 + 1
+				}
+			}
 		}
 
 		val easeOutBounce: Easing = Easing { t: Double ->
 			var t = t
 			val n1 = 7.5625
 			val d1 = 2.75
-			if (t < 1 / d1) {
-				return@Easing n1 * t * t
+			return@Easing if (t < 1 / d1) {
+				n1 * t * t
 			} else if (t < 2 / d1) {
-				return@Easing n1 * (1.5 / d1.let { t -= it; t }) * t + 0.75
+				n1 * (1.5 / d1.let { t -= it; t }) * t + 0.75
 			} else if (t < 2.5 / d1) {
-				return@Easing n1 * (2.25 / d1.let { t -= it; t }) * t + 0.9375
+				n1 * (2.25 / d1.let { t -= it; t }) * t + 0.9375
 			} else {
-				return@Easing n1 * (2.625 / d1.let { t -= it; t }) * t + 0.984375
+				n1 * (2.625 / d1.let { t -= it; t }) * t + 0.984375
 			}
 		}
 		val easeInBounce: Easing = Easing { t: Double -> 1 - easeOutBounce.ease(1 - t) }

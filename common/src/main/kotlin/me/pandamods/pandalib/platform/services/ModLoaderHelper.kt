@@ -13,15 +13,15 @@ package me.pandamods.pandalib.platform.services
 
 interface ModLoaderHelper {
 	fun isModLoaded(modId: String): Boolean
-	fun getMod(modId: String): Mod
-	val mods: MutableList<Mod>
-	val modIds: MutableList<String>
+	fun getMod(modId: String): Mod?
+	val mods: List<Mod>
+	val modIds: List<String>
 
 	interface Mod {
 		val id: String
 		val displayName: String
 		val description: String
-		val authors: MutableList<String>
+		val authors: List<String>
 		val version: String
 	}
 }

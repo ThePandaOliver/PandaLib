@@ -28,11 +28,11 @@ class PandaLibNeoForge(eventBus: IEventBus) {
 	init {
 		PandaLib.init()
 
-		eventBus.addListener<RegisterPayloadHandlersEvent> { event: RegisterPayloadHandlersEvent -> NetworkHelperImpl.registerPackets(event) }
+		eventBus.addListener<RegisterPayloadHandlersEvent> { NetworkHelperImpl.registerPackets(it) }
 		if (REGISTRATION is RegistrationHelperImpl) {
-			eventBus.addListener<RegisterEvent> { event: RegisterEvent -> (REGISTRATION as RegistrationHelperImpl).registerEvent(event) }
-			eventBus.addListener<NewRegistryEvent> { event: NewRegistryEvent -> (REGISTRATION as RegistrationHelperImpl).registerNewRegistryEvent(event) }
-			NeoForge.EVENT_BUS.addListener<AddReloadListenerEvent> { event: AddReloadListenerEvent -> (REGISTRATION as RegistrationHelperImpl).addReloadListenerEvent(event) }
+			eventBus.addListener<RegisterEvent> { (REGISTRATION as RegistrationHelperImpl).registerEvent(it) }
+			eventBus.addListener<NewRegistryEvent> { (REGISTRATION as RegistrationHelperImpl).registerNewRegistryEvent(it) }
+			NeoForge.EVENT_BUS.addListener<AddReloadListenerEvent> { (REGISTRATION as RegistrationHelperImpl).addReloadListenerEvent(it) }
 		}
 	}
 }

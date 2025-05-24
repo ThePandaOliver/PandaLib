@@ -1,7 +1,9 @@
+@file:Suppress("UnstableApiUsage")
 plugins {
 	java
 	alias(libs.plugins.kotlinJvm)
 	`version-catalog`
+	alias(libs.plugins.shadow) apply false
 }
 
 allprojects {
@@ -23,7 +25,7 @@ allprojects {
 
 subprojects {
 	base { archivesName = "${properties["mod_id"]}-${project.name}" }
-	version = "${properties["mod_version"]}-${rootProject.libs.versions.minecraft.get()}"
+	version = "${rootProject.version}-${rootProject.libs.versions.minecraft.get()}"
 
 	repositories {
 		maven("https://maven.architectury.dev/")
@@ -32,11 +34,24 @@ subprojects {
 		maven("https://maven.minecraftforge.net/")
 		maven("https://maven.neoforged.net/releases/")
 	}
+	
+	configurations {
+		val common = create("common") {
+			isCanBeResolved = true
+			isCanBeConsumed = false
+		}
+		compileClasspath.get().extendsFrom(common)
+		runtimeClasspath.get().extendsFrom(common)
+		
+		create("shadowBundle") {
+			isCanBeResolved = false
+			isCanBeConsumed = true
+		}
+	}
 
 	tasks.processResources {
 		val props = mutableMapOf(
 			"java_version" to properties["java_version"],
-			"supported_mod_loaders" to properties["supported_mod_loaders"],
 
 			"maven_group" to properties["maven_group"],
 			"mod_id" to properties["mod_id"],

@@ -4,6 +4,7 @@ plugins {
 	java
 	alias(libs.plugins.architecturyPlugin)
 	alias(libs.plugins.architecturyLoom)
+	alias(libs.plugins.shadow)
 }
 
 architectury {
@@ -17,7 +18,7 @@ loom {
 }
 
 configurations {
-//	getByName("developmentNeoForge").extendsFrom(configurations["common"])
+	getByName("developmentNeoForge").extendsFrom(common.get())
 }
 
 repositories {
@@ -36,6 +37,16 @@ dependencies {
 
 	implementation(libs.bundles.kotlin)
 	include(libs.bundles.kotlin)
+
+	common(project(":common", configuration = "namedElements")) { isTransitive = false }
+	shadowBundle(project(":common", configuration = "transformProductionNeoForge"))
+}
+
+tasks.shadowJar {
+	configurations = listOf(project.configurations.shadowBundle.get())
+	archiveClassifier.set("dev-shadow")
+
+	exclude("architectury.common.json")
 }
 
 tasks.remapJar {

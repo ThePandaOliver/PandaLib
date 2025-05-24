@@ -22,5 +22,5 @@ interface RegistrationHelper {
 	fun <T> register(deferredObject: DeferredObject<out T>, supplier: Supplier<out T>)
 	fun <T> registerNewRegistry(registry: Registry<T>)
 
-	fun registerReloadListener(packType: PackType, listener: PreparableReloadListener, id: ResourceLocation, dependencies: MutableList<ResourceLocation>)
+	fun registerReloadListener(packType: PackType, listener: PreparableReloadListener, id: ResourceLocation, dependencies: Collection<ResourceLocation>)
 }

@@ -31,7 +31,5 @@ dependencies {
 	modImplementation(libs.fabricLoader)
 
 	modApi(libs.architectury.common)
-	
-	implementation(libs.bundles.kotlin)
-	include(libs.bundles.kotlin)
+	api(libs.bundles.kotlin)
 }

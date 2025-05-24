@@ -15,57 +15,43 @@ import me.pandamods.pandalib.platform.services.ModLoaderHelper
 import net.neoforged.fml.ModContainer
 import net.neoforged.fml.ModList
 import net.neoforged.neoforgespi.language.IModInfo
-import java.util.List
-import java.util.function.Function
+import kotlin.jvm.optionals.getOrNull
 
 class ModLoaderHelperImpl : ModLoaderHelper {
-	private val modMap: MutableMap<String, ModLoaderHelper.Mod> = HashMap<String, ModLoaderHelper.Mod>()
+	private val modMap = mutableMapOf<String, ModLoaderHelper.Mod>()
 
 	override fun isModLoaded(modId: String): Boolean {
 		return ModList.get().isLoaded(modId)
 	}
 
-	override fun getMod(modId: String): ModLoaderHelper.Mod {
-		return modMap.computeIfAbsent(modId) { modId: String -> ModImpl(modId) }
+	override fun getMod(modId: String): ModLoaderHelper.Mod? {
+		if (modMap.containsKey(modId)) return modMap[modId]
+		return ModList.get().getModContainerById(modId)
+			.map { ModImpl(it) }.getOrNull()?.also {
+				modMap[modId] = it
+			}
 	}
 
-	override val mods: MutableList<ModLoaderHelper.Mod>
-		get() {
-			for (mod in ModList.get().getMods()) {
-				getMod(mod.getModId())
-			}
+	override val mods by lazy {
+		ModList.get().mods.forEach { getMod(it.modId) }
+		modMap.values.toList()
+	}
 
-			return List.copyOf<ModLoaderHelper.Mod>(modMap.values)
-		}
+	override val modIds by lazy { ModList.get().mods.map { it.modId }.toList() }
 
-	override val modIds: MutableList<String>
-		get() = ModList.get().getMods().stream().map<String> { obj: IModInfo -> obj!!.getModId() }.toList()
+	private class ModImpl(
+		val container: ModContainer,
+		val info: IModInfo = container.modInfo
+	) : ModLoaderHelper.Mod {
+		override val id: String = info.modId
 
-	private class ModImpl(modId: String) : ModLoaderHelper.Mod {
-		private val container: ModContainer = ModList.get().getModContainerById(modId).orElseThrow()
-		private val info: IModInfo = ModList.get().getMods().stream()
-			.filter { modInfo: IModInfo -> modInfo!!.getModId() == modId }
-			.findAny()
-			.orElseThrow()
+		override val displayName: String = info.displayName
 
-		override val id: String
-			get() = info.getModId()
+		override val description: String = info.description
 
-		override val displayName: String
-			get() = info.getDisplayName()
+		override val authors: List<String> = info.config.getConfigElement<Any>("authors")
+			.map { it.toString() }.map { listOf(it) }.orElseGet { emptyList<String>() }
 
-		override val description: String
-			get() = info.getDescription()
-
-		override val authors: MutableList<String>
-			get() {
-				val optional = info.getConfig().getConfigElement<Any>("authors")
-					.map<String>(Function { obj: Any -> java.lang.String.valueOf(obj) })
-				return optional.map<MutableList<String>>(Function { e1: String -> List.of(e1) })
-					.orElse(mutableListOf<String>())
-			}
-
-		override val version: String
-			get() = info.getVersion().toString()
+		override val version: String = info.version.toString()
 	}
 }

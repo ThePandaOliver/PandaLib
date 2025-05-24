@@ -30,12 +30,13 @@ import java.util.function.Supplier
 
 class RegistrationHelperImpl : RegistrationHelper {
 	override fun <T> register(deferredObject: DeferredObject<out T>, supplier: Supplier<out T>) {
+		@Suppress("UNCHECKED_CAST")
 		Registry.register(deferredObject.registry as Registry<T>, deferredObject.id, supplier.get())
 	}
 
 	override fun <T> registerNewRegistry(registry: Registry<T>) {
 		val registryName = registry.key().location()
-		check(!BuiltInRegistries.REGISTRY.containsKey(registryName)) { "Attempted duplicate registration of registry $registryName" }
+		check(BuiltInRegistries.REGISTRY.containsKey(registryName)) { "Attempted duplicate registration of registry $registryName" }
 
 		@Suppress("UNCHECKED_CAST")
 		(BuiltInRegistries.REGISTRY as WritableRegistry<Registry<*>>).register(registry.key() as ResourceKey<Registry<*>>, registry, RegistrationInfo.BUILT_IN)
@@ -45,7 +46,7 @@ class RegistrationHelperImpl : RegistrationHelper {
 		packType: PackType,
 		listener: PreparableReloadListener,
 		id: ResourceLocation,
-		dependencies: MutableList<ResourceLocation>
+		dependencies: Collection<ResourceLocation>
 	) {
 		ResourceManagerHelper.get(packType).registerReloadListener(object : IdentifiableResourceReloadListener {
 			override fun getFabricId(): ResourceLocation {
@@ -55,18 +56,18 @@ class RegistrationHelperImpl : RegistrationHelper {
 			override fun reload(
 				preparationBarrier: PreparableReloadListener.PreparationBarrier,
 				resourceManager: ResourceManager,
-				executor: Executor,
-				executor2: Executor
+				backgroundExecutor: Executor,
+				gameExecutor: Executor
 			): CompletableFuture<Void> {
-				return listener.reload(preparationBarrier, resourceManager, executor, executor2)
+				return listener.reload(preparationBarrier, resourceManager, backgroundExecutor, gameExecutor)
 			}
 
-			override fun getFabricDependencies(): MutableCollection<ResourceLocation> {
+			override fun getFabricDependencies(): Collection<ResourceLocation> {
 				return dependencies
 			}
 
 			override fun getName(): String {
-				return listener.getName()
+				return listener.name
 			}
 		})
 	}

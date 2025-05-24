@@ -16,12 +16,11 @@ import me.pandamods.pandalib.event.events.NetworkingEvents
 import me.pandamods.pandalib.platform.Services
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents.ServerStarted
 import net.minecraft.server.MinecraftServer
 
 class PandaLibFabric : ModInitializer {
 	override fun onInitialize() {
-		ServerLifecycleEvents.SERVER_STARTED.register(ServerStarted { server: MinecraftServer? -> Companion.server = server })
+		ServerLifecycleEvents.SERVER_STARTED.register { server: MinecraftServer? -> Companion.server = server }
 
 		PandaLib.init()
 		NetworkingEvents.PACKET_PAYLOAD_REGISTRY.invoker().register(Services.NETWORK)

@@ -27,15 +27,15 @@ import java.util.function.Consumer
 import java.util.function.Supplier
 
 class RegistrationHelperImpl : RegistrationHelper {
-	private val pendingRegistries: MutableMap<ResourceKey<out Registry<*>>, PendingRegistries<*>> =
-		HashMap<ResourceKey<out Registry<*>>, PendingRegistries<*>>()
-	private val pendingRegistryTypes: MutableList<Registry<*>> = ArrayList<Registry<*>>()
-	private val serverDataReloadListeners: MutableList<PreparableReloadListener> = ArrayList<PreparableReloadListener>()
+	private val pendingRegistries: MutableMap<ResourceKey<out Registry<*>>, PendingRegistries<*>> = mutableMapOf()
+	private val pendingRegistryTypes: MutableList<Registry<*>> = mutableListOf()
+	private val serverDataReloadListeners: MutableList<PreparableReloadListener> = mutableListOf()
 
 	override fun <T> register(deferredObject: DeferredObject<out T>, supplier: Supplier<out T>) {
-//		val pending: PendingRegistries<T> = pendingRegistries
-//			.computeIfAbsent(deferredObject.key.registryKey()) { k: ResourceKey<out Registry<*>> -> PendingRegistries(deferredObject.key.registryKey()) } as PendingRegistries<T>
-//		pending.add(deferredObject, supplier)
+		@Suppress("UNCHECKED_CAST")
+		val pending: PendingRegistries<T> = pendingRegistries
+			.computeIfAbsent(deferredObject.key.registryKey()) { k: ResourceKey<out Registry<*>> -> PendingRegistries(deferredObject.key.registryKey()) } as PendingRegistries<T>
+		pending.add(deferredObject, supplier)
 	}
 
 	override fun <T> registerNewRegistry(registry: Registry<T>) {
@@ -46,17 +46,17 @@ class RegistrationHelperImpl : RegistrationHelper {
 		packType: PackType,
 		listener: PreparableReloadListener,
 		id: ResourceLocation,
-		dependencies: MutableList<ResourceLocation>
+		dependencies: Collection<ResourceLocation>
 	) {
 		if (packType == PackType.SERVER_DATA) {
 			serverDataReloadListeners.add(listener)
 		} else {
-			(Minecraft.getInstance().getResourceManager() as ReloadableResourceManager).registerReloadListener(listener)
+			(Minecraft.getInstance().resourceManager as ReloadableResourceManager).registerReloadListener(listener)
 		}
 	}
 
 	fun registerEvent(event: RegisterEvent) {
-		pendingRegistries.values.forEach(Consumer { pending: PendingRegistries<*> -> pending!!.register(event) })
+		pendingRegistries.values.forEach(Consumer { pending: PendingRegistries<*> -> pending.register(event) })
 	}
 
 	fun registerNewRegistryEvent(event: NewRegistryEvent) {
@@ -68,7 +68,7 @@ class RegistrationHelperImpl : RegistrationHelper {
 	}
 
 	private class PendingRegistries<T>(private val registryKey: ResourceKey<out Registry<T>>) {
-		private val entries: MutableMap<DeferredObject<out T>, Supplier<out T>> = HashMap<DeferredObject<out T>, Supplier<out T>>()
+		private val entries: MutableMap<DeferredObject<out T>, Supplier<out T>> = mutableMapOf<DeferredObject<out T>, Supplier<out T>>()
 
 		fun add(deferredObject: DeferredObject<out T>, objectSupplier: Supplier<out T>) {
 			entries.put(deferredObject, objectSupplier)
@@ -76,7 +76,7 @@ class RegistrationHelperImpl : RegistrationHelper {
 
 		fun register(event: RegisterEvent) {
 			entries.forEach { (deferredObject: DeferredObject<out T>, supplier: Supplier<out T>) ->
-				event.register<T>(registryKey, deferredObject!!.id) { supplier!!.get() }
+				event.register(registryKey, deferredObject.id) { supplier.get() }
 				deferredObject.bind<Any>(false)
 			}
 		}

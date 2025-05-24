@@ -26,7 +26,7 @@ object PandaLibConfig {
 	fun <T : ConfigData, E : ConfigHolder<T>> register(configClass: Class<T>, provider: ConfigHolderProvider<T, E>): E {
 		if (configs.containsKey(configClass)) throw RuntimeException(String.format("Config %s is already registered", configClass))
 
-		val config = configClass.getAnnotation<Config>(Config::class.java)
+		val config = configClass.getAnnotation(Config::class.java)
 		if (config == null) throw RuntimeException(String.format("%s is not annotated with @Config", configClass))
 
 		val holder = provider.provide(configClass, config)
@@ -55,6 +55,7 @@ object PandaLibConfig {
 	}
 
 	fun <T : ConfigData> getConfig(config: Class<T>): ConfigHolder<T> {
+		@Suppress("UNCHECKED_CAST")
 		return configs[config] as ConfigHolder<T>
 	}
 

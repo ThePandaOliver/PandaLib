@@ -17,7 +17,7 @@ import net.minecraft.server.level.ServerPlayer
 
 object EventHandler {
 	fun init() {
-		PlayerEvent.PLAYER_JOIN.register(PlayerEvent.PlayerJoin { obj: ServerPlayer -> onServerPlayerJoin(obj) })
+		PlayerEvent.PLAYER_JOIN.register(::onServerPlayerJoin)
 	}
 
 	private fun onServerPlayerJoin(serverPlayer: ServerPlayer) {

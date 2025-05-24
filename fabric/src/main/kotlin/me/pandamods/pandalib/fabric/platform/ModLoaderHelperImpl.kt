@@ -15,51 +15,42 @@ import me.pandamods.pandalib.platform.services.ModLoaderHelper
 import net.fabricmc.loader.api.FabricLoader
 import net.fabricmc.loader.api.ModContainer
 import net.fabricmc.loader.api.metadata.ModMetadata
-import net.fabricmc.loader.api.metadata.Person
-import java.util.List
+import kotlin.jvm.optionals.getOrNull
 
 class ModLoaderHelperImpl : ModLoaderHelper {
-	val modMap: MutableMap<String, ModLoaderHelper.Mod> = HashMap<String, ModLoaderHelper.Mod>()
+	private val modMap = mutableMapOf<String, ModLoaderHelper.Mod>()
 
 	override fun isModLoaded(modId: String): Boolean {
 		return FabricLoader.getInstance().isModLoaded(modId)
 	}
 
-	override fun getMod(modId: String): ModLoaderHelper.Mod {
-		return modMap.computeIfAbsent(modId) { modId: String -> ModImpl(modId) }
+	override fun getMod(modId: String): ModLoaderHelper.Mod? {
+		if (modMap.containsKey(modId)) return modMap[modId]
+		return FabricLoader.getInstance().getModContainer(modId)
+			.map { ModImpl(it) }.getOrNull()?.also {
+				modMap[modId] = it
+			}
 	}
 
-	override val mods: MutableList<ModLoaderHelper.Mod>
-		get() {
-			for (mod in FabricLoader.getInstance().getAllMods()) {
-				getMod(mod.getMetadata().getId())
-			}
+	override val mods by lazy {
+		FabricLoader.getInstance().allMods.forEach { getMod(it.metadata.id) }
+		modMap.values.toList()
+	}
 
-			return List.copyOf<ModLoaderHelper.Mod>(modMap.values)
-		}
+	override val modIds by lazy { FabricLoader.getInstance().allMods.map { it.metadata.id } }
 
-	override val modIds: MutableList<String>
-		get() = FabricLoader.getInstance().getAllMods().stream()
-			.map<ModMetadata> { obj: ModContainer -> obj!!.getMetadata() }.map<String> { obj: ModMetadata -> obj!!.getId() }
-			.toList()
+	private class ModImpl(
+		val container: ModContainer,
+		val metadata: ModMetadata = container.metadata
+	) : ModLoaderHelper.Mod {
+		override val id: String = metadata.id
 
-	private class ModImpl(modId: String) : ModLoaderHelper.Mod {
-		private val container: ModContainer = FabricLoader.getInstance().getModContainer(modId).orElseThrow()
-		private val metadata: ModMetadata = this.container.getMetadata()
+		override val displayName: String = metadata.name
 
-		override val id: String
-			get() = metadata.getId()
+		override val description: String = metadata.description
 
-		override val displayName: String
-			get() = metadata.getName()
+		override val authors: List<String> = metadata.authors.map { it.name }
 
-		override val description: String
-			get() = metadata.getDescription()
-
-		override val authors: MutableList<String>
-			get() = metadata.getAuthors().stream().map<String> { obj: Person -> obj!!.getName() }.toList()
-
-		override val version: String
-			get() = metadata.getVersion().getFriendlyString()
+		override val version: String = metadata.version.friendlyString
 	}
 }

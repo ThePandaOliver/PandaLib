@@ -17,6 +17,7 @@ import com.google.gson.JsonObject
 import dev.architectury.platform.Platform
 import me.pandamods.pandalib.config.Config
 import me.pandamods.pandalib.config.ConfigData
+import me.pandamods.pandalib.platform.Services
 import me.pandamods.pandalib.utils.ClassUtils
 import net.minecraft.resources.ResourceLocation
 import org.slf4j.Logger
@@ -25,24 +26,16 @@ import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.Path
 
-open class ConfigHolder<T : ConfigData>(@JvmField val configClass: Class<T>, @JvmField val definition: Config) {
-	@JvmField
+open class ConfigHolder<T : ConfigData>(val configClass: Class<T>, val definition: Config) {
 	val logger: Logger = LoggerFactory.getLogger(definition.modId + " | Config")
+	val gson: Gson = newDefault.buildGson(GsonBuilder()).setPrettyPrinting().create()
 
-	@JvmField
-	val gson: Gson
-
-	private val resourceLocation: ResourceLocation
-	private val synchronize: Boolean
-	private var config: T? = null
+	private val resourceLocation: ResourceLocation = ResourceLocation.fromNamespaceAndPath(definition.modId, definition.name)
+	private val synchronize: Boolean = definition.synchronize
+	private lateinit var config: T
 
 	init {
-		this.gson = this.newDefault.buildGson(GsonBuilder()).setPrettyPrinting().create()
-
-		this.resourceLocation = ResourceLocation.fromNamespaceAndPath(definition.modId, definition.name)
-		this.synchronize = definition.synchronize
-
-		if (this.load()) {
+		if (load()) {
 			save()
 		}
 	}
@@ -51,16 +44,14 @@ open class ConfigHolder<T : ConfigData>(@JvmField val configClass: Class<T>, @Jv
 		return synchronize
 	}
 
-	val configPath: Path
-		get() {
-			var path = Platform.getConfigFolder()
-			if (!definition.directory.isBlank()) path = path.resolve(definition.directory)
-			return path.resolve(definition.name + ".json")
-		}
+	val configPath: Path = Services.GAME.configDir.let {
+		if (definition.directory.isBlank()) it else it.resolve(definition.directory)
+	}.resolve(definition.name + ".json")
 
 	open fun save() {
-		val jsonObject = this.gson.toJsonTree(this.config).getAsJsonObject()
-		this.config!!.onSave(this, jsonObject)
+		val jsonObject = gson.toJsonTree(config).getAsJsonObject()
+		this.config.onSave(this, jsonObject)
+		
 		val configPath = this.configPath
 		try {
 			Files.createDirectories(configPath.parent)
@@ -81,7 +72,7 @@ open class ConfigHolder<T : ConfigData>(@JvmField val configClass: Class<T>, @Jv
 				Files.newBufferedReader(configPath).use { reader ->
 					val jsonObject = this.gson.fromJson<JsonObject>(reader, JsonObject::class.java)
 					this.config = this.gson.fromJson(jsonObject, configClass)
-					this.config!!.onLoad<T>(this, jsonObject)
+					this.config.onLoad(this, jsonObject)
 				}
 			} catch (e: IOException) {
 				this.logger.error("Failed to load config '{}', using default", definition.name, e)
@@ -104,7 +95,7 @@ open class ConfigHolder<T : ConfigData>(@JvmField val configClass: Class<T>, @Jv
 		/**
 		 * @return Newly created class
 		 */
-		get() = ClassUtils.constructUnsafely<T>(configClass)
+		get() = ClassUtils.constructUnsafely(configClass)
 
 	fun resourceLocation(): ResourceLocation {
 		return resourceLocation

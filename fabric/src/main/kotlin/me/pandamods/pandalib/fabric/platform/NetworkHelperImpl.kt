@@ -25,7 +25,6 @@ import net.minecraft.network.RegistryFriendlyByteBuf
 import net.minecraft.network.codec.StreamCodec
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 import net.minecraft.server.level.ServerPlayer
-import java.util.function.Supplier
 
 class NetworkHelperImpl : NetworkHelper {
 	override fun <T : CustomPacketPayload> registerClientReceiver(
@@ -34,22 +33,13 @@ class NetworkHelperImpl : NetworkHelper {
 		receiver: NetworkReceiver<T>
 	) {
 		PayloadTypeRegistry.playS2C().register<T>(type, codec)
-		runIf(
-			Env.CLIENT,
-			Supplier {
-				Runnable {
-					ClientPlayNetworking.registerGlobalReceiver<T>(
-						type,
-						ClientPlayNetworking.PlayPayloadHandler { payload: T, context: ClientPlayNetworking.Context ->
-							ClientPlayPayloadHandler.receivePlay<T>(
-								receiver,
-								payload!!,
-								context!!
-							)
-						})
+		runIf(Env.CLIENT) {
+			Runnable {
+				ClientPlayNetworking.registerGlobalReceiver<T>(type) { payload: T, context: ClientPlayNetworking.Context ->
+					ClientPlayPayloadHandler.receivePlay(receiver, payload, context)
 				}
 			}
-		)
+		}
 	}
 
 	override fun <T : CustomPacketPayload> registerServerReceiver(
@@ -58,16 +48,9 @@ class NetworkHelperImpl : NetworkHelper {
 		receiver: NetworkReceiver<T>
 	) {
 		PayloadTypeRegistry.playC2S().register<T>(type, codec)
-		ServerPlayNetworking.registerGlobalReceiver<T>(
-			type,
-			ServerPlayNetworking.PlayPayloadHandler { t: T, context: ServerPlayNetworking.Context ->
-				receiver.receive(
-					NetworkContext(
-						context!!.player(),
-						Env.SERVER
-					), t
-				)
-			})
+		ServerPlayNetworking.registerGlobalReceiver<T>(type) { payload: T, context: ServerPlayNetworking.Context ->
+			receiver.receive(NetworkContext(context.player(), Env.SERVER), payload)
+		}
 	}
 
 	override fun <T : CustomPacketPayload> registerBiDirectionalReceiver(
@@ -75,8 +58,8 @@ class NetworkHelperImpl : NetworkHelper {
 		codec: StreamCodec<in RegistryFriendlyByteBuf, T>,
 		clientReceiver: NetworkReceiver<T>, serverReceiver: NetworkReceiver<T>
 	) {
-		registerServerReceiver<T>(type, codec, serverReceiver)
-		registerClientReceiver<T>(type, codec, clientReceiver)
+		registerServerReceiver(type, codec, serverReceiver)
+		registerClientReceiver(type, codec, clientReceiver)
 	}
 
 	override fun <T : CustomPacketPayload> sendToServer(payload: T) {
@@ -88,8 +71,7 @@ class NetworkHelperImpl : NetworkHelper {
 	}
 
 	override fun <T : CustomPacketPayload> sendToAllPlayers(payload: T) {
-		for (player in PandaLibFabric.server!!.getPlayerList().getPlayers()) {
-			sendToPlayer<T>(player, payload)
-		}
+		requireNotNull(PandaLibFabric.server) { "PandaLibFabric.server is null!" }
+		PandaLibFabric.server!!.playerList.players.forEach { sendToPlayer(it, payload) }
 	}
 }

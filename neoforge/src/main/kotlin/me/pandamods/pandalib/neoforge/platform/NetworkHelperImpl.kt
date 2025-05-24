@@ -25,7 +25,6 @@ import net.neoforged.neoforge.network.PacketDistributor
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent
 import net.neoforged.neoforge.network.handling.DirectionalPayloadHandler
 import net.neoforged.neoforge.network.handling.IPayloadContext
-import net.neoforged.neoforge.network.handling.IPayloadHandler
 import net.neoforged.neoforge.network.registration.PayloadRegistrar
 
 class NetworkHelperImpl : PayloadRegistrar("1"), NetworkHelper {
@@ -34,10 +33,7 @@ class NetworkHelperImpl : PayloadRegistrar("1"), NetworkHelper {
 		codec: StreamCodec<in RegistryFriendlyByteBuf, T>,
 		receiver: NetworkReceiver<T>
 	) {
-		this.playToClient<T>(
-			type,
-			codec,
-			IPayloadHandler { arg: T, ctx: IPayloadContext -> receiver.receive(NetworkContext(ctx!!.player(), Env.CLIENT), arg) })
+		playToClient<T>(type, codec) { arg: T, ctx: IPayloadContext -> receiver.receive(NetworkContext(ctx.player(), Env.CLIENT), arg) }
 	}
 
 	override fun <T : CustomPacketPayload> registerServerReceiver(
@@ -45,10 +41,7 @@ class NetworkHelperImpl : PayloadRegistrar("1"), NetworkHelper {
 		codec: StreamCodec<in RegistryFriendlyByteBuf, T>,
 		receiver: NetworkReceiver<T>
 	) {
-		this.playToServer<T>(
-			type,
-			codec,
-			IPayloadHandler { arg: T, ctx: IPayloadContext -> receiver.receive(NetworkContext(ctx!!.player(), Env.SERVER), arg) })
+		playToServer<T>(type, codec) { arg: T, ctx: IPayloadContext -> receiver.receive(NetworkContext(ctx.player(), Env.SERVER), arg) }
 	}
 
 	override fun <T : CustomPacketPayload> registerBiDirectionalReceiver(
@@ -57,11 +50,13 @@ class NetworkHelperImpl : PayloadRegistrar("1"), NetworkHelper {
 		clientReceiver: NetworkReceiver<T>,
 		serverReceiver: NetworkReceiver<T>
 	) {
-		this.playBidirectional<T>(
-			type, codec, DirectionalPayloadHandler<T>(
-				{ arg: T, ctx: IPayloadContext -> clientReceiver.receive(NetworkContext(ctx!!.player(), Env.CLIENT), arg) },
-				{ arg: T, ctx: IPayloadContext -> serverReceiver.receive(NetworkContext(ctx!!.player(), Env.SERVER), arg) }
-			))
+		playBidirectional<T>(
+			type, codec,
+			DirectionalPayloadHandler<T>(
+				{ arg: T, ctx: IPayloadContext -> clientReceiver.receive(NetworkContext(ctx.player(), Env.CLIENT), arg) },
+				{ arg: T, ctx: IPayloadContext -> serverReceiver.receive(NetworkContext(ctx.player(), Env.SERVER), arg) }
+			)
+		)
 	}
 
 	override fun <T : CustomPacketPayload> sendToServer(payload: T) {

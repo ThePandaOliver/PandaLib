@@ -19,30 +19,22 @@ import net.neoforged.fml.loading.FMLPaths
 import java.nio.file.Path
 
 class GameHelperImpl : GameHelper {
-	override val isDevelopmentEnvironment: Boolean
-		get() = !FMLLoader.isProduction()
+	override val isDevelopmentEnvironment = !FMLLoader.isProduction()
 
-	override val isProductionEnvironment: Boolean
-		get() = FMLLoader.isProduction()
+	override val isProductionEnvironment = FMLLoader.isProduction()
 
-	override val environment: Env
-		get() = when (FMLLoader.getDist()) {
-			Dist.CLIENT -> Env.CLIENT
-			Dist.DEDICATED_SERVER -> Env.SERVER
-		}
+	override val environment = when (FMLLoader.getDist()) {
+		Dist.CLIENT -> Env.CLIENT
+		Dist.DEDICATED_SERVER -> Env.SERVER
+	}
 
-	override val isClient: Boolean
-		get() = FMLLoader.getDist().isClient()
+	override val isClient = FMLLoader.getDist().isClient
 
-	override val isServer: Boolean
-		get() = FMLLoader.getDist().isDedicatedServer()
+	override val isServer = FMLLoader.getDist().isDedicatedServer
 
-	override val gameDir: Path
-		get() = FMLPaths.GAMEDIR.get()
+	override val gameDir: Path = FMLPaths.GAMEDIR.get()
 
-	override val configDir: Path
-		get() = FMLPaths.CONFIGDIR.get()
+	override val configDir: Path = FMLPaths.CONFIGDIR.get()
 
-	override val modDir: Path
-		get() = FMLPaths.MODSDIR.get()
+	override val modDir: Path = FMLPaths.MODSDIR.get()
 }

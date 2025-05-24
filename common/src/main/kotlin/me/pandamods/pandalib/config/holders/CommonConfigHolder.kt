@@ -12,27 +12,24 @@
 
 package me.pandamods.pandalib.config.holders
 
-import dev.architectury.platform.Platform
-import dev.architectury.utils.Env
 import me.pandamods.pandalib.config.Config
 import me.pandamods.pandalib.config.ConfigData
+import me.pandamods.pandalib.platform.Services
 
 class CommonConfigHolder<T : ConfigData>(
-    configClass: Class<T>,
-    config: Config
+	configClass: Class<T>,
+	config: Config
 ) : ConfigHolder<T>(configClass, config) {
-    
-    private var commonConfig: T? = null
+	private var commonConfig: T? = null
+	
+	fun setCommonConfig(config: T) {
+		commonConfig = config
+	}
 
-    @Suppress("UNCHECKED_CAST")
-    fun <C : ConfigData> setCommonConfig(config: C) {
-        this.commonConfig = config as T
-    }
-
-    override fun get(): T? {
-        if (Platform.getEnvironment() == Env.CLIENT && this.commonConfig != null) {
-            return this.commonConfig!!
-        }
-        return super.get()
-    }
+	override fun get(): T? {
+		if (Services.GAME.isClient && commonConfig != null) {
+			return commonConfig
+		}
+		return super.get()
+	}
 }

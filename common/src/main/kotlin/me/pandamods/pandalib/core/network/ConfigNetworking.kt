@@ -27,7 +27,7 @@ import java.util.function.Consumer
 
 object ConfigNetworking {
 	fun registerPackets(registry: NetworkRegistry) {
-		registry.registerBiDirectionalReceiver<ConfigPacketData>(
+		registry.registerBiDirectionalReceiver(
 			ConfigPacketData.TYPE,
 			ConfigCodec.INSTANCE,
 			{ ctx: NetworkContext, data: ConfigPacketData -> CommonConfigReceiver(ctx, data) },
@@ -42,7 +42,7 @@ object ConfigNetworking {
 
 	fun SyncCommonConfig(serverPlayer: ServerPlayer, holder: CommonConfigHolder<*>) {
 		holder.logger.info("Sending common config '{}' to {}", holder.resourceLocation().toString(), serverPlayer.getDisplayName()!!.getString())
-		PacketDistributor.sendToPlayer<ConfigPacketData>(serverPlayer, ConfigPacketData(holder.resourceLocation(), holder.gson.toJsonTree(holder.get())))
+		PacketDistributor.sendToPlayer(serverPlayer, ConfigPacketData(holder.resourceLocation(), holder.gson.toJsonTree(holder.get())))
 	}
 
 	fun SyncClientConfigs() {
@@ -53,7 +53,7 @@ object ConfigNetworking {
 
 	fun SyncClientConfig(holder: ClientConfigHolder<*>) {
 		holder.logger.info("Sending client config '{}' to server", holder.resourceLocation().toString())
-		PacketDistributor.sendToServer<ConfigPacketData>(ConfigPacketData(holder.resourceLocation(), holder.gson.toJsonTree(holder.get())))
+		PacketDistributor.sendToServer(ConfigPacketData(holder.resourceLocation(), holder.gson.toJsonTree(holder.get())))
 	}
 
 	private fun ClientConfigReceiver(ctx: NetworkContext, packetData: ConfigPacketData) {
@@ -65,8 +65,7 @@ object ConfigNetworking {
 					configHolder.resourceLocation().toString(), ctx.player.getDisplayName()!!.getString()
 				)
 				configHolder.putConfig(
-					ctx.player, configHolder.gson
-						.fromJson(packetData.data, configHolder.configClass)
+					ctx.player, configHolder.gson.fromJson(packetData.data, configHolder.configClass)
 				)
 			}
 		})

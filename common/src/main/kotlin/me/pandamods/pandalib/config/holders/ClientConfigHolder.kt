@@ -33,8 +33,9 @@ class ClientConfigHolder<T : ConfigData>(configClass: Class<T>, config: Config) 
 		return false
 	}
 
-	fun putConfig(player: Player, config: T) {
-		configs.put(player.getUUID(), config)
+	fun <C : ConfigData> putConfig(player: Player, config: C) {
+		@Suppress("UNCHECKED_CAST")
+		configs.put(player.getUUID(), config as T)
 	}
 
 	fun getConfig(player: Player): T? {

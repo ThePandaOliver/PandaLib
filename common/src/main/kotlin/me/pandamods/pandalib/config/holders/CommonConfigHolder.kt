@@ -22,8 +22,9 @@ class CommonConfigHolder<T : ConfigData>(
 ) : ConfigHolder<T>(configClass, config) {
 	private var commonConfig: T? = null
 	
-	fun setCommonConfig(config: T) {
-		commonConfig = config
+	fun <C : ConfigData> setCommonConfig(config: C) {
+		@Suppress("UNCHECKED_CAST")
+		commonConfig = config as T
 	}
 
 	override fun get(): T? {

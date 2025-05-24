@@ -16,6 +16,7 @@ import me.pandamods.pandalib.platform.Services
 import java.util.function.Supplier
 
 object EnvRunner {
+	@JvmStatic
 	fun runIf(env: Env, task: Supplier<Runnable>) {
 		if (Services.GAME.environment === env) task.get().run()
 	}

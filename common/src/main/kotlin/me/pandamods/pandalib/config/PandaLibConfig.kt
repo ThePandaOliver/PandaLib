@@ -21,8 +21,10 @@ import java.util.function.Function
 import java.util.stream.Collectors
 
 object PandaLibConfig {
+	@JvmStatic
 	var configs: MutableMap<Class<out ConfigData>, ConfigHolder<out ConfigData>> = HashMap<Class<out ConfigData>, ConfigHolder<out ConfigData>>()
 
+	@JvmStatic
 	fun <T : ConfigData, E : ConfigHolder<T>> register(configClass: Class<T>, provider: ConfigHolderProvider<T, E>): E {
 		if (configs.containsKey(configClass)) throw RuntimeException(String.format("Config %s is already registered", configClass))
 
@@ -34,6 +36,7 @@ object PandaLibConfig {
 		return holder
 	}
 
+	@JvmStatic
 	fun <T : ConfigData> registerClient(configClass: Class<T>): ClientConfigHolder<T> {
 		// Explicit type is required at compile time for some reason.
 		return register<T, ClientConfigHolder<T>>(
@@ -41,6 +44,7 @@ object PandaLibConfig {
 		) { configClass: Class<T>, config: Config -> ClientConfigHolder(configClass, config) }
 	}
 
+	@JvmStatic
 	fun <T : ConfigData> registerCommon(configClass: Class<T>): CommonConfigHolder<T> {
 		// Explicit type is required at compile time for some reason.
 		return register<T, CommonConfigHolder<T>>(
@@ -54,11 +58,13 @@ object PandaLibConfig {
 			.filter { configHolder: ConfigHolder<out ConfigData> -> configHolder.resourceLocation() == resourceLocation }.findFirst()
 	}
 
+	@JvmStatic
 	fun <T : ConfigData> getConfig(config: Class<T>): ConfigHolder<T> {
 		@Suppress("UNCHECKED_CAST")
 		return configs[config] as ConfigHolder<T>
 	}
 
+	@JvmStatic
 	fun getConfigs(modId: String): MutableMap<Class<*>, ConfigHolder<*>> {
 		return configs.entries.stream()
 			.filter { entry: MutableMap.MutableEntry<Class<out ConfigData>, ConfigHolder<out ConfigData>> -> entry.value.definition.modId == modId }
@@ -75,6 +81,7 @@ object PandaLibConfig {
 		"""The config menu api will be added in the future, this is just here for quick support with future versions,
 	  this method is deprecated and returns null."""
 	)
+	@JvmStatic
 	fun getConfigScreen(modID: String): Screen? {
 		return null
 	}
@@ -90,6 +97,7 @@ object PandaLibConfig {
 		"""The config menu api will be added in the future, this is just here for quick support with future versions,
 	  this method is deprecated and returns null."""
 	)
+	@JvmStatic
 	fun getConfigScreen(parent: Screen, modID: String): Screen? {
 		return null
 	}
@@ -104,6 +112,7 @@ object PandaLibConfig {
 		"""The config menu api will be added in the future, this is just here for quick support with future versions,
 	  this method is deprecated and returns null."""
 	)
+	@JvmStatic
 	fun <T : ConfigData> getConfigScreen(configClass: Class<T>): Screen? {
 		return null
 	}
@@ -119,6 +128,7 @@ object PandaLibConfig {
 		"""The config menu api will be added in the future, this is just here for quick support with future versions,
 	  this method is deprecated and returns null."""
 	)
+	@JvmStatic
 	fun <T : ConfigData> getConfigScreen(parent: Screen, configClass: Class<T>): Screen? {
 		return null
 	}

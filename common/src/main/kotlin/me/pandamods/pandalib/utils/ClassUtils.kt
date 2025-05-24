@@ -15,6 +15,7 @@ import java.lang.reflect.Field
 
 @Suppress("unused")
 object ClassUtils {
+	@JvmStatic
 	fun <T> constructUnsafely(cls: Class<T>): T {
 		try {
 			val constructor = cls.getDeclaredConstructor()
@@ -25,6 +26,7 @@ object ClassUtils {
 		}
 	}
 
+	@JvmStatic
 	fun <T> setFieldUnsafely(parentObject: Any, field: Field, value: T) {
 		try {
 			field.set(parentObject, value)
@@ -33,6 +35,7 @@ object ClassUtils {
 		}
 	}
 
+	@JvmStatic
 	fun <T> getFieldUnsafely(parentObject: Any, field: Field): T {
 		try {
 			return field.get(parentObject) as T
@@ -41,6 +44,7 @@ object ClassUtils {
 		}
 	}
 
+	@JvmStatic
 	fun doesClassExist(className: String): Boolean {
 		try {
 			Class.forName(className)

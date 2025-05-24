@@ -16,6 +16,7 @@ import me.pandamods.pandalib.core.network.ConfigNetworking
 import net.minecraft.server.level.ServerPlayer
 
 object EventHandler {
+	@JvmStatic
 	fun init() {
 		PlayerEvent.PLAYER_JOIN.register(::onServerPlayerJoin)
 	}

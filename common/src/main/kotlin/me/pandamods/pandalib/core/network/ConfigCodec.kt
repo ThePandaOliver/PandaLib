@@ -16,7 +16,7 @@ import me.pandamods.pandalib.utils.NBTUtils
 import net.minecraft.network.RegistryFriendlyByteBuf
 import net.minecraft.network.codec.StreamCodec
 
-class ConfigCodec : StreamCodec<RegistryFriendlyByteBuf, ConfigPacketData> {
+object ConfigCodec : StreamCodec<RegistryFriendlyByteBuf, ConfigPacketData> {
 	override fun decode(byteBuf: RegistryFriendlyByteBuf): ConfigPacketData {
 		return ConfigPacketData(byteBuf.readResourceLocation(), NBTUtils.convertTagToJson(byteBuf.readNbt())!!)
 	}
@@ -24,9 +24,5 @@ class ConfigCodec : StreamCodec<RegistryFriendlyByteBuf, ConfigPacketData> {
 	override fun encode(byteBuf: RegistryFriendlyByteBuf, packetData: ConfigPacketData) {
 		byteBuf.writeResourceLocation(packetData.resourceLocation)
 		byteBuf.writeNbt(NBTUtils.convertJsonToTag(packetData.data))
-	}
-
-	companion object {
-		val INSTANCE: ConfigCodec = ConfigCodec()
 	}
 }

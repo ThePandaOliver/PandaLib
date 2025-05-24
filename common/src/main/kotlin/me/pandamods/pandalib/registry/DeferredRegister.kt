@@ -48,16 +48,19 @@ class DeferredRegister<T> private constructor(private val namespace: String, pri
 	fun register() {
 		entries.forEach { (deferredObject: DeferredObject<out T>, supplier: Supplier<out T>) -> Services.REGISTRATION.register(deferredObject, supplier) }
 	}
-
+	
 	companion object {
-		fun <T> create(namespace: String, registryLocation: ResourceLocation): DeferredRegister<T> {
-			return create<T>(namespace, ResourceKey.createRegistryKey<T>(registryLocation))
-		}
-
+		@JvmStatic
 		fun <T> create(namespace: String, registry: Registry<T>): DeferredRegister<T> {
 			return create<T>(namespace, registry.key())
 		}
 
+		@JvmStatic
+		fun <T> create(namespace: String, registryLocation: ResourceLocation): DeferredRegister<T> {
+			return create<T>(namespace, ResourceKey.createRegistryKey<T>(registryLocation))
+		}
+
+		@JvmStatic
 		fun <T> create(namespace: String, registryKey: ResourceKey<out Registry<T>>): DeferredRegister<T> {
 			return DeferredRegister<T>(namespace, registryKey)
 		}

@@ -8,6 +8,7 @@ import net.minecraft.client.player.LocalPlayer
 
 @Environment(EnvType.CLIENT)
 object EventHandlerClient {
+	@JvmStatic
 	fun init() {
 		ClientPlayerEvent.CLIENT_PLAYER_JOIN.register(::onClientPlayerJoin)
 	}

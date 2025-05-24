@@ -2,6 +2,7 @@
 
 plugins {
 	java
+	`maven-publish`
 	alias(libs.plugins.architecturyPlugin)
 	alias(libs.plugins.architecturyLoom)
 }
@@ -32,4 +33,14 @@ dependencies {
 
 	modApi(libs.architectury.common)
 	api(libs.bundles.kotlin)
+}
+
+publishing {
+	publications {
+		create<MavenPublication>("maven") {
+			artifactId = project.base.archivesName.get()
+			version = "${project.version}-SNAPSHOT"
+			from(components["java"])
+		}
+	}
 }

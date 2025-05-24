@@ -25,7 +25,7 @@ allprojects {
 
 subprojects {
 	base { archivesName = "${properties["mod_id"]}-${project.name}" }
-	version = "${rootProject.version}-${rootProject.libs.versions.minecraft.get()}"
+	version = "mc${rootProject.libs.versions.minecraft.get()}-${rootProject.version}"
 
 	repositories {
 		maven("https://maven.architectury.dev/")
@@ -44,8 +44,8 @@ subprojects {
 		runtimeClasspath.get().extendsFrom(common)
 		
 		create("shadowBundle") {
-			isCanBeResolved = false
-			isCanBeConsumed = true
+			isCanBeResolved = true
+			isCanBeConsumed = false
 		}
 	}
 

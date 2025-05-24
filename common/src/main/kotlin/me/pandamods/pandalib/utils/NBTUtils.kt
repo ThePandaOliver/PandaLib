@@ -19,6 +19,7 @@ import net.minecraft.nbt.*
 import java.util.function.Consumer
 
 object NBTUtils {
+	@JvmStatic
 	fun convertJsonToTag(jsonElement: JsonElement): Tag? {
 		if (jsonElement.isJsonPrimitive()) {
 			val primitive = jsonElement.getAsJsonPrimitive()
@@ -44,6 +45,7 @@ object NBTUtils {
 		return null
 	}
 
+	@JvmStatic
 	fun convertTagToJson(tag: Tag?): JsonElement? {
 		if (tag is StringTag) return JsonPrimitive(tag.getAsString())
 		else if (tag is DoubleTag) {

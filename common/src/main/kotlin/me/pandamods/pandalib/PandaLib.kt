@@ -20,12 +20,14 @@ import net.minecraft.resources.ResourceLocation
 object PandaLib {
 	const val MOD_ID = "pandalib"
 
+	@JvmStatic
 	fun init() {
 		 NetworkingEvents.PACKET_PAYLOAD_REGISTRY.register(ConfigNetworking::registerPackets)
 
 		EventHandler.init()
 	}
 
+	@JvmStatic
 	fun resourceLocation(path: String): ResourceLocation {
 		return ResourceLocation.fromNamespaceAndPath(MOD_ID, path)
 	}

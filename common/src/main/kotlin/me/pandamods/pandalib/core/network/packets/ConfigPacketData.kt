@@ -23,6 +23,7 @@ data class ConfigPacketData(val resourceLocation: ResourceLocation, val data: Js
 	}
 
 	companion object {
+		@JvmField
 		val TYPE: CustomPacketPayload.Type<ConfigPacketData> = CustomPacketPayload.Type<ConfigPacketData>(resourceLocation("config_sync"))
 	}
 }

@@ -16,7 +16,9 @@ import com.google.gson.JsonObject
 import me.pandamods.pandalib.config.holders.ConfigHolder
 
 interface ConfigData {
-	fun <T : ConfigData> onLoad(configHolder: ConfigHolder<T>, configJson: JsonObject) {}
+	fun <T : ConfigData> onLoad(configHolder: ConfigHolder<T>, configJson: JsonObject) {
+	}
+
 	fun <T : ConfigData> onSave(configHolder: ConfigHolder<T>, configJson: JsonObject): JsonObject {
 		return configJson
 	}

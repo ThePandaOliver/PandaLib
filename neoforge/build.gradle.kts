@@ -2,6 +2,7 @@
 
 plugins {
 	java
+	`maven-publish`
 	alias(libs.plugins.architecturyPlugin)
 	alias(libs.plugins.architecturyLoom)
 	alias(libs.plugins.shadow)
@@ -52,4 +53,15 @@ tasks.shadowJar {
 tasks.remapJar {
 	injectAccessWidener = true
 	atAccessWideners.add(loom.accessWidenerPath.get().asFile.name)
+	inputFile = tasks.shadowJar.get().archiveFile
+}
+
+publishing {
+	publications {
+		create<MavenPublication>("maven") {
+			artifactId = project.base.archivesName.get()
+			version = "${project.version}-SNAPSHOT"
+			from(components["java"])
+		}
+	}
 }

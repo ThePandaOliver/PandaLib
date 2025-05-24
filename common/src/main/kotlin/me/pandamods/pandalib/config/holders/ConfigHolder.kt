@@ -83,7 +83,7 @@ open class ConfigHolder<T : ConfigData>(val configClass: Class<T>, val definitio
 			resetToDefault()
 			save()
 		}
-		this.logger.info("Successfully loaded config '{}'", definition.name)
+		this.logger.info("Successfully loaded config '${definition.name}'")
 		return true
 	}
 

@@ -1,0 +1,44 @@
+/*
+ * Copyright (C) 2024 Oliver Froberg (The Panda Oliver)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  any later version.
+ *
+ * You should have received a copy of the GNU General Public License
+ *  along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+package dev.pandasystems.pandalib.config.holders
+
+import dev.pandasystems.pandalib.config.Config
+import dev.pandasystems.pandalib.config.ConfigData
+import dev.pandasystems.pandalib.platform.Services
+import net.minecraft.world.entity.player.Player
+import java.util.*
+
+class ClientConfigHolder<T : ConfigData>(configClass: Class<T>, config: Config) : ConfigHolder<T>(configClass, config) {
+	private val configs = mutableMapOf<UUID, T>()
+
+	override fun save() {
+		if (Services.GAME.isClient) {
+			super.save()
+		} else logger.warn("Client config '${definition.name}' can't be saved on server")
+	}
+
+	override fun load(): Boolean {
+		if (Services.GAME.isClient) {
+			return super.load()
+		}
+		return false
+	}
+
+	fun <C : ConfigData> putConfig(player: Player, config: C) {
+		@Suppress("UNCHECKED_CAST")
+		configs.put(player.getUUID(), config as T)
+	}
+
+	fun getConfig(player: Player): T? {
+		return configs[player.getUUID()]
+	}
+}

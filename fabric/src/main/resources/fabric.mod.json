@@ -17,12 +17,12 @@
 	"entrypoints": {
 		"main": [
 			{
-				"value": "me.pandamods.pandalib.fabric.PandaLibFabric"
+				"value": "dev.pandasystems.pandalib.fabric.PandaLibFabric"
 			}
 		],
 		"client": [
 			{
-				"value": "me.pandamods.pandalib.fabric.client.PandaLibClientFabric"
+				"value": "dev.pandasystems.pandalib.fabric.client.PandaLibClientFabric"
 			}
 		]
 	},

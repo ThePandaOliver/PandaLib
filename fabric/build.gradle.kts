@@ -1,21 +1,6 @@
 @file:Suppress("UnstableApiUsage")
-
-plugins {
-	java
-	`maven-publish`
-	alias(libs.plugins.architecturyPlugin)
-	alias(libs.plugins.architecturyLoom)
-	alias(libs.plugins.shadow)
-}
-
 architectury {
-	minecraft = libs.versions.minecraft.get()
-	platformSetupLoomIde()
 	fabric()
-}
-
-loom {
-	accessWidenerPath = project(":common").loom.accessWidenerPath
 }
 
 configurations {
@@ -23,54 +8,16 @@ configurations {
 }
 
 repositories {
-	mavenCentral()
 	maven("https://maven.terraformersmc.com/releases/")
 }
 
 dependencies {
-	minecraft(libs.minecraft)
-	mappings(loom.layered {
-		officialMojangMappings()
-		parchment("${libs.parchment.get()}@zip")
-	})
 	modImplementation(libs.fabricLoader)
 	modApi(libs.fabricApi)
-
 	modApi(libs.architectury.fabric)
 	modApi(libs.modmenu)
-
-	api(libs.bundles.kotlin)
-	include(libs.bundles.kotlin)
-
-	common(project(":common", configuration = "namedElements")) { isTransitive = false }
-	shadowBundle(project(":common", configuration = "transformProductionFabric"))
-}
-
-tasks.shadowJar {
-	configurations = listOf(project.configurations.shadowBundle.get())
-	archiveClassifier.set("dev-shadow")
 	
-	exclude("architectury.common.json")
-}
-
-tasks.remapJar {
-	injectAccessWidener.set(true)
-	inputFile = tasks.shadowJar.get().archiveFile
-}
-
-publishing {
-	publications {
-		create<MavenPublication>("maven") {
-			artifactId = project.base.archivesName.get()
-			version = "${project.version}"
-			from(components["java"])
-		}
-	}
-
-	repositories {
-		maven {
-			name = "local"
-			url = file("C:\\Users\\Olive\\.m2\\repository").toURI()
-		}
-	}
+	include(libs.bundles.kotlin)
+	common(project(":", configuration = "namedElements")) { isTransitive = false }
+	shadowBundle(project(":", configuration = "transformProductionFabric"))
 }

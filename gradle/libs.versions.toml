@@ -7,6 +7,7 @@ architectury = "15.0.1"
 kotlinJvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 shadow = { id = "com.gradleup.shadow", version = "8.3.6" }
 modPublish = { id = "me.modmuss50.mod-publish-plugin", version = "0.6.3" }
+grabver = { id = "eu.davidea.grabver", version = "2.0.3" }
 architecturyPlugin = { id = "architectury-plugin", version = "3.4-SNAPSHOT" }
 architecturyLoom = { id = "dev.architectury.loom", version = "1.10-SNAPSHOT" }
 

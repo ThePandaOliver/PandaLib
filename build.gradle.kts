@@ -7,15 +7,18 @@ plugins {
 	alias(libs.plugins.kotlinJvm)
 	`maven-publish`
 	`version-catalog`
-	
+	alias(libs.plugins.grabver)
+
 	alias(libs.plugins.shadow) apply false
 	alias(libs.plugins.architecturyPlugin)
 	alias(libs.plugins.architecturyLoom)
 }
 
-version = prop("mod_version")
-group = prop("maven_group")
-base { archivesName = rootProject.name }
+versioning {
+	major = 0
+	minor = 6
+	patch = 0
+}
 
 architectury {
 	minecraft = libs.versions.minecraft.get()
@@ -41,11 +44,14 @@ allprojects {
 	apply(plugin = "version-catalog")
 	apply(plugin = rootProject.libs.plugins.architecturyPlugin.get().pluginId)
 	apply(plugin = rootProject.libs.plugins.architecturyLoom.get().pluginId)
+
+	group = "dev.pandasystems"
+	version = rootProject.versioning.fullName
 	
 	loom {
 		silentMojangMappingsLicense()
 	}
-	
+
 	repositories {
 		mavenCentral()
 		maven("https://maven.architectury.dev/")
@@ -54,7 +60,7 @@ allprojects {
 		maven("https://maven.minecraftforge.net/")
 		maven("https://maven.neoforged.net/releases/")
 	}
-	
+
 	dependencies {
 		minecraft(rootProject.libs.minecraft)
 		mappings(loom.layered {
@@ -74,7 +80,7 @@ allprojects {
 
 	tasks.processResources {
 		val props = mutableMapOf(
-			"mod_version" to prop("mod_version")
+			"mod_version" to project.version,
 		)
 
 		inputs.properties(props)
@@ -86,31 +92,20 @@ allprojects {
 	java {
 		withSourcesJar()
 	}
-
-	publishing {
-		publications {
-			create<MavenPublication>("maven") {
-				artifactId = project.base.archivesName.get()
-				version = "${project.version}"
-				from(components["java"])
-			}
-		}
-	}
 }
 
 subprojects {
 	apply(plugin = rootProject.libs.plugins.shadow.get().pluginId)
 	
-	base { archivesName = "${rootProject.base.archivesName.get()}-${project.name}" }
-	version = "mc${rootProject.libs.versions.minecraft.get()}-${rootProject.version}"
+	base { archivesName = "${rootProject.name}-${project.name}" }
 
 	architectury {
 		platformSetupLoomIde()
 	}
-	
+
 	loom {
 		accessWidenerPath = rootProject.loom.accessWidenerPath
-		
+
 		runs {
 			named("client") {
 				client()
@@ -127,7 +122,7 @@ subprojects {
 			}
 		}
 	}
-	
+
 	configurations {
 		val common = create("common") {
 			isCanBeResolved = true
@@ -135,7 +130,7 @@ subprojects {
 		}
 		compileClasspath.get().extendsFrom(common)
 		runtimeClasspath.get().extendsFrom(common)
-		
+
 		create("shadowBundle") {
 			isCanBeResolved = true
 			isCanBeConsumed = false
@@ -152,5 +147,21 @@ subprojects {
 	tasks.remapJar {
 		injectAccessWidener.set(true)
 		inputFile = tasks.getByName<ShadowJar>("shadowJar").archiveFile
+	}
+}
+
+allprojects {
+	publishing {
+		publications {
+			create<MavenPublication>("maven") {
+				from(components["java"])
+				
+				val vers = rootProject.versioning
+				artifactId = project.base.archivesName.get().lowercase()
+				version = "${vers.major}.${vers.minor}.${vers.patch}.${vers.build}".let { ver ->
+					vers.preRelease?.let { pre -> "$ver-$pre" } ?: ver
+				}
+			}
+		}
 	}
 }

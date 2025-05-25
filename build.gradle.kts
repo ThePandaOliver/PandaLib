@@ -79,8 +79,9 @@ allprojects {
 	}
 
 	tasks.processResources {
+		val vers = rootProject.versioning
 		val props = mutableMapOf(
-			"mod_version" to project.version,
+			"mod_version" to "${vers.major}.${vers.minor}.${vers.patch}",
 		)
 
 		inputs.properties(props)
@@ -158,7 +159,7 @@ allprojects {
 				
 				val vers = rootProject.versioning
 				artifactId = project.base.archivesName.get().lowercase()
-				version = "${vers.major}.${vers.minor}.${vers.patch}.${vers.build}".let { ver ->
+				version = "mc${rootProject.libs.versions.minecraft.get()}-${vers.major}.${vers.minor}.${vers.patch}.${vers.build}".let { ver ->
 					vers.preRelease?.let { pre -> "$ver-$pre" } ?: ver
 				}
 			}

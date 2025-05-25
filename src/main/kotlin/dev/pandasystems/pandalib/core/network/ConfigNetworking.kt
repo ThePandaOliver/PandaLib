@@ -19,7 +19,6 @@ import dev.pandasystems.pandalib.config.holders.CommonConfigHolder
 import dev.pandasystems.pandalib.config.holders.ConfigHolder
 import dev.pandasystems.pandalib.core.network.packets.ConfigPacketData
 import dev.pandasystems.pandalib.networking.NetworkContext
-import dev.pandasystems.pandalib.networking.NetworkReceiver
 import dev.pandasystems.pandalib.networking.NetworkRegistry
 import dev.pandasystems.pandalib.networking.PacketDistributor
 import net.minecraft.server.level.ServerPlayer
@@ -31,38 +30,38 @@ object ConfigNetworking {
 		registry.registerBiDirectionalReceiver(
 			ConfigPacketData.TYPE,
 			ConfigCodec,
-			{ ctx: NetworkContext, data: ConfigPacketData -> CommonConfigReceiver(ctx, data) },
-			{ ctx: NetworkContext, data: ConfigPacketData -> ClientConfigReceiver(ctx, data) })
+			{ ctx: NetworkContext, data: ConfigPacketData -> commonConfigReceiver(ctx, data) },
+			{ ctx: NetworkContext, data: ConfigPacketData -> clientConfigReceiver(ctx, data) })
 	}
 
 	@JvmStatic
-	fun SyncCommonConfigs(serverPlayer: ServerPlayer) {
+	fun syncCommonConfigs(serverPlayer: ServerPlayer) {
 		configs.values.stream()
 			.filter { configHolder: ConfigHolder<out ConfigData> -> configHolder is CommonConfigHolder<*> && configHolder.shouldSynchronize() }
-			.forEach { configHolder: ConfigHolder<out ConfigData> -> SyncCommonConfig(serverPlayer, configHolder as CommonConfigHolder<*>) }
+			.forEach { configHolder: ConfigHolder<out ConfigData> -> syncCommonConfig(serverPlayer, configHolder as CommonConfigHolder<*>) }
 	}
 
 	@JvmStatic
-	fun SyncCommonConfig(serverPlayer: ServerPlayer, holder: CommonConfigHolder<*>) {
+	fun syncCommonConfig(serverPlayer: ServerPlayer, holder: CommonConfigHolder<*>) {
 		holder.logger.info("Sending common config '{}' to {}", holder.resourceLocation().toString(), serverPlayer.getDisplayName()!!.getString())
 		PacketDistributor.sendToPlayer(serverPlayer, ConfigPacketData(holder.resourceLocation(), holder.gson.toJsonTree(holder.get())))
 	}
 
 	@JvmStatic
-	fun SyncClientConfigs() {
+	fun syncClientConfigs() {
 		configs.values.stream()
 			.filter { configHolder: ConfigHolder<out ConfigData> -> configHolder is ClientConfigHolder<*> && configHolder.shouldSynchronize() }
-			.forEach { configHolder: ConfigHolder<out ConfigData> -> SyncClientConfig(configHolder as ClientConfigHolder<*>) }
+			.forEach { configHolder: ConfigHolder<out ConfigData> -> syncClientConfig(configHolder as ClientConfigHolder<*>) }
 	}
 
 	@JvmStatic
-	fun SyncClientConfig(holder: ClientConfigHolder<*>) {
+	fun syncClientConfig(holder: ClientConfigHolder<*>) {
 		holder.logger.info("Sending client config '{}' to server", holder.resourceLocation().toString())
 		PacketDistributor.sendToServer(ConfigPacketData(holder.resourceLocation(), holder.gson.toJsonTree(holder.get())))
 	}
 
 	@JvmStatic
-	private fun ClientConfigReceiver(ctx: NetworkContext, packetData: ConfigPacketData) {
+	private fun clientConfigReceiver(ctx: NetworkContext, packetData: ConfigPacketData) {
 		val resourceLocation = packetData.resourceLocation
 		getConfig(resourceLocation).ifPresent(Consumer { configHolder: ConfigHolder<out ConfigData> ->
 			if (configHolder is ClientConfigHolder<out ConfigData>) {
@@ -78,7 +77,7 @@ object ConfigNetworking {
 	}
 
 	@JvmStatic
-	private fun CommonConfigReceiver(ctx: NetworkContext, packetData: ConfigPacketData) {
+	private fun commonConfigReceiver(ctx: NetworkContext, packetData: ConfigPacketData) {
 		val resourceLocation = packetData.resourceLocation
 		getConfig(resourceLocation).ifPresent(Consumer { configHolder: ConfigHolder<out ConfigData> ->
 			if (configHolder is CommonConfigHolder<out ConfigData>) {

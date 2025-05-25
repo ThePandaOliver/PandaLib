@@ -22,6 +22,6 @@ object EventHandler {
 	}
 
 	private fun onServerPlayerJoin(serverPlayer: ServerPlayer) {
-		ConfigNetworking.SyncCommonConfigs(serverPlayer)
+		ConfigNetworking.syncCommonConfigs(serverPlayer)
 	}
 }

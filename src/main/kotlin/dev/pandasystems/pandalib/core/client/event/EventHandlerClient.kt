@@ -14,6 +14,6 @@ object EventHandlerClient {
 	}
 
 	private fun onClientPlayerJoin(localPlayer: LocalPlayer) {
-		ConfigNetworking.SyncClientConfigs()
+		ConfigNetworking.syncClientConfigs()
 	}
 }

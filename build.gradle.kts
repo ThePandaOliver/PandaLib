@@ -24,9 +24,7 @@ architectury {
 
 loom {
 	accessWidenerPath = file("src/main/resources/pandalib.accesswidener")
-	runs {
-		delete("client", "server")
-	}
+	runs.all { ideConfigGenerated(false) }
 }
 
 dependencies {

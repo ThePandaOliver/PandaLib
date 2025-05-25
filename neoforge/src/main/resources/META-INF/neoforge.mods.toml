@@ -1,31 +1,31 @@
 modLoader = "javafml"
 loaderVersion = "*"
-issueTrackerURL="https://github.com/${project_github_repo}/issues"
-license = "${mod_license}"
+issueTrackerURL = "https://github.com/PandaMods-Dev/PandaLib/issues"
+license = "GNU LGPLv3"
 
 [[mods]]
-modId = "${mod_id}"
+modId = "pandalib"
 version = "${mod_version}"
-displayName = "${mod_name}"
-authors = "${mod_author}"
-description = "${mod_description}"
-logoFile = "assets/${mod_id}/icon.png"
+displayName = "PandaLib"
+authors = "The Panda Oliver"
+description = "A multipurpose library with a Config API, Kotlin library support, a bit of utility code, and more."
+logoFile = "assets/pandalib/icon.png"
 
-[[dependencies."${mod_id}"]]
+[[dependencies.pandalib]]
 modId = "neoforge"
 type = "required"
 versionRange = "*"
 ordering = "NONE"
 side = "BOTH"
 
-[[dependencies."${mod_id}"]]
+[[dependencies.pandalib]]
 modId = "minecraft"
 type = "required"
-versionRange = "${neoforge_version_range}"
+versionRange = "1.21.4"
 ordering = "NONE"
 side = "BOTH"
 
-[[dependencies."${mod_id}"]]
+[[dependencies.pandalib]]
 modId = "architectury"
 type = "required"
 versionRange = "*"
@@ -33,6 +33,6 @@ ordering = "AFTER"
 side = "BOTH"
 
 [[mixins]]
-config = "${mod_id}-common.mixins.json"
+config = "pandalib-common.mixins.json"
 [[mixins]]
-config = "${mod_id}.mixins.json"
+config = "pandalib.mixins.json"

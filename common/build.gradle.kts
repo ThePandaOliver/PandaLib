@@ -13,7 +13,7 @@ architectury {
 }
 
 loom {
-	accessWidenerPath = file("src/main/resources/${properties["mod_id"]}.accesswidener")
+	accessWidenerPath = file("src/main/resources/pandalib.accesswidener")
 }
 
 repositories {

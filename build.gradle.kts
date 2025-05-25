@@ -6,17 +6,12 @@ plugins {
 	alias(libs.plugins.shadow) apply false
 }
 
-val file = rootDir.resolve("buildNumber")
-if (!file.exists()) file.writeText("0")
-else file.writeText("${file.readText().toInt() + 1}")
-val buildNumber = file.readText().toInt()
-
 allprojects {
 	apply(plugin = "java")
 	apply(plugin = "kotlin")
 	apply(plugin = "version-catalog")
 	
-	version = "${properties["mod_version"]}.$buildNumber"
+	version = "${properties["mod_version"]}"
 	group = properties["maven_group"] as String
 	
 	repositories {
@@ -59,49 +54,15 @@ subprojects {
 
 	tasks.processResources {
 		val props = mutableMapOf(
-			"java_version" to properties["java_version"],
-
-			"maven_group" to properties["maven_group"],
-			"mod_id" to properties["mod_id"],
-			"mod_version" to properties["mod_version"],
-			"mod_name" to properties["mod_name"],
-			"mod_description" to properties["mod_description"],
-			"mod_author" to properties["mod_author"],
-			"mod_license" to properties["mod_license"],
-
-			"project_curseforge_slug" to properties["project_curseforge_slug"],
-			"project_modrinth_slug" to properties["project_modrinth_slug"],
-			"project_github_repo" to properties["project_github_repo"],
+			"mod_version" to properties["mod_version"]
 		)
-
-		if (properties["fabric_version_range"] != null)
-			props["fabric_version_range"] = properties["fabric_version_range"] as String
-
-		if (properties["forge_version_range"] != null)
-			props["forge_version_range"] = properties["forge_version_range"] as String
-
-		if (properties["neoforge_version_range"] != null)
-			props["neoforge_version_range"] = properties["neoforge_version_range"] as String
 
 		inputs.properties(props)
 		filesMatching(listOf("pack.mcmeta", "fabric.mod.json", "META-INF/mods.toml", "META-INF/neoforge.mods.toml", "*.mixins.json")) {
 			expand(props)
 		}
 	}
-
-	tasks.jar {
-		manifest {
-			attributes(mapOf(
-					"Specification-Title" to properties["mod_name"],
-					"Specification-Vendor" to properties["mod_author"],
-					"Specification-Version" to properties["mod_version"],
-					"Implementation-Title" to name,
-					"Implementation-Vendor" to properties["mod_author"],
-					"Implementation-Version" to archiveVersion
-			))
-		}
-	}
-
+	
 	java {
 		withSourcesJar()
 	}

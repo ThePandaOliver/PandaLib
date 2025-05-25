@@ -1,21 +1,21 @@
 {
-  "schemaVersion": 1,
-	"id": "${mod_id}",
+	"schemaVersion": 1,
+	"id": "pandalib",
 	"version": "${mod_version}",
-	"name": "${mod_name}",
-	"description": "${mod_description}",
+	"name": "PandaLib",
+	"description": "A multipurpose library with a Config API, Kotlin library support, a bit of utility code, and more.",
 	"authors": [
-		"${mod_author}"
+		"The Panda Oliver"
 	],
 	"contact": {
-		"issues": "https://github.com/${project_github_repo}/issues",
-		"sources": "https://github.com/${project_github_repo}"
+		"issues": "https://github.com/PandaMods-Dev/PandaLib/issues",
+		"sources": "https://github.com/PandaMods-Dev/PandaLib"
 	},
-  "license": "${mod_license}",
-	"icon": "assets/${mod_id}/icon.png",
-  "environment": "*",
-  "entrypoints": {
-    "main": [
+	"license": "GNU LGPLv3",
+	"icon": "assets/pandalib/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
 			{
 				"value": "me.pandamods.pandalib.fabric.PandaLibFabric"
 			}
@@ -27,25 +27,27 @@
 		]
 	},
 	"mixins": [
-		"${mod_id}.mixins.json",
-		"${mod_id}-common.mixins.json"
+		"pandalib.mixins.json",
+		"pandalib-common.mixins.json"
 	],
-  "depends": {
-    "fabric": "*",
-    "fabric-api": "*",
-    "minecraft": "${fabric_version_range}",
+	"depends": {
+		"fabric": "*",
+		"fabric-api": "*",
+		"minecraft": "1.21.4",
 		"architectury": "*"
-  },
+	},
 	"custom": {
 		"modmenu": {
 			"links": {
 				"modmenu.discord": "https://discord.gg/wjPt4vEfXb",
 				"modmenu.kofi": "https://ko-fi.com/pandamods",
-				"modmenu.curseforge": "https://www.curseforge.com/minecraft/mc-mods/${project_curseforge_slug}",
-				"modmenu.modrinth": "https://modrinth.com/mod/${project_modrinth_slug}",
-				"modmenu.github_releases": "https://github.com/${project_github_repo}/releases"
+				"modmenu.curseforge": "https://www.curseforge.com/minecraft/mc-mods/pandalib",
+				"modmenu.modrinth": "https://modrinth.com/mod/pandalib",
+				"modmenu.github_releases": "https://github.com/PandaMods-Dev/PandaLib/releases"
 			},
-			"badges": ["library"],
+			"badges": [
+				"library"
+			],
 			"update_checker": true
 		}
 	}

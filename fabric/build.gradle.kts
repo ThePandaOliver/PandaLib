@@ -39,7 +39,7 @@ dependencies {
 	modApi(libs.architectury.fabric)
 	modApi(libs.modmenu)
 
-	implementation(libs.bundles.kotlin)
+	api(libs.bundles.kotlin)
 	include(libs.bundles.kotlin)
 
 	common(project(":common", configuration = "namedElements")) { isTransitive = false }
@@ -62,8 +62,15 @@ publishing {
 	publications {
 		create<MavenPublication>("maven") {
 			artifactId = project.base.archivesName.get()
-			version = "${project.version}-SNAPSHOT"
+			version = "${project.version}"
 			from(components["java"])
+		}
+	}
+
+	repositories {
+		maven {
+			name = "local"
+			url = file("C:\\Users\\Olive\\.m2\\repository").toURI()
 		}
 	}
 }

@@ -43,7 +43,7 @@ open class ConfigHolder<T : ConfigData>(val configClass: Class<T>, val definitio
 	fun shouldSynchronize(): Boolean {
 		return synchronize
 	}
-
+	
 	val configPath: Path = Services.GAME.configDir.let {
 		if (definition.directory.isBlank()) it else it.resolve(definition.directory)
 	}.resolve(definition.name + ".json")

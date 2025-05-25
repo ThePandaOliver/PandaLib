@@ -6,12 +6,17 @@ plugins {
 	alias(libs.plugins.shadow) apply false
 }
 
+val file = rootDir.resolve("buildNumber")
+if (!file.exists()) file.writeText("0")
+else file.writeText("${file.readText().toInt() + 1}")
+val buildNumber = file.readText().toInt()
+
 allprojects {
 	apply(plugin = "java")
 	apply(plugin = "kotlin")
 	apply(plugin = "version-catalog")
 	
-	version = "${properties["mod_version"]}"
+	version = "${properties["mod_version"]}.$buildNumber"
 	group = properties["maven_group"] as String
 	
 	repositories {
@@ -20,6 +25,9 @@ allprojects {
 
 	kotlin {
 		jvmToolchain(21)
+		compilerOptions {
+			freeCompilerArgs = listOf("-Xjvm-default=all")
+		}
 	}
 }
 

@@ -28,7 +28,9 @@ architectury {
 
 loom {
 	accessWidenerPath = file("src/main/resources/pandalib.accesswidener")
-	runs.all { ideConfigGenerated(false) }
+	runs.all { 
+		ideConfigGenerated(false)
+	}
 }
 
 dependencies {
@@ -51,6 +53,10 @@ allprojects {
 	
 	loom {
 		silentMojangMappingsLicense()
+		runs.all {
+			runtimeOnlyLog4j = true
+			property("fabric.log.level", "debug")
+		}
 	}
 
 	repositories {

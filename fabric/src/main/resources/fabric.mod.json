@@ -16,16 +16,10 @@
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			{
-				"adapter": "kotlin",
-				"value": "dev.pandasystems.pandalib.fabric.PandaLibFabric"
-			}
+			"dev.pandasystems.pandalib.fabric.PandaLibFabric"
 		],
 		"client": [
-			{
-				"adapter": "kotlin",
-				"value": "dev.pandasystems.pandalib.fabric.client.PandaLibClientFabric"
-			}
+			"dev.pandasystems.pandalib.fabric.client.PandaLibClientFabric"
 		]
 	},
 	"mixins": [

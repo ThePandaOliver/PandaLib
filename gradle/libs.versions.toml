@@ -1,12 +1,12 @@
 [versions]
 kotlin = "2.1.21"
 minecraft = "1.21.4"
-architectury = "15.0.1"
+architectury = "15.0.3"
 
 [plugins]
 kotlinJvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 shadow = { id = "com.gradleup.shadow", version = "8.3.6" }
-modPublish = { id = "me.modmuss50.mod-publish-plugin", version = "0.6.3" }
+modPublish = { id = "me.modmuss50.mod-publish-plugin", version = "0.8.4" }
 grabver = { id = "eu.davidea.grabver", version = "2.0.3" }
 architecturyPlugin = { id = "architectury-plugin", version = "3.4-SNAPSHOT" }
 architecturyLoom = { id = "dev.architectury.loom", version = "1.10-SNAPSHOT" }
@@ -14,13 +14,13 @@ architecturyLoom = { id = "dev.architectury.loom", version = "1.10-SNAPSHOT" }
 [libraries]
 minecraft = { group = "com.mojang", name = "minecraft", version.ref = "minecraft" }
 parchment = { group = "org.parchmentmc.data", name = "parchment-1.21.4", version = "2025.01.19" }
-fabricLoader = { group = "net.fabricmc", name = "fabric-loader", version = "0.16.9" }
+fabricLoader = { group = "net.fabricmc", name = "fabric-loader", version = "0.16.14" }
 fabricApi = { group = "net.fabricmc.fabric-api", name = "fabric-api", version = "0.119.2+1.21.4" }
-neoforgeLoader = { group = "net.neoforged", name = "neoforge", version = "21.4.76-beta" }
+neoforgeLoader = { group = "net.neoforged", name = "neoforge", version = "21.4.136" }
 architectury-common = { group = "dev.architectury", name = "architectury", version.ref = "architectury" }
 architectury-fabric = { group = "dev.architectury", name = "architectury-fabric", version.ref = "architectury" }
 architectury-neoforge = { group = "dev.architectury", name = "architectury-neoforge", version.ref = "architectury" }
-modmenu = { group = "com.terraformersmc", name = "modmenu", version = "13.0.0" }
+modmenu = { group = "com.terraformersmc", name = "modmenu", version = "13.0.3" }
 
 kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlin" }
 kotlin-reflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect", version.ref = "kotlin" }

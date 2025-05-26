@@ -14,7 +14,6 @@ package dev.pandasystems.pandalib.config.holders
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
-import dev.architectury.platform.Platform
 import dev.pandasystems.pandalib.config.Config
 import dev.pandasystems.pandalib.config.ConfigData
 import dev.pandasystems.pandalib.platform.Services
@@ -39,7 +38,9 @@ open class ConfigHolder<T : ConfigData>(val configClass: Class<T>, val definitio
 		return synchronize
 	}
 	
-	val configPath: Path = Services.GAME.configDir.resolve(definition.name + ".json")
+	val configPath: Path = Services.GAME.configDir.let { 
+		if (definition.directory.isEmpty()) it else it.resolve(definition.directory)
+	}.resolve(definition.name + ".json")
 	
 	init {
 		if (load()) {

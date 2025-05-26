@@ -13,14 +13,13 @@ package dev.pandasystems.pandalib.neoforge.platform
 
 import dev.pandasystems.pandalib.platform.services.RegistrationHelper
 import dev.pandasystems.pandalib.registry.DeferredObject
-import net.minecraft.client.Minecraft
 import net.minecraft.core.Registry
 import net.minecraft.resources.ResourceKey
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.packs.PackType
 import net.minecraft.server.packs.resources.PreparableReloadListener
-import net.minecraft.server.packs.resources.ReloadableResourceManager
-import net.neoforged.neoforge.event.AddReloadListenerEvent
+import net.neoforged.neoforge.client.event.AddClientReloadListenersEvent
+import net.neoforged.neoforge.event.AddServerReloadListenersEvent
 import net.neoforged.neoforge.registries.NewRegistryEvent
 import net.neoforged.neoforge.registries.RegisterEvent
 import java.util.function.Consumer
@@ -29,7 +28,8 @@ import java.util.function.Supplier
 class RegistrationHelperImpl : RegistrationHelper {
 	private val pendingRegistries: MutableMap<ResourceKey<out Registry<*>>, PendingRegistries<*>> = mutableMapOf()
 	private val pendingRegistryTypes: MutableList<Registry<*>> = mutableListOf()
-	private val serverDataReloadListeners: MutableList<PreparableReloadListener> = mutableListOf()
+	private val serverDataReloadListeners = mutableListOf<Pair<ResourceLocation, PreparableReloadListener>>()
+	private val clientDataReloadListeners = mutableListOf<Pair<ResourceLocation, PreparableReloadListener>>()
 
 	override fun <T> register(deferredObject: DeferredObject<out T>, supplier: Supplier<out T>) {
 		@Suppress("UNCHECKED_CAST")
@@ -49,9 +49,9 @@ class RegistrationHelperImpl : RegistrationHelper {
 		dependencies: Collection<ResourceLocation>
 	) {
 		if (packType == PackType.SERVER_DATA) {
-			serverDataReloadListeners.add(listener)
+			serverDataReloadListeners += id to listener
 		} else {
-			(Minecraft.getInstance().resourceManager as ReloadableResourceManager).registerReloadListener(listener)
+			clientDataReloadListeners += id to listener
 		}
 	}
 
@@ -63,8 +63,12 @@ class RegistrationHelperImpl : RegistrationHelper {
 		pendingRegistryTypes.forEach(Consumer { registry: Registry<*> -> event.register(registry) })
 	}
 
-	fun addReloadListenerEvent(event: AddReloadListenerEvent) {
-		serverDataReloadListeners.forEach(Consumer { listener: PreparableReloadListener -> event.addListener(listener) })
+	fun addServerReloadListenerEvent(event: AddServerReloadListenersEvent) {
+		serverDataReloadListeners.forEach(Consumer { (id, listener) -> event.addListener(id, listener) })
+	}
+
+	fun addClientReloadListenerEvent(event: AddClientReloadListenersEvent) {
+		clientDataReloadListeners.forEach(Consumer { (id, listener) -> event.addListener(id, listener) })
 	}
 
 	private class PendingRegistries<T>(private val registryKey: ResourceKey<out Registry<T>>) {

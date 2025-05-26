@@ -12,12 +12,13 @@ plugins {
 	alias(libs.plugins.shadow) apply false
 	alias(libs.plugins.architecturyPlugin)
 	alias(libs.plugins.architecturyLoom)
+	alias(libs.plugins.modPublish)
 }
 
 versioning {
 	major = 0
-	minor = 6
-	patch = 0
+	minor = 5
+	patch = 3
 }
 
 architectury {
@@ -164,5 +165,64 @@ allprojects {
 				}
 			}
 		}
+	}
+}
+
+publishMods {
+	changelog = rootProject.file("CHANGELOG.md").readText()
+	type = BETA
+	dryRun = true
+	
+	val vers = rootProject.versioning
+	val gameVerString = rootProject.libs.versions.minecraft.get()
+	val verString = "${vers.major}.${vers.minor}.${vers.patch}"
+	version = verString
+	
+	val cfOptions = curseforgeOptions {
+		accessToken = providers.environmentVariable("CURSEFORGE_API_KEY")
+		projectId = "975460"
+		minecraftVersions.add("1.21.4")
+		javaVersions.add(JavaVersion.VERSION_21)
+		
+		requires("architectury-api")
+		changelogType = "markdown"
+	}
+
+	val mrOptions = modrinthOptions {
+		accessToken = providers.environmentVariable("MODRINTH_API_KEY")
+		projectId = "mEEGbEIu"
+		minecraftVersions.add("1.21.4")
+
+		requires("architectury-api")
+	}
+
+	curseforge("curseforgeNeoForge") { 
+		from(cfOptions)
+		displayName = "[NeoForge $gameVerString] $verString"
+		modLoaders.add("neoforge")
+		file = project(":neoforge").tasks.remapJar.get().archiveFile
+	}
+
+	curseforge("curseforgeFabric") {
+		from(cfOptions)
+		displayName = "[Fabric $gameVerString] $verString"
+		requires("fabric-api")
+		modLoaders.add("fabric")
+		file = project(":fabric").tasks.remapJar.get().archiveFile
+	}
+
+	modrinth("modrinthNeoForge") {
+		from(mrOptions)
+		displayName = "[NeoForge $gameVerString] $verString"
+		modLoaders.add("neoforge")
+		file = project(":neoforge").tasks.remapJar.get().archiveFile
+	}
+
+	modrinth("modrinthFabric") {
+		from(mrOptions)
+		displayName = "[Fabric $gameVerString] $verString"
+		requires("fabric-api")
+		modLoaders.add("fabric")
+		file = project(":fabric").tasks.remapJar.get().archiveFile
 	}
 }

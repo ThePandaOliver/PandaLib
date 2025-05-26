@@ -36,7 +36,7 @@ class RegistrationHelperImpl : RegistrationHelper {
 
 	override fun <T> registerNewRegistry(registry: Registry<T>) {
 		val registryName = registry.key().location()
-		check(BuiltInRegistries.REGISTRY.containsKey(registryName)) { "Attempted duplicate registration of registry $registryName" }
+		check(!BuiltInRegistries.REGISTRY.containsKey(registryName)) { "Attempted duplicate registration of registry $registryName" }
 
 		@Suppress("UNCHECKED_CAST")
 		(BuiltInRegistries.REGISTRY as WritableRegistry<Registry<*>>).register(registry.key() as ResourceKey<Registry<*>>, registry, RegistrationInfo.BUILT_IN)

@@ -37,7 +37,7 @@ class DeferredObject<T>(@JvmField val key: ResourceKey<*>) : Supplier<T> {
 	fun <R> bind(throwOnMissingRegistry: Boolean) {
 		if (this.holder != null) return
 
-		val registry = this.registry as Registry<R>
+		val registry = this.registry as Registry<R>?
 		if (registry != null) {
 			this.holder = registry.get(this.key as ResourceKey<R>).orElse(null)
 		} else check(!throwOnMissingRegistry) { "Registry not present for " + this + ": " + this.key.registry() }

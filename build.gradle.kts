@@ -171,7 +171,7 @@ allprojects {
 publishMods {
 	changelog = rootProject.file("CHANGELOG.md").readText()
 	type = BETA
-	dryRun = true
+	dryRun = false
 	
 	val vers = rootProject.versioning
 	val gameVerString = rootProject.libs.versions.minecraft.get()

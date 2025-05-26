@@ -22,7 +22,7 @@ import java.util.stream.Collectors
 
 object PandaLibConfig {
 	@JvmStatic
-	var configs: MutableMap<Class<out ConfigData>, ConfigHolder<out ConfigData>> = HashMap<Class<out ConfigData>, ConfigHolder<out ConfigData>>()
+	var configs = mutableMapOf<Class<out ConfigData>, ConfigHolder<out ConfigData>>()
 
 	@JvmStatic
 	fun <T : ConfigData, E : ConfigHolder<T>> register(configClass: Class<T>, provider: ConfigHolderProvider<T, E>): E {

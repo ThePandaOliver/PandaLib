@@ -35,18 +35,17 @@ open class ConfigHolder<T : ConfigData>(val configClass: Class<T>, val definitio
 	private val synchronize: Boolean = definition.synchronize
 	private lateinit var config: T
 
+	fun shouldSynchronize(): Boolean {
+		return synchronize
+	}
+	
+	val configPath: Path = Services.GAME.configDir.resolve(definition.name + ".json")
+	
 	init {
 		if (load()) {
 			save()
 		}
 	}
-
-	fun shouldSynchronize(): Boolean {
-		return synchronize
-	}
-	
-	@JvmField
-	val configPath: Path = Services.GAME.configDir.resolve(definition.name + ".json")
 
 	open fun save() {
 		val jsonObject = gson.toJsonTree(config).getAsJsonObject()

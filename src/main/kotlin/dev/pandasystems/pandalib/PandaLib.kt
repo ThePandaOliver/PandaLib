@@ -18,7 +18,9 @@ import dev.pandasystems.pandalib.config.PandaLibConfig
 import dev.pandasystems.pandalib.core.event.EventHandler
 import dev.pandasystems.pandalib.core.network.ConfigNetworking
 import dev.pandasystems.pandalib.event.events.NetworkingEvents
+import dev.pandasystems.pandalib.platform.Services
 import net.minecraft.resources.ResourceLocation
+import kotlin.io.path.exists
 
 object PandaLib {
 	const val MOD_ID = "pandalib"

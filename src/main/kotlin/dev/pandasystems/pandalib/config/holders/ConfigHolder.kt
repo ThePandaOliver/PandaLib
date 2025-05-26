@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory
 import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.Path
+import kotlin.io.path.exists
 
 open class ConfigHolder<T : ConfigData>(val configClass: Class<T>, val definition: Config) {
 	val logger: Logger = LoggerFactory.getLogger(definition.modId + " | Config")
@@ -44,9 +45,8 @@ open class ConfigHolder<T : ConfigData>(val configClass: Class<T>, val definitio
 		return synchronize
 	}
 	
-	val configPath: Path = Services.GAME.configDir.let {
-		if (definition.directory.isBlank()) it else it.resolve(definition.directory)
-	}.resolve(definition.name + ".json")
+	@JvmField
+	val configPath: Path = Services.GAME.configDir.resolve(definition.name + ".json")
 
 	open fun save() {
 		val jsonObject = gson.toJsonTree(config).getAsJsonObject()
@@ -67,7 +67,7 @@ open class ConfigHolder<T : ConfigData>(val configClass: Class<T>, val definitio
 
 	open fun load(): Boolean {
 		val configPath = this.configPath
-		if (Files.exists(configPath)) {
+		if (configPath.exists()) {
 			try {
 				Files.newBufferedReader(configPath).use { reader ->
 					val jsonObject = this.gson.fromJson<JsonObject>(reader, JsonObject::class.java)

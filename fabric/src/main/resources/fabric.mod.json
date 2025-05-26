@@ -17,11 +17,13 @@
 	"entrypoints": {
 		"main": [
 			{
+				"adapter": "kotlin",
 				"value": "dev.pandasystems.pandalib.fabric.PandaLibFabric"
 			}
 		],
 		"client": [
 			{
+				"adapter": "kotlin",
 				"value": "dev.pandasystems.pandalib.fabric.client.PandaLibClientFabric"
 			}
 		]

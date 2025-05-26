@@ -12,6 +12,9 @@
 
 package dev.pandasystems.pandalib
 
+import dev.pandasystems.pandalib.config.Config
+import dev.pandasystems.pandalib.config.ConfigData
+import dev.pandasystems.pandalib.config.PandaLibConfig
 import dev.pandasystems.pandalib.core.event.EventHandler
 import dev.pandasystems.pandalib.core.network.ConfigNetworking
 import dev.pandasystems.pandalib.event.events.NetworkingEvents
@@ -19,6 +22,9 @@ import net.minecraft.resources.ResourceLocation
 
 object PandaLib {
 	const val MOD_ID = "pandalib"
+	
+	@JvmField
+	val config = PandaLibConfig.registerClient(TestConfig::class.java)
 	
 	fun init() {
 		NetworkingEvents.PACKET_PAYLOAD_REGISTRY.register(ConfigNetworking::registerPackets)
@@ -29,3 +35,6 @@ object PandaLib {
 		return ResourceLocation.fromNamespaceAndPath(MOD_ID, path)
 	}
 }
+
+@Config(PandaLib.MOD_ID, "test_config", directory = "test_configs")
+class TestConfig : ConfigData

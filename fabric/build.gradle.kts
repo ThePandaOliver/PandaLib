@@ -16,6 +16,8 @@ dependencies {
 	modApi(libs.fabricApi)
 	modApi(libs.architectury.fabric)
 	modApi(libs.modmenu)
+	// TODO: Build this dependency into PandaLib
+	modImplementation("net.fabricmc:fabric-language-kotlin:1.13.3+kotlin.2.1.21")
 	
 	include(libs.bundles.kotlin)
 	common(project(":", configuration = "namedElements")) { isTransitive = false }

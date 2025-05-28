@@ -10,13 +10,13 @@ object ConfigRegistry {
 	fun <T : Any> register(configInstance: T): ConfigHolder<T> {
 		val configAnno = configInstance::class.findAnnotations(Configuration::class).firstOrNull()
 			?: throw IllegalArgumentException("Config instance must be annotated with @Configuration!")
-		val id = ResourceLocation.fromNamespaceAndPath(configAnno.modId, configAnno.pathName)
-		return ConfigHolderImpl(configAnno, configInstance).also { configHolders[id] = it }
+		return ConfigHolderImpl(configAnno, configInstance).also { configHolders[it.id] = it }
 	}
 
 	@Suppress("UNCHECKED_CAST")
 	fun <T : Any> get(id: ResourceLocation): ConfigHolder<T> = configHolders[id] as ConfigHolder<T>
 
 	@Suppress("UNCHECKED_CAST")
-	inline fun <reified T : Any> get(): ConfigHolder<T> = configHolders.values.first { it.config is T } as ConfigHolder<T>
+	inline fun <reified T : Any> get(): ConfigHolder<T> =
+		configHolders.values.first { it.config is T } as ConfigHolder<T>
 }

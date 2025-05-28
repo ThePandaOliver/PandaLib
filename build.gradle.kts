@@ -4,6 +4,7 @@ import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
 plugins {
 	java
+	idea
 	alias(libs.plugins.kotlinJvm)
 	`maven-publish`
 	`version-catalog`
@@ -28,7 +29,7 @@ architectury {
 
 loom {
 	accessWidenerPath = file("src/main/resources/pandalib.accesswidener")
-	runs.all { 
+	runs.all {
 		ideConfigGenerated(false)
 	}
 }
@@ -50,7 +51,7 @@ allprojects {
 
 	group = "dev.pandasystems"
 	version = rootProject.versioning.fullName
-	
+
 	loom {
 		silentMojangMappingsLicense()
 		runs.all {
@@ -104,7 +105,7 @@ allprojects {
 
 subprojects {
 	apply(plugin = rootProject.libs.plugins.shadow.get().pluginId)
-	
+
 	base { archivesName = "${rootProject.name}-${project.name}" }
 
 	architectury {
@@ -163,7 +164,7 @@ allprojects {
 		publications {
 			create<MavenPublication>("maven") {
 				from(components["java"])
-				
+
 				val vers = rootProject.versioning
 				artifactId = project.base.archivesName.get().lowercase()
 				version = "mc${rootProject.libs.versions.minecraft.get()}-${vers.major}.${vers.minor}.${vers.patch}.${vers.build}".let { ver ->
@@ -178,18 +179,18 @@ publishMods {
 	changelog = rootProject.file("CHANGELOG.md").readText()
 	type = BETA
 	dryRun = false
-	
+
 	val vers = rootProject.versioning
 	val gameVerString = rootProject.libs.versions.minecraft.get()
 	val verString = "${vers.major}.${vers.minor}.${vers.patch}"
 	version = verString
-	
+
 	val cfOptions = curseforgeOptions {
 		accessToken = providers.environmentVariable("CURSEFORGE_API_KEY")
 		projectId = "975460"
 		minecraftVersions.add("1.21.4")
 		javaVersions.add(JavaVersion.VERSION_21)
-		
+
 		requires("architectury-api")
 		changelogType = "markdown"
 	}
@@ -202,7 +203,7 @@ publishMods {
 		requires("architectury-api")
 	}
 
-	curseforge("curseforgeNeoForge") { 
+	curseforge("curseforgeNeoForge") {
 		from(cfOptions)
 		displayName = "[NeoForge $gameVerString] $verString"
 		modLoaders.add("neoforge")

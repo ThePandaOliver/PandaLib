@@ -1,4 +1,5 @@
 @file:Suppress("UnstableApiUsage")
+
 architectury {
 	fabric()
 }
@@ -16,7 +17,7 @@ dependencies {
 	modApi(libs.fabricApi)
 	modApi(libs.architectury.fabric)
 	modApi(libs.modmenu)
-	
+
 	include(libs.bundles.kotlin)
 	common(project(":", configuration = "namedElements")) { isTransitive = false }
 	shadowBundle(project(":", configuration = "transformProductionFabric"))

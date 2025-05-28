@@ -1,5 +1,6 @@
 @file:Suppress("UnstableApiUsage")
-architectury { 
+
+architectury {
 	neoForge()
 }
 
@@ -10,7 +11,7 @@ configurations {
 dependencies {
 	neoForge(libs.neoforgeLoader)
 	modApi(libs.architectury.neoforge)
-	
+
 	include(libs.bundles.kotlin)
 	forgeRuntimeLibrary(libs.bundles.kotlin)
 	common(project(":", configuration = "namedElements")) { isTransitive = false }

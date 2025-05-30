@@ -1,7 +1,5 @@
 package dev.pandasystems.pandalib.impl.config
 
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
 import dev.pandasystems.pandalib.api.config.ConfigHolder
 import dev.pandasystems.pandalib.core.utils.extensions.resourceLocation
 import dev.pandasystems.pandalib.impl.platform.Services
@@ -10,12 +8,13 @@ import java.io.File
 
 class ConfigHolderImpl<T : Any>(
 	val options: Configuration,
-	override var config: T
+	override var config: T,
 ) : ConfigHolder<T> {
-	val gson: Gson = GsonBuilder().setPrettyPrinting().create()
-	val file: File = Services.GAME.configDir.resolve(options.pathName).toFile()
+	val file: File = Services.GAME.configDir.resolve("${options.pathName}.json").toFile()
 
 	override val id: ResourceLocation = resourceLocation(options.modId, options.pathName)
+
+	private val configDefaultJson = ""
 
 	override fun reload() {
 		TODO("Not yet implemented")

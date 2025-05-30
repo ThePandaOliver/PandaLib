@@ -14,6 +14,8 @@ dependencies {
 
 	include(libs.bundles.kotlin)
 	forgeRuntimeLibrary(libs.bundles.kotlin)
+	include(libs.bundles.jackson)
+	forgeRuntimeLibrary(libs.bundles.jackson)
 	common(project(":", configuration = "namedElements")) { isTransitive = false }
 	shadowBundle(project(":", configuration = "transformProductionNeoForge"))
 }

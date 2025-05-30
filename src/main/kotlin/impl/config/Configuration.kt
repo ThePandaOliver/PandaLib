@@ -1,5 +1,7 @@
 package dev.pandasystems.pandalib.impl.config
 
+import kotlinx.serialization.Serializable
+
 @Retention(AnnotationRetention.RUNTIME)
 @Target(AnnotationTarget.CLASS)
 annotation class Configuration(

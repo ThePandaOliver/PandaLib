@@ -77,6 +77,7 @@ allprojects {
 		})
 
 		api(rootProject.libs.bundles.kotlin)
+		api(rootProject.libs.bundles.jackson)
 	}
 
 	kotlin {
@@ -93,7 +94,7 @@ allprojects {
 		)
 
 		inputs.properties(props)
-		filesMatching(listOf("pack.mcmeta", "fabric.mod.json", "META-INF/mods.toml", "META-INF/neoforge.mods.toml", "*.mixins.json")) {
+		filesMatching(listOf("pack.mcmeta", "fabric.mod.json", "META-INF/mods.toml", "META-INF/neoforge.mods.toml")) {
 			expand(props)
 		}
 	}
@@ -119,7 +120,7 @@ subprojects {
 			named("client") {
 				client()
 				configName = "Client"
-				runDir("../.runs/clinet")
+				runDir("../.runs/client")
 				programArg("--username=Dev")
 				ideConfigGenerated(true)
 			}

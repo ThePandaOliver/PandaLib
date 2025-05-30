@@ -10,7 +10,9 @@ object ConfigRegistry {
 	fun <T : Any> register(configInstance: T): ConfigHolder<T> {
 		val configAnno = configInstance::class.findAnnotations(Configuration::class).firstOrNull()
 			?: throw IllegalArgumentException("Config instance must be annotated with @Configuration!")
-		return ConfigHolderImpl(configAnno, configInstance).also { configHolders[it.id] = it }
+		
+		return ConfigHolderImpl(configAnno, configInstance)
+			.also { configHolders[it.id] = it }
 	}
 
 	@Suppress("UNCHECKED_CAST")

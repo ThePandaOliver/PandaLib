@@ -1,13 +1,20 @@
 package dev.pandasystems.pandalib.impl.config.serializers
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.ObjectReader
+import com.fasterxml.jackson.databind.ObjectWriter
 import dev.pandasystems.pandalib.api.config.ConfigSerializer
 
-class JsonConfigSerializer<T : Any> : ConfigSerializer<T> {
+class JsonConfigSerializer<T : Any>(mapper: ObjectMapper = ObjectMapper()) : ConfigSerializer<T> {
+	val reader: ObjectReader = mapper.reader()
+	val writer: ObjectWriter = mapper.writerWithDefaultPrettyPrinter()
+	
 	override fun serialize(config: T): String {
-		TODO("Not yet implemented")
+		return writer.writeValueAsString(config)
 	}
 
-	override fun deserialize(json: String, config: T) {
-		TODO("Not yet implemented")
+	override fun deserialize(json: String): T {
+		@Suppress("UNCHECKED_CAST")
+		return reader.readValue(json, Any::class.java) as T
 	}
 }

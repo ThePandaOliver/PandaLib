@@ -1,4 +1,4 @@
-package dev.pandasystems.pandalib.core.utils
+package dev.pandasystems.pandalib.utils
 
 import dev.architectury.utils.Env
 import dev.pandasystems.pandalib.impl.platform.Services

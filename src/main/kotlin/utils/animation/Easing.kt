@@ -1,4 +1,4 @@
-package dev.pandasystems.pandalib.core.utils.animation
+package dev.pandasystems.pandalib.utils.animation
 
 import kotlin.math.cos
 import kotlin.math.pow

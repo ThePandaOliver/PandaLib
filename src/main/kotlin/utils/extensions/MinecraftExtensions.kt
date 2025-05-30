@@ -1,4 +1,4 @@
-package dev.pandasystems.pandalib.core.utils.extensions
+package dev.pandasystems.pandalib.utils.extensions
 
 import net.minecraft.resources.ResourceLocation
 

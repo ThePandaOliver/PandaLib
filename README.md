@@ -15,6 +15,7 @@ This Library was created to easily share code between The Panda Oliver's mods.
 
 - Config API
   - Automatic Config synchronization
+- Kotlin libraries
 
 ### Future Features
 

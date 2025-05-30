@@ -1,4 +1,4 @@
-package dev.pandasystems.pandalib.core.utils
+package dev.pandasystems.pandalib.utils
 
 import com.mojang.blaze3d.vertex.PoseStack
 import org.joml.Matrix4f

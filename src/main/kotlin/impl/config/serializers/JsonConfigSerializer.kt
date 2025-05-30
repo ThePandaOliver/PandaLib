@@ -13,8 +13,7 @@ class JsonConfigSerializer<T : Any>(mapper: ObjectMapper = ObjectMapper()) : Con
 		return writer.writeValueAsString(config)
 	}
 
-	override fun deserialize(json: String): T {
-		@Suppress("UNCHECKED_CAST")
-		return reader.readValue(json, Any::class.java) as T
+	override fun deserialize(json: String, clazz: Class<T>): T {
+		return reader.readValue(json, clazz)
 	}
 }

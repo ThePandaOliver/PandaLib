@@ -54,10 +54,7 @@ allprojects {
 
 	loom {
 		silentMojangMappingsLicense()
-		runs.all {
-			runtimeOnlyLog4j = true
-			property("fabric.log.level", "debug")
-		}
+		log4jConfigs.from(rootProject.file("log4j2.xml"))
 	}
 
 	repositories {
@@ -77,7 +74,6 @@ allprojects {
 		})
 
 		api(rootProject.libs.bundles.kotlin)
-		api(rootProject.libs.bundles.jackson)
 	}
 
 	kotlin {

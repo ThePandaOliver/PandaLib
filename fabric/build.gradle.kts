@@ -19,7 +19,6 @@ dependencies {
 	modApi(libs.modmenu)
 
 	include(libs.bundles.kotlin)
-	include(libs.bundles.jackson)
 	common(project(":", configuration = "namedElements")) { isTransitive = false }
 	shadowBundle(project(":", configuration = "transformProductionFabric"))
 }

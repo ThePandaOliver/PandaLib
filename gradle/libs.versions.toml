@@ -2,7 +2,6 @@
 kotlin = "2.1.21"
 minecraft = "1.21.4"
 architectury = "15.0.3"
-jackson = "2.17.0"
 
 [plugins]
 ideaExt = { id = "org.jetbrains.gradle.plugin.idea-ext", version = "1.1.10" }
@@ -35,11 +34,6 @@ kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime",
 kotlinx-io-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-io-core", version = "0.7.0" }
 kotlinx-io-bytestring = { group = "org.jetbrains.kotlinx", name = "kotlinx-io-bytestring", version = "0.7.0" }
 
-jackson-core = { group = "com.fasterxml.jackson.core", name = "jackson-core", version.ref = "jackson" }
-jackson-databind = { group = "com.fasterxml.jackson.core", name = "jackson-databind", version.ref = "jackson" }
-jackson-annotations = { group = "com.fasterxml.jackson.core", name = "jackson-annotations", version.ref = "jackson" }
-jackson-kotlin = { group = "com.fasterxml.jackson.module", name = "jackson-module-kotlin", version.ref = "jackson" }
-
 [bundles]
 kotlin = [
 	"kotlin-stdlib", "kotlin-reflect",
@@ -47,4 +41,3 @@ kotlin = [
 	"kotlinx-serialization-core", "kotlinx-serialization-json", "kotlinx-serialization-cbor",
 	"kotlinx-datetime", "kotlinx-io-core", "kotlinx-io-bytestring"
 ]
-jackson = ["jackson-core", "jackson-databind", "jackson-annotations", "jackson-kotlin"]

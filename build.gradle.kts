@@ -18,8 +18,8 @@ plugins {
 
 versioning {
 	major = 0
-	minor = 5
-	patch = 3
+	minor = 6
+	patch = 0
 }
 
 architectury {

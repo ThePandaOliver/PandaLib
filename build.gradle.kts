@@ -77,7 +77,7 @@ allprojects {
 
 	tasks.processResources {
 		val props = mutableMapOf(
-			"mod_version" to version,
+			"mod_version" to version.toString(),
 		)
 
 		inputs.properties(props)

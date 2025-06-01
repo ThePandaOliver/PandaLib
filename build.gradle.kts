@@ -43,7 +43,6 @@ allprojects {
 	apply(plugin = rootProject.libs.plugins.architecturyLoom.get().pluginId)
 	
 	group = "dev.pandasystems"
-	version = "0.0.0"
 
 	loom {
 		silentMojangMappingsLicense()
@@ -78,7 +77,7 @@ allprojects {
 
 	tasks.processResources {
 		val props = mutableMapOf(
-			"mod_version" to "0.0.0",
+			"mod_version" to version,
 		)
 
 		inputs.properties(props)
@@ -155,7 +154,7 @@ allprojects {
 				from(components["java"])
 				
 				artifactId = project.base.archivesName.get().lowercase()
-				version = "mc${rootProject.libs.versions.minecraft.get()}-0.0.0"
+				version = "mc${rootProject.libs.versions.minecraft.get()}-${project.version}"
 			}
 		}
 	}
@@ -167,7 +166,7 @@ publishMods {
 	dryRun = false
 	
 	val gameVerString = rootProject.libs.versions.minecraft.get()
-	val verString = "0.0.0"
+	val verString = project.version.toString()
 	version = verString
 
 	val cfOptions = curseforgeOptions {

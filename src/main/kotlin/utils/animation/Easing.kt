@@ -1,4 +1,4 @@
-@file:JvmName("Easing")
+@file:JvmName("EasingUtils")
 package dev.pandasystems.pandalib.utils.animation
 
 import kotlin.math.cos

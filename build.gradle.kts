@@ -8,18 +8,11 @@ plugins {
 	alias(libs.plugins.kotlinJvm)
 	`maven-publish`
 	`version-catalog`
-	alias(libs.plugins.grabver)
 
 	alias(libs.plugins.shadow) apply false
 	alias(libs.plugins.architecturyPlugin)
 	alias(libs.plugins.architecturyLoom)
 	alias(libs.plugins.modPublish)
-}
-
-versioning {
-	major = 0
-	minor = 6
-	patch = 0
 }
 
 architectury {
@@ -48,9 +41,9 @@ allprojects {
 	apply(plugin = "version-catalog")
 	apply(plugin = rootProject.libs.plugins.architecturyPlugin.get().pluginId)
 	apply(plugin = rootProject.libs.plugins.architecturyLoom.get().pluginId)
-
+	
 	group = "dev.pandasystems"
-	version = rootProject.versioning.fullName
+	version = "0.0.0"
 
 	loom {
 		silentMojangMappingsLicense()
@@ -84,9 +77,8 @@ allprojects {
 	}
 
 	tasks.processResources {
-		val vers = rootProject.versioning
 		val props = mutableMapOf(
-			"mod_version" to "${vers.major}.${vers.minor}.${vers.patch}",
+			"mod_version" to "0.0.0",
 		)
 
 		inputs.properties(props)
@@ -161,12 +153,9 @@ allprojects {
 		publications {
 			create<MavenPublication>("maven") {
 				from(components["java"])
-
-				val vers = rootProject.versioning
+				
 				artifactId = project.base.archivesName.get().lowercase()
-				version = "mc${rootProject.libs.versions.minecraft.get()}-${vers.major}.${vers.minor}.${vers.patch}.${vers.build}".let { ver ->
-					vers.preRelease?.let { pre -> "$ver-$pre" } ?: ver
-				}
+				version = "mc${rootProject.libs.versions.minecraft.get()}-0.0.0"
 			}
 		}
 	}
@@ -176,10 +165,9 @@ publishMods {
 	changelog = rootProject.file("CHANGELOG.md").readText()
 	type = BETA
 	dryRun = false
-
-	val vers = rootProject.versioning
+	
 	val gameVerString = rootProject.libs.versions.minecraft.get()
-	val verString = "${vers.major}.${vers.minor}.${vers.patch}"
+	val verString = "0.0.0"
 	version = verString
 
 	val cfOptions = curseforgeOptions {

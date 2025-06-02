@@ -9,7 +9,7 @@ class PandaLibFabric : ModInitializer {
 	override fun onInitialize() {
 		ServerLifecycleEvents.SERVER_STARTED.register { server: MinecraftServer? -> Companion.server = server }
 
-		PandaLib.init()
+		PandaLib // Initialize the core PandaLib functionality
 	}
 
 	companion object {

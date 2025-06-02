@@ -16,7 +16,7 @@ import net.neoforged.neoforge.registries.RegisterEvent
 @Mod(PandaLib.MOD_ID)
 class PandaLibNeoForge(eventBus: IEventBus) {
 	init {
-		PandaLib.init()
+		PandaLib // Initialize the core PandaLib functionality
 
 		eventBus.addListener<RegisterPayloadHandlersEvent> { NetworkHelperImpl.registerPackets(it) }
 		if (REGISTRATION is RegistrationHelperImpl) {

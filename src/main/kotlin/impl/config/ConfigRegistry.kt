@@ -1,16 +1,19 @@
 package dev.pandasystems.pandalib.impl.config
 
+import com.mojang.logging.LogUtils
 import dev.pandasystems.pandalib.api.config.ConfigHolder
 import dev.pandasystems.pandalib.impl.config.serializers.JsonConfigSerializer
 import net.minecraft.resources.ResourceLocation
 import kotlin.reflect.full.findAnnotations
 
 object ConfigRegistry {
+	private val logger = LogUtils.getLogger()
 	private val configHolders = mutableMapOf<ResourceLocation, ConfigHolder<*>>()
 
 	/**
 	 * Registers a configuration instance for the application.
-	 * The provided instance must be annotated with [Configuration], giving details
+	 * 
+	 * @param configInstance The provided instance must be annotated with [Configuration], giving details
 	 * about the mod ID and configuration storage path.
 	 */
 	@JvmStatic
@@ -18,13 +21,27 @@ object ConfigRegistry {
 		val configAnno = configInstance::class.findAnnotations(Configuration::class).firstOrNull()
 			?: throw IllegalArgumentException("Config instance must be annotated with @Configuration!")
 		
-		return ConfigHolderImpl(configAnno, configInstance, JsonConfigSerializer())
-			.also { configHolders[it.id] = it }
-			.also { it.reload() }
+		return register(ConfigHolderImpl(configAnno, configInstance, JsonConfigSerializer()))
 	}
 
 	/**
-	 * Retrieves the configuration holder associated with the given resource location.
+	 * Registers a configuration holder for the application.
+	 */
+	@JvmStatic
+	fun <T : Any> register(holder: ConfigHolder<T>): ConfigHolder<T> {
+		if (configHolders.containsKey(holder.id))
+			logger.warn("Config holder with id {} is already registered, replacing it.", holder.id)
+		
+		return holder
+			.also { configHolders[it.id] = it }
+			.also { it.reload() }
+			.also { logger.debug("Registered {}", it.id) }
+	}
+
+	/**
+	 * Retrieves a configuration holder associated with the given [id].
+	 * 
+	 * @param id The resource location identifier for the configuration.
 	 */
 	@JvmStatic
 	@Suppress("UNCHECKED_CAST")
@@ -38,6 +55,8 @@ object ConfigRegistry {
 
 	/**
 	 * Retrieves the first configuration holder of the specified class [clazz].
+	 * 
+	 * @param clazz The class type of the configuration holder to retrieve.
 	 */
 	@JvmStatic
 	@Suppress("UNCHECKED_CAST")

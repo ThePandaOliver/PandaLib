@@ -9,13 +9,12 @@
 
 ## About:
 
-This Library was created to easily share code between The Panda Oliver's mods.
+PandaLib is a library mod for Minecraft that provides various APIs and utilities to simplify mod development. 
 
 ### Current Features:
 
 - Config API
-  - Automatic Config synchronization
-- Kotlin libraries
+- Embedded Kotlin libraries
 
 ### Future Features
 
@@ -25,12 +24,13 @@ This Library was created to easily share code between The Panda Oliver's mods.
 | Wiki / Docs                |                                 |
 | Custom Model Rendering API |                                 |
 
+### Targeted versions and mod loaders:
+- Fabric and NeoForge 1.20.5-1.21.5
+- Fabric and Forge 1.20-1.20.4
+
+Development is done on 1.21.4
+
 ---
-
-## Support me
-
-[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/S6S0WO38H)
-
 ## Advertisement
 
 Thanks to **Jetbrains** for supporting this project with their open source program.\

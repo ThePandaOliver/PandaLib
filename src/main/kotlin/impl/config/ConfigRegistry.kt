@@ -1,13 +1,12 @@
 package dev.pandasystems.pandalib.impl.config
 
-import com.mojang.logging.LogUtils
 import dev.pandasystems.pandalib.api.config.ConfigHolder
+import dev.pandasystems.pandalib.core.logger
 import dev.pandasystems.pandalib.impl.config.serializers.JsonConfigSerializer
 import net.minecraft.resources.ResourceLocation
 import kotlin.reflect.full.findAnnotations
 
 object ConfigRegistry {
-	private val logger = LogUtils.getLogger()
 	private val configHolders = mutableMapOf<ResourceLocation, ConfigHolder<*>>()
 
 	/**

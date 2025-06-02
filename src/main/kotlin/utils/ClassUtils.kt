@@ -16,26 +16,26 @@ import kotlin.reflect.jvm.javaField
  * @param newInstance The new instance to set as the singleton.
  */
 fun <T : Any> KClass<out T>.replaceObjectInstanceUnsafely(newInstance: T) {
-	// TODO: Make some checks to make sure the instance is the same type and really is a singleton
-	try {
-		val instanceProperty = this.memberProperties
-			.find { it.name == "INSTANCE" }
+	requireNotNull(this.objectInstance) { "Cannot replace object instance of a class that is not a singleton." }
+	require(this.isInstance(newInstance)) { "The new instance must be of the same type as the singleton." }
+	
+	// Find the property that holds the singleton instance
+	val instanceProperty = requireNotNull(this.memberProperties.find { it.name == "INSTANCE" }) {
+		"Cannot find the INSTANCE property in the singleton class ${this.qualifiedName}."
+	}
 
-		instanceProperty?.let { prop ->
-			prop.isAccessible = true
-			val javaField = prop.javaField
-			javaField?.let { field ->
-				field.isAccessible = true
+	instanceProperty.let { prop ->
+		prop.isAccessible = true
+		val javaField = prop.javaField
+		javaField?.let { field ->
+			field.isAccessible = true
 
-				// Remove final modifier (same as Java approach)
-				val modifiersField = Field::class.java.getDeclaredField("modifiers")
-				modifiersField.isAccessible = true
-				modifiersField.setInt(field, field.modifiers and Modifier.FINAL.inv())
+			// Remove final modifier
+			val modifiersField = Field::class.java.getDeclaredField("modifiers")
+			modifiersField.isAccessible = true
+			modifiersField.setInt(field, field.modifiers and Modifier.FINAL.inv())
 
-				field.set(null, newInstance)
-			}
+			field.set(null, newInstance)
 		}
-	} catch (e: Exception) {
-		e.printStackTrace()
 	}
 }

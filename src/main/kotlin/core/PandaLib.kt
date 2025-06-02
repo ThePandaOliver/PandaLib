@@ -7,7 +7,6 @@ import org.slf4j.Logger
 
 object PandaLib {
 	const val MOD_ID = "pandalib"
-	val logger: Logger = LogUtils.getLogger()
 	
 	init {
 		logger.debug("PandaLib Core is initializing...")
@@ -20,3 +19,5 @@ object PandaLib {
 		return ResourceLocation.fromNamespaceAndPath(MOD_ID, path)
 	}
 }
+
+val logger: Logger = LogUtils.getLogger()

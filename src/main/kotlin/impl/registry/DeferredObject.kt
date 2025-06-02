@@ -20,14 +20,17 @@ class DeferredObject<T>(@JvmField val key: ResourceKey<*>) : Supplier<T> {
 			throw NullPointerException("Trying to access unbound value: " + this.key)
 		}
 
+		@Suppress("UNCHECKED_CAST")
 		return this.holder!!.value() as T
 	}
 
 	fun <R> bind(throwOnMissingRegistry: Boolean) {
 		if (this.holder != null) return
 
+		@Suppress("UNCHECKED_CAST")
 		val registry = this.registry as Registry<R>?
 		if (registry != null) {
+			@Suppress("UNCHECKED_CAST")
 			this.holder = registry.get(this.key as ResourceKey<R>).orElse(null)
 		} else check(!throwOnMissingRegistry) { "Registry not present for " + this + ": " + this.key.registry() }
 	}
@@ -44,6 +47,6 @@ class DeferredObject<T>(@JvmField val key: ResourceKey<*>) : Supplier<T> {
 	val isBound: Boolean
 		get() {
 			bind<Any>(false)
-			return this.holder != null && this.holder!!.isBound()
+			return this.holder != null && this.holder!!.isBound
 		}
 }

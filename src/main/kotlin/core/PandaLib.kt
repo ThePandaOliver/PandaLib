@@ -5,18 +5,21 @@ import dev.pandasystems.pandalib.impl.config.ConfigRegistry
 import net.minecraft.resources.ResourceLocation
 import org.slf4j.Logger
 
+
 object PandaLib {
 	const val MOD_ID = "pandalib"
 	
+	val config = ConfigRegistry.register<PandaLibConfig>()
+	
 	init {
 		logger.debug("PandaLib Core is initializing...")
-		ConfigRegistry.register(PandaLibConfig)
+
 		logger.debug("PandaLib Core initialized successfully.")
 	}
-
+	
 	@JvmStatic
 	fun resourceLocation(path: String): ResourceLocation {
-		return ResourceLocation.fromNamespaceAndPath(MOD_ID, path)
+		return dev.pandasystems.pandalib.utils.extensions.resourceLocation(MOD_ID, path)
 	}
 }
 

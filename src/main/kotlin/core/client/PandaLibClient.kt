@@ -5,7 +5,6 @@ import net.fabricmc.api.Environment
 
 @Environment(EnvType.CLIENT)
 object PandaLibClient {
-	@JvmStatic
-	fun init() {
+	init {
 	}
 }

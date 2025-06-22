@@ -5,7 +5,7 @@ import dev.pandasystems.pandalib.fabric.PandaLibFabric
 import dev.pandasystems.pandalib.fabric.platform.utils.ClientPlayPayloadHandler
 import dev.pandasystems.pandalib.impl.networking.NetworkContext
 import dev.pandasystems.pandalib.impl.networking.NetworkReceiver
-import dev.pandasystems.pandalib.impl.platform.services.NetworkHelper
+import dev.pandasystems.pandalib.api.platform.NetworkHelper
 import dev.pandasystems.pandalib.utils.EnvRunner.runIf
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry

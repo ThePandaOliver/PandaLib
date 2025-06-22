@@ -5,6 +5,6 @@ import net.fabricmc.api.ClientModInitializer
 
 class PandaLibClientFabric : ClientModInitializer {
 	override fun onInitializeClient() {
-		PandaLibClient.init()
+		PandaLibClient
 	}
 }

@@ -1,6 +1,6 @@
 package dev.pandasystems.pandalib.neoforge.platform
 
-import dev.pandasystems.pandalib.impl.platform.services.RegistrationHelper
+import dev.pandasystems.pandalib.api.platform.RegistrationHelper
 import dev.pandasystems.pandalib.impl.registry.DeferredObject
 import net.minecraft.core.Registry
 import net.minecraft.resources.ResourceKey

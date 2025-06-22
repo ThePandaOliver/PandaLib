@@ -1,6 +1,6 @@
 package dev.pandasystems.pandalib.impl.registry
 
-import dev.pandasystems.pandalib.impl.platform.Services
+import dev.pandasystems.pandalib.api.platform.registryHelper
 import net.minecraft.core.Registry
 import net.minecraft.resources.ResourceKey
 import net.minecraft.resources.ResourceLocation
@@ -35,7 +35,7 @@ class DeferredRegister<T> private constructor(private val namespace: String, pri
 	}
 
 	fun register() {
-		entries.forEach { (deferredObject: DeferredObject<out T>, supplier: Supplier<out T>) -> Services.REGISTRATION.register(deferredObject, supplier) }
+		entries.forEach { (deferredObject: DeferredObject<out T>, supplier: Supplier<out T>) -> registryHelper.register(deferredObject, supplier) }
 	}
 
 	companion object {

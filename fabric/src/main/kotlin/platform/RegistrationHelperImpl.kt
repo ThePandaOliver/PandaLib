@@ -1,6 +1,6 @@
 package dev.pandasystems.pandalib.fabric.platform
 
-import dev.pandasystems.pandalib.impl.platform.services.RegistrationHelper
+import dev.pandasystems.pandalib.api.platform.RegistrationHelper
 import dev.pandasystems.pandalib.impl.registry.DeferredObject
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper

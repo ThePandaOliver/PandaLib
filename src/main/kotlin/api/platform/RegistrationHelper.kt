@@ -1,4 +1,4 @@
-package dev.pandasystems.pandalib.impl.platform.services
+package dev.pandasystems.pandalib.api.platform
 
 import dev.pandasystems.pandalib.impl.registry.DeferredObject
 import net.minecraft.core.Registry

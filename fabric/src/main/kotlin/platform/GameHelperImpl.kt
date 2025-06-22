@@ -1,7 +1,7 @@
 package dev.pandasystems.pandalib.fabric.platform
 
 import dev.architectury.utils.Env
-import dev.pandasystems.pandalib.impl.platform.services.GameHelper
+import dev.pandasystems.pandalib.api.platform.GameHelper
 import net.fabricmc.api.EnvType
 import net.fabricmc.loader.api.FabricLoader
 import java.nio.file.Path

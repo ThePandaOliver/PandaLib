@@ -1,4 +1,4 @@
-package dev.pandasystems.pandalib.impl.platform.services
+package dev.pandasystems.pandalib.api.platform
 
 interface ModLoaderHelper {
 	fun isModLoaded(modId: String): Boolean

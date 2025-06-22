@@ -3,7 +3,7 @@ package dev.pandasystems.pandalib.impl.config
 import dev.pandasystems.pandalib.api.config.ConfigHolder
 import dev.pandasystems.pandalib.api.config.ConfigSerializer
 import dev.pandasystems.pandalib.core.logger
-import dev.pandasystems.pandalib.impl.platform.Services
+import dev.pandasystems.pandalib.api.platform.game
 import dev.pandasystems.pandalib.utils.constructClassUnsafely
 import dev.pandasystems.pandalib.utils.extensions.resourceLocation
 import net.minecraft.resources.ResourceLocation
@@ -17,7 +17,7 @@ class ConfigHolderImpl<T : Any>(
 	override val id: ResourceLocation = resourceLocation(options.modId, options.pathName)
 	override lateinit var config: T
 	
-	val file: File = Services.GAME.configDir.resolve("${options.pathName}.json").toFile()
+	val file: File = game.configDir.resolve("${options.pathName}.json").toFile()
 
 	override fun reload() {
 		logger.debug("Reloading config {}...", id)

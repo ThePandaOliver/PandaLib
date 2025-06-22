@@ -3,8 +3,7 @@ package dev.pandasystems.pandalib.neoforge.platform
 import dev.architectury.utils.Env
 import dev.pandasystems.pandalib.impl.networking.NetworkContext
 import dev.pandasystems.pandalib.impl.networking.NetworkReceiver
-import dev.pandasystems.pandalib.impl.platform.Services
-import dev.pandasystems.pandalib.impl.platform.services.NetworkHelper
+import dev.pandasystems.pandalib.api.platform.NetworkHelper
 import net.minecraft.network.RegistryFriendlyByteBuf
 import net.minecraft.network.codec.StreamCodec
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
@@ -57,11 +56,5 @@ class NetworkHelperImpl : PayloadRegistrar("1"), NetworkHelper {
 
 	override fun <T : CustomPacketPayload> sendToAllPlayers(payload: T) {
 		PacketDistributor.sendToAllPlayers(payload)
-	}
-
-	companion object {
-		fun registerPackets(event: RegisterPayloadHandlersEvent) {
-//			NetworkingEvents.PACKET_PAYLOAD_REGISTRY.invoker().register(Services.NETWORK)
-		}
 	}
 }

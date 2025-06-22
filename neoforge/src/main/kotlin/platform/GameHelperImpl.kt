@@ -1,7 +1,7 @@
 package dev.pandasystems.pandalib.neoforge.platform
 
 import dev.architectury.utils.Env
-import dev.pandasystems.pandalib.impl.platform.services.GameHelper
+import dev.pandasystems.pandalib.api.platform.GameHelper
 import net.neoforged.api.distmarker.Dist
 import net.neoforged.fml.loading.FMLLoader
 import net.neoforged.fml.loading.FMLPaths

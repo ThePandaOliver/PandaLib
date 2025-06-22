@@ -1,4 +1,4 @@
-package dev.pandasystems.pandalib.impl.platform.services
+package dev.pandasystems.pandalib.api.platform
 
 import dev.architectury.utils.Env
 import java.nio.file.Path

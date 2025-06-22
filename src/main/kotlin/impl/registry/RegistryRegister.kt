@@ -1,13 +1,13 @@
 package dev.pandasystems.pandalib.impl.registry
 
-import dev.pandasystems.pandalib.impl.platform.Services
+import dev.pandasystems.pandalib.api.platform.registryHelper
 import net.minecraft.core.Registry
 
 @Suppress("unused")
 object RegistryRegister {
 	@JvmStatic
 	fun <T> register(registry: Registry<T>): Registry<T> {
-		Services.REGISTRATION.registerNewRegistry<T>(registry)
+		registryHelper.registerNewRegistry<T>(registry)
 		return registry
 	}
 }

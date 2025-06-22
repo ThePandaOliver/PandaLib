@@ -16,12 +16,14 @@ object ConfigRegistry {
 	 * about the mod ID and configuration storage path.
 	 */
 	@JvmStatic
-	fun <T : Any> register(configInstance: T): ConfigHolder<T> {
-		val configAnno = configInstance::class.findAnnotations(Configuration::class).firstOrNull()
+	fun <T : Any> register(configInstance: Class<T>): ConfigHolder<T> {
+		val configAnno = configInstance.kotlin.findAnnotations(Configuration::class).firstOrNull()
 			?: throw IllegalArgumentException("Config instance must be annotated with @Configuration!")
 		
 		return register(ConfigHolderImpl(configAnno, configInstance, JsonConfigSerializer()))
 	}
+	
+	inline fun <reified T : Any> register(): ConfigHolder<T> = register(T::class.java)
 
 	/**
 	 * Registers a configuration holder for the application.

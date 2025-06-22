@@ -1,10 +1,19 @@
+/*
+ * Copyright (c) 2025. Oliver Froberg
+ *
+ * This code is licensed under the GNU Lesser General Public License v3.0
+ * See: https://www.gnu.org/licenses/lgpl-3.0-standalone.html
+ */
+
 package dev.pandasystems.pandalib.neoforge.platform
 
 import dev.architectury.utils.Env
 import dev.pandasystems.pandalib.api.platform.GameHelper
+import net.minecraft.server.MinecraftServer
 import net.neoforged.api.distmarker.Dist
 import net.neoforged.fml.loading.FMLLoader
 import net.neoforged.fml.loading.FMLPaths
+import net.neoforged.neoforge.server.ServerLifecycleHooks
 import java.nio.file.Path
 
 class GameHelperImpl : GameHelper {
@@ -26,4 +35,7 @@ class GameHelperImpl : GameHelper {
 	override val configDir: Path = FMLPaths.CONFIGDIR.get()
 
 	override val modDir: Path = FMLPaths.MODSDIR.get()
+
+	override val server: MinecraftServer?
+		get() = ServerLifecycleHooks.getCurrentServer()
 }

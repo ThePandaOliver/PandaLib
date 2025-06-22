@@ -1,34 +1,37 @@
+/*
+ * Copyright (c) 2025. Oliver Froberg
+ *
+ * This code is licensed under the GNU Lesser General Public License v3.0
+ * See: https://www.gnu.org/licenses/lgpl-3.0-standalone.html
+ */
+
 package dev.pandasystems.pandalib.api.platform
 
-import dev.pandasystems.pandalib.impl.networking.NetworkReceiver
+import dev.pandasystems.pandalib.impl.networking.PacketHandler
 import net.minecraft.network.RegistryFriendlyByteBuf
 import net.minecraft.network.codec.StreamCodec
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 import net.minecraft.server.level.ServerPlayer
 
 interface NetworkHelper {
-	fun <T : CustomPacketPayload> sendToServer(payload: T)
+	/* Register Packet handlers */
 
-	fun <T : CustomPacketPayload> sendToPlayer(player: ServerPlayer, payload: T)
-
-	fun <T : CustomPacketPayload> sendToAllPlayers(payload: T)
-
-	fun <T : CustomPacketPayload> registerClientReceiver(
+	fun <T : CustomPacketPayload> registerClientPacketHandler(
 		type: CustomPacketPayload.Type<T>,
 		codec: StreamCodec<in RegistryFriendlyByteBuf, T>,
-		receiver: NetworkReceiver<T>
+		receiver: PacketHandler<T>
 	)
 
-	fun <T : CustomPacketPayload> registerServerReceiver(
+	fun <T : CustomPacketPayload> registerServerPacketHandler(
 		type: CustomPacketPayload.Type<T>,
 		codec: StreamCodec<in RegistryFriendlyByteBuf, T>,
-		receiver: NetworkReceiver<T>
+		receiver: PacketHandler<T>
 	)
 
-	fun <T : CustomPacketPayload> registerBiDirectionalReceiver(
+	fun <T : CustomPacketPayload> registerBiDirectionalPacketHandler(
 		type: CustomPacketPayload.Type<T>,
 		codec: StreamCodec<in RegistryFriendlyByteBuf, T>,
-		clientReceiver: NetworkReceiver<T>,
-		serverReceiver: NetworkReceiver<T>
+		clientReceiver: PacketHandler<T>,
+		serverReceiver: PacketHandler<T>
 	)
 }

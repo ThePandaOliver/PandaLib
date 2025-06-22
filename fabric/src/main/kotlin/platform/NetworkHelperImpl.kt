@@ -1,10 +1,17 @@
+/*
+ * Copyright (c) 2025. Oliver Froberg
+ *
+ * This code is licensed under the GNU Lesser General Public License v3.0
+ * See: https://www.gnu.org/licenses/lgpl-3.0-standalone.html
+ */
+
 package dev.pandasystems.pandalib.fabric.platform
 
 import dev.architectury.utils.Env
 import dev.pandasystems.pandalib.fabric.PandaLibFabric
 import dev.pandasystems.pandalib.fabric.platform.utils.ClientPlayPayloadHandler
 import dev.pandasystems.pandalib.impl.networking.NetworkContext
-import dev.pandasystems.pandalib.impl.networking.NetworkReceiver
+import dev.pandasystems.pandalib.impl.networking.PacketHandler
 import dev.pandasystems.pandalib.api.platform.NetworkHelper
 import dev.pandasystems.pandalib.utils.EnvRunner.runIf
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
@@ -16,10 +23,12 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 import net.minecraft.server.level.ServerPlayer
 
 class NetworkHelperImpl : NetworkHelper {
-	override fun <T : CustomPacketPayload> registerClientReceiver(
+	/* Register Packet handlers */
+
+	override fun <T : CustomPacketPayload> registerClientPacketHandler(
 		type: CustomPacketPayload.Type<T>,
 		codec: StreamCodec<in RegistryFriendlyByteBuf, T>,
-		receiver: NetworkReceiver<T>
+		receiver: PacketHandler<T>
 	) {
 		PayloadTypeRegistry.playS2C().register<T>(type, codec)
 		runIf(Env.CLIENT) {
@@ -31,36 +40,23 @@ class NetworkHelperImpl : NetworkHelper {
 		}
 	}
 
-	override fun <T : CustomPacketPayload> registerServerReceiver(
+	override fun <T : CustomPacketPayload> registerServerPacketHandler(
 		type: CustomPacketPayload.Type<T>,
 		codec: StreamCodec<in RegistryFriendlyByteBuf, T>,
-		receiver: NetworkReceiver<T>
+		receiver: PacketHandler<T>
 	) {
 		PayloadTypeRegistry.playC2S().register<T>(type, codec)
 		ServerPlayNetworking.registerGlobalReceiver<T>(type) { payload: T, context: ServerPlayNetworking.Context ->
-			receiver.receive(NetworkContext(context.player(), Env.SERVER), payload)
+			receiver.handler(NetworkContext(context.player(), Env.SERVER), payload)
 		}
 	}
 
-	override fun <T : CustomPacketPayload> registerBiDirectionalReceiver(
+	override fun <T : CustomPacketPayload> registerBiDirectionalPacketHandler(
 		type: CustomPacketPayload.Type<T>,
 		codec: StreamCodec<in RegistryFriendlyByteBuf, T>,
-		clientReceiver: NetworkReceiver<T>, serverReceiver: NetworkReceiver<T>
+		clientReceiver: PacketHandler<T>, serverReceiver: PacketHandler<T>
 	) {
-		registerServerReceiver(type, codec, serverReceiver)
-		registerClientReceiver(type, codec, clientReceiver)
-	}
-
-	override fun <T : CustomPacketPayload> sendToServer(payload: T) {
-		ClientPlayNetworking.send(payload)
-	}
-
-	override fun <T : CustomPacketPayload> sendToPlayer(player: ServerPlayer, payload: T) {
-		ServerPlayNetworking.send(player, payload)
-	}
-
-	override fun <T : CustomPacketPayload> sendToAllPlayers(payload: T) {
-		requireNotNull(PandaLibFabric.server) { "PandaLibFabric.server is null!" }
-		PandaLibFabric.server!!.playerList.players.forEach { sendToPlayer(it, payload) }
+		registerServerPacketHandler(type, codec, serverReceiver)
+		registerClientPacketHandler(type, codec, clientReceiver)
 	}
 }

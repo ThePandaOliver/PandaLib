@@ -7,9 +7,7 @@
 		"ClientPacketListenerMixin"
 	],
 	"mixins": [
-		"ClientboundCustomPayloadPacketMixin",
 		"CustomPacketPayloadMixin",
-		"ServerboundCustomPayloadPacketMixin",
 		"ServerPacketListenerMixin"
 	],
 	"injectors": {

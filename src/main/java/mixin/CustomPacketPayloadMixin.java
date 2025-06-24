@@ -35,6 +35,7 @@ public abstract class CustomPacketPayloadMixin<B extends FriendlyByteBuf> implem
 		this.pandaLib$customPayloadTypeProvider = customPayloadTypeProvider;
 	}
 
+	@SuppressWarnings("InvalidInjectorMethodSignature")
 	@WrapOperation(method = {
 			"writeCap",
 			"decode(Lnet/minecraft/network/FriendlyByteBuf;)Lnet/minecraft/network/protocol/common/custom/CustomPacketPayload;"

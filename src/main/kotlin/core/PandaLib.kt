@@ -9,6 +9,7 @@ package dev.pandasystems.pandalib.core
 
 import com.mojang.logging.LogUtils
 import dev.pandasystems.pandalib.impl.config.ConfigRegistry
+import dev.pandasystems.pandalib.test.PandaLibTest
 import net.minecraft.resources.ResourceLocation
 import org.slf4j.Logger
 
@@ -20,6 +21,12 @@ object PandaLib {
 	
 	init {
 		logger.debug("PandaLib Core is initializing...")
+
+		if (config.config.commonDebug) {
+			logger.warn("PandaLib common debug mode is active, this is not recommended for normal gameplay")
+			logger.warn("Consider disabling this in the config file and restarting the game")
+			PandaLibTest.initializeCommonTest()
+		}
 
 		logger.debug("PandaLib Core initialized successfully.")
 	}

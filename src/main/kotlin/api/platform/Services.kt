@@ -13,9 +13,6 @@ import dev.pandasystems.pandalib.core.logger
 import java.util.*
 
 @JvmField
-val networkHelper: NetworkHelper = load(NetworkHelper::class.java)
-
-@JvmField
 val registryHelper: RegistrationHelper = load(RegistrationHelper::class.java)
 
 @JvmField

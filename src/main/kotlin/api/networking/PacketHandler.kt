@@ -5,10 +5,10 @@
  * See: https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  */
 
-package dev.pandasystems.pandalib.impl.networking
+package dev.pandasystems.pandalib.api.networking
 
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 
 fun interface PacketHandler<T : CustomPacketPayload> {
-	fun handler(ctx: NetworkContext, payload: T)
+	fun handle(payload: T)
 }

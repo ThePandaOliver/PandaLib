@@ -4,11 +4,12 @@
  * This code is licensed under the GNU Lesser General Public License v3.0
  * See: https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  */
+@file:JvmName("PacketDistributor")
 
-package dev.pandasystems.pandalib.impl.networking
+package dev.pandasystems.pandalib.api.networking
 
 import dev.pandasystems.pandalib.api.platform.game
-import dev.pandasystems.pandalib.impl.networking.packets.ServerboundBundlePacket
+import dev.pandasystems.pandalib.api.networking.packets.ServerboundBundlePacket
 import net.minecraft.client.Minecraft
 import net.minecraft.network.protocol.Packet
 import net.minecraft.network.protocol.common.ClientboundCustomPayloadPacket
@@ -33,7 +34,7 @@ import net.minecraft.world.level.ChunkPos
 
 fun sendPacketToServer(payload: CustomPacketPayload, vararg payloads: CustomPacketPayload) {
 	require(game.isClient) { "Cannot send serverbound payloads from the server" }
-	val listener = requireNotNull(Minecraft.getInstance().connection)
+	val listener = requireNotNull(Minecraft.getInstance().player!!.connection)
 	listener.send(makeServerboundPacket(payload, *payloads))
 }
 
@@ -41,12 +42,12 @@ fun sendPacketToPlayer(player: ServerPlayer, payload: CustomPacketPayload, varar
 	player.connection.send(makeClientboundPacket(payload, *payloads))
 }
 
-fun sendToPlayersInDimension(level: ServerLevel, payload: CustomPacketPayload, vararg payloads: CustomPacketPayload) {
+fun sendPacketToPlayersInDimension(level: ServerLevel, payload: CustomPacketPayload, vararg payloads: CustomPacketPayload) {
 	val packet = makeClientboundPacket(payload, *payloads)
 	level.server.playerList.broadcastAll(packet, level.dimension())
 }
 
-fun sendToPlayersNear(
+fun sendPacketToPlayersNear(
 	level: ServerLevel, excluded: ServerPlayer, x: Double, y: Double, z: Double,
 	radius: Double, payload: CustomPacketPayload, vararg payloads: CustomPacketPayload
 ) {
@@ -54,12 +55,12 @@ fun sendToPlayersNear(
 	level.server.playerList.broadcast(excluded, x, y, z, radius, level.dimension(), packet)
 }
 
-fun sendToAllPlayers(payload: CustomPacketPayload, vararg payloads: CustomPacketPayload) {
+fun sendPacketToAllPlayers(payload: CustomPacketPayload, vararg payloads: CustomPacketPayload) {
 	val server = requireNotNull(game.server) { "Cannot send clientbound payloads from the client" }
 	server.playerList.broadcastAll(makeClientboundPacket(payload, *payloads))
 }
 
-fun sendToPlayersTrackingEntity(entity: Entity, payload: CustomPacketPayload, vararg payloads: CustomPacketPayload) {
+fun sendPacketToPlayersTrackingEntity(entity: Entity, payload: CustomPacketPayload, vararg payloads: CustomPacketPayload) {
 	check(!entity.level().isClientSide()) { "Cannot send clientbound payloads on the client" }
 	val chunkSource = entity.level().chunkSource
 	if (chunkSource is ServerChunkCache) {
@@ -68,7 +69,7 @@ fun sendToPlayersTrackingEntity(entity: Entity, payload: CustomPacketPayload, va
 	// Silently ignore custom Level implementations which may not return ServerChunkCache.
 }
 
-fun sendToPlayersTrackingEntityAndSelf(
+fun sendPacketToPlayersTrackingEntityAndSelf(
 	entity: Entity, payload: CustomPacketPayload,
 	vararg payloads: CustomPacketPayload
 ) {
@@ -80,7 +81,7 @@ fun sendToPlayersTrackingEntityAndSelf(
 	// Silently ignore custom Level implementations which may not return ServerChunkCache.
 }
 
-fun sendToPlayersTrackingChunk(
+fun sendPacketToPlayersTrackingChunk(
 	level: ServerLevel, chunkPos: ChunkPos,
 	payload: CustomPacketPayload, vararg payloads: CustomPacketPayload
 ) {

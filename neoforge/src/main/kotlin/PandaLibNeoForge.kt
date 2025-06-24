@@ -7,10 +7,9 @@
 
 package dev.pandasystems.pandalib.neoforge
 
+import dev.pandasystems.pandalib.api.platform.registryHelper
 import dev.pandasystems.pandalib.core.PandaLib
-import dev.pandasystems.pandalib.neoforge.platform.NetworkHelperImpl
 import dev.pandasystems.pandalib.neoforge.platform.RegistrationHelperImpl
-import dev.pandasystems.pandalib.impl.platform.Services.REGISTRATION
 import net.neoforged.bus.api.IEventBus
 import net.neoforged.fml.common.Mod
 import net.neoforged.neoforge.client.event.AddClientReloadListenersEvent
@@ -25,12 +24,11 @@ class PandaLibNeoForge(eventBus: IEventBus) {
 	init {
 		PandaLib // Initialize the core PandaLib functionality
 
-		eventBus.addListener<RegisterPayloadHandlersEvent> { NetworkHelperImpl.registerPackets(it) }
-		if (REGISTRATION is RegistrationHelperImpl) {
-			eventBus.addListener<RegisterEvent> { (REGISTRATION as RegistrationHelperImpl).registerEvent(it) }
-			eventBus.addListener<NewRegistryEvent> { (REGISTRATION as RegistrationHelperImpl).registerNewRegistryEvent(it) }
-			NeoForge.EVENT_BUS.addListener<AddServerReloadListenersEvent> { (REGISTRATION as RegistrationHelperImpl).addServerReloadListenerEvent(it) }
-			eventBus.addListener<AddClientReloadListenersEvent> { (REGISTRATION as RegistrationHelperImpl).addClientReloadListenerEvent(it) }
+		if (registryHelper is RegistrationHelperImpl) {
+			eventBus.addListener<RegisterEvent> { (registryHelper as RegistrationHelperImpl).registerEvent(it) }
+			eventBus.addListener<NewRegistryEvent> { (registryHelper as RegistrationHelperImpl).registerNewRegistryEvent(it) }
+			NeoForge.EVENT_BUS.addListener<AddServerReloadListenersEvent> { (registryHelper as RegistrationHelperImpl).addServerReloadListenerEvent(it) }
+			eventBus.addListener<AddClientReloadListenersEvent> { (registryHelper as RegistrationHelperImpl).addClientReloadListenerEvent(it) }
 		}
 	}
 }

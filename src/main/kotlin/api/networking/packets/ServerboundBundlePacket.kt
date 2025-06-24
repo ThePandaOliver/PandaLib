@@ -5,7 +5,7 @@
  * See: https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  */
 
-package dev.pandasystems.pandalib.impl.networking.packets
+package dev.pandasystems.pandalib.api.networking.packets
 
 import dev.pandasystems.pandalib.core.PandaLib
 import net.minecraft.network.protocol.BundlePacket

@@ -8,10 +8,13 @@
 @file:Suppress("UnstableApiUsage")
 
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+import org.jetbrains.gradle.ext.packagePrefix
+import org.jetbrains.gradle.ext.settings
 
 plugins {
 	java
 	idea
+	alias(libs.plugins.ideaExt)
 	alias(libs.plugins.kotlinJvm)
 	`maven-publish`
 	`version-catalog`
@@ -29,6 +32,7 @@ architectury {
 
 loom {
 	accessWidenerPath = file("src/main/resources/pandalib.accesswidener")
+
 	runs.all {
 		ideConfigGenerated(false)
 	}
@@ -96,6 +100,18 @@ allprojects {
 
 	java {
 		withSourcesJar()
+	}
+
+	idea {
+		module {
+			settings {
+				val packagePrefixStr = "${project.group}.${rootProject.name.lowercase()}".let {
+					if (rootProject != project) "$it.${project.name.lowercase()}" else it
+				}
+				packagePrefix["src/main/kotlin"] = packagePrefixStr
+				packagePrefix["src/main/java"] = packagePrefixStr
+			}
+		}
 	}
 }
 

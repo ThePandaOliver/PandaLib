@@ -11,6 +11,5 @@ import dev.pandasystems.pandalib.impl.config.Configuration
 
 @Configuration(PandaLib.MOD_ID, "pandalib")
 class PandaLibConfig {
-	var clientDebug: Boolean = false
-	var serverDebug: Boolean = false
+	var commonDebug: Boolean = false
 }

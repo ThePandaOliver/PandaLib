@@ -22,7 +22,7 @@ class ConfigHolderImpl<T : Any>(
 	val serializer: ConfigSerializer<T>
 ) : ConfigHolder<T> {
 	override val id: ResourceLocation = resourceLocation(options.modId, options.pathName)
-	override lateinit var config: T
+	override var config: T = constructClassUnsafely(configClass)
 	
 	val file: File = game.configDir.resolve("${options.pathName}.json").toFile()
 
@@ -34,7 +34,6 @@ class ConfigHolderImpl<T : Any>(
 				config = serializer.deserialize(json, config.javaClass)
 				logger.debug("Config loaded {}", config)
 			} else {
-				logger.debug("Config could not be loaded {}", config)
 				save()
 			}
 		} catch (e: Exception) {

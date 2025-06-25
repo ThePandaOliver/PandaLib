@@ -25,10 +25,10 @@ PandaLib is a library mod for Minecraft that provides various APIs and utilities
 | Custom Model Rendering API |                                 |
 
 ### Targeted versions and mod loaders:
-- Fabric and NeoForge 1.20.5-1.21.5
+- Fabric and NeoForge 1.20.5-1.21.6
 - Fabric and Forge 1.20-1.20.4
 
-Development is done on 1.21.4
+Development is done on 1.21.6
 
 ---
 ## Advertisement

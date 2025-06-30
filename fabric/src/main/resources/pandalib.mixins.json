@@ -6,8 +6,6 @@
 	"client": [
 	],
 	"mixins": [
-		"ClientboundCustomPayloadPacketMixin",
-		"ServerboundCustomPayloadPacketMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

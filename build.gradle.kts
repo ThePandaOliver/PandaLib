@@ -59,6 +59,12 @@ allprojects {
 	loom {
 		silentMojangMappingsLicense()
 		log4jConfigs.from(rootProject.file("log4j2.xml"))
+
+		decompilers {
+			get("vineflower").apply { // Adds names to lambdas - useful for mixins
+				options.put("mark-corresponding-synthetics", "1")
+			}
+		}
 	}
 
 	repositories {

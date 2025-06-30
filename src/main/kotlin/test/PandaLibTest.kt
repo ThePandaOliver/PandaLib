@@ -8,7 +8,8 @@
 package dev.pandasystems.pandalib.test
 
 import dev.architectury.event.events.common.PlayerEvent
-import dev.pandasystems.pandalib.api.networking.registerPlayPacketHandler
+import dev.pandasystems.pandalib.api.networking.registerPacketCodec
+import dev.pandasystems.pandalib.api.networking.registerPacketHandler
 import dev.pandasystems.pandalib.api.networking.sendPacketToPlayer
 import dev.pandasystems.pandalib.api.platform.game
 import dev.pandasystems.pandalib.core.logger
@@ -18,7 +19,8 @@ import dev.pandasystems.pandalib.test.networking.helloWorldPacketType
 
 object PandaLibTest {
 	fun initializeCommonTest() {
-		registerPlayPacketHandler(helloWorldPacketType, helloWorldPacketCodec) { payload -> logger.info("Received Hello World packet: $payload") }
+		registerPacketCodec(helloWorldPacketType, helloWorldPacketCodec)
+		registerPacketHandler(helloWorldPacketType) { payload -> logger.info("Received Hello World packet: $payload") }
 		if (game.isServer) {
 			PlayerEvent.PLAYER_JOIN.register { player -> sendPacketToPlayer(player, HelloWorldPacket(player.name.string)) }
 		}

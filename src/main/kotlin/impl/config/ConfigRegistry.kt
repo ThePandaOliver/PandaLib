@@ -18,7 +18,7 @@ object ConfigRegistry {
 
 	/**
 	 * Registers a configuration instance for the application.
-	 * 
+	 *
 	 * @param configInstance The provided instance must be annotated with [Configuration], giving details
 	 * about the mod ID and configuration storage path.
 	 */
@@ -26,10 +26,10 @@ object ConfigRegistry {
 	fun <T : Any> register(configInstance: Class<T>): ConfigHolder<T> {
 		val configAnno = configInstance.kotlin.findAnnotations(Configuration::class).firstOrNull()
 			?: throw IllegalArgumentException("Config instance must be annotated with @Configuration!")
-		
+
 		return register(ConfigHolderImpl(configAnno, configInstance, JsonConfigSerializer()))
 	}
-	
+
 	inline fun <reified T : Any> register(): ConfigHolder<T> = register(T::class.java)
 
 	/**
@@ -39,16 +39,17 @@ object ConfigRegistry {
 	fun <T : Any> register(holder: ConfigHolder<T>): ConfigHolder<T> {
 		if (configHolders.containsKey(holder.id))
 			logger.warn("Config holder with id {} is already registered, replacing it.", holder.id)
-		
-		return holder
-			.also { configHolders[it.id] = it }
-			.also { it.reload() }
-			.also { logger.debug("Registered {}", it.id) }
+
+		return holder.also {
+			configHolders[it.id] = it
+			it.reload()
+			logger.debug("Registered {}", it.id)
+		}
 	}
 
 	/**
 	 * Retrieves a configuration holder associated with the given [id].
-	 * 
+	 *
 	 * @param id The resource location identifier for the configuration.
 	 */
 	@JvmStatic
@@ -63,7 +64,7 @@ object ConfigRegistry {
 
 	/**
 	 * Retrieves the first configuration holder of the specified class [clazz].
-	 * 
+	 *
 	 * @param clazz The class type of the configuration holder to retrieve.
 	 */
 	@JvmStatic

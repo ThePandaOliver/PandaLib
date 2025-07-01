@@ -16,19 +16,19 @@ import net.minecraft.network.protocol.PacketUtils
 import net.minecraft.network.protocol.game.ServerGamePacketListener
 import net.minecraft.server.network.ServerCommonPacketListenerImpl
 
-val SERVERBOUND_BUNDLE = PacketType<ServerboundBundlePacket>(PacketFlow.SERVERBOUND, PandaLib.resourceLocation("bundle"))
+val SERVERBOUND_PANDALIB_BUNDLE_TYPE = PacketType<ServerboundPandalibBundlePacket>(PacketFlow.SERVERBOUND, PandaLib.resourceLocation("bundle"))
 
-class ServerboundBundlePacket(iterable: Iterable<Packet<in ServerGamePacketListener>>): BundlePacket<ServerGamePacketListener>(iterable) {
-	override fun type(): PacketType<ServerboundBundlePacket> {
-		return SERVERBOUND_BUNDLE
+class ServerboundPandalibBundlePacket(iterable: Iterable<Packet<in ServerGamePacketListener>>): BundlePacket<ServerGamePacketListener>(iterable) {
+	override fun type(): PacketType<ServerboundPandalibBundlePacket> {
+		return SERVERBOUND_PANDALIB_BUNDLE_TYPE
 	}
 
 	override fun handle(listener: ServerGamePacketListener) {
-		listener.handleBundlePacket(this)
+		listener.handlePandalibBundlePacket(this)
 	}
 }
 
-fun ServerGamePacketListener.handleBundlePacket(packet: ServerboundBundlePacket) {
+fun ServerGamePacketListener.handlePandalibBundlePacket(packet: ServerboundPandalibBundlePacket) {
 	if (this is ServerCommonPacketListenerImpl) {
 		PacketUtils.ensureRunningOnSameThread(packet, this, this.server)
 

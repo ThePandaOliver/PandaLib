@@ -8,15 +8,15 @@
 
 package dev.pandasystems.pandalib.api.networking
 
-import dev.pandasystems.pandalib.api.networking.packets.ClientboundPandaLibPayloadPacket
-import dev.pandasystems.pandalib.api.networking.packets.ClientboundPandalibBundlePacket
+import dev.pandasystems.pandalib.api.networking.packets.ClientboundPLPayloadPacket
+import dev.pandasystems.pandalib.api.networking.packets.ServerboundPLPayloadPacket
+import dev.pandasystems.pandalib.api.networking.packets.bundle.ServerboundPLBundlePacket
 import dev.pandasystems.pandalib.api.platform.game
-import dev.pandasystems.pandalib.api.networking.packets.ServerboundPandaLibPayloadPacket
-import dev.pandasystems.pandalib.api.networking.packets.ServerboundPandalibBundlePacket
 import net.minecraft.client.Minecraft
 import net.minecraft.network.protocol.Packet
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 import net.minecraft.network.protocol.game.ClientGamePacketListener
+import net.minecraft.network.protocol.game.ClientboundBundlePacket
 import net.minecraft.network.protocol.game.ServerGamePacketListener
 import net.minecraft.server.level.ServerChunkCache
 import net.minecraft.server.level.ServerLevel
@@ -92,22 +92,21 @@ fun sendPacketToPlayersTrackingChunk(
 private fun makeServerboundPacket(payload: CustomPacketPayload, vararg payloads: CustomPacketPayload): Packet<*> {
 	if (payloads.isNotEmpty()) {
 		val packets = mutableListOf<Packet<in ServerGamePacketListener>>()
-		packets.add(ServerboundPandaLibPayloadPacket(payload))
-		payloads.forEach { packets.add(ServerboundPandaLibPayloadPacket(it)) }
-		return ServerboundPandalibBundlePacket(packets)
+		packets.add(ServerboundPLPayloadPacket(payload))
+		payloads.forEach { packets.add(ServerboundPLPayloadPacket(it)) }
+		return ServerboundPLBundlePacket(packets)
 	} else {
-		return ServerboundPandaLibPayloadPacket(payload)
+		return ServerboundPLPayloadPacket(payload)
 	}
 }
 
 private fun makeClientboundPacket(payload: CustomPacketPayload, vararg payloads: CustomPacketPayload): Packet<*> {
 	if (payloads.isNotEmpty()) {
 		val packets = mutableListOf<Packet<in ClientGamePacketListener>>()
-		packets.add(ClientboundPandaLibPayloadPacket(payload))
-		payloads.forEach { packets.add(ClientboundPandaLibPayloadPacket(it)) }
-		return ClientboundPandalibBundlePacket(packets)
-
+		packets.add(ClientboundPLPayloadPacket(payload))
+		payloads.forEach { packets.add(ClientboundPLPayloadPacket(it)) }
+		return ClientboundBundlePacket(packets)
 	} else {
-		return ClientboundPandaLibPayloadPacket(payload)
+		return ClientboundPLPayloadPacket(payload)
 	}
 }

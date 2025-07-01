@@ -15,26 +15,26 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 import net.minecraft.resources.ResourceLocation
 
 @JvmField
-internal val CLIENT_PACKET_HANDLERS = mutableMapOf<CustomPacketPayload.Type<out CustomPacketPayload>, PacketHandler<CustomPacketPayload>>()
+internal val clientPacketHandlers = mutableMapOf<CustomPacketPayload.Type<out CustomPacketPayload>, PacketHandler<CustomPacketPayload>>()
 
 @JvmField
-internal val SERVER_PACKET_HANDLERS = mutableMapOf<CustomPacketPayload.Type<out CustomPacketPayload>, PacketHandler<CustomPacketPayload>>()
+internal val serverPacketHandlers = mutableMapOf<CustomPacketPayload.Type<out CustomPacketPayload>, PacketHandler<CustomPacketPayload>>()
 
 @JvmField
-internal val PACKET_CODECS = mutableMapOf<ResourceLocation, CustomPacketPayload.TypeAndCodec<FriendlyByteBuf, CustomPacketPayload>>()
+internal val packetCodecs = mutableMapOf<ResourceLocation, CustomPacketPayload.TypeAndCodec<FriendlyByteBuf, CustomPacketPayload>>()
 
 @JvmName("registerCodec")
 fun <T : CustomPacketPayload> registerPacketCodec(type: CustomPacketPayload.Type<T>, codec: StreamCodec<FriendlyByteBuf, T>) {
-	require(!PACKET_CODECS.containsKey(type.id)) { "Packet type $type already has a codec" }
+	require(!packetCodecs.containsKey(type.id)) { "Packet type $type already has a codec" }
 	@Suppress("UNCHECKED_CAST")
-	PACKET_CODECS[type.id] = CustomPacketPayload.TypeAndCodec(type, codec) as CustomPacketPayload.TypeAndCodec<FriendlyByteBuf, CustomPacketPayload>
+	packetCodecs[type.id] = CustomPacketPayload.TypeAndCodec(type, codec) as CustomPacketPayload.TypeAndCodec<FriendlyByteBuf, CustomPacketPayload>
 }
 
 @JvmName("registerHandler")
 fun <T : CustomPacketPayload> registerPacketHandler(flow: PacketFlow, type: CustomPacketPayload.Type<T>, handler: PacketHandler<T>) {
 	val handlers = when (flow) {
-		PacketFlow.CLIENTBOUND -> CLIENT_PACKET_HANDLERS
-		PacketFlow.SERVERBOUND -> SERVER_PACKET_HANDLERS
+		PacketFlow.CLIENTBOUND -> clientPacketHandlers
+		PacketFlow.SERVERBOUND -> serverPacketHandlers
 	}
 	require(!handlers.containsKey(type)) { "Packet type $type already has a handler" }
 	@Suppress("UNCHECKED_CAST")

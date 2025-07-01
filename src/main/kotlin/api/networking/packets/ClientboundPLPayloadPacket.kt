@@ -7,11 +7,9 @@
 
 package dev.pandasystems.pandalib.api.networking.packets
 
-import dev.pandasystems.pandalib.api.networking.CLIENT_PACKET_HANDLERS
-import dev.pandasystems.pandalib.api.networking.NetworkContext
-import dev.pandasystems.pandalib.api.networking.PACKET_CODECS
+import dev.pandasystems.pandalib.api.networking.clientPacketHandlers
+import dev.pandasystems.pandalib.api.networking.packetCodecs
 import dev.pandasystems.pandalib.core.PandaLib
-import net.minecraft.network.ConnectionProtocol
 import net.minecraft.network.FriendlyByteBuf
 import net.minecraft.network.codec.StreamCodec
 import net.minecraft.network.protocol.Packet
@@ -20,27 +18,24 @@ import net.minecraft.network.protocol.PacketType
 import net.minecraft.network.protocol.common.ClientCommonPacketListener
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 
-data class ClientboundPandaLibPayloadPacket(val payload: CustomPacketPayload) : Packet<ClientCommonPacketListener> {
+val clientboundPLPayloadPacketType = PacketType<ClientboundPLPayloadPacket>(PacketFlow.CLIENTBOUND, PandaLib.resourceLocation("pandalib_custom_payload"))
+
+data class ClientboundPLPayloadPacket(val payload: CustomPacketPayload) : Packet<ClientCommonPacketListener> {
 	override fun type(): PacketType<out Packet<ClientCommonPacketListener>> {
-		return CLIENTBOUND_PANDALIB_PAYLOAD_TYPE
+		return clientboundPLPayloadPacketType
 	}
 
 	override fun handle(handler: ClientCommonPacketListener) {
-		CLIENT_PACKET_HANDLERS[payload.type()]!!.handle(payload)
+		clientPacketHandlers[payload.type()]!!.handle(payload)
 	}
 }
 
-@JvmField
-val CLIENTBOUND_PANDALIB_PAYLOAD_TYPE =
-	PacketType<ClientboundPandaLibPayloadPacket>(PacketFlow.CLIENTBOUND, PandaLib.resourceLocation("client_pandalib_custom_payload"))
-
-@JvmField
-val CLIENTBOUND_PANDALIB_PAYLOAD_CODEC = StreamCodec.of<FriendlyByteBuf, ClientboundPandaLibPayloadPacket>(
+val clientboundPLPayloadCodec: StreamCodec<FriendlyByteBuf, ClientboundPLPayloadPacket> = StreamCodec.of(
 	{ byteBuf, packet ->
 //		byteBuf.writeUtf(packet.context.protocol.name, 16) // Writes the protocol name
 //		byteBuf.writeBoolean(packet.context.flow == PacketFlow.CLIENTBOUND) // Writes a boolean to determine the flow
 		byteBuf.writeResourceLocation(packet.payload.type().id) // Writes the payload type ID
-		PACKET_CODECS[packet.payload.type().id]!!.codec.encode(byteBuf, packet.payload) // Encodes the payload using the registered codec
+		packetCodecs[packet.payload.type().id]!!.codec.encode(byteBuf, packet.payload) // Encodes the payload using the registered codec
 	},
 	{ byteBuf ->
 //		val context = NetworkContext(
@@ -48,7 +43,7 @@ val CLIENTBOUND_PANDALIB_PAYLOAD_CODEC = StreamCodec.of<FriendlyByteBuf, Clientb
 //			flow = if (byteBuf.readBoolean()) PacketFlow.CLIENTBOUND else PacketFlow.SERVERBOUND // Reads a boolean to determine the flow
 //		)
 		val payloadId = byteBuf.readResourceLocation() // Reads the payload type ID
-		val payload = PACKET_CODECS[payloadId]!!.codec.decode(byteBuf) // Decodes the payload using the registered codec
-		return@of ClientboundPandaLibPayloadPacket(payload)
+		val payload = packetCodecs[payloadId]!!.codec.decode(byteBuf) // Decodes the payload using the registered codec
+		return@of ClientboundPLPayloadPacket(payload)
 	}
 )

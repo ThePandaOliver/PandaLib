@@ -22,7 +22,11 @@ object PandaLibTest {
 		registerPacketCodec(helloWorldPacketType, helloWorldPacketCodec)
 		registerPacketHandler(helloWorldPacketType) { payload -> logger.info("Received Hello World packet: $payload") }
 		if (game.isServer) {
-			PlayerEvent.PLAYER_JOIN.register { player -> sendPacketToPlayer(player, HelloWorldPacket(player.name.string)) }
+			PlayerEvent.PLAYER_JOIN.register { player -> sendPacketToPlayer(player,
+				HelloWorldPacket(player.name.string),
+				HelloWorldPacket("World"),
+				HelloWorldPacket("from the server!")
+			) }
 		}
 	}
 }

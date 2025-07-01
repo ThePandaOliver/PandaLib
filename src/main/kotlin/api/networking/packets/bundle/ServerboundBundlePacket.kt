@@ -5,7 +5,7 @@
  * See: https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  */
 
-package dev.pandasystems.pandalib.api.networking.packets
+package dev.pandasystems.pandalib.api.networking.packets.bundle
 
 import dev.pandasystems.pandalib.core.PandaLib
 import net.minecraft.network.protocol.BundlePacket
@@ -16,11 +16,11 @@ import net.minecraft.network.protocol.PacketUtils
 import net.minecraft.network.protocol.game.ServerGamePacketListener
 import net.minecraft.server.network.ServerCommonPacketListenerImpl
 
-val SERVERBOUND_PANDALIB_BUNDLE_TYPE = PacketType<ServerboundPandalibBundlePacket>(PacketFlow.SERVERBOUND, PandaLib.resourceLocation("bundle"))
+val serverboundPLBundleType = PacketType<ServerboundPLBundlePacket>(PacketFlow.SERVERBOUND, PandaLib.resourceLocation("bundle"))
 
-class ServerboundPandalibBundlePacket(iterable: Iterable<Packet<in ServerGamePacketListener>>): BundlePacket<ServerGamePacketListener>(iterable) {
-	override fun type(): PacketType<ServerboundPandalibBundlePacket> {
-		return SERVERBOUND_PANDALIB_BUNDLE_TYPE
+class ServerboundPLBundlePacket(iterable: Iterable<Packet<in ServerGamePacketListener>>): BundlePacket<ServerGamePacketListener>(iterable) {
+	override fun type(): PacketType<ServerboundPLBundlePacket> {
+		return serverboundPLBundleType
 	}
 
 	override fun handle(listener: ServerGamePacketListener) {
@@ -28,7 +28,7 @@ class ServerboundPandalibBundlePacket(iterable: Iterable<Packet<in ServerGamePac
 	}
 }
 
-fun ServerGamePacketListener.handlePandalibBundlePacket(packet: ServerboundPandalibBundlePacket) {
+fun ServerGamePacketListener.handlePandalibBundlePacket(packet: ServerboundPLBundlePacket) {
 	if (this is ServerCommonPacketListenerImpl) {
 		PacketUtils.ensureRunningOnSameThread(packet, this, this.server)
 

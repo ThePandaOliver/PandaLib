@@ -8,6 +8,7 @@
 package dev.pandasystems.pandalib.mixin.protocols;
 
 import dev.pandasystems.pandalib.api.networking.packets.*;
+import dev.pandasystems.pandalib.api.networking.packets.bundle.*;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.protocol.ProtocolInfoBuilder;
 import net.minecraft.network.protocol.game.*;
@@ -21,23 +22,20 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class GameProtocolsMixin {
 	@Inject(method = "method_55958", at = @At("RETURN"))
 	private static void addClientPacket(ProtocolInfoBuilder<ClientGamePacketListener, RegistryFriendlyByteBuf, Unit> protocolInfoBuilder, CallbackInfo ci) {
-		protocolInfoBuilder.withBundlePacket(
-				ClientboundPandalibBundlePacketKt.getCLIENTBOUND_PANDALIB_BUNDLE_TYPE(), ClientboundPandalibBundlePacket::new, new ClientboundBundleDelimiterPacket()
-		);
 		protocolInfoBuilder.addPacket(
-				ClientboundPandaLibPayloadPacketKt.CLIENTBOUND_PANDALIB_PAYLOAD_TYPE,
-				ClientboundPandaLibPayloadPacketKt.CLIENTBOUND_PANDALIB_PAYLOAD_CODEC
+				ClientboundPLPayloadPacketKt.getClientboundPLPayloadPacketType(),
+				ClientboundPLPayloadPacketKt.getClientboundPLPayloadCodec()
 		);
 	}
 
 	@Inject(method = "method_55959", at = @At("RETURN"))
 	private static void addServerPacket(ProtocolInfoBuilder<ServerGamePacketListener, RegistryFriendlyByteBuf, Unit> protocolInfoBuilder, CallbackInfo ci) {
 		protocolInfoBuilder.withBundlePacket(
-				ServerboundPandalibBundlePacketKt.getSERVERBOUND_PANDALIB_BUNDLE_TYPE(), ServerboundPandalibBundlePacket::new, new ServerboundBundleDelimiterPacket()
+				ServerboundBundlePacketKt.getServerboundPLBundleType(), ServerboundPLBundlePacket::new, new ServerboundPLBundleDelimiterPacket()
 		);
 		protocolInfoBuilder.addPacket(
-				ServerboundPandaLibPayloadPacketKt.SERVERBOUND_PANDALIB_PAYLOAD_TYPE,
-				ServerboundPandaLibPayloadPacketKt.SERVERBOUND_PANDALIB_PAYLOAD_CODEC
+				ServerboundPLPayloadPacketKt.getServerboundPLPayloadPacketType(),
+				ServerboundPLPayloadPacketKt.getServerboundPLPayloadCodec()
 		);
 	}
 }

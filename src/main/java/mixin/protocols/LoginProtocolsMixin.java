@@ -7,11 +7,10 @@
 
 package dev.pandasystems.pandalib.mixin.protocols;
 
-import dev.pandasystems.pandalib.api.networking.packets.ClientboundPandaLibPayloadPacketKt;
-import dev.pandasystems.pandalib.api.networking.packets.ServerboundPandaLibPayloadPacketKt;
+import dev.pandasystems.pandalib.api.networking.packets.ClientboundPLPayloadPacketKt;
+import dev.pandasystems.pandalib.api.networking.packets.ServerboundPLPayloadPacketKt;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.protocol.ProtocolInfoBuilder;
-import net.minecraft.network.protocol.configuration.ConfigurationProtocols;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ServerGamePacketListener;
 import net.minecraft.network.protocol.login.LoginProtocols;
@@ -26,16 +25,16 @@ public class LoginProtocolsMixin {
 	@Inject(method = "method_56018", at = @At("RETURN"))
 	private static void addClientPacket(ProtocolInfoBuilder<ClientGamePacketListener, RegistryFriendlyByteBuf, Unit> protocolInfoBuilder, CallbackInfo ci) {
 		protocolInfoBuilder.addPacket(
-				ClientboundPandaLibPayloadPacketKt.CLIENTBOUND_PANDALIB_PAYLOAD_TYPE,
-				ClientboundPandaLibPayloadPacketKt.CLIENTBOUND_PANDALIB_PAYLOAD_CODEC
+				ClientboundPLPayloadPacketKt.getClientboundPLPayloadPacketType(),
+				ClientboundPLPayloadPacketKt.getClientboundPLPayloadCodec()
 		);
 	}
 
 	@Inject(method = "method_56019", at = @At("RETURN"))
 	private static void addServerPacket(ProtocolInfoBuilder<ServerGamePacketListener, RegistryFriendlyByteBuf, Unit> protocolInfoBuilder, CallbackInfo ci) {
 		protocolInfoBuilder.addPacket(
-				ServerboundPandaLibPayloadPacketKt.SERVERBOUND_PANDALIB_PAYLOAD_TYPE,
-				ServerboundPandaLibPayloadPacketKt.SERVERBOUND_PANDALIB_PAYLOAD_CODEC
+				ServerboundPLPayloadPacketKt.getServerboundPLPayloadPacketType(),
+				ServerboundPLPayloadPacketKt.getServerboundPLPayloadCodec()
 		);
 	}
 }

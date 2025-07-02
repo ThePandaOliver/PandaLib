@@ -7,41 +7,28 @@
 
 package dev.pandasystems.pandalib.fabric.platform
 
-import dev.architectury.utils.Env
 import dev.pandasystems.pandalib.api.platform.GameHelper
 import dev.pandasystems.pandalib.fabric.PandaLibFabric
+import dev.pandasystems.pandalib.utils.Environment
 import net.fabricmc.api.EnvType
 import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.server.MinecraftServer
 import java.nio.file.Path
 
 class GameHelperImpl : GameHelper {
-	override val isDevelopmentEnvironment: Boolean
-		get() = FabricLoader.getInstance().isDevelopmentEnvironment
+	override val isDevelopment = FabricLoader.getInstance().isDevelopmentEnvironment
+	override val isProduction = !FabricLoader.getInstance().isDevelopmentEnvironment
 
-	override val isProductionEnvironment: Boolean
-		get() = !FabricLoader.getInstance().isDevelopmentEnvironment
+	override val environment = when (FabricLoader.getInstance().environmentType) {
+		EnvType.CLIENT -> Environment.CLIENT
+		EnvType.SERVER -> Environment.DEDICATED_SERVER
+	}
+	override val isClient = FabricLoader.getInstance().environmentType == EnvType.CLIENT
+	override val isDedicatedServer = FabricLoader.getInstance().environmentType == EnvType.SERVER
 
-	override val environment: Env
-		get() = when (FabricLoader.getInstance().environmentType) {
-			EnvType.CLIENT -> Env.CLIENT
-			EnvType.SERVER -> Env.SERVER
-		}
-
-	override val isClient: Boolean
-		get() = FabricLoader.getInstance().environmentType == EnvType.CLIENT
-
-	override val isServer: Boolean
-		get() = FabricLoader.getInstance().environmentType == EnvType.SERVER
-
-	override val gameDir: Path
-		get() = FabricLoader.getInstance().gameDir.toAbsolutePath().normalize()
-
-	override val configDir: Path
-		get() = FabricLoader.getInstance().configDir.toAbsolutePath().normalize()
-
-	override val modDir: Path
-		get() = gameDir.resolve("mods")
+	override val gameDir: Path = FabricLoader.getInstance().gameDir.toAbsolutePath().normalize()
+	override val configDir: Path = FabricLoader.getInstance().configDir.toAbsolutePath().normalize()
+	override val modDir: Path = gameDir.resolve("mods")
 
 	override val server: MinecraftServer?
 		get() = PandaLibFabric.server

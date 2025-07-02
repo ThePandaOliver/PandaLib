@@ -7,8 +7,11 @@
 
 package dev.pandasystems.pandalib.fabric
 
+import dev.pandasystems.pandalib.api.event.commonevents.PlayerJoinEvent
+import dev.pandasystems.pandalib.api.event.invokeEvent
 import dev.pandasystems.pandalib.core.PandaLib
 import net.fabricmc.api.ModInitializer
+import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
 import net.minecraft.server.MinecraftServer
 
@@ -17,6 +20,10 @@ class PandaLibFabric : ModInitializer {
 		ServerLifecycleEvents.SERVER_STARTED.register { server: MinecraftServer? -> Companion.server = server }
 
 		PandaLib // Initialize the core PandaLib functionality
+
+		ServerPlayerEvents.JOIN.register { player ->
+			invokeEvent(PlayerJoinEvent(player))
+		}
 	}
 
 	companion object {

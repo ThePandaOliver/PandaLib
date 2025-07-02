@@ -7,18 +7,17 @@
 
 package dev.pandasystems.pandalib.api.platform
 
-import dev.architectury.utils.Env
-import net.minecraft.client.Minecraft
+import dev.pandasystems.pandalib.utils.Environment
 import net.minecraft.server.MinecraftServer
 import java.nio.file.Path
 
 interface GameHelper {
-	val isDevelopmentEnvironment: Boolean
-	val isProductionEnvironment: Boolean
+	val isDevelopment: Boolean
+	val isProduction: Boolean
 
-	val environment: Env
-	val isClient: Boolean
-	val isServer: Boolean
+	val environment: Environment
+	val isClient get() = environment.isClient
+	val isDedicatedServer get() = environment.isDedicatedServer
 
 	val gameDir: Path
 	val configDir: Path

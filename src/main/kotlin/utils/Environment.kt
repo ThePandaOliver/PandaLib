@@ -9,10 +9,10 @@ package dev.pandasystems.pandalib.utils
 
 enum class Environment {
 	CLIENT,
-	SERVER;
+	DEDICATED_SERVER;
 
 	val isClient get() = this == CLIENT
-	val isServer get() = this == SERVER
+	val isDedicatedServer get() = this == DEDICATED_SERVER
 	
-	val opposite get() = if (this == CLIENT) SERVER else CLIENT
+	val opposite get() = if (this == CLIENT) DEDICATED_SERVER else CLIENT
 }

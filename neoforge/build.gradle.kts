@@ -17,7 +17,6 @@ configurations {
 
 dependencies {
 	neoForge(libs.neoforgeLoader)
-	modApi(libs.architectury.neoforge)
 
 	include(libs.bundles.kotlin)
 	forgeRuntimeLibrary(libs.bundles.kotlin)

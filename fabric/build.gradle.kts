@@ -22,7 +22,6 @@ repositories {
 dependencies {
 	modImplementation(libs.fabricLoader)
 	modApi(libs.fabricApi)
-	modApi(libs.architectury.fabric)
 	modApi(libs.modmenu)
 
 	include(libs.bundles.kotlin)

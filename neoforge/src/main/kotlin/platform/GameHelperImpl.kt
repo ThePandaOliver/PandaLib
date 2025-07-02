@@ -7,8 +7,8 @@
 
 package dev.pandasystems.pandalib.neoforge.platform
 
-import dev.architectury.utils.Env
 import dev.pandasystems.pandalib.api.platform.GameHelper
+import dev.pandasystems.pandalib.utils.Environment
 import net.minecraft.server.MinecraftServer
 import net.neoforged.api.distmarker.Dist
 import net.neoforged.fml.loading.FMLLoader
@@ -17,24 +17,19 @@ import net.neoforged.neoforge.server.ServerLifecycleHooks
 import java.nio.file.Path
 
 class GameHelperImpl : GameHelper {
-	override val isDevelopmentEnvironment = !FMLLoader.isProduction()
-
-	override val isProductionEnvironment = FMLLoader.isProduction()
+	override val isDevelopment = !FMLLoader.isProduction()
+	override val isProduction = FMLLoader.isProduction()
 
 	override val environment = when (FMLLoader.getDist()) {
-		Dist.CLIENT -> Env.CLIENT
-		Dist.DEDICATED_SERVER -> Env.SERVER
+		Dist.CLIENT -> Environment.CLIENT
+		Dist.DEDICATED_SERVER -> Environment.DEDICATED_SERVER
 	}
-
 	override val isClient = FMLLoader.getDist().isClient
+	override val isDedicatedServer = FMLLoader.getDist().isDedicatedServer
 
-	override val isServer = FMLLoader.getDist().isDedicatedServer
-
-	override val gameDir: Path = FMLPaths.GAMEDIR.get()
-
-	override val configDir: Path = FMLPaths.CONFIGDIR.get()
-
-	override val modDir: Path = FMLPaths.MODSDIR.get()
+	override val gameDir: Path = FMLPaths.GAMEDIR.get().toAbsolutePath().normalize()
+	override val configDir: Path = FMLPaths.CONFIGDIR.get().toAbsolutePath().normalize()
+	override val modDir: Path = FMLPaths.MODSDIR.get().toAbsolutePath().normalize()
 
 	override val server: MinecraftServer?
 		get() = ServerLifecycleHooks.getCurrentServer()

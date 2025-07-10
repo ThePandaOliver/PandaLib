@@ -8,6 +8,7 @@
 package dev.pandasystems.pandalib.fabric.platform
 
 import dev.pandasystems.pandalib.api.platform.RegistrationHelper
+import dev.pandasystems.pandalib.core.logger
 import dev.pandasystems.pandalib.impl.registry.DeferredObject
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper
@@ -27,6 +28,7 @@ import java.util.function.Supplier
 class RegistrationHelperImpl : RegistrationHelper {
 	override fun <T> register(deferredObject: DeferredObject<out T>, supplier: Supplier<out T>) {
 		@Suppress("UNCHECKED_CAST")
+		logger.info("Registering ${deferredObject.id} to ${deferredObject.registryKey}")
 		Registry.register(deferredObject.registry as Registry<T>, deferredObject.id, supplier.get())
 	}
 

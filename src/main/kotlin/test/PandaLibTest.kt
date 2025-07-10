@@ -8,41 +8,75 @@
 package dev.pandasystems.pandalib.test
 
 import dev.pandasystems.pandalib.api.event.addEventListener
-import dev.pandasystems.pandalib.api.event.commonevents.PlayerJoinEvent
-import dev.pandasystems.pandalib.api.networking.registerPacketCodec
-import dev.pandasystems.pandalib.api.networking.registerPacketHandler
-import dev.pandasystems.pandalib.api.networking.sendPacketToPlayer
-import dev.pandasystems.pandalib.api.networking.sendPacketToServer
-import dev.pandasystems.pandalib.api.platform.game
-import dev.pandasystems.pandalib.core.logger
-import dev.pandasystems.pandalib.test.networking.HelloWorldPacket
-import dev.pandasystems.pandalib.test.networking.helloWorldPacketCodec
-import dev.pandasystems.pandalib.test.networking.helloWorldPacketType
+import dev.pandasystems.pandalib.api.event.commonevents.BlockBreakEvent
+import dev.pandasystems.pandalib.api.event.commonevents.BlockPlaceEvent
+import dev.pandasystems.pandalib.api.event.commonevents.ServerPlayerRespawnEvent
+import dev.pandasystems.pandalib.api.event.commonevents.ServerPlayerWorldChangeEvent
+import net.minecraft.network.chat.Component
 import net.minecraft.server.level.ServerPlayer
 
 object PandaLibTest {
 	fun initializeCommonTest() {
-		registerPacketCodec(helloWorldPacketType, helloWorldPacketCodec)
-		registerPacketHandler(helloWorldPacketType) { payload -> logger.info("Received Hello World packet: $payload") }
+		TestRegistry.itemRegister.register()
 
-		addEventListener<PlayerJoinEvent>(::onPlayerJoin)
+
+		// Events
+		addEventListener(::beforePlayerSwitchDimension)
+		addEventListener(::afterPlayerSwitchDimension)
+		addEventListener(::onPlayerRespawn)
+
+		addEventListener(::beforeBlockBreak)
+		addEventListener(::afterBlockBreak)
+		addEventListener(::beforeBlockPlace)
+		addEventListener(::afterBlockPlace)
 	}
 
-	private fun onPlayerJoin(event: PlayerJoinEvent) {
-		if (game.isDedicatedServer) {
-			if (event.player is ServerPlayer)
-				sendPacketToPlayer(
-					event.player,
-					HelloWorldPacket(event.player.name.string),
-					HelloWorldPacket("World"),
-					HelloWorldPacket("from the server!")
-				)
-		} else {
-			sendPacketToServer(
-				HelloWorldPacket("Hello"),
-				HelloWorldPacket("from the client!"),
-				HelloWorldPacket("This is a test of the PandaLib networking system.")
-			)
+	private fun beforePlayerSwitchDimension(event: ServerPlayerWorldChangeEvent.Pre) {
+		if (event.player.inventory.contains(TestRegistry.helloItem.get().defaultInstance)) {
+			event.cancelled = true
+			event.player.sendSystemMessage(Component.literal("You can't switch dimensions with this item in your inventory!"))
+		}
+	}
+
+	private fun afterPlayerSwitchDimension(event: ServerPlayerWorldChangeEvent.Post) {
+		event.player.sendSystemMessage(Component.literal("You switched dimensions!"))
+	}
+
+	private fun onPlayerRespawn(event: ServerPlayerRespawnEvent) {
+		event.newPlayer.sendSystemMessage(Component.literal("You respawned!"))
+	}
+
+	private fun beforeBlockBreak(event: BlockBreakEvent.Pre) {
+		if (event.entity is ServerPlayer) {
+			val player: ServerPlayer = event.entity
+			if (player.inventory.contains(TestRegistry.helloItem.get().defaultInstance)) {
+				event.cancelled = true
+				player.sendSystemMessage(Component.literal("You can't break blocks with this item in your inventory!"))
+			}
+		}
+	}
+
+	private fun afterBlockBreak(event: BlockBreakEvent.Post) {
+		if (event.entity is ServerPlayer) {
+			val player: ServerPlayer = event.entity
+			player.sendSystemMessage(Component.literal("You broke a block!"))
+		}
+	}
+
+	private fun beforeBlockPlace(event: BlockPlaceEvent.Pre) {
+		if (event.entity is ServerPlayer) {
+			val player: ServerPlayer = event.entity
+			if (player.inventory.contains(TestRegistry.helloItem.get().defaultInstance)) {
+				event.cancelled = true
+				player.sendSystemMessage(Component.literal("You can't place blocks with this item in your inventory!"))
+			}
+		}
+	}
+
+	private fun afterBlockPlace(event: BlockPlaceEvent.Post) {
+		if (event.entity is ServerPlayer) {
+			val player: ServerPlayer = event.entity
+			player.sendSystemMessage(Component.literal("You placed a block!"))
 		}
 	}
 }

@@ -6,4 +6,7 @@
  */
 package dev.pandasystems.pandalib.api.event
 
-interface Event 
+interface Event
+interface CancellableEvent : Event {
+	var cancelled: Boolean
+}

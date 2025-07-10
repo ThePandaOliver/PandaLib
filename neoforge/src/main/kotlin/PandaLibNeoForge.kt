@@ -15,12 +15,11 @@ import net.neoforged.fml.common.Mod
 import net.neoforged.neoforge.client.event.AddClientReloadListenersEvent
 import net.neoforged.neoforge.common.NeoForge
 import net.neoforged.neoforge.event.AddServerReloadListenersEvent
-import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent
 import net.neoforged.neoforge.registries.NewRegistryEvent
 import net.neoforged.neoforge.registries.RegisterEvent
 
 @Mod(PandaLib.MOD_ID)
-class PandaLibNeoForge(eventBus: IEventBus) {
+class PandaLibNeoForge(val eventBus: IEventBus) {
 	init {
 		PandaLib // Initialize the core PandaLib functionality
 

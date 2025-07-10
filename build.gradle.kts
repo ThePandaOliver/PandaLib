@@ -53,7 +53,7 @@ allprojects {
 	apply(plugin = rootProject.libs.plugins.architecturyLoom.get().pluginId)
 	
 	group = "dev.pandasystems"
-	version = "0.6.0-BETA"
+	version = "1.0.0-DEV.1"
 
 	loom {
 		silentMojangMappingsLicense()

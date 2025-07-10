@@ -16,7 +16,7 @@ import net.minecraft.world.level.block.state.BlockState
 
 class BlockBreakEvent {
 	class Pre(level: Level, blockPos: BlockPos, entity: Entity?) : CancellableBlockEvent(level, blockPos, entity)
-	class Post(level: Level, blockPos: BlockPos, entity: Entity?) : BlockEvent(level, blockPos, entity) // TODO: Fix event not getting invoked when in creative mode
+	class Post(level: Level, blockPos: BlockPos, entity: Entity?) : BlockEvent(level, blockPos, entity)
 }
 class BlockPlaceEvent {
 	class Pre(level: Level, blockPos: BlockPos, entity: Entity?) : CancellableBlockEvent(level, blockPos, entity)

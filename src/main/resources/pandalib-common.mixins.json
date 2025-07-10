@@ -6,6 +6,7 @@
 	"client": [
 	],
 	"mixins": [
+		"events.BlockItemEventMixin",
 		"events.ServerPlayerGameModeEventMixin",
 		"events.player.PlayerListEventMixin",
 		"events.player.ServerPlayerEventMixin",

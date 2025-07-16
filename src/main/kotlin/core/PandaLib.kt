@@ -33,7 +33,7 @@ object PandaLib {
 	
 	@JvmStatic
 	fun resourceLocation(path: String): ResourceLocation {
-		return dev.pandasystems.pandalib.utils.extensions.resourceLocation(MOD_ID, path)
+		return dev.pandasystems.pandalib.api.utils.extensions.resourceLocation(MOD_ID, path)
 	}
 }
 

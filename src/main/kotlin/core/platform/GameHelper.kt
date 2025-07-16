@@ -5,9 +5,9 @@
  * See: https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  */
 
-package dev.pandasystems.pandalib.api.platform
+package dev.pandasystems.pandalib.core.platform
 
-import dev.pandasystems.pandalib.utils.Environment
+import dev.pandasystems.pandalib.api.utils.Environment
 import net.minecraft.server.MinecraftServer
 import java.nio.file.Path
 

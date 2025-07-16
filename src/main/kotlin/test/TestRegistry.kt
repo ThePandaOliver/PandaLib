@@ -8,7 +8,7 @@
 package dev.pandasystems.pandalib.test
 
 import dev.pandasystems.pandalib.core.PandaLib
-import dev.pandasystems.pandalib.impl.registry.DeferredRegister
+import dev.pandasystems.pandalib.api.registry.deferred.DeferredRegister
 import net.minecraft.core.registries.Registries
 import net.minecraft.world.item.Item
 import net.minecraft.world.level.block.Block

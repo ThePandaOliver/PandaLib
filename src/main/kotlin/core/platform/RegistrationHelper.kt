@@ -5,13 +5,19 @@
  * See: https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  */
 
-package dev.pandasystems.pandalib.api.platform
+package dev.pandasystems.pandalib.core.platform
 
-import dev.pandasystems.pandalib.impl.registry.DeferredObject
+import dev.pandasystems.pandalib.api.registry.deferred.DeferredObject
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider
+import net.minecraft.client.renderer.entity.EntityRendererProvider
 import net.minecraft.core.Registry
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.packs.PackType
 import net.minecraft.server.packs.resources.PreparableReloadListener
+import net.minecraft.world.entity.Entity
+import net.minecraft.world.entity.EntityType
+import net.minecraft.world.level.block.entity.BlockEntity
+import net.minecraft.world.level.block.entity.BlockEntityType
 import java.util.function.Supplier
 
 interface RegistrationHelper {
@@ -19,4 +25,7 @@ interface RegistrationHelper {
 	fun <T> registerNewRegistry(registry: Registry<T>)
 
 	fun registerReloadListener(packType: PackType, listener: PreparableReloadListener, id: ResourceLocation, dependencies: Collection<ResourceLocation>)
+
+	fun <R : Entity> registerEntityRenderer(type: EntityType<R>, provider: EntityRendererProvider<R>)
+	fun <R : BlockEntity> registerBlockEntityRenderer(type: BlockEntityType<R>, provider: BlockEntityRendererProvider<R>)
 }

@@ -7,7 +7,7 @@
 
 @file:JvmName("Services")
 
-package dev.pandasystems.pandalib.api.platform
+package dev.pandasystems.pandalib.core.platform
 
 import dev.pandasystems.pandalib.core.logger
 import java.util.*

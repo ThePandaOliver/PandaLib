@@ -10,9 +10,9 @@ package dev.pandasystems.pandalib.impl.config
 import dev.pandasystems.pandalib.api.config.ConfigHolder
 import dev.pandasystems.pandalib.api.config.ConfigSerializer
 import dev.pandasystems.pandalib.core.logger
-import dev.pandasystems.pandalib.api.platform.game
-import dev.pandasystems.pandalib.utils.constructClassUnsafely
-import dev.pandasystems.pandalib.utils.extensions.resourceLocation
+import dev.pandasystems.pandalib.core.platform.game
+import dev.pandasystems.pandalib.api.utils.constructClassUnsafely
+import dev.pandasystems.pandalib.api.utils.extensions.resourceLocation
 import net.minecraft.resources.ResourceLocation
 import java.io.File
 

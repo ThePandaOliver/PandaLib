@@ -7,7 +7,7 @@
 
 package dev.pandasystems.pandalib.neoforge
 
-import dev.pandasystems.pandalib.api.platform.registryHelper
+import dev.pandasystems.pandalib.core.platform.registryHelper
 import dev.pandasystems.pandalib.core.PandaLib
 import dev.pandasystems.pandalib.neoforge.platform.RegistrationHelperImpl
 import net.neoforged.bus.api.IEventBus
@@ -24,10 +24,12 @@ class PandaLibNeoForge(val eventBus: IEventBus) {
 		PandaLib // Initialize the core PandaLib functionality
 
 		if (registryHelper is RegistrationHelperImpl) {
-			eventBus.addListener<RegisterEvent> { (registryHelper as RegistrationHelperImpl).registerEvent(it) }
-			eventBus.addListener<NewRegistryEvent> { (registryHelper as RegistrationHelperImpl).registerNewRegistryEvent(it) }
-			NeoForge.EVENT_BUS.addListener<AddServerReloadListenersEvent> { (registryHelper as RegistrationHelperImpl).addServerReloadListenerEvent(it) }
-			eventBus.addListener<AddClientReloadListenersEvent> { (registryHelper as RegistrationHelperImpl).addClientReloadListenerEvent(it) }
+			val impl = registryHelper as RegistrationHelperImpl
+			eventBus.addListener(impl::registerEvent)
+			eventBus.addListener(impl::registerNewRegistryEvent)
+			NeoForge.EVENT_BUS.addListener(impl::addServerReloadListenerEvent)
+			eventBus.addListener(impl::addClientReloadListenerEvent)
+			eventBus.addListener(impl::onEntityRendererRegistryEvent)
 		}
 	}
 }

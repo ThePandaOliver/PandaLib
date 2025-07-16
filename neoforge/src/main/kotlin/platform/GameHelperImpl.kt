@@ -7,8 +7,8 @@
 
 package dev.pandasystems.pandalib.neoforge.platform
 
-import dev.pandasystems.pandalib.api.platform.GameHelper
-import dev.pandasystems.pandalib.utils.Environment
+import dev.pandasystems.pandalib.core.platform.GameHelper
+import dev.pandasystems.pandalib.api.utils.Environment
 import net.minecraft.server.MinecraftServer
 import net.neoforged.api.distmarker.Dist
 import net.neoforged.fml.loading.FMLLoader

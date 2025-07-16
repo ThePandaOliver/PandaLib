@@ -5,7 +5,7 @@
  * See: https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  */
 
-package dev.pandasystems.pandalib.api.platform
+package dev.pandasystems.pandalib.core.platform
 
 interface ModLoaderHelper {
 	fun isModLoaded(modId: String): Boolean

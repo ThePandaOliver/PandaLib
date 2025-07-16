@@ -6,7 +6,8 @@
  */
 
 @file:JvmName("EasingUtils")
-package dev.pandasystems.pandalib.utils.animation
+
+package dev.pandasystems.pandalib.api.utils.animation
 
 import kotlin.math.cos
 import kotlin.math.pow

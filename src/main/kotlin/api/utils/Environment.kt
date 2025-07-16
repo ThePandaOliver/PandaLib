@@ -5,7 +5,7 @@
  * See: https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  */
 
-package dev.pandasystems.pandalib.utils
+package dev.pandasystems.pandalib.api.utils
 
 enum class Environment {
 	CLIENT,

@@ -7,11 +7,15 @@
 
 package dev.pandasystems.pandalib.fabric.platform
 
-import dev.pandasystems.pandalib.api.platform.RegistrationHelper
+import dev.pandasystems.pandalib.core.platform.RegistrationHelper
 import dev.pandasystems.pandalib.core.logger
-import dev.pandasystems.pandalib.impl.registry.DeferredObject
+import dev.pandasystems.pandalib.api.registry.deferred.DeferredObject
+import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry
+import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider
+import net.minecraft.client.renderer.entity.EntityRendererProvider
 import net.minecraft.core.RegistrationInfo
 import net.minecraft.core.Registry
 import net.minecraft.core.WritableRegistry
@@ -21,6 +25,10 @@ import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.packs.PackType
 import net.minecraft.server.packs.resources.PreparableReloadListener
 import net.minecraft.server.packs.resources.ResourceManager
+import net.minecraft.world.entity.Entity
+import net.minecraft.world.entity.EntityType
+import net.minecraft.world.level.block.entity.BlockEntity
+import net.minecraft.world.level.block.entity.BlockEntityType
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Executor
 import java.util.function.Supplier
@@ -68,5 +76,19 @@ class RegistrationHelperImpl : RegistrationHelper {
 				return listener.name
 			}
 		})
+	}
+
+	override fun <R : Entity> registerEntityRenderer(
+		type: EntityType<R>,
+		provider: EntityRendererProvider<R>
+	) {
+		EntityRendererRegistry.register<R>(type, provider)
+	}
+
+	override fun <R : BlockEntity> registerBlockEntityRenderer(
+		type: BlockEntityType<R>,
+		provider: BlockEntityRendererProvider<R>
+	) {
+		BlockEntityRendererRegistry.register(type, provider)
 	}
 }

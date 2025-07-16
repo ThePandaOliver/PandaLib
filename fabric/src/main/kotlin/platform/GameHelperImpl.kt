@@ -7,9 +7,9 @@
 
 package dev.pandasystems.pandalib.fabric.platform
 
-import dev.pandasystems.pandalib.api.platform.GameHelper
+import dev.pandasystems.pandalib.core.platform.GameHelper
 import dev.pandasystems.pandalib.fabric.PandaLibFabric
-import dev.pandasystems.pandalib.utils.Environment
+import dev.pandasystems.pandalib.api.utils.Environment
 import net.fabricmc.api.EnvType
 import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.server.MinecraftServer

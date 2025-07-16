@@ -7,7 +7,7 @@
 
 package dev.pandasystems.pandalib.fabric.platform
 
-import dev.pandasystems.pandalib.api.platform.ModLoaderHelper
+import dev.pandasystems.pandalib.core.platform.ModLoaderHelper
 import net.fabricmc.loader.api.FabricLoader
 import net.fabricmc.loader.api.ModContainer
 import net.fabricmc.loader.api.metadata.ModMetadata

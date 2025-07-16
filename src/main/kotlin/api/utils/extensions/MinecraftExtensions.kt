@@ -6,7 +6,8 @@
  */
 
 @file:JvmName("MCUtils")
-package dev.pandasystems.pandalib.utils.extensions
+
+package dev.pandasystems.pandalib.api.utils.extensions
 
 import net.minecraft.resources.ResourceLocation
 

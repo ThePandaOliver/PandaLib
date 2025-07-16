@@ -5,7 +5,7 @@
  * See: https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  */
 
-package dev.pandasystems.pandalib.impl.registry
+package dev.pandasystems.pandalib.api.registry.deferred
 
 import net.minecraft.core.Holder
 import net.minecraft.core.Registry

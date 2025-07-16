@@ -7,7 +7,7 @@
 
 package dev.pandasystems.pandalib.neoforge.platform
 
-import dev.pandasystems.pandalib.api.platform.ModLoaderHelper
+import dev.pandasystems.pandalib.core.platform.ModLoaderHelper
 import net.neoforged.fml.ModContainer
 import net.neoforged.fml.ModList
 import net.neoforged.neoforgespi.language.IModInfo

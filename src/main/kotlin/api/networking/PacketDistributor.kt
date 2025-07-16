@@ -11,7 +11,7 @@ package dev.pandasystems.pandalib.api.networking
 import dev.pandasystems.pandalib.api.networking.packets.ClientboundPLPayloadPacket
 import dev.pandasystems.pandalib.api.networking.packets.ServerboundPLPayloadPacket
 import dev.pandasystems.pandalib.api.networking.packets.bundle.ServerboundPLBundlePacket
-import dev.pandasystems.pandalib.api.platform.game
+import dev.pandasystems.pandalib.core.platform.game
 import net.minecraft.client.Minecraft
 import net.minecraft.network.protocol.Packet
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload

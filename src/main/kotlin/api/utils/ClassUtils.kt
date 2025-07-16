@@ -7,7 +7,7 @@
 
 @file:JvmName("ClassUtils")
 
-package dev.pandasystems.pandalib.utils
+package dev.pandasystems.pandalib.api.utils
 
 import java.lang.reflect.Field
 

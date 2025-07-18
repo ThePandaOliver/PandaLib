@@ -12,12 +12,16 @@ import dev.pandasystems.pandalib.api.event.commonevents.BlockBreakEvent
 import dev.pandasystems.pandalib.api.event.commonevents.BlockPlaceEvent
 import dev.pandasystems.pandalib.api.event.commonevents.ServerPlayerRespawnEvent
 import dev.pandasystems.pandalib.api.event.commonevents.ServerPlayerWorldChangeEvent
+import dev.pandasystems.pandalib.api.registry.registerEntityRenderer
+import dev.pandasystems.pandalib.test.entities.HelloEntityRenderer
 import net.minecraft.network.chat.Component
 import net.minecraft.server.level.ServerPlayer
 
 object PandaLibTest {
 	fun initializeCommonTest() {
 		TestRegistry.itemRegister.register()
+		TestRegistry.blockRegister.register()
+		TestRegistry.entityRegister.register()
 
 
 		// Events
@@ -29,6 +33,9 @@ object PandaLibTest {
 		addEventListener(::afterBlockBreak)
 		addEventListener(::beforeBlockPlace)
 		addEventListener(::afterBlockPlace)
+
+		// Renderers
+		registerEntityRenderer(TestRegistry.helloEntity.get()) { HelloEntityRenderer(it) }
 	}
 
 	private fun beforePlayerSwitchDimension(event: ServerPlayerWorldChangeEvent.Pre) {

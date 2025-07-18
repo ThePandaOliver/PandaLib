@@ -8,7 +8,7 @@
 
 package dev.pandasystems.pandalib.api.registry
 
-import dev.pandasystems.pandalib.core.platform.registryHelper
+import dev.pandasystems.pandalib.core.platform.rendererRegistrationHelper
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider
 import net.minecraft.client.renderer.entity.EntityRendererProvider
 import net.minecraft.world.entity.Entity
@@ -18,10 +18,10 @@ import net.minecraft.world.level.block.entity.BlockEntityType
 
 @JvmName("entityRenderer")
 fun <R : Entity> registerEntityRenderer(type: EntityType<R>, provider: EntityRendererProvider<R>) {
-	registryHelper.registerEntityRenderer(type, provider)
+	rendererRegistrationHelper.registerEntityRenderer(type, provider)
 }
 
 @JvmName("blockEntityRenderer")
 fun <R : BlockEntity> registerBlockEntityRenderer(type: BlockEntityType<R>, provider: BlockEntityRendererProvider<R>) {
-	registryHelper.registerBlockEntityRenderer(type, provider)
+	rendererRegistrationHelper.registerBlockEntityRenderer(type, provider)
 }

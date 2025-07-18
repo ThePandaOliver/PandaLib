@@ -5,4 +5,4 @@
 # See: https://www.gnu.org/licenses/lgpl-3.0-standalone.html
 #
 
-dev.pandasystems.pandalib.fabric.platform.RegistrationHelperImpl
+dev.pandasystems.pandalib.fabric.platform.registrationhelper.RendererRegistationHelperImpl

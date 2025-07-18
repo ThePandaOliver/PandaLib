@@ -7,14 +7,14 @@
 
 package dev.pandasystems.pandalib.api.registry
 
-import dev.pandasystems.pandalib.core.platform.registryHelper
+import dev.pandasystems.pandalib.core.platform.deferredRegisterHelper
 import net.minecraft.core.Registry
 
 @Suppress("unused")
 object RegistryRegister {
 	@JvmStatic
 	fun <T> register(registry: Registry<T>): Registry<T> {
-		registryHelper.registerNewRegistry<T>(registry)
+		deferredRegisterHelper.registerNewRegistry(registry)
 		return registry
 	}
 }

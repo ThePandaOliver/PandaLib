@@ -44,6 +44,12 @@ dependencies {
 	modImplementation(libs.fabricLoader)
 }
 
+kotlin {
+	compilerOptions {
+		freeCompilerArgs.add("-Xfriend-modules=neoforge,fabric")
+	}
+}
+
 allprojects {
 	apply(plugin = "java")
 	apply(plugin = "kotlin")

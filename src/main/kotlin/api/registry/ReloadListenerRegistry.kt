@@ -7,7 +7,7 @@
 
 package dev.pandasystems.pandalib.api.registry
 
-import dev.pandasystems.pandalib.core.platform.registryHelper
+import dev.pandasystems.pandalib.core.platform.resourceLoaderHelper
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.packs.PackType
 import net.minecraft.server.packs.resources.PreparableReloadListener
@@ -21,6 +21,6 @@ object ReloadListenerRegistry {
 		id: ResourceLocation,
 		dependencies: MutableList<ResourceLocation> = mutableListOf()
 	) {
-		registryHelper.registerReloadListener(packType, listener, id, dependencies)
+		resourceLoaderHelper.registerReloadListener(packType, listener, id, dependencies)
 	}
 }

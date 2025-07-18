@@ -7,28 +7,36 @@
 
 package dev.pandasystems.pandalib.neoforge
 
-import dev.pandasystems.pandalib.core.platform.registryHelper
 import dev.pandasystems.pandalib.core.PandaLib
-import dev.pandasystems.pandalib.neoforge.platform.RegistrationHelperImpl
+import dev.pandasystems.pandalib.core.platform.deferredRegisterHelper
+import dev.pandasystems.pandalib.core.platform.rendererRegistrationHelper
+import dev.pandasystems.pandalib.core.platform.resourceLoaderHelper
+import dev.pandasystems.pandalib.neoforge.platform.registrationhelper.DeferredRegisterHelperImpl
+import dev.pandasystems.pandalib.neoforge.platform.registrationhelper.RendererRegistationHelperImpl
+import dev.pandasystems.pandalib.neoforge.platform.registrationhelper.ResourceLoaderHelperImpl
 import net.neoforged.bus.api.IEventBus
 import net.neoforged.fml.common.Mod
-import net.neoforged.neoforge.client.event.AddClientReloadListenersEvent
 import net.neoforged.neoforge.common.NeoForge
-import net.neoforged.neoforge.event.AddServerReloadListenersEvent
-import net.neoforged.neoforge.registries.NewRegistryEvent
-import net.neoforged.neoforge.registries.RegisterEvent
 
 @Mod(PandaLib.MOD_ID)
 class PandaLibNeoForge(val eventBus: IEventBus) {
 	init {
 		PandaLib // Initialize the core PandaLib functionality
 
-		if (registryHelper is RegistrationHelperImpl) {
-			val impl = registryHelper as RegistrationHelperImpl
+		if (deferredRegisterHelper is DeferredRegisterHelperImpl) {
+			val impl = deferredRegisterHelper as DeferredRegisterHelperImpl
 			eventBus.addListener(impl::registerEvent)
 			eventBus.addListener(impl::registerNewRegistryEvent)
+		}
+
+		if (resourceLoaderHelper is ResourceLoaderHelperImpl) {
+			val impl = resourceLoaderHelper as ResourceLoaderHelperImpl
 			NeoForge.EVENT_BUS.addListener(impl::addServerReloadListenerEvent)
 			eventBus.addListener(impl::addClientReloadListenerEvent)
+		}
+
+		if (rendererRegistrationHelper is RendererRegistationHelperImpl) {
+			val impl = rendererRegistrationHelper as RendererRegistationHelperImpl
 			eventBus.addListener(impl::onEntityRendererRegistryEvent)
 		}
 	}

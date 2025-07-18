@@ -20,12 +20,16 @@ import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.entity.BlockEntityType
 import java.util.function.Supplier
 
-interface RegistrationHelper {
-	fun <T> register(deferredObject: DeferredObject<out T>, supplier: Supplier<out T>)
+interface DeferredRegisterHelper {
+	fun <T> registerObject(deferredObject: DeferredObject<out T>, supplier: Supplier<out T>)
 	fun <T> registerNewRegistry(registry: Registry<T>)
+}
 
+interface ResourceLoaderHelper {
 	fun registerReloadListener(packType: PackType, listener: PreparableReloadListener, id: ResourceLocation, dependencies: Collection<ResourceLocation>)
+}
 
+interface RendererRegistrationHelper {
 	fun <R : Entity> registerEntityRenderer(type: EntityType<R>, provider: EntityRendererProvider<R>)
 	fun <R : BlockEntity> registerBlockEntityRenderer(type: BlockEntityType<R>, provider: BlockEntityRendererProvider<R>)
 }

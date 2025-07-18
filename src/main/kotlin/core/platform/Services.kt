@@ -13,10 +13,16 @@ import dev.pandasystems.pandalib.core.logger
 import java.util.*
 
 @JvmField
-val registryHelper: RegistrationHelper = load(RegistrationHelper::class.java)
+val deferredRegisterHelper = load(DeferredRegisterHelper::class.java)
 
 @JvmField
-val game: GameHelper = load(GameHelper::class.java)
+val resourceLoaderHelper = load(ResourceLoaderHelper::class.java)
+
+@JvmField
+val rendererRegistrationHelper = load(RendererRegistrationHelper::class.java)
+
+@JvmField
+val game = load(GameHelper::class.java)
 
 @JvmField
 val modLoader: ModLoaderHelper = load(ModLoaderHelper::class.java)

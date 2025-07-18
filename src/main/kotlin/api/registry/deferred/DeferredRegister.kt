@@ -7,7 +7,7 @@
 
 package dev.pandasystems.pandalib.api.registry.deferred
 
-import dev.pandasystems.pandalib.core.platform.registryHelper
+import dev.pandasystems.pandalib.core.platform.deferredRegisterHelper
 import net.minecraft.core.Registry
 import net.minecraft.resources.ResourceKey
 import net.minecraft.resources.ResourceLocation
@@ -22,17 +22,9 @@ class DeferredRegister<T> private constructor(private val namespace: String, pri
 		return register<R>(ResourceLocation.fromNamespaceAndPath(namespace, name), registryFunc)
 	}
 
-	fun <R : T> register(name: String, registrySup: Supplier<R>): DeferredObject<R> {
-		return register<R>(ResourceLocation.fromNamespaceAndPath(namespace, name), registrySup)
-	}
-
 	fun <R : T> register(name: ResourceLocation, registryFunc: Function<ResourceKey<T>, R>): DeferredObject<R> {
 		val key = ResourceKey.create<T>(registryKey, name)
 		return register<R>(key, Supplier { registryFunc.apply(key) })
-	}
-
-	fun <R : T> register(name: ResourceLocation, registrySup: Supplier<R>): DeferredObject<R> {
-		return register<R>(ResourceKey.create<T>(registryKey, name), registrySup)
 	}
 
 	private fun <R : T> register(resourceKey: ResourceKey<T>, registrySup: Supplier<R>): DeferredObject<R> {
@@ -42,7 +34,7 @@ class DeferredRegister<T> private constructor(private val namespace: String, pri
 	}
 
 	fun register() {
-		entries.forEach { (deferredObject: DeferredObject<out T>, supplier: Supplier<out T>) -> registryHelper.register(deferredObject, supplier) }
+		entries.forEach { (deferredObject: DeferredObject<out T>, supplier: Supplier<out T>) -> deferredRegisterHelper.registerObject(deferredObject, supplier) }
 	}
 
 	companion object {

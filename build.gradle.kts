@@ -59,7 +59,7 @@ allprojects {
 	apply(plugin = rootProject.libs.plugins.architecturyLoom.get().pluginId)
 	
 	group = "dev.pandasystems"
-	version = "1.0.0-DEV.1"
+	version = "1.0.0-DEV.3"
 
 	loom {
 		silentMojangMappingsLicense()
@@ -187,7 +187,7 @@ allprojects {
 		publications {
 			create<MavenPublication>("maven") {
 				from(components["java"])
-				
+
 				artifactId = project.base.archivesName.get().lowercase()
 				version = "mc${rootProject.libs.versions.minecraft.get()}-${project.version}"
 			}

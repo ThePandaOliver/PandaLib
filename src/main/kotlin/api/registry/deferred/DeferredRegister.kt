@@ -11,25 +11,24 @@ import dev.pandasystems.pandalib.core.platform.deferredRegisterHelper
 import net.minecraft.core.Registry
 import net.minecraft.resources.ResourceKey
 import net.minecraft.resources.ResourceLocation
-import java.util.function.Function
 import java.util.function.Supplier
 
 @Suppress("unused")
 class DeferredRegister<T> private constructor(private val namespace: String, private val registryKey: ResourceKey<out Registry<T>>) {
-	private val entries: MutableMap<DeferredObject<out T>, Supplier<out T>> = HashMap<DeferredObject<out T>, Supplier<out T>>()
+	private val entries = mutableMapOf<DeferredObject<out T>, Supplier<out T>>()
 
-	fun <R : T> register(name: String, registryFunc: Function<ResourceKey<T>, R>): DeferredObject<R> {
-		return register<R>(ResourceLocation.fromNamespaceAndPath(namespace, name), registryFunc)
+	fun <R : T> register(name: String, registryEntry: (ResourceKey<T>) -> R): DeferredObject<R> {
+		return register(ResourceLocation.fromNamespaceAndPath(namespace, name), registryEntry)
 	}
 
-	fun <R : T> register(name: ResourceLocation, registryFunc: Function<ResourceKey<T>, R>): DeferredObject<R> {
-		val key = ResourceKey.create<T>(registryKey, name)
-		return register<R>(key, Supplier { registryFunc.apply(key) })
+	fun <R : T> register(name: ResourceLocation, registryEntry: (ResourceKey<T>) -> R): DeferredObject<R> {
+		val key = ResourceKey.create(registryKey, name)
+		return register(key, registryEntry)
 	}
 
-	private fun <R : T> register(resourceKey: ResourceKey<T>, registrySup: Supplier<R>): DeferredObject<R> {
+	private fun <R : T> register(resourceKey: ResourceKey<T>, registryEntry: (ResourceKey<T>) -> R): DeferredObject<R> {
 		val deferredObject = DeferredObject<R>(resourceKey)
-		entries.put(deferredObject, registrySup)
+		entries.put(deferredObject) { registryEntry(resourceKey) }
 		return deferredObject
 	}
 
@@ -50,7 +49,7 @@ class DeferredRegister<T> private constructor(private val namespace: String, pri
 
 		@JvmStatic
 		fun <T> create(namespace: String, registryKey: ResourceKey<out Registry<T>>): DeferredRegister<T> {
-			return DeferredRegister<T>(namespace, registryKey)
+			return DeferredRegister(namespace, registryKey)
 		}
 	}
 }

@@ -13,3 +13,7 @@
 ## Event API
 * Added 2 Event types `Event` and `CancellableEvent`
 * Events have priority levels and can scale infinitely event in negatives (Infinite as in the integer range)
+
+## Registration API
+* Added Renderer Registration for Entities and Block entities
+* 

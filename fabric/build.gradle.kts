@@ -7,6 +7,9 @@
 
 @file:Suppress("UnstableApiUsage")
 
+val fabricLoaderVersion: String by project
+val fabricApi: String by project
+
 architectury {
 	fabric()
 }
@@ -20,11 +23,9 @@ repositories {
 }
 
 dependencies {
-	modImplementation(libs.fabricLoader)
-	modApi(libs.fabricApi)
-	modApi(libs.modmenu)
+	modImplementation("net.fabricmc:fabric-loader:$fabricLoaderVersion")
+	modImplementation("net.fabricmc.fabric-api:fabric-api:$fabricApi")
 
-	include(libs.bundles.kotlin)
-	common(project(":", configuration = "namedElements")) { isTransitive = false }
+	common(project(":", configuration = "namedElements"))
 	shadowBundle(project(":", configuration = "transformProductionFabric"))
 }

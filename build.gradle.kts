@@ -12,22 +12,40 @@ import org.jetbrains.gradle.ext.packagePrefix
 import org.jetbrains.gradle.ext.settings
 
 plugins {
-	java
-	idea
-	alias(libs.plugins.ideaExt)
-	alias(libs.plugins.kotlinJvm)
-	`maven-publish`
-	`version-catalog`
+	kotlin("jvm") version "2.2.0"
+	id("org.jetbrains.gradle.plugin.idea-ext") version "1.1.10"
 
-	alias(libs.plugins.shadow) apply false
-	alias(libs.plugins.architecturyPlugin)
-	alias(libs.plugins.architecturyLoom)
-	alias(libs.plugins.modPublish)
+	id("com.gradleup.shadow") version "8.3.6"
+	id("architectury-plugin") version "3.4-SNAPSHOT"
+	id("dev.architectury.loom") version "1.10-SNAPSHOT"
+	id("io.github.pacifistmc.forgix") version "2.0.0-SNAPSHOT.5.1-FORK.3"
+
+	`maven-publish`
+	id("me.modmuss50.mod-publish-plugin") version "0.8.4"
 }
 
+val javaVersion: String by extra
+val mcVersion: String by extra
+val buildFor: String by extra
+
+val modVersion: String by extra
+val modId: String by extra
+val modGroup: String by extra
+
+val modName: String by extra
+val modDescription: String by extra
+val modAuthors: String by extra
+val modLicense: String by extra
+
+val fabricLoaderVersion: String? by extra
+val neoforgeLoaderVersion: String? by extra
+
+val parchmentMinecraftVersion: String by extra
+val parchmentMappingsVersion: String by extra
+
 architectury {
-	minecraft = libs.versions.minecraft.get()
-	common("neoforge", "fabric")
+	minecraft = mcVersion
+	common(buildFor.split(",").map { it.trim() })
 }
 
 loom {
@@ -41,25 +59,18 @@ loom {
 dependencies {
 	// We depend on fabric loader here to use the fabric @Environment annotations and get the mixin dependencies
 	// Do NOT use other classes from fabric loader
-	modImplementation(libs.fabricLoader)
-}
-
-kotlin {
-	compilerOptions {
-		freeCompilerArgs.add("-Xfriend-modules=neoforge,fabric")
-	}
+	modImplementation("net.fabricmc:fabric-loader:$fabricLoaderVersion")
 }
 
 allprojects {
-	apply(plugin = "java")
-	apply(plugin = "kotlin")
+	apply(plugin = "org.jetbrains.kotlin.jvm")
+	apply(plugin = "org.jetbrains.gradle.plugin.idea-ext")
+	apply(plugin = "architectury-plugin")
+	apply(plugin = "dev.architectury.loom")
 	apply(plugin = "maven-publish")
-	apply(plugin = "version-catalog")
-	apply(plugin = rootProject.libs.plugins.architecturyPlugin.get().pluginId)
-	apply(plugin = rootProject.libs.plugins.architecturyLoom.get().pluginId)
-	
-	group = "dev.pandasystems"
-	version = "1.0.0-DEV.3"
+
+	group = modGroup
+	version = modVersion
 
 	loom {
 		silentMojangMappingsLicense()
@@ -81,14 +92,28 @@ allprojects {
 		maven("https://maven.neoforged.net/releases/")
 	}
 
+	val nonModImplementation by configurations.creating
+	configurations.implementation.get().extendsFrom(nonModImplementation)
+	configurations.include.get().extendsFrom(nonModImplementation)
+
 	dependencies {
-		minecraft(rootProject.libs.minecraft)
+		minecraft("com.mojang:minecraft:$mcVersion")
 		mappings(loom.layered {
 			officialMojangMappings()
-			parchment("${rootProject.libs.parchment.get()}@zip")
+			parchment("org.parchmentmc.data:parchment-$parchmentMinecraftVersion:$parchmentMappingsVersion@zip")
 		})
 
-		api(rootProject.libs.bundles.kotlin)
+		nonModImplementation(kotlin("stdlib"))
+		nonModImplementation(kotlin("stdlib-jdk8"))
+		nonModImplementation(kotlin("reflect", version = "2.2.0"))
+		nonModImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
+		nonModImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.10.2")
+		nonModImplementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.8.1")
+		nonModImplementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.1")
+		nonModImplementation("org.jetbrains.kotlinx:kotlinx-serialization-cbor:1.8.1")
+		nonModImplementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.2")
+		nonModImplementation("org.jetbrains.kotlinx:kotlinx-io-core:0.7.0")
+		nonModImplementation("org.jetbrains.kotlinx:kotlinx-io-bytestring:0.7.0")
 	}
 
 	kotlin {
@@ -109,6 +134,33 @@ allprojects {
 		}
 	}
 
+	tasks {
+		processResources {
+			val props = mutableMapOf(
+				"java_version" to javaVersion,
+				"minecraft_version" to mcVersion,
+
+				"mod_version" to modVersion,
+				"mod_group" to modGroup,
+				"mod_id" to modId,
+
+				"mod_name" to modName,
+				"mod_description" to modDescription,
+				"mod_license" to modLicense,
+				"mod_authors_fabric" to modAuthors.split(",").joinToString(", ") { "\"$it\"" },
+				"mod_authors_forge" to modAuthors,
+			)
+
+			fabricLoaderVersion?.let { props["fabric_loader_version"] = it }
+			neoforgeLoaderVersion?.let { props["neoforge_loader_version"] = it }
+
+			inputs.properties(props)
+			filesMatching(listOf("META-INF/mods.toml", "META-INF/neoforge.mods.toml", "fabric.mod.json", "**.mixins.json", "pack.mcmeta")) {
+				expand(props)
+			}
+		}
+	}
+
 	java {
 		withSourcesJar()
 	}
@@ -116,7 +168,7 @@ allprojects {
 	idea {
 		module {
 			settings {
-				val packagePrefixStr = "${project.group}.${rootProject.name.lowercase()}".let {
+				val packagePrefixStr = "$modGroup.$modId".let {
 					if (rootProject != project) "$it.${project.name.lowercase()}" else it
 				}
 				packagePrefix["src/main/kotlin"] = packagePrefixStr
@@ -127,7 +179,7 @@ allprojects {
 }
 
 subprojects {
-	apply(plugin = rootProject.libs.plugins.shadow.get().pluginId)
+	apply(plugin = "com.gradleup.shadow")
 
 	base { archivesName = "${rootProject.name}-${project.name}" }
 
@@ -189,7 +241,7 @@ allprojects {
 				from(components["java"])
 
 				artifactId = project.base.archivesName.get().lowercase()
-				version = "mc${rootProject.libs.versions.minecraft.get()}-${project.version}"
+				version = "mc${mcVersion}-${project.version}"
 			}
 		}
 	}
@@ -200,7 +252,7 @@ publishMods {
 	type = BETA
 	dryRun = false
 	
-	val gameVerString = rootProject.libs.versions.minecraft.get()
+	val gameVerString = mcVersion
 	val verString = project.version.toString()
 	version = verString
 

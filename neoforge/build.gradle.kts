@@ -7,20 +7,21 @@
 
 @file:Suppress("UnstableApiUsage")
 
+val neoforgeLoaderVersion: String by project
+
 architectury {
 	neoForge()
 }
 
 configurations {
 	getByName("developmentNeoForge").extendsFrom(common.get())
+	forgeRuntimeLibrary.get().extendsFrom(nonModImplementation.get())
 }
 
 dependencies {
-	neoForge(libs.neoforgeLoader)
+	neoForge("net.neoforged:neoforge:$neoforgeLoaderVersion")
 
-	include(libs.bundles.kotlin)
-	forgeRuntimeLibrary(libs.bundles.kotlin)
-	common(project(":", configuration = "namedElements")) { isTransitive = false }
+	common(project(":", configuration = "namedElements"))
 	shadowBundle(project(":", configuration = "transformProductionNeoForge"))
 }
 

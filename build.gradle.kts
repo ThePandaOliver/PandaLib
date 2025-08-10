@@ -118,9 +118,6 @@ allprojects {
 
 	kotlin {
 		jvmToolchain(21)
-		compilerOptions {
-			freeCompilerArgs = listOf("-Xjvm-default=all")
-		}
 	}
 
 	tasks.processResources {
@@ -251,7 +248,7 @@ publishMods {
 	changelog = rootProject.file("CHANGELOG.md").readText()
 	type = BETA
 	dryRun = false
-	
+
 	val gameVerString = mcVersion
 	val verString = project.version.toString()
 	version = verString

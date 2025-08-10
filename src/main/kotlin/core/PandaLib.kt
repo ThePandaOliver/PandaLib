@@ -8,6 +8,7 @@
 package dev.pandasystems.pandalib.core
 
 import com.mojang.logging.LogUtils
+import dev.pandasystems.pandalib.api.registry.PandaLibRegistries
 import dev.pandasystems.pandalib.impl.config.ConfigRegistry
 import dev.pandasystems.pandalib.test.PandaLibTest
 import net.minecraft.resources.ResourceLocation

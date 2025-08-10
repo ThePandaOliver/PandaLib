@@ -12,5 +12,5 @@ import net.minecraft.network.syncher.EntityDataSerializer
 
 object PandaLibRegistries {
 	@JvmStatic
-	expect val ENTITY_DATA_SERIALIZERS: Registry<EntityDataSerializer<*>>
+	val ENTITY_DATA_SERIALIZERS: Registry<EntityDataSerializer<*>>
 }

@@ -18,7 +18,6 @@ import net.minecraft.client.renderer.entity.state.EntityRenderState
 import net.minecraft.client.renderer.texture.OverlayTexture
 import net.minecraft.world.level.block.Blocks
 
-@Environment(EnvType.CLIENT)
 class HelloEntityRenderer(context: EntityRendererProvider.Context) : EntityRenderer<HelloEntity, HelloEntityRenderState>(context) {
 	override fun createRenderState(): HelloEntityRenderState {
 		return HelloEntityRenderState()

@@ -22,6 +22,7 @@ plugins {
 
 	`maven-publish`
 	id("me.modmuss50.mod-publish-plugin") version "0.8.4"
+	id("com.google.devtools.ksp") version "2.2.0-2.0.2"
 }
 
 val javaVersion: String by extra
@@ -68,6 +69,7 @@ allprojects {
 	apply(plugin = "architectury-plugin")
 	apply(plugin = "dev.architectury.loom")
 	apply(plugin = "maven-publish")
+	apply(plugin = "com.google.devtools.ksp")
 
 	group = modGroup
 	version = modVersion
@@ -114,6 +116,10 @@ allprojects {
 		nonModImplementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.2")
 		nonModImplementation("org.jetbrains.kotlinx:kotlinx-io-core:0.7.0")
 		nonModImplementation("org.jetbrains.kotlinx:kotlinx-io-bytestring:0.7.0")
+
+		runtimeOnly("com.google.auto.service:auto-service-annotations:1.1.1")
+		compileOnly("com.google.auto.service:auto-service-annotations:1.1.1")
+		ksp("dev.zacsweers.autoservice:auto-service-ksp:1.2.0")
 	}
 
 	kotlin {

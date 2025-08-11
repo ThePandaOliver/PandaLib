@@ -7,10 +7,12 @@
 
 package dev.pandasystems.pandalib.api.registry
 
+import dev.pandasystems.pandalib.core.platform.registryRegistrations
 import net.minecraft.core.Registry
 import net.minecraft.network.syncher.EntityDataSerializer
 
 object PandaLibRegistries {
 	@JvmStatic
 	val ENTITY_DATA_SERIALIZERS: Registry<EntityDataSerializer<*>>
+		get() = registryRegistrations.entityDataSerializers
 }

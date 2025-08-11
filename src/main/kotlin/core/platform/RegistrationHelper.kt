@@ -11,6 +11,7 @@ import dev.pandasystems.pandalib.api.registry.deferred.DeferredObject
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider
 import net.minecraft.client.renderer.entity.EntityRendererProvider
 import net.minecraft.core.Registry
+import net.minecraft.network.syncher.EntityDataSerializer
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.packs.PackType
 import net.minecraft.server.packs.resources.PreparableReloadListener
@@ -32,4 +33,8 @@ interface ResourceLoaderHelper {
 interface RendererRegistrationHelper {
 	fun <R : Entity> registerEntityRenderer(type: EntityType<R>, provider: EntityRendererProvider<R>)
 	fun <R : BlockEntity> registerBlockEntityRenderer(type: BlockEntityType<R>, provider: BlockEntityRendererProvider<R>)
+}
+
+interface RegistryRegistrations {
+	val entityDataSerializers: Registry<EntityDataSerializer<*>>
 }

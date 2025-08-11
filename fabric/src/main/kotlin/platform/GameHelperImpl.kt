@@ -7,6 +7,7 @@
 
 package dev.pandasystems.pandalib.fabric.platform
 
+import com.google.auto.service.AutoService
 import dev.pandasystems.pandalib.core.platform.GameHelper
 import dev.pandasystems.pandalib.fabric.PandaLibFabric
 import dev.pandasystems.pandalib.api.utils.Environment
@@ -15,6 +16,7 @@ import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.server.MinecraftServer
 import java.nio.file.Path
 
+@AutoService(GameHelper::class)
 class GameHelperImpl : GameHelper {
 	override val isDevelopment = FabricLoader.getInstance().isDevelopmentEnvironment
 	override val isProduction = !FabricLoader.getInstance().isDevelopmentEnvironment

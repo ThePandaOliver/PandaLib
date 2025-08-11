@@ -7,6 +7,7 @@
 
 package dev.pandasystems.pandalib.fabric.platform.registrationhelper
 
+import com.google.auto.service.AutoService
 import dev.pandasystems.pandalib.core.platform.ResourceLoaderHelper
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper
@@ -17,6 +18,7 @@ import net.minecraft.server.packs.resources.ResourceManager
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Executor
 
+@AutoService(ResourceLoaderHelper::class)
 class ResourceLoaderHelperImpl : ResourceLoaderHelper {
 	override fun registerReloadListener(
 		packType: PackType,

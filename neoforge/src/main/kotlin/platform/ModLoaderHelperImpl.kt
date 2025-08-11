@@ -7,12 +7,14 @@
 
 package dev.pandasystems.pandalib.neoforge.platform
 
+import com.google.auto.service.AutoService
 import dev.pandasystems.pandalib.core.platform.ModLoaderHelper
 import net.neoforged.fml.ModContainer
 import net.neoforged.fml.ModList
 import net.neoforged.neoforgespi.language.IModInfo
 import kotlin.jvm.optionals.getOrNull
 
+@AutoService(ModLoaderHelper::class)
 class ModLoaderHelperImpl : ModLoaderHelper {
 	private val modMap = mutableMapOf<String, ModLoaderHelper.Mod>()
 

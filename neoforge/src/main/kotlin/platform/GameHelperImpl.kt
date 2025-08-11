@@ -7,8 +7,9 @@
 
 package dev.pandasystems.pandalib.neoforge.platform
 
-import dev.pandasystems.pandalib.core.platform.GameHelper
+import com.google.auto.service.AutoService
 import dev.pandasystems.pandalib.api.utils.Environment
+import dev.pandasystems.pandalib.core.platform.GameHelper
 import net.minecraft.server.MinecraftServer
 import net.neoforged.api.distmarker.Dist
 import net.neoforged.fml.loading.FMLLoader
@@ -16,6 +17,7 @@ import net.neoforged.fml.loading.FMLPaths
 import net.neoforged.neoforge.server.ServerLifecycleHooks
 import java.nio.file.Path
 
+@AutoService(GameHelper::class)
 class GameHelperImpl : GameHelper {
 	override val isDevelopment = !FMLLoader.isProduction()
 	override val isProduction = FMLLoader.isProduction()

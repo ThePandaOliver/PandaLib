@@ -7,12 +7,14 @@
 
 package dev.pandasystems.pandalib.fabric.platform
 
+import com.google.auto.service.AutoService
 import dev.pandasystems.pandalib.core.platform.ModLoaderHelper
 import net.fabricmc.loader.api.FabricLoader
 import net.fabricmc.loader.api.ModContainer
 import net.fabricmc.loader.api.metadata.ModMetadata
 import kotlin.jvm.optionals.getOrNull
 
+@AutoService(ModLoaderHelper::class)
 class ModLoaderHelperImpl : ModLoaderHelper {
 	private val modMap = mutableMapOf<String, ModLoaderHelper.Mod>()
 

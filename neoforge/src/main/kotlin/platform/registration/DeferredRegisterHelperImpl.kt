@@ -5,8 +5,9 @@
  * See: https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  */
 
-package dev.pandasystems.pandalib.neoforge.platform.registrationhelper
+package dev.pandasystems.pandalib.neoforge.platform.registration
 
+import com.google.auto.service.AutoService
 import dev.pandasystems.pandalib.api.registry.deferred.DeferredObject
 import dev.pandasystems.pandalib.core.platform.DeferredRegisterHelper
 import net.minecraft.core.Registry
@@ -16,6 +17,7 @@ import net.neoforged.neoforge.registries.RegisterEvent
 import java.util.function.Consumer
 import java.util.function.Supplier
 
+@AutoService(DeferredRegisterHelper::class)
 class DeferredRegisterHelperImpl : DeferredRegisterHelper {
 	private val pendingRegistries: MutableMap<ResourceKey<out Registry<*>>, PendingRegistries<*>> = mutableMapOf()
 	private val pendingRegistryTypes: MutableList<Registry<*>> = mutableListOf()

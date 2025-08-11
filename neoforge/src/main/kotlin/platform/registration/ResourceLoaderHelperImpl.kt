@@ -5,8 +5,9 @@
  * See: https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  */
 
-package dev.pandasystems.pandalib.neoforge.platform.registrationhelper
+package dev.pandasystems.pandalib.neoforge.platform.registration
 
+import com.google.auto.service.AutoService
 import dev.pandasystems.pandalib.core.platform.ResourceLoaderHelper
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.packs.PackType
@@ -15,6 +16,7 @@ import net.neoforged.neoforge.client.event.AddClientReloadListenersEvent
 import net.neoforged.neoforge.event.AddServerReloadListenersEvent
 import java.util.function.Consumer
 
+@AutoService(ResourceLoaderHelper::class)
 class ResourceLoaderHelperImpl : ResourceLoaderHelper {
 	private val serverDataReloadListeners = mutableListOf<Pair<ResourceLocation, PreparableReloadListener>>()
 	private val clientDataReloadListeners = mutableListOf<Pair<ResourceLocation, PreparableReloadListener>>()

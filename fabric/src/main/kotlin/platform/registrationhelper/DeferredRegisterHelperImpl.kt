@@ -7,6 +7,7 @@
 
 package dev.pandasystems.pandalib.fabric.platform.registrationhelper
 
+import com.google.auto.service.AutoService
 import dev.pandasystems.pandalib.api.registry.deferred.DeferredObject
 import dev.pandasystems.pandalib.core.logger
 import dev.pandasystems.pandalib.core.platform.DeferredRegisterHelper
@@ -17,6 +18,7 @@ import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.resources.ResourceKey
 import java.util.function.Supplier
 
+@AutoService(DeferredRegisterHelper::class)
 class DeferredRegisterHelperImpl : DeferredRegisterHelper {
 	override fun <T> registerObject(
 		deferredObject: DeferredObject<out T>,

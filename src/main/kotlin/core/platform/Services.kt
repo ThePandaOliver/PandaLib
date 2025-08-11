@@ -25,7 +25,10 @@ val rendererRegistrationHelper = load(RendererRegistrationHelper::class.java)
 val game = load(GameHelper::class.java)
 
 @JvmField
-val modLoader: ModLoaderHelper = load(ModLoaderHelper::class.java)
+val modLoader = load(ModLoaderHelper::class.java)
+
+@JvmField
+val registryRegistrations = load(RegistryRegistrations::class.java)
 
 private fun <T> load(serviceClass: Class<T>): T {
 	val loadedService = ServiceLoader.load(serviceClass).findFirst()

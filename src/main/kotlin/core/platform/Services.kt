@@ -22,10 +22,7 @@ val resourceLoaderHelper = load(ResourceLoaderHelper::class.java)
 val rendererRegistrationHelper = load(RendererRegistrationHelper::class.java)
 
 @JvmField
-val game = load(GameHelper::class.java)
-
-@JvmField
-val modLoader = load(ModLoaderHelper::class.java)
+val game = load(GameData::class.java)
 
 @JvmField
 val registryRegistrations = load(RegistryRegistrations::class.java)

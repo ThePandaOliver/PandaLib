@@ -8,21 +8,38 @@
 package dev.pandasystems.pandalib.core.platform
 
 import dev.pandasystems.pandalib.api.utils.Environment
+import net.minecraft.client.Minecraft
 import net.minecraft.server.MinecraftServer
 import java.nio.file.Path
 
-interface GameHelper {
+interface GameData {
 	val isDevelopment: Boolean
 	val isProduction: Boolean
 
 	val environment: Environment
-	val isClient get() = environment.isClient
-	val isDedicatedServer get() = environment.isDedicatedServer
+	val isClient
+		get() = environment.isClient
+	val isDedicatedServer
+		get() = environment.isDedicatedServer
 
 	val gameDir: Path
 	val configDir: Path
 	val modDir: Path
 
-	@Deprecated("Temporary method for getting the server instance. Will be removed in the future.", level = DeprecationLevel.WARNING)
+	val client: Minecraft
+		get() = Minecraft.getInstance()
 	val server: MinecraftServer?
+
+	fun isModLoaded(modId: String): Boolean
+	fun getMod(modId: String): Mod?
+	val mods: List<Mod>
+	val modIds: List<String>
+
+	interface Mod {
+		val id: String
+		val displayName: String
+		val description: String
+		val authors: List<String>
+		val version: String
+	}
 }

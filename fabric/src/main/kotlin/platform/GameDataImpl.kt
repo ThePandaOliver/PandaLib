@@ -8,21 +8,42 @@
 package dev.pandasystems.pandalib.fabric.platform
 
 import com.google.auto.service.AutoService
-import dev.pandasystems.pandalib.core.platform.ModLoaderHelper
+import dev.pandasystems.pandalib.core.platform.GameData
+import dev.pandasystems.pandalib.fabric.PandaLibFabric
+import dev.pandasystems.pandalib.api.utils.Environment
+import net.fabricmc.api.EnvType
 import net.fabricmc.loader.api.FabricLoader
 import net.fabricmc.loader.api.ModContainer
 import net.fabricmc.loader.api.metadata.ModMetadata
+import net.minecraft.server.MinecraftServer
+import java.nio.file.Path
+import kotlin.collections.set
 import kotlin.jvm.optionals.getOrNull
 
-@AutoService(ModLoaderHelper::class)
-class ModLoaderHelperImpl : ModLoaderHelper {
-	private val modMap = mutableMapOf<String, ModLoaderHelper.Mod>()
+@AutoService(GameData::class)
+class GameDataImpl : GameData {
+	override val isDevelopment = FabricLoader.getInstance().isDevelopmentEnvironment
+	override val isProduction = !FabricLoader.getInstance().isDevelopmentEnvironment
+
+	override val environment = when (FabricLoader.getInstance().environmentType) {
+		EnvType.CLIENT -> Environment.CLIENT
+		EnvType.SERVER -> Environment.DEDICATED_SERVER
+	}
+
+	override val gameDir: Path = FabricLoader.getInstance().gameDir.toAbsolutePath().normalize()
+	override val configDir: Path = FabricLoader.getInstance().configDir.toAbsolutePath().normalize()
+	override val modDir: Path = gameDir.resolve("mods")
+
+	override val server: MinecraftServer?
+		get() = PandaLibFabric.server
+
+	private val modMap = mutableMapOf<String, GameData.Mod>()
 
 	override fun isModLoaded(modId: String): Boolean {
 		return FabricLoader.getInstance().isModLoaded(modId)
 	}
 
-	override fun getMod(modId: String): ModLoaderHelper.Mod? {
+	override fun getMod(modId: String): GameData.Mod? {
 		if (modMap.containsKey(modId)) return modMap[modId]
 		return FabricLoader.getInstance().getModContainer(modId)
 			.map { ModImpl(it) }.getOrNull()?.also {
@@ -40,7 +61,7 @@ class ModLoaderHelperImpl : ModLoaderHelper {
 	private class ModImpl(
 		val container: ModContainer,
 		val metadata: ModMetadata = container.metadata
-	) : ModLoaderHelper.Mod {
+	) : GameData.Mod {
 		override val id: String = metadata.id
 
 		override val displayName: String = metadata.name

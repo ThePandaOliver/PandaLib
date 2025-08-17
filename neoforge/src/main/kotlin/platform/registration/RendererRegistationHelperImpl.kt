@@ -8,7 +8,7 @@
 package dev.pandasystems.pandalib.neoforge.platform.registration
 
 import com.google.auto.service.AutoService
-import dev.pandasystems.pandalib.core.platform.RendererRegistrationHelper
+import dev.pandasystems.pandalib.core.platform.registry.RendererRegistrationHelper
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider
 import net.minecraft.client.renderer.entity.EntityRendererProvider
 import net.minecraft.world.entity.Entity
@@ -16,29 +16,32 @@ import net.minecraft.world.entity.EntityType
 import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.entity.BlockEntityType
 import net.neoforged.neoforge.client.event.EntityRenderersEvent
+import java.util.function.Supplier
 
 @AutoService(RendererRegistrationHelper::class)
 class RendererRegistationHelperImpl : RendererRegistrationHelper {
-	val entityRendererProviders = mutableMapOf<EntityType<*>, EntityRendererProvider<*>>()
-	val blockEntityRendererProviders = mutableMapOf<BlockEntityType<*>, BlockEntityRendererProvider<*>>()
+	val entityRendererProviders = mutableMapOf<Supplier<EntityType<*>>, EntityRendererProvider<*>>()
+	val blockEntityRendererProviders = mutableMapOf<Supplier<BlockEntityType<*>>, BlockEntityRendererProvider<*>>()
 
 	override fun <R : Entity> registerEntityRenderer(
-		type: EntityType<R>,
+		typeProvider: Supplier<EntityType<R>>,
 		provider: EntityRendererProvider<R>
 	) {
-		entityRendererProviders[type] = provider
+		@Suppress("UNCHECKED_CAST")
+		entityRendererProviders[typeProvider as Supplier<EntityType<*>>] = provider
 	}
 
 	override fun <R : BlockEntity> registerBlockEntityRenderer(
-		type: BlockEntityType<R>,
+		typeProvider: Supplier<BlockEntityType<R>>,
 		provider: BlockEntityRendererProvider<R>
 	) {
-		blockEntityRendererProviders[type] = provider
+		@Suppress("UNCHECKED_CAST")
+		blockEntityRendererProviders[typeProvider as Supplier<BlockEntityType<*>>] = provider
 	}
 
 	@Suppress("UNCHECKED_CAST")
 	fun onEntityRendererRegistryEvent(event: EntityRenderersEvent.RegisterRenderers) {
-		entityRendererProviders.forEach { event.registerEntityRenderer(it.key, it.value as EntityRendererProvider<in Entity>) }
-		blockEntityRendererProviders.forEach { event.registerBlockEntityRenderer(it.key, it.value as BlockEntityRendererProvider<in BlockEntity>) }
+		entityRendererProviders.forEach { event.registerEntityRenderer(it.key.get(), it.value as EntityRendererProvider<in Entity>) }
+		blockEntityRendererProviders.forEach { event.registerBlockEntityRenderer(it.key.get(), it.value as BlockEntityRendererProvider<in BlockEntity>) }
 	}
 }

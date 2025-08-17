@@ -7,7 +7,7 @@
 
 package dev.pandasystems.pandalib.api.registry.deferred
 
-import dev.pandasystems.pandalib.core.platform.deferredRegisterHelper
+import dev.pandasystems.pandalib.core.platform.registry.deferredRegisterHelper
 import net.minecraft.core.Registry
 import net.minecraft.resources.ResourceKey
 import net.minecraft.resources.ResourceLocation
@@ -28,7 +28,7 @@ class DeferredRegister<T> private constructor(private val namespace: String, pri
 
 	private fun <R : T> register(resourceKey: ResourceKey<T>, registryEntry: (ResourceKey<T>) -> R): DeferredObject<R> {
 		val deferredObject = DeferredObject<R>(resourceKey)
-		entries.put(deferredObject) { registryEntry(resourceKey) }
+		entries[deferredObject] = Supplier { registryEntry(resourceKey) }
 		return deferredObject
 	}
 

@@ -5,10 +5,10 @@
  * See: https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  */
 
-package dev.pandasystems.pandalib.fabric.platform.registrationhelper
+package dev.pandasystems.pandalib.fabric.platform.registry
 
 import com.google.auto.service.AutoService
-import dev.pandasystems.pandalib.core.platform.ResourceLoaderHelper
+import dev.pandasystems.pandalib.core.platform.registry.ResourceLoaderHelper
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper
 import net.minecraft.resources.ResourceLocation

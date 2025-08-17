@@ -8,9 +8,9 @@
 package dev.pandasystems.pandalib.neoforge
 
 import dev.pandasystems.pandalib.core.PandaLib
-import dev.pandasystems.pandalib.core.platform.deferredRegisterHelper
-import dev.pandasystems.pandalib.core.platform.rendererRegistrationHelper
-import dev.pandasystems.pandalib.core.platform.resourceLoaderHelper
+import dev.pandasystems.pandalib.core.platform.registry.deferredRegisterHelper
+import dev.pandasystems.pandalib.core.platform.registry.rendererRegistrationHelper
+import dev.pandasystems.pandalib.core.platform.registry.resourceLoaderHelper
 import dev.pandasystems.pandalib.neoforge.platform.registration.DeferredRegisterHelperImpl
 import dev.pandasystems.pandalib.neoforge.platform.registration.RendererRegistationHelperImpl
 import dev.pandasystems.pandalib.neoforge.platform.registration.ResourceLoaderHelperImpl

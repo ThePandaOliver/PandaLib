@@ -15,10 +15,10 @@ plugins {
 	kotlin("jvm") version "2.2.0"
 	id("org.jetbrains.gradle.plugin.idea-ext") version "1.1.10"
 
-	id("com.gradleup.shadow") version "8.3.6"
+	id("com.gradleup.shadow") version "9.0.2"
 	id("architectury-plugin") version "3.4-SNAPSHOT"
 	id("dev.architectury.loom") version "1.10-SNAPSHOT"
-	id("io.github.pacifistmc.forgix") version "2.0.0-SNAPSHOT.5.1-FORK.3"
+//	id("io.github.pacifistmc.forgix") version "2.0.0-SNAPSHOT.5.1-FORK.3"
 
 	`maven-publish`
 	id("me.modmuss50.mod-publish-plugin") version "0.8.4"
@@ -70,6 +70,7 @@ allprojects {
 	apply(plugin = "dev.architectury.loom")
 	apply(plugin = "maven-publish")
 	apply(plugin = "com.google.devtools.ksp")
+	apply(plugin = "com.gradleup.shadow")
 
 	group = modGroup
 	version = modVersion
@@ -96,7 +97,6 @@ allprojects {
 
 	val nonModImplementation by configurations.creating
 	configurations.implementation.get().extendsFrom(nonModImplementation)
-	configurations.include.get().extendsFrom(nonModImplementation)
 
 	dependencies {
 		minecraft("com.mojang:minecraft:$mcVersion")
@@ -107,6 +107,7 @@ allprojects {
 
 		nonModImplementation(kotlin("stdlib"))
 		nonModImplementation(kotlin("stdlib-jdk8"))
+		nonModImplementation(kotlin("stdlib-jdk7"))
 		nonModImplementation(kotlin("reflect", version = "2.2.0"))
 		nonModImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
 		nonModImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.10.2")
@@ -124,17 +125,6 @@ allprojects {
 
 	kotlin {
 		jvmToolchain(21)
-	}
-
-	tasks.processResources {
-		val props = mutableMapOf(
-			"mod_version" to version.toString(),
-		)
-
-		inputs.properties(props)
-		filesMatching(listOf("pack.mcmeta", "fabric.mod.json", "META-INF/mods.toml", "META-INF/neoforge.mods.toml")) {
-			expand(props)
-		}
 	}
 
 	tasks {
@@ -162,10 +152,19 @@ allprojects {
 				expand(props)
 			}
 		}
+
+		remapJar {
+			isZip64 = true
+		}
+
+		shadowJar {
+			isZip64 = true
+		}
 	}
 
 	java {
 		withSourcesJar()
+
 	}
 
 	idea {
@@ -182,8 +181,6 @@ allprojects {
 }
 
 subprojects {
-	apply(plugin = "com.gradleup.shadow")
-
 	base { archivesName = "${rootProject.name}-${project.name}" }
 
 	architectury {
@@ -222,6 +219,8 @@ subprojects {
 			isCanBeResolved = true
 			isCanBeConsumed = false
 		}
+
+		include.get().extendsFrom(configurations["nonModImplementation"])
 	}
 
 	tasks.getByName<ShadowJar>("shadowJar") {

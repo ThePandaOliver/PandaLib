@@ -7,7 +7,7 @@
 
 package dev.pandasystems.pandalib.api.registry
 
-import dev.pandasystems.pandalib.core.platform.registryRegistrations
+import dev.pandasystems.pandalib.core.platform.registry.registryRegistrations
 import net.minecraft.core.Registry
 import net.minecraft.network.syncher.EntityDataSerializer
 

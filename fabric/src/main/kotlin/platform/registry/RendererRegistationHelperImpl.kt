@@ -5,10 +5,10 @@
  * See: https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  */
 
-package dev.pandasystems.pandalib.fabric.platform.registrationhelper
+package dev.pandasystems.pandalib.fabric.platform.registry
 
 import com.google.auto.service.AutoService
-import dev.pandasystems.pandalib.core.platform.RendererRegistrationHelper
+import dev.pandasystems.pandalib.core.platform.registry.RendererRegistrationHelper
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers
@@ -17,20 +17,21 @@ import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.EntityType
 import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.entity.BlockEntityType
+import java.util.function.Supplier
 
 @AutoService(RendererRegistrationHelper::class)
 class RendererRegistationHelperImpl : RendererRegistrationHelper {
 	override fun <R : Entity> registerEntityRenderer(
-		type: EntityType<R>,
+		typeProvider: Supplier<EntityType<R>>,
 		provider: EntityRendererProvider<R>
 	) {
-		EntityRendererRegistry.register<R>(type, provider)
+		EntityRendererRegistry.register<R>(typeProvider.get(), provider)
 	}
 
 	override fun <R : BlockEntity> registerBlockEntityRenderer(
-		type: BlockEntityType<R>,
+		typeProvider: Supplier<BlockEntityType<R>>,
 		provider: BlockEntityRendererProvider<R>
 	) {
-		BlockEntityRenderers.register(type, provider)
+		BlockEntityRenderers.register(typeProvider.get(), provider)
 	}
 }

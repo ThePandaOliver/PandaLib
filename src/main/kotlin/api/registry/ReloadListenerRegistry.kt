@@ -7,7 +7,7 @@
 
 package dev.pandasystems.pandalib.api.registry
 
-import dev.pandasystems.pandalib.core.platform.resourceLoaderHelper
+import dev.pandasystems.pandalib.core.platform.registry.resourceLoaderHelper
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.packs.PackType
 import net.minecraft.server.packs.resources.PreparableReloadListener

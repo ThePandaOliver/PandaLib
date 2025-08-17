@@ -9,7 +9,7 @@ package dev.pandasystems.pandalib.neoforge.platform.registration
 
 import com.google.auto.service.AutoService
 import dev.pandasystems.pandalib.api.registry.deferred.DeferredObject
-import dev.pandasystems.pandalib.core.platform.DeferredRegisterHelper
+import dev.pandasystems.pandalib.core.platform.registry.DeferredRegisterHelper
 import net.minecraft.core.Registry
 import net.minecraft.resources.ResourceKey
 import net.neoforged.neoforge.registries.NewRegistryEvent
@@ -48,7 +48,7 @@ class DeferredRegisterHelperImpl : DeferredRegisterHelper {
 		private val entries: MutableMap<DeferredObject<out T>, Supplier<out T>> = mutableMapOf<DeferredObject<out T>, Supplier<out T>>()
 
 		fun add(deferredObject: DeferredObject<out T>, objectSupplier: Supplier<out T>) {
-			entries.put(deferredObject, objectSupplier)
+			entries[deferredObject] = objectSupplier
 		}
 
 		fun register(event: RegisterEvent) {

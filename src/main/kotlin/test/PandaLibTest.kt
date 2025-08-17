@@ -35,7 +35,7 @@ object PandaLibTest {
 		addEventListener(::afterBlockPlace)
 
 		// Renderers
-		registerEntityRenderer(TestRegistry.helloEntity.get()) { HelloEntityRenderer(it) }
+		registerEntityRenderer(TestRegistry.helloEntity) { HelloEntityRenderer(it) }
 	}
 
 	private fun beforePlayerSwitchDimension(event: ServerPlayerWorldChangeEvent.Pre) {

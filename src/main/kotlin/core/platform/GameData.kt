@@ -8,6 +8,7 @@
 package dev.pandasystems.pandalib.core.platform
 
 import dev.pandasystems.pandalib.api.utils.Environment
+import dev.pandasystems.pandalib.core.utils.loadFirstService
 import net.minecraft.client.Minecraft
 import net.minecraft.server.MinecraftServer
 import java.nio.file.Path
@@ -43,3 +44,6 @@ interface GameData {
 		val version: String
 	}
 }
+
+@JvmField
+val game = loadFirstService<GameData>()

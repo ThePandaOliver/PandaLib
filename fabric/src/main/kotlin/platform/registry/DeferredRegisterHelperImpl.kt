@@ -5,12 +5,12 @@
  * See: https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  */
 
-package dev.pandasystems.pandalib.fabric.platform.registrationhelper
+package dev.pandasystems.pandalib.fabric.platform.registry
 
 import com.google.auto.service.AutoService
 import dev.pandasystems.pandalib.api.registry.deferred.DeferredObject
 import dev.pandasystems.pandalib.core.logger
-import dev.pandasystems.pandalib.core.platform.DeferredRegisterHelper
+import dev.pandasystems.pandalib.core.platform.registry.DeferredRegisterHelper
 import net.minecraft.core.RegistrationInfo
 import net.minecraft.core.Registry
 import net.minecraft.core.WritableRegistry

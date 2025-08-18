@@ -4,25 +4,32 @@
  * This code is licensed under the GNU Lesser General Public License v3.0
  * See: https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  */
-
 @file:Suppress("UnstableApiUsage")
+
+plugins {
+	id("modloader")
+}
 
 val neoforgeLoaderVersion: String by project
 
 architectury {
 	neoForge()
+	platformSetupLoomIde()
 }
 
 configurations {
 	getByName("developmentNeoForge").extendsFrom(common.get())
+
+	implementation.get().extendsFrom(nonModImplementation.get())
+	include.get().extendsFrom(nonModImplementation.get())
 	forgeRuntimeLibrary.get().extendsFrom(nonModImplementation.get())
 }
 
 dependencies {
 	neoForge("net.neoforged:neoforge:$neoforgeLoaderVersion")
 
-	common(project(":", configuration = "namedElements"))
-	shadowBundle(project(":", configuration = "transformProductionNeoForge"))
+	common(project(":common", configuration = "namedElements"))
+	shadowBundle(project(":common", configuration = "transformProductionNeoForge"))
 }
 
 tasks.remapJar {

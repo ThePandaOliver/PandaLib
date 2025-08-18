@@ -26,6 +26,7 @@ pluginManagement.repositories {
 	mavenLocal()
 }
 
+include("common")
 include("fabric")
 include("neoforge")
 

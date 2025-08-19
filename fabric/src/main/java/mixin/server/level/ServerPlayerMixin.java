@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2026 Oliver Froberg (The Panda Oliver)
  *
- * This program is free software: you can redistribute it and/or modify 
+ * This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU Lesser General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
  *  any later version.
@@ -23,8 +23,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ServerPlayer.class)
 public abstract class ServerPlayerMixin {
-	@Shadow
-	private boolean isChangingDimension;
+	@Shadow private boolean isChangingDimension;
 
 	@Inject(
 			method = "teleport(Lnet/minecraft/world/level/portal/TeleportTransition;)Lnet/minecraft/server/level/ServerPlayer;",

@@ -25,15 +25,15 @@ object TestRegistry {
 
 	// Item Registry
 
-	val helloItem = itemRegister.register("hello_item") { Item(Item.Properties().setId(it)) }
+	val helloItem = itemRegister.register("hello_item") { Item(Item.Properties()) }
 
 
 	// Block Registry
 
-	val helloBlock = blockRegister.register("hello_block") { Block(BlockBehaviour.Properties.of().setId(it)) }
+	val helloBlock = blockRegister.register("hello_block") { Block(BlockBehaviour.Properties.of()) }
 
 
 	// Entity Registry
 
-	val helloEntity = entityRegister.register("hello_entity") { EntityType.Builder.of(::HelloEntity, MobCategory.MISC).build(it) }
+	val helloEntity = entityRegister.register("hello_entity") { EntityType.Builder.of(::HelloEntity, MobCategory.MISC).build(it.location().path) }
 }

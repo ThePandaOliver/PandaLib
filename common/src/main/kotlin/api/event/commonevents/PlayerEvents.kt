@@ -12,7 +12,7 @@ import dev.pandasystems.pandalib.api.event.Event
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.entity.Entity
-import net.minecraft.world.level.portal.TeleportTransition
+import net.minecraft.world.level.portal.DimensionTransition
 
 data class ServerPlayerJoinEvent(val player: ServerPlayer) : Event
 data class ServerPlayerLeaveEvent(val player: ServerPlayer) : Event
@@ -25,7 +25,7 @@ class ServerPlayerWorldChangeEvent {
 	data class Pre(
 		val player: ServerPlayer,
 		val oldLevel: ServerLevel,
-		val teleportTransition: TeleportTransition
+		val teleportTransition: DimensionTransition
 	) : CancellableEvent {
 		override var cancelled: Boolean = false
 	}
@@ -33,6 +33,6 @@ class ServerPlayerWorldChangeEvent {
 	data class Post(
 		val player: ServerPlayer,
 		val oldLevel: ServerLevel, val newLevel: ServerLevel,
-		val teleportTransition: TeleportTransition
+		val teleportTransition: DimensionTransition
 	) : Event
 }

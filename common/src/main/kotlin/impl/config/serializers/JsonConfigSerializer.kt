@@ -7,20 +7,16 @@
 
 package dev.pandasystems.pandalib.impl.config.serializers
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.ObjectReader
-import com.fasterxml.jackson.databind.ObjectWriter
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import dev.pandasystems.pandalib.api.config.ConfigSerializer
 
-class JsonConfigSerializer<T : Any>(mapper: ObjectMapper = ObjectMapper()) : ConfigSerializer<T> {
-	val reader: ObjectReader = mapper.reader()
-	val writer: ObjectWriter = mapper.writerWithDefaultPrettyPrinter()
-	
+class JsonConfigSerializer<T : Any>(private val gson: Gson = GsonBuilder().setPrettyPrinting().create()) : ConfigSerializer<T> {
 	override fun serialize(config: T): String {
-		return writer.writeValueAsString(config)
+		return gson.toJson(config)
 	}
 
 	override fun deserialize(json: String, clazz: Class<T>): T {
-		return reader.readValue(json, clazz)
+		return gson.fromJson(json, clazz)
 	}
 }

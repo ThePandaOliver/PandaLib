@@ -15,6 +15,7 @@ import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.packs.PackType
 import net.minecraft.server.packs.resources.PreparableReloadListener
 import net.minecraft.server.packs.resources.ResourceManager
+import net.minecraft.util.profiling.ProfilerFiller
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Executor
 
@@ -34,10 +35,12 @@ class ResourceLoaderHelperImpl : ResourceLoaderHelper {
 			override fun reload(
 				preparationBarrier: PreparableReloadListener.PreparationBarrier,
 				resourceManager: ResourceManager,
+				preparationsProfiler: ProfilerFiller,
+				reloadProfiler: ProfilerFiller,
 				backgroundExecutor: Executor,
 				gameExecutor: Executor
 			): CompletableFuture<Void> {
-				return listener.reload(preparationBarrier, resourceManager, backgroundExecutor, gameExecutor)
+				return listener.reload(preparationBarrier, resourceManager, preparationsProfiler, reloadProfiler, backgroundExecutor, gameExecutor)
 			}
 
 			override fun getFabricDependencies(): Collection<ResourceLocation> {

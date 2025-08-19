@@ -11,7 +11,8 @@ import dev.pandasystems.pandalib.api.event.EventListener;
 import dev.pandasystems.pandalib.api.event.commonevents.ServerPlayerWorldChangeEvent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.level.portal.TeleportTransition;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.portal.DimensionTransition;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -26,24 +27,24 @@ public abstract class ServerPlayerEventMixin {
 	public abstract ServerLevel serverLevel();
 
 	@Inject(
-			method = "teleport(Lnet/minecraft/world/level/portal/TeleportTransition;)Lnet/minecraft/server/level/ServerPlayer;",
+			method = "changeDimension",
 			at = @At(
 					value = "FIELD",
 					target = "Lnet/minecraft/server/level/ServerPlayer;isChangingDimension:Z"
 			), cancellable = true
 	)
-	public void beforeDimensionChange(TeleportTransition teleportTransition, CallbackInfoReturnable<ServerPlayer> cir) {
-		var event = new ServerPlayerWorldChangeEvent.Pre((ServerPlayer) (Object) this, serverLevel(), teleportTransition);
+	public void beforeDimensionChange(DimensionTransition transition, CallbackInfoReturnable<Entity> cir) {
+		var event = new ServerPlayerWorldChangeEvent.Pre((ServerPlayer) (Object) this, serverLevel(), transition);
 		EventListener.invokeEvent(event);
 		if (event.getCancelled()) {
 			cir.setReturnValue(null);
 		}
 	}
 
-	@Inject(method = "teleport(Lnet/minecraft/world/level/portal/TeleportTransition;)Lnet/minecraft/server/level/ServerPlayer;", at = @At("RETURN"))
-	public void afterDimensionChange(TeleportTransition teleportTransition, CallbackInfoReturnable<ServerPlayer> cir) {
+	@Inject(method = "changeDimension", at = @At("RETURN"))
+	public void afterDimensionChange(DimensionTransition transition, CallbackInfoReturnable<Entity> cir) {
 		if (this.isChangingDimension) {
-			EventListener.invokeEvent(new ServerPlayerWorldChangeEvent.Post((ServerPlayer) (Object) this, serverLevel(), teleportTransition.newLevel(), teleportTransition));
+			EventListener.invokeEvent(new ServerPlayerWorldChangeEvent.Post((ServerPlayer) (Object) this, serverLevel(), transition.newLevel(), transition));
 		}
 	}
 }

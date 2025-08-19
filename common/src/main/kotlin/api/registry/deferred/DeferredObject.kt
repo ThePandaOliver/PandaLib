@@ -38,7 +38,7 @@ class DeferredObject<T>(@JvmField val key: ResourceKey<*>) : Supplier<T> {
 		val registry = this.registry as Registry<R>?
 		if (registry != null) {
 			@Suppress("UNCHECKED_CAST")
-			this.holder = registry.get(this.key as ResourceKey<R>).orElse(null)
+			this.holder = registry.getHolder(this.key as ResourceKey<R>).orElse(null)
 		} else check(!throwOnMissingRegistry) { "Registry not present for " + this + ": " + this.key.registry() }
 	}
 
@@ -46,7 +46,7 @@ class DeferredObject<T>(@JvmField val key: ResourceKey<*>) : Supplier<T> {
 		get() = key.registryKey()
 
 	val registry: Registry<*>?
-		get() = BuiltInRegistries.REGISTRY.getValue(this.key.registry())
+		get() = BuiltInRegistries.REGISTRY.get(this.key.registry())
 
 	val id: ResourceLocation
 		get() = this.key.location()

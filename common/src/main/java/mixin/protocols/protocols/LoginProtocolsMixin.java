@@ -23,7 +23,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(LoginProtocols.class)
 public class LoginProtocolsMixin {
 	@Inject(method = "method_56018", at = @At("RETURN"))
-	private static void addClientPacket(ProtocolInfoBuilder<ClientGamePacketListener, RegistryFriendlyByteBuf, Unit> protocolInfoBuilder, CallbackInfo ci) {
+	private static void addClientPacket(ProtocolInfoBuilder<ClientGamePacketListener, RegistryFriendlyByteBuf> protocolInfoBuilder, CallbackInfo ci) {
 		protocolInfoBuilder.addPacket(
 				ClientboundPLPayloadPacketKt.getClientboundPLPayloadPacketType(),
 				ClientboundPLPayloadPacketKt.getClientboundPLPayloadCodec()
@@ -31,7 +31,7 @@ public class LoginProtocolsMixin {
 	}
 
 	@Inject(method = "method_56019", at = @At("RETURN"))
-	private static void addServerPacket(ProtocolInfoBuilder<ServerGamePacketListener, RegistryFriendlyByteBuf, Unit> protocolInfoBuilder, CallbackInfo ci) {
+	private static void addServerPacket(ProtocolInfoBuilder<ServerGamePacketListener, RegistryFriendlyByteBuf> protocolInfoBuilder, CallbackInfo ci) {
 		protocolInfoBuilder.addPacket(
 				ServerboundPLPayloadPacketKt.getServerboundPLPayloadPacketType(),
 				ServerboundPLPayloadPacketKt.getServerboundPLPayloadCodec()

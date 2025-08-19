@@ -13,6 +13,7 @@
 package dev.pandasystems.pandalib.neoforge
 
 import dev.pandasystems.pandalib.PandaLib
+import dev.pandasystems.pandalib.core.platform.game
 import dev.pandasystems.pandalib.neoforge.platform.registration.DeferredRegisterImpl
 import dev.pandasystems.pandalib.neoforge.platform.registration.RendererRegistryImpl
 import dev.pandasystems.pandalib.neoforge.platform.registration.ResourceLoaderRegistryImpl

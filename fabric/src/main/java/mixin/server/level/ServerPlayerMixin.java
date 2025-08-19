@@ -25,6 +25,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class ServerPlayerMixin {
 	@Shadow private boolean isChangingDimension;
 
+	@Shadow
+	public abstract ServerLevel serverLevel();
+
 	@Inject(
 			method = "teleport(Lnet/minecraft/world/level/portal/TeleportTransition;)Lnet/minecraft/server/level/ServerPlayer;",
 			at = @At(

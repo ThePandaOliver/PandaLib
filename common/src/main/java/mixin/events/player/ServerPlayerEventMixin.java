@@ -12,7 +12,6 @@ import dev.pandasystems.pandalib.api.event.commonevents.ServerPlayerWorldChangeE
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.level.portal.DimensionTransition;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -33,8 +32,8 @@ public abstract class ServerPlayerEventMixin {
 					target = "Lnet/minecraft/server/level/ServerPlayer;isChangingDimension:Z"
 			), cancellable = true
 	)
-	public void beforeDimensionChange(DimensionTransition transition, CallbackInfoReturnable<Entity> cir) {
-		var event = new ServerPlayerWorldChangeEvent.Pre((ServerPlayer) (Object) this, serverLevel(), transition);
+	public void beforeDimensionChange(ServerLevel destination, CallbackInfoReturnable<Entity> cir) {
+		var event = new ServerPlayerWorldChangeEvent.Pre((ServerPlayer) (Object) this, serverLevel(), destination);
 		EventListener.invokeEvent(event);
 		if (event.getCancelled()) {
 			cir.setReturnValue(null);
@@ -42,9 +41,9 @@ public abstract class ServerPlayerEventMixin {
 	}
 
 	@Inject(method = "changeDimension", at = @At("RETURN"))
-	public void afterDimensionChange(DimensionTransition transition, CallbackInfoReturnable<Entity> cir) {
+	public void afterDimensionChange(ServerLevel destination, CallbackInfoReturnable<Entity> cir) {
 		if (this.isChangingDimension) {
-			EventListener.invokeEvent(new ServerPlayerWorldChangeEvent.Post((ServerPlayer) (Object) this, serverLevel(), transition.newLevel(), transition));
+			EventListener.invokeEvent(new ServerPlayerWorldChangeEvent.Post((ServerPlayer) (Object) this, serverLevel(), destination));
 		}
 	}
 }

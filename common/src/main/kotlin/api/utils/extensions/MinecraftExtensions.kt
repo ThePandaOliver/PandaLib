@@ -12,4 +12,4 @@ package dev.pandasystems.pandalib.api.utils.extensions
 import net.minecraft.resources.ResourceLocation
 
 fun resourceLocation(namespace: String, path: String): ResourceLocation = 
-	ResourceLocation.fromNamespaceAndPath(namespace, path)
+	ResourceLocation(namespace, path)

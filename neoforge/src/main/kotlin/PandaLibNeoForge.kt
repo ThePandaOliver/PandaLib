@@ -8,6 +8,7 @@
 package dev.pandasystems.pandalib.neoforge
 
 import dev.pandasystems.pandalib.core.PandaLib
+import dev.pandasystems.pandalib.core.platform.game
 import dev.pandasystems.pandalib.core.platform.registry.deferredRegisterHelper
 import dev.pandasystems.pandalib.core.platform.registry.rendererRegistrationHelper
 import dev.pandasystems.pandalib.core.platform.registry.resourceLoaderHelper
@@ -37,6 +38,10 @@ class PandaLibNeoForge(val eventBus: IEventBus) {
 		if (rendererRegistrationHelper is RendererRegistationHelperImpl) {
 			val impl = rendererRegistrationHelper as RendererRegistationHelperImpl
 			eventBus.addListener(impl::onEntityRendererRegistryEvent)
+		}
+
+		if (game.isClient) {
+			dev.pandasystems.pandalib.neoforge.client.PandaLibClientNeoForge(eventBus)
 		}
 	}
 }

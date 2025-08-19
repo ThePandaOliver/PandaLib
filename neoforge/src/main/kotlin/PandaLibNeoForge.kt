@@ -32,7 +32,6 @@ class PandaLibNeoForge(val eventBus: IEventBus) {
 		if (resourceLoaderHelper is ResourceLoaderHelperImpl) {
 			val impl = resourceLoaderHelper as ResourceLoaderHelperImpl
 			NeoForge.EVENT_BUS.addListener(impl::addServerReloadListenerEvent)
-			eventBus.addListener(impl::addClientReloadListenerEvent)
 		}
 
 		if (rendererRegistrationHelper is RendererRegistationHelperImpl) {

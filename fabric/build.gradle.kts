@@ -38,7 +38,7 @@ dependencies {
 	modImplementation("net.fabricmc:fabric-loader:$fabricLoaderVersion")
 	modImplementation("net.fabricmc.fabric-api:fabric-api:$fabricApi")
 
-	common(project(":common", configuration = "namedElements"))
+	common(project(":common", configuration = "namedElements")) { isTransitive = false }
 	shadowBundle(project(":common", configuration = "transformProductionFabric"))
 }
 

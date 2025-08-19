@@ -1,6 +1,6 @@
 {
 	"pack": {
-		"description": "PandaLib v${mod_version} Resources",
+		"description": "${mod_name} v${mod_version} Resources",
 		"pack_format": 15
 	}
 }

@@ -1,18 +1,18 @@
 {
 	"schemaVersion": 1,
-	"id": "pandalib",
+	"id": "${mod_id}",
 	"version": "${mod_version}",
-	"name": "PandaLib",
-	"description": "A multipurpose library with a Config API, Kotlin library support, a bit of utility code, and more.",
+	"name": "${mod_name}",
+	"description": "${mod_description}",
 	"authors": [
-		"The Panda Oliver"
+		${mod_authors_fabric}
 	],
 	"contact": {
-		"issues": "https://github.com/PandaMods-Dev/PandaLib/issues",
-		"sources": "https://github.com/PandaMods-Dev/PandaLib"
+		"issues": "https://github.com/ThePandaOliver/PandaLib/issues",
+		"sources": "https://github.com/ThePandaOliver/PandaLib"
 	},
-	"license": "GNU LGPLv3",
-	"icon": "assets/pandalib/icon.png",
+	"license": "${mod_license}",
+	"icon": "assets/${mod_id}/icon.png",
 	"environment": "*",
 	"entrypoints": {
 		"main": [
@@ -23,22 +23,21 @@
 		]
 	},
 	"mixins": [
-		"pandalib.mixins.json",
-		"pandalib-common.mixins.json"
+		"${mod_id}.mixins.json",
+		"${mod_id}-common.mixins.json"
 	],
 	"depends": {
-		"fabric": "*",
+		"fabric": ">=${fabric_loader_version}",
 		"fabric-api": "*",
-		"minecraft": ">=1.21.6"
+		"minecraft": "${minecraft_version}"
 	},
 	"custom": {
 		"modmenu": {
 			"links": {
 				"modmenu.discord": "https://discord.gg/wjPt4vEfXb",
-				"modmenu.kofi": "https://ko-fi.com/pandamods",
 				"modmenu.curseforge": "https://www.curseforge.com/minecraft/mc-mods/pandalib",
 				"modmenu.modrinth": "https://modrinth.com/mod/pandalib",
-				"modmenu.github_releases": "https://github.com/PandaMods-Dev/PandaLib/releases"
+				"modmenu.github_releases": "https://github.com/ThePandaOliver/PandaLib/releases"
 			},
 			"badges": [
 				"library"

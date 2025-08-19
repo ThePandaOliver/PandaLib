@@ -33,7 +33,7 @@ configurations {
 dependencies {
 	neoForge("net.neoforged:neoforge:$neoforgeLoaderVersion")
 
-	common(project(":common", configuration = "namedElements"))
+	common(project(":common", configuration = "namedElements")) { isTransitive = false }
 	shadowBundle(project(":common", configuration = "transformProductionNeoForge"))
 }
 

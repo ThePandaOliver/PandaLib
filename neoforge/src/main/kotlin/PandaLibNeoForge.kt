@@ -32,7 +32,6 @@ class PandaLibNeoForge(val eventBus: IEventBus) {
 		eventBus.addListener((deferredRegister as DeferredRegisterImpl)::registerNewRegistryEvent)
 
 		NeoForge.EVENT_BUS.addListener((resourceLoaderRegistry as ResourceLoaderRegistryImpl)::addServerReloadListenerEvent)
-		eventBus.addListener((resourceLoaderRegistry as ResourceLoaderRegistryImpl)::addClientReloadListenerEvent)
 
 		eventBus.addListener((rendererRegistry as RendererRegistryImpl)::onEntityRendererRegistryEvent)
 

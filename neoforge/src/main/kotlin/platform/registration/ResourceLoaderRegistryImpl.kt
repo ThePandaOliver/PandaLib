@@ -14,17 +14,18 @@ package dev.pandasystems.pandalib.neoforge.platform.registration
 
 import com.google.auto.service.AutoService
 import dev.pandasystems.pandalib.registry.ResourceLoaderRegistryPlatform
+import net.minecraft.client.Minecraft
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.packs.PackType
 import net.minecraft.server.packs.resources.PreparableReloadListener
-import net.neoforged.neoforge.client.event.AddClientReloadListenersEvent
-import net.neoforged.neoforge.event.AddServerReloadListenersEvent
+import net.minecraft.server.packs.resources.ReloadableResourceManager
+import net.neoforged.neoforge.event.AddReloadListenerEvent
 import java.util.function.Consumer
+
 
 @AutoService(ResourceLoaderRegistryPlatform::class)
 class ResourceLoaderRegistryImpl : ResourceLoaderRegistryPlatform {
 	private val serverDataReloadListeners = mutableListOf<Pair<ResourceLocation, PreparableReloadListener>>()
-	private val clientDataReloadListeners = mutableListOf<Pair<ResourceLocation, PreparableReloadListener>>()
 
 	override fun registerReloadListener(
 		packType: PackType,
@@ -35,15 +36,11 @@ class ResourceLoaderRegistryImpl : ResourceLoaderRegistryPlatform {
 		if (packType == PackType.SERVER_DATA) {
 			serverDataReloadListeners += id to listener
 		} else {
-			clientDataReloadListeners += id to listener
+			(Minecraft.getInstance().resourceManager as ReloadableResourceManager).registerReloadListener(listener)
 		}
 	}
 
-	fun addServerReloadListenerEvent(event: AddServerReloadListenersEvent) {
-		serverDataReloadListeners.forEach(Consumer { (id, listener) -> event.addListener(id, listener) })
-	}
-
-	fun addClientReloadListenerEvent(event: AddClientReloadListenersEvent) {
-		clientDataReloadListeners.forEach(Consumer { (id, listener) -> event.addListener(id, listener) })
+	fun addServerReloadListenerEvent(event: AddReloadListenerEvent) {
+		serverDataReloadListeners.forEach(Consumer { (_, listener) -> event.addListener(listener) })
 	}
 }

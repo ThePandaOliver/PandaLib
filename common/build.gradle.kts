@@ -8,11 +8,15 @@
 
 plugins {
 	id("common")
+	`maven-publish`
 }
 
-val buildFor: String by extra
+val mcVersion: String by project
+val buildFor: String by project
 
-val fabricLoaderVersion: String? by extra
+val modId: String by project
+
+val fabricLoaderVersion: String? by project
 
 architectury {
 	common(buildFor.split(",").map { it.trim() })
@@ -26,4 +30,15 @@ dependencies {
 	// We depend on fabric loader here to use the fabric @Environment annotations and get the mixin dependencies
 	// Do NOT use other classes from fabric loader
 	modImplementation("net.fabricmc:fabric-loader:$fabricLoaderVersion")
+}
+
+publishing {
+	publications {
+		create<MavenPublication>("maven") {
+			from(components["java"])
+
+			artifactId = modId
+			version = "mc${mcVersion}-${project.version}"
+		}
+	}
 }

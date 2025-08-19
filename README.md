@@ -69,7 +69,7 @@ dependencies {
 
 ## Advertisement:
 
-> ### Thanks to **Jetbrains** for supporting this project with their open source program.\
+> ### Thanks to **Jetbrains** for supporting this project with their open source program.
 > [<img src="https://resources.jetbrains.com/storage/products/company/brand/logos/jetbrains.svg" width=300px>](https://jb.gg/OpenSourceSupport)
 
 > ### Thanks to **Kinetic Hosting** for supporting this project

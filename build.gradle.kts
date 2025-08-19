@@ -17,13 +17,10 @@ plugins {
 	id("com.google.devtools.ksp") version "2.2.0-2.0.2"
 }
 
-val mcVersion: String by extra
-
 subprojects {
 	apply(plugin = "org.jetbrains.kotlin.jvm")
 	apply(plugin = "org.jetbrains.gradle.plugin.idea-ext")
 	apply(plugin = "com.google.devtools.ksp")
-	apply(plugin = "maven-publish")
 
 	val nonModImplementation: Configuration by configurations.creating
 
@@ -44,16 +41,5 @@ subprojects {
 		runtimeOnly("com.google.auto.service:auto-service-annotations:1.1.1")
 		compileOnly("com.google.auto.service:auto-service-annotations:1.1.1")
 		ksp("dev.zacsweers.autoservice:auto-service-ksp:1.2.0")
-	}
-
-	publishing {
-		publications {
-			create<MavenPublication>("maven") {
-				from(components["java"])
-
-				artifactId = base.archivesName.get()
-				version = "mc${mcVersion}-${project.version}"
-			}
-		}
 	}
 }

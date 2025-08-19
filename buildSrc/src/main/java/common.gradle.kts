@@ -41,12 +41,12 @@ architectury {
 
 group = modGroup
 version = modVersion
-base { archivesName = "${rootProject.name}-${project.name}" }
+base { archivesName = "${modId}-${project.name}" }
 
 loom {
 	silentMojangMappingsLicense()
 	log4jConfigs.from(rootProject.file("log4j2.xml"))
-	accessWidenerPath = file("src/main/resources/pandalib.accesswidener")
+	accessWidenerPath = file("src/main/resources/$modId.accesswidener")
 
 	decompilers {
 		get("vineflower").apply { // Adds names to lambdas - useful for mixins

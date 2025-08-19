@@ -8,7 +8,12 @@
 
 plugins {
 	id("modloader")
+	`maven-publish`
 }
+
+val mcVersion: String by project
+
+val modId: String by project
 
 val fabricLoaderVersion: String by project
 val fabricApi: String by project
@@ -35,4 +40,15 @@ dependencies {
 
 	common(project(":common", configuration = "namedElements"))
 	shadowBundle(project(":common", configuration = "transformProductionFabric"))
+}
+
+publishing {
+	publications {
+		create<MavenPublication>("maven") {
+			from(components["java"])
+
+			artifactId = "$modId-fabric"
+			version = "mc${mcVersion}-${project.version}"
+		}
+	}
 }

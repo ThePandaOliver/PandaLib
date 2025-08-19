@@ -8,7 +8,12 @@
 
 plugins {
 	id("modloader")
+	`maven-publish`
 }
+
+val mcVersion: String by project
+
+val modId: String by project
 
 val neoforgeLoaderVersion: String by project
 
@@ -34,4 +39,15 @@ dependencies {
 
 tasks.remapJar {
 	atAccessWideners.add(loom.accessWidenerPath.get().asFile.name)
+}
+
+publishing {
+	publications {
+		create<MavenPublication>("maven") {
+			from(components["java"])
+
+			artifactId = "$modId-neoforge"
+			version = "mc${mcVersion}-${project.version}"
+		}
+	}
 }

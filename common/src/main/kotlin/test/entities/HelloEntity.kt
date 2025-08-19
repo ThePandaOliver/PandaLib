@@ -7,14 +7,13 @@
 
 package dev.pandasystems.pandalib.test.entities
 
+import net.minecraft.nbt.CompoundTag
 import net.minecraft.network.syncher.SynchedEntityData
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.damagesource.DamageSource
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.EntityType
 import net.minecraft.world.level.Level
-import net.minecraft.world.level.storage.ValueInput
-import net.minecraft.world.level.storage.ValueOutput
 
 class HelloEntity(entityType: EntityType<out HelloEntity>, level: Level) : Entity(entityType, level) {
 	override fun defineSynchedData(builder: SynchedEntityData.Builder) {
@@ -28,9 +27,9 @@ class HelloEntity(entityType: EntityType<out HelloEntity>, level: Level) : Entit
 		return false
 	}
 
-	override fun readAdditionalSaveData(valueInput: ValueInput) {
+	override fun readAdditionalSaveData(tag: CompoundTag) {
 	}
 
-	override fun addAdditionalSaveData(valueOutput: ValueOutput) {
+	override fun addAdditionalSaveData(tag: CompoundTag) {
 	}
 }

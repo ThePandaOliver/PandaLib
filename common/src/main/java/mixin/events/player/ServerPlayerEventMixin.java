@@ -20,10 +20,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ServerPlayer.class)
 public abstract class ServerPlayerEventMixin {
-	@Shadow
-	public abstract ServerLevel level();
-
 	@Shadow private boolean isChangingDimension;
+
+	@Shadow
+	public abstract ServerLevel serverLevel();
 
 	@Inject(
 			method = "teleport(Lnet/minecraft/world/level/portal/TeleportTransition;)Lnet/minecraft/server/level/ServerPlayer;",
@@ -33,7 +33,7 @@ public abstract class ServerPlayerEventMixin {
 			), cancellable = true
 	)
 	public void beforeDimensionChange(TeleportTransition teleportTransition, CallbackInfoReturnable<ServerPlayer> cir) {
-		var event = new ServerPlayerWorldChangeEvent.Pre((ServerPlayer) (Object) this, level(), teleportTransition);
+		var event = new ServerPlayerWorldChangeEvent.Pre((ServerPlayer) (Object) this, serverLevel(), teleportTransition);
 		EventListener.invokeEvent(event);
 		if (event.getCancelled()) {
 			cir.setReturnValue(null);
@@ -43,7 +43,7 @@ public abstract class ServerPlayerEventMixin {
 	@Inject(method = "teleport(Lnet/minecraft/world/level/portal/TeleportTransition;)Lnet/minecraft/server/level/ServerPlayer;", at = @At("RETURN"))
 	public void afterDimensionChange(TeleportTransition teleportTransition, CallbackInfoReturnable<ServerPlayer> cir) {
 		if (this.isChangingDimension) {
-			EventListener.invokeEvent(new ServerPlayerWorldChangeEvent.Post((ServerPlayer) (Object) this, level(), teleportTransition.newLevel(), teleportTransition));
+			EventListener.invokeEvent(new ServerPlayerWorldChangeEvent.Post((ServerPlayer) (Object) this, serverLevel(), teleportTransition.newLevel(), teleportTransition));
 		}
 	}
 }

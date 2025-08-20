@@ -11,7 +11,6 @@ import com.google.auto.service.AutoService
 import dev.pandasystems.pandalib.api.registry.deferred.DeferredObject
 import dev.pandasystems.pandalib.core.logger
 import dev.pandasystems.pandalib.core.platform.registry.DeferredRegisterHelper
-import net.minecraft.core.RegistrationInfo
 import net.minecraft.core.Registry
 import net.minecraft.core.WritableRegistry
 import net.minecraft.core.registries.BuiltInRegistries
@@ -34,6 +33,6 @@ class DeferredRegisterHelperImpl : DeferredRegisterHelper {
 		check(!BuiltInRegistries.REGISTRY.containsKey(registryName)) { "Attempted duplicate registration of registry $registryName" }
 
 		@Suppress("UNCHECKED_CAST")
-		(BuiltInRegistries.REGISTRY as WritableRegistry<Registry<*>>).register(registry.key() as ResourceKey<Registry<*>>, registry, RegistrationInfo.BUILT_IN)
+		(BuiltInRegistries.REGISTRY as WritableRegistry<Registry<*>>).register(registry.key() as ResourceKey<Registry<*>>, registry, registry.registryLifecycle())
 	}
 }

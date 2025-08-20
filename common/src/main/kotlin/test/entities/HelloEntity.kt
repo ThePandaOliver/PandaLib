@@ -14,7 +14,7 @@ import net.minecraft.world.entity.EntityType
 import net.minecraft.world.level.Level
 
 class HelloEntity(entityType: EntityType<out HelloEntity>, level: Level) : Entity(entityType, level) {
-	override fun defineSynchedData(builder: SynchedEntityData.Builder) {
+	override fun defineSynchedData() {
 	}
 
 	override fun readAdditionalSaveData(tag: CompoundTag) {

@@ -8,41 +8,41 @@
 
 package dev.pandasystems.pandalib.api.networking
 
+import dev.pandasystems.pandalib.api.codec.StreamCodec
 import net.minecraft.network.FriendlyByteBuf
-import net.minecraft.network.codec.StreamCodec
 import net.minecraft.network.protocol.PacketFlow
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 import net.minecraft.resources.ResourceLocation
 
 @JvmField
-internal val clientPacketHandlers = mutableMapOf<CustomPacketPayload.Type<out CustomPacketPayload>, PacketHandler<CustomPacketPayload>>()
+internal val clientPacketHandlers = mutableMapOf<ResourceLocation, PacketHandler<CustomPacketPayload>>()
 
 @JvmField
-internal val serverPacketHandlers = mutableMapOf<CustomPacketPayload.Type<out CustomPacketPayload>, PacketHandler<CustomPacketPayload>>()
+internal val serverPacketHandlers = mutableMapOf<ResourceLocation, PacketHandler<CustomPacketPayload>>()
 
 @JvmField
-internal val packetCodecs = mutableMapOf<ResourceLocation, CustomPacketPayload.TypeAndCodec<FriendlyByteBuf, CustomPacketPayload>>()
+internal val packetCodecs = mutableMapOf<ResourceLocation, StreamCodec<FriendlyByteBuf, CustomPacketPayload>>()
 
 @JvmName("registerCodec")
-fun <T : CustomPacketPayload> registerPacketCodec(type: CustomPacketPayload.Type<T>, codec: StreamCodec<FriendlyByteBuf, T>) {
-	require(!packetCodecs.containsKey(type.id)) { "Packet type $type already has a codec" }
+fun <T : CustomPacketPayload> registerPacketCodec(id: ResourceLocation, codec: StreamCodec<FriendlyByteBuf, T>) {
+	require(!packetCodecs.containsKey(id)) { "Packet type $id already has a codec" }
 	@Suppress("UNCHECKED_CAST")
-	packetCodecs[type.id] = CustomPacketPayload.TypeAndCodec(type, codec) as CustomPacketPayload.TypeAndCodec<FriendlyByteBuf, CustomPacketPayload>
+	packetCodecs[id] = codec as StreamCodec<FriendlyByteBuf, CustomPacketPayload>
 }
 
 @JvmName("registerHandler")
-fun <T : CustomPacketPayload> registerPacketHandler(flow: PacketFlow, type: CustomPacketPayload.Type<T>, handler: PacketHandler<T>) {
+fun <T : CustomPacketPayload> registerPacketHandler(flow: PacketFlow, id: ResourceLocation, handler: PacketHandler<T>) {
 	val handlers = when (flow) {
 		PacketFlow.CLIENTBOUND -> clientPacketHandlers
 		PacketFlow.SERVERBOUND -> serverPacketHandlers
 	}
-	require(!handlers.containsKey(type)) { "Packet type $type already has a handler" }
+	require(!handlers.containsKey(id)) { "Packet type $id already has a handler" }
 	@Suppress("UNCHECKED_CAST")
-	handlers[type] = handler as PacketHandler<CustomPacketPayload>
+	handlers[id] = handler as PacketHandler<CustomPacketPayload>
 }
 
 @JvmName("registerHandler")
-fun <T : CustomPacketPayload> registerPacketHandler(type: CustomPacketPayload.Type<T>, handler: PacketHandler<T>) {
-	registerPacketHandler(PacketFlow.CLIENTBOUND, type, handler)
-	registerPacketHandler(PacketFlow.SERVERBOUND, type, handler)
+fun <T : CustomPacketPayload> registerPacketHandler(id: ResourceLocation, handler: PacketHandler<T>) {
+	registerPacketHandler(PacketFlow.CLIENTBOUND, id, handler)
+	registerPacketHandler(PacketFlow.SERVERBOUND, id, handler)
 }

@@ -6,17 +6,8 @@
  */
 package dev.pandasystems.pandalib.api.networking.packets.bundle
 
-import dev.pandasystems.pandalib.core.PandaLib
 import net.minecraft.network.protocol.BundleDelimiterPacket
-import net.minecraft.network.protocol.PacketFlow
-import net.minecraft.network.protocol.PacketType
 import net.minecraft.network.protocol.game.ServerGamePacketListener
 
-val serverboundPLBundleDelimiterType = PacketType<ServerboundPLBundleDelimiterPacket>(PacketFlow.SERVERBOUND, PandaLib.resourceLocation("bundle_delimiter"))
-
-class ServerboundPLBundleDelimiterPacket : BundleDelimiterPacket<ServerGamePacketListener>() {
-	override fun type(): PacketType<ServerboundPLBundleDelimiterPacket> {
-		return serverboundPLBundleDelimiterType
-	}
-}
+class ServerboundPLBundleDelimiterPacket : BundleDelimiterPacket<ServerGamePacketListener>()
 

@@ -7,22 +7,13 @@
 
 package dev.pandasystems.pandalib.api.networking.packets.bundle
 
-import dev.pandasystems.pandalib.core.PandaLib
 import net.minecraft.network.protocol.BundlePacket
 import net.minecraft.network.protocol.Packet
-import net.minecraft.network.protocol.PacketFlow
-import net.minecraft.network.protocol.PacketType
 import net.minecraft.network.protocol.PacketUtils
 import net.minecraft.network.protocol.game.ServerGamePacketListener
 import net.minecraft.server.network.ServerCommonPacketListenerImpl
 
-val serverboundPLBundleType = PacketType<ServerboundPLBundlePacket>(PacketFlow.SERVERBOUND, PandaLib.resourceLocation("bundle"))
-
-class ServerboundPLBundlePacket(iterable: Iterable<Packet<in ServerGamePacketListener>>): BundlePacket<ServerGamePacketListener>(iterable) {
-	override fun type(): PacketType<ServerboundPLBundlePacket> {
-		return serverboundPLBundleType
-	}
-
+class ServerboundPLBundlePacket(iterable: Iterable<Packet<ServerGamePacketListener>>): BundlePacket<ServerGamePacketListener>(iterable) {
 	override fun handle(listener: ServerGamePacketListener) {
 		listener.handlePandalibBundlePacket(this)
 	}

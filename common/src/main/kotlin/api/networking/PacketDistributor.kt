@@ -91,7 +91,7 @@ fun sendPacketToPlayersTrackingChunk(
 
 private fun makeServerboundPacket(payload: CustomPacketPayload, vararg payloads: CustomPacketPayload): Packet<*> {
 	if (payloads.isNotEmpty()) {
-		val packets = mutableListOf<Packet<in ServerGamePacketListener>>()
+		val packets = mutableListOf<Packet<ServerGamePacketListener>>()
 		packets.add(ServerboundPLPayloadPacket(payload))
 		payloads.forEach { packets.add(ServerboundPLPayloadPacket(it)) }
 		return ServerboundPLBundlePacket(packets)
@@ -102,7 +102,7 @@ private fun makeServerboundPacket(payload: CustomPacketPayload, vararg payloads:
 
 private fun makeClientboundPacket(payload: CustomPacketPayload, vararg payloads: CustomPacketPayload): Packet<*> {
 	if (payloads.isNotEmpty()) {
-		val packets = mutableListOf<Packet<in ClientGamePacketListener>>()
+		val packets = mutableListOf<Packet<ClientGamePacketListener>>()
 		packets.add(ClientboundPLPayloadPacket(payload))
 		payloads.forEach { packets.add(ClientboundPLPayloadPacket(it)) }
 		return ClientboundBundlePacket(packets)

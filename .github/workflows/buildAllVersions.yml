@@ -33,7 +33,12 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
           restore-keys: |
             ${{ runner.os }}-gradle-
-
+      - name: Make Gradle wrapper executable
+        shell: bash
+        run: |
+          chmod +x ./gradlew
+          # Persist executable bit in the index for future clones (best effort)
+          git update-index --chmod=+x gradlew || true
       - name: Build
         shell: bash
         run: |
@@ -69,7 +74,11 @@ jobs:
         with:
           name: build-${{ github.ref_name }}
           path: artifacts/current
-
+      - name: Make Gradle wrapper executable
+        shell: bash
+        run: |
+          chmod +x ./gradlew
+          git update-index --chmod=+x gradlew || true
       # Determine the other branch name (example: swap fabric<->forge in path)
       - name: Compute other branch
         id: other
@@ -137,6 +146,11 @@ jobs:
         run: |
           CUR_JAR="${{ steps.jars.outputs.cur }}"
           OTHER_JAR="${{ steps.jars.outputs.other }}"
+
+          echo "Merging with Forgix:"
+          echo "  current: $CUR_JAR"
+          echo "  other:   $OTHER_JAR"
+
           mkdir -p forgix-input
           cp "$CUR_JAR" forgix-input/
           cp "$OTHER_JAR" forgix-input/

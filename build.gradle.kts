@@ -8,7 +8,6 @@
 
 import net.fabricmc.loom.task.RemapJarTask
 
-
 plugins {
 	id("architectury-plugin") apply false
 	id("dev.architectury.loom") apply false

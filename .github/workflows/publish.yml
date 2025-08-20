@@ -11,8 +11,8 @@ on:
     branches: [ "**" ]
 
 jobs:
-  build:
-    name: Build
+  publish:
+    name: Publish maven artifacts to GitHub Packages
     runs-on: ubuntu-latest
 
     permissions:
@@ -36,20 +36,5 @@ jobs:
       - name: Build with Gradle Wrapper
         run: ./gradlew clean build
 
-      - name: Upload individual jars
-        uses: actions/upload-artifact@v4
-        with:
-          name: Individual_Jars
-          path: |
-            fabric/build/libs/
-            neoforge/build/libs/
-            forge/build/libs/
-
-      - name: Merge jars
-        run: ./gradlew mergeJars
-
-      - name: Upload merged jar
-        uses: actions/upload-artifact@v4
-        with:
-          name: Merged_Jar
-          path: build/forgix/
+      - name: Publish to GitHub Packages
+        run: ./gradlew publish

@@ -48,7 +48,7 @@ class DeferredObject<T>(val key: ResourceKey<*>) : Supplier<T> {
 	}
 
 	val registryKey: ResourceKey<out Registry<*>>
-		get() = key.registryKey()
+		get() = ResourceKey.createRegistryKey<T>(key.registry())
 
 	val registry: Registry<*>?
 		get() = BuiltInRegistries.REGISTRY.get(this.key.registry())

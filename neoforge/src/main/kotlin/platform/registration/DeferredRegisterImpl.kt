@@ -33,7 +33,9 @@ class DeferredRegisterImpl : DeferredRegisterPlatform {
 	) {
 		@Suppress("UNCHECKED_CAST")
 		val pending: PendingRegistries<T> = pendingRegistries
-			.computeIfAbsent(deferredObject.key.registryKey()) { k: ResourceKey<out Registry<*>> -> PendingRegistries(deferredObject.key.registryKey()) } as PendingRegistries<T>
+			.computeIfAbsent(ResourceKey.createRegistryKey<T>(deferredObject.key.registry())) { k: ResourceKey<out Registry<*>> ->
+				PendingRegistries(ResourceKey.createRegistryKey<T>(deferredObject.key.registry()))
+			} as PendingRegistries<T>
 		pending.add(deferredObject, supplier)
 	}
 

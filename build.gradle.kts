@@ -6,6 +6,9 @@
  */
 @file:Suppress("UnstableApiUsage")
 
+import net.fabricmc.loom.task.RemapJarTask
+
+
 plugins {
 	id("architectury-plugin") apply false
 	id("dev.architectury.loom") apply false
@@ -15,6 +18,12 @@ plugins {
 	id("me.modmuss50.mod-publish-plugin") version "0.8.4"
 	id("com.google.devtools.ksp") version "2.2.0-2.0.2"
 }
+
+val modVersion: String by project
+val modGroup: String by project
+
+version = modVersion
+group = modGroup
 
 subprojects {
 	apply(plugin = "org.jetbrains.kotlin.jvm")
@@ -41,4 +50,41 @@ subprojects {
 		compileOnly("com.google.auto.service:auto-service-annotations:1.1.1")
 		ksp("dev.zacsweers.autoservice:auto-service-ksp:1.2.0")
 	}
+}
+
+evaluationDependsOnChildren()
+
+forgix {
+	archiveClassifier = ""
+
+	findProject(":fabric")?.let {
+		fabric {
+			inputJar = it.tasks.named<RemapJarTask>("remapJar").get().archiveFile
+		}
+	}
+
+	findProject(":neoforge")?.let {
+		neoforge {
+			inputJar = it.tasks.named<RemapJarTask>("remapJar").get().archiveFile
+		}
+	}
+
+	findProject(":forge")?.let {
+		forge {
+			inputJar = it.tasks.named<RemapJarTask>("remapJar").get().archiveFile
+		}
+	}
+
+//	multiversion {
+//		destinationDirectory
+//		archiveVersion = modVersion
+//
+//		val versions =  file("versionProperties").listFiles { file ->
+//			file.isFile && file.extension == "properties"
+//		}!!.map { file -> file.nameWithoutExtension }
+//
+//		inputJars = project.files(
+//			versions.map { version -> "build/forgix/${rootProject.name}-$modVersion+$version.jar" }
+//		)
+//	}
 }

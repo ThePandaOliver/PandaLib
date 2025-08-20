@@ -23,6 +23,7 @@ jobs:
         with:
           java-version: '21'
           distribution: 'temurin'
+          cache: 'gradle'
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
@@ -37,7 +38,10 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: Individual_Jars
-          path: build/libs/
+          path: |
+            fabric/build/libs/
+            neoforge/build/libs/
+            forge/build/libs/
 
       - name: Merge jars
         run: ./gradlew mergeJars

@@ -14,7 +14,6 @@ import dev.pandasystems.pandalib.api.networking.packets.bundle.ServerboundPLBund
 import dev.pandasystems.pandalib.core.platform.game
 import net.minecraft.client.Minecraft
 import net.minecraft.network.protocol.Packet
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 import net.minecraft.network.protocol.game.ClientGamePacketListener
 import net.minecraft.network.protocol.game.ClientboundBundlePacket
 import net.minecraft.network.protocol.game.ServerGamePacketListener

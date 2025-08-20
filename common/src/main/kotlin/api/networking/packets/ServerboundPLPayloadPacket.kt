@@ -8,12 +8,11 @@
 package dev.pandasystems.pandalib.api.networking.packets
 
 import dev.pandasystems.pandalib.api.codec.StreamCodec
+import dev.pandasystems.pandalib.api.networking.CustomPacketPayload
 import dev.pandasystems.pandalib.api.networking.packetCodecs
 import dev.pandasystems.pandalib.api.networking.serverPacketHandlers
 import net.minecraft.network.FriendlyByteBuf
 import net.minecraft.network.protocol.Packet
-import net.minecraft.network.protocol.common.ServerCommonPacketListener
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 import net.minecraft.network.protocol.game.ServerGamePacketListener
 
 data class ServerboundPLPayloadPacket(val payload: CustomPacketPayload) : Packet<ServerGamePacketListener> {

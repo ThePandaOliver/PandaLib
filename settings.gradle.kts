@@ -28,6 +28,5 @@ pluginManagement.repositories {
 
 include("common")
 include("fabric")
-include("neoforge")
 
 rootProject.name = "PandaLib"

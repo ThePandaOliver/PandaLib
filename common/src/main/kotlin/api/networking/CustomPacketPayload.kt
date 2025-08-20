@@ -7,6 +7,10 @@
 
 package dev.pandasystems.pandalib.api.networking
 
-fun interface PacketHandler<T : CustomPacketPayload> {
-	fun handle(payload: T)
+import net.minecraft.network.FriendlyByteBuf
+import net.minecraft.resources.ResourceLocation
+
+interface CustomPacketPayload {
+	fun id(): ResourceLocation
+	fun write(buffer: FriendlyByteBuf)
 }

@@ -13,7 +13,6 @@ import dev.pandasystems.pandalib.api.event.commonevents.ServerPlayerLeaveEvent;
 import dev.pandasystems.pandalib.api.event.commonevents.ServerPlayerRespawnEvent;
 import net.minecraft.network.Connection;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.server.network.CommonListenerCookie;
 import net.minecraft.server.players.PlayerList;
 import net.minecraft.world.entity.Entity;
 import org.spongepowered.asm.mixin.Mixin;
@@ -25,7 +24,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(PlayerList.class)
 public class PlayerListEventMixin {
 	@Inject(method = "placeNewPlayer", at = @At("RETURN"))
-	private void onPlayerJoinEvent(Connection connection, ServerPlayer player, CommonListenerCookie cookie, CallbackInfo ci) {
+	private void onPlayerJoinEvent(Connection netManager, ServerPlayer player, CallbackInfo ci) {
 		EventListener.invokeEvent(new ServerPlayerJoinEvent(player));
 	}
 
@@ -35,9 +34,9 @@ public class PlayerListEventMixin {
 	}
 
 	@Inject(method = "respawn", at = @At("TAIL"))
-	private void onRespawn(ServerPlayer player, boolean keepInventory, Entity.RemovalReason removalReason, CallbackInfoReturnable<ServerPlayer> cir) {
+	private void onRespawn(ServerPlayer player, boolean keepEverything, CallbackInfoReturnable<ServerPlayer> cir) {
 		ServerPlayer newPlayer = cir.getReturnValue();
 
-		EventListener.invokeEvent(new ServerPlayerRespawnEvent(player, newPlayer, keepInventory, removalReason));
+		EventListener.invokeEvent(new ServerPlayerRespawnEvent(player, newPlayer, keepEverything));
 	}
 }

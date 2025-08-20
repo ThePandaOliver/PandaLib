@@ -17,7 +17,7 @@ data class ServerPlayerJoinEvent(val player: ServerPlayer) : Event
 data class ServerPlayerLeaveEvent(val player: ServerPlayer) : Event
 data class ServerPlayerRespawnEvent(
 	val oldPlayer: ServerPlayer, val newPlayer: ServerPlayer,
-	val keepInventory: Boolean, val removalReason: Entity.RemovalReason
+	val keepInventory: Boolean
 ) : Event
 
 class ServerPlayerWorldChangeEvent {

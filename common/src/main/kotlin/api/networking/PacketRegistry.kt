@@ -11,7 +11,6 @@ package dev.pandasystems.pandalib.api.networking
 import dev.pandasystems.pandalib.api.codec.StreamCodec
 import net.minecraft.network.FriendlyByteBuf
 import net.minecraft.network.protocol.PacketFlow
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 import net.minecraft.resources.ResourceLocation
 
 @JvmField

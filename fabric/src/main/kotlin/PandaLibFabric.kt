@@ -9,7 +9,6 @@ package dev.pandasystems.pandalib.fabric
 
 import dev.pandasystems.pandalib.event.commonevents.ServerStartingEvent
 import dev.pandasystems.pandalib.PandaLib
-import dev.pandasystems.pandalib.event.EventListener
 import net.fabricmc.api.ModInitializer
 import net.minecraft.server.MinecraftServer
 

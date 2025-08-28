@@ -8,7 +8,7 @@
 package dev.pandasystems.pandalib.listener
 
 interface Listener<T> {
-	fun register(listener: T)
+	fun register(priority: Int = 0, listener: T)
 	fun unregister(listener: T)
 	fun clear()
 	fun invoker(): T

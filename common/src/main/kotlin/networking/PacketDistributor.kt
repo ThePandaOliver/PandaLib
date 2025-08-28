@@ -31,82 +31,83 @@ import net.minecraft.world.level.ChunkPos
  *
  * Original source: https://github.com/neoforged/NeoForge/blob/1.21.x/src/main/java/net/neoforged/neoforge/network/PacketDistributor.java
  */
-
-fun sendPacketToServer(payload: CustomPacketPayload, vararg payloads: CustomPacketPayload) {
-	require(game.isClient) { "Cannot send serverbound payloads from the server" }
-	val listener = requireNotNull(Minecraft.getInstance().player!!.connection)
-	listener.send(makeServerboundPacket(payload, *payloads))
-}
-
-fun sendPacketToPlayer(player: ServerPlayer, payload: CustomPacketPayload, vararg payloads: CustomPacketPayload) {
-	player.connection.send(makeClientboundPacket(payload, *payloads))
-}
-
-fun sendPacketToPlayersInDimension(level: ServerLevel, payload: CustomPacketPayload, vararg payloads: CustomPacketPayload) {
-	val packet = makeClientboundPacket(payload, *payloads)
-	level.server.playerList.broadcastAll(packet, level.dimension())
-}
-
-fun sendPacketToPlayersNear(
-	level: ServerLevel, excluded: ServerPlayer, x: Double, y: Double, z: Double,
-	radius: Double, payload: CustomPacketPayload, vararg payloads: CustomPacketPayload
-) {
-	val packet = makeClientboundPacket(payload, *payloads)
-	level.server.playerList.broadcast(excluded, x, y, z, radius, level.dimension(), packet)
-}
-
-fun sendPacketToAllPlayers(payload: CustomPacketPayload, vararg payloads: CustomPacketPayload) {
-	val server = requireNotNull(game.server) { "Cannot send clientbound payloads from the client" }
-	server.playerList.broadcastAll(makeClientboundPacket(payload, *payloads))
-}
-
-fun sendPacketToPlayersTrackingEntity(entity: Entity, payload: CustomPacketPayload, vararg payloads: CustomPacketPayload) {
-	check(!entity.level().isClientSide()) { "Cannot send clientbound payloads on the client" }
-	val chunkSource = entity.level().chunkSource
-	if (chunkSource is ServerChunkCache) {
-		chunkSource.broadcast(entity, makeClientboundPacket(payload, *payloads))
+object PacketDistributor {
+	fun sendToServer(payload: CustomPacketPayload, vararg payloads: CustomPacketPayload) {
+		require(game.isClient) { "Cannot send serverbound payloads from the server" }
+		val listener = requireNotNull(Minecraft.getInstance().player!!.connection)
+		listener.send(makeServerboundPacket(payload, *payloads))
 	}
-	// Silently ignore custom Level implementations which may not return ServerChunkCache.
-}
 
-fun sendPacketToPlayersTrackingEntityAndSelf(
-	entity: Entity, payload: CustomPacketPayload,
-	vararg payloads: CustomPacketPayload
-) {
-	check(!entity.level().isClientSide()) { "Cannot send clientbound payloads on the client" }
-	val chunkSource = entity.level().chunkSource
-	if (chunkSource is ServerChunkCache) {
-		chunkSource.broadcastAndSend(entity, makeClientboundPacket(payload, *payloads))
+	fun sendToPlayer(player: ServerPlayer, payload: CustomPacketPayload, vararg payloads: CustomPacketPayload) {
+		player.connection.send(makeClientboundPacket(payload, *payloads))
 	}
-	// Silently ignore custom Level implementations which may not return ServerChunkCache.
-}
 
-fun sendPacketToPlayersTrackingChunk(
-	level: ServerLevel, chunkPos: ChunkPos,
-	payload: CustomPacketPayload, vararg payloads: CustomPacketPayload
-) {
-	val packet: Packet<*> = makeClientboundPacket(payload, *payloads)
-	level.chunkSource.chunkMap.getPlayers(chunkPos, false).forEach { it.connection.send(packet) }
-}
-
-private fun makeServerboundPacket(payload: CustomPacketPayload, vararg payloads: CustomPacketPayload): Packet<*> {
-	if (payloads.isNotEmpty()) {
-		val packets = mutableListOf<Packet<in ServerGamePacketListener>>()
-		packets.add(ServerboundPLPayloadPacket(payload))
-		payloads.forEach { packets.add(ServerboundPLPayloadPacket(it)) }
-		return ServerboundPLBundlePacket(packets)
-	} else {
-		return ServerboundPLPayloadPacket(payload)
+	fun sendToPlayersInDimension(level: ServerLevel, payload: CustomPacketPayload, vararg payloads: CustomPacketPayload) {
+		val packet = makeClientboundPacket(payload, *payloads)
+		level.server.playerList.broadcastAll(packet, level.dimension())
 	}
-}
 
-private fun makeClientboundPacket(payload: CustomPacketPayload, vararg payloads: CustomPacketPayload): Packet<*> {
-	if (payloads.isNotEmpty()) {
-		val packets = mutableListOf<Packet<in ClientGamePacketListener>>()
-		packets.add(ClientboundPLPayloadPacket(payload))
-		payloads.forEach { packets.add(ClientboundPLPayloadPacket(it)) }
-		return ClientboundBundlePacket(packets)
-	} else {
-		return ClientboundPLPayloadPacket(payload)
+	fun sendToPlayersNear(
+		level: ServerLevel, excluded: ServerPlayer, x: Double, y: Double, z: Double,
+		radius: Double, payload: CustomPacketPayload, vararg payloads: CustomPacketPayload
+	) {
+		val packet = makeClientboundPacket(payload, *payloads)
+		level.server.playerList.broadcast(excluded, x, y, z, radius, level.dimension(), packet)
+	}
+
+	fun sendToAllPlayers(payload: CustomPacketPayload, vararg payloads: CustomPacketPayload) {
+		val server = requireNotNull(game.server) { "Cannot send clientbound payloads from the client" }
+		server.playerList.broadcastAll(makeClientboundPacket(payload, *payloads))
+	}
+
+	fun sendToPlayersTrackingEntity(entity: Entity, payload: CustomPacketPayload, vararg payloads: CustomPacketPayload) {
+		check(!entity.level().isClientSide()) { "Cannot send clientbound payloads on the client" }
+		val chunkSource = entity.level().chunkSource
+		if (chunkSource is ServerChunkCache) {
+			chunkSource.broadcast(entity, makeClientboundPacket(payload, *payloads))
+		}
+		// Silently ignore custom Level implementations which may not return ServerChunkCache.
+	}
+
+	fun sendToPlayersTrackingEntityAndSelf(
+		entity: Entity, payload: CustomPacketPayload,
+		vararg payloads: CustomPacketPayload
+	) {
+		check(!entity.level().isClientSide()) { "Cannot send clientbound payloads on the client" }
+		val chunkSource = entity.level().chunkSource
+		if (chunkSource is ServerChunkCache) {
+			chunkSource.broadcastAndSend(entity, makeClientboundPacket(payload, *payloads))
+		}
+		// Silently ignore custom Level implementations which may not return ServerChunkCache.
+	}
+
+	fun sendToPlayersTrackingChunk(
+		level: ServerLevel, chunkPos: ChunkPos,
+		payload: CustomPacketPayload, vararg payloads: CustomPacketPayload
+	) {
+		val packet: Packet<*> = makeClientboundPacket(payload, *payloads)
+		level.chunkSource.chunkMap.getPlayers(chunkPos, false).forEach { it.connection.send(packet) }
+	}
+
+	private fun makeServerboundPacket(payload: CustomPacketPayload, vararg payloads: CustomPacketPayload): Packet<*> {
+		if (payloads.isNotEmpty()) {
+			val packets = mutableListOf<Packet<in ServerGamePacketListener>>()
+			packets.add(ServerboundPLPayloadPacket(payload))
+			payloads.forEach { packets.add(ServerboundPLPayloadPacket(it)) }
+			return ServerboundPLBundlePacket(packets)
+		} else {
+			return ServerboundPLPayloadPacket(payload)
+		}
+	}
+
+	private fun makeClientboundPacket(payload: CustomPacketPayload, vararg payloads: CustomPacketPayload): Packet<*> {
+		if (payloads.isNotEmpty()) {
+			val packets = mutableListOf<Packet<in ClientGamePacketListener>>()
+			packets.add(ClientboundPLPayloadPacket(payload))
+			payloads.forEach { packets.add(ClientboundPLPayloadPacket(it)) }
+			return ClientboundBundlePacket(packets)
+		} else {
+			return ClientboundPLPayloadPacket(payload)
+		}
 	}
 }

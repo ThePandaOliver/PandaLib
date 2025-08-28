@@ -4,7 +4,6 @@
  * This code is licensed under the GNU Lesser General Public License v3.0
  * See: https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  */
-@file:JvmName("PacketRegistry")
 
 package dev.pandasystems.pandalib.networking
 
@@ -14,35 +13,37 @@ import net.minecraft.network.protocol.PacketFlow
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 import net.minecraft.resources.ResourceLocation
 
-@JvmField
-internal val clientPacketHandlers = mutableMapOf<CustomPacketPayload.Type<out CustomPacketPayload>, PacketHandler<CustomPacketPayload>>()
+object PacketRegistry {
+	@JvmField
+	internal val clientPacketHandlers = mutableMapOf<CustomPacketPayload.Type<out CustomPacketPayload>, PacketHandler<CustomPacketPayload>>()
 
-@JvmField
-internal val serverPacketHandlers = mutableMapOf<CustomPacketPayload.Type<out CustomPacketPayload>, PacketHandler<CustomPacketPayload>>()
+	@JvmField
+	internal val serverPacketHandlers = mutableMapOf<CustomPacketPayload.Type<out CustomPacketPayload>, PacketHandler<CustomPacketPayload>>()
 
-@JvmField
-internal val packetCodecs = mutableMapOf<ResourceLocation, CustomPacketPayload.TypeAndCodec<FriendlyByteBuf, CustomPacketPayload>>()
+	@JvmField
+	internal val packetCodecs = mutableMapOf<ResourceLocation, CustomPacketPayload.TypeAndCodec<FriendlyByteBuf, CustomPacketPayload>>()
 
-@JvmName("registerCodec")
-fun <T : CustomPacketPayload> registerPacketCodec(type: CustomPacketPayload.Type<T>, codec: StreamCodec<FriendlyByteBuf, T>) {
-	require(!packetCodecs.containsKey(type.id)) { "Packet type $type already has a codec" }
-	@Suppress("UNCHECKED_CAST")
-	packetCodecs[type.id] = CustomPacketPayload.TypeAndCodec(type, codec) as CustomPacketPayload.TypeAndCodec<FriendlyByteBuf, CustomPacketPayload>
-}
-
-@JvmName("registerHandler")
-fun <T : CustomPacketPayload> registerPacketHandler(flow: PacketFlow, type: CustomPacketPayload.Type<T>, handler: PacketHandler<T>) {
-	val handlers = when (flow) {
-		PacketFlow.CLIENTBOUND -> clientPacketHandlers
-		PacketFlow.SERVERBOUND -> serverPacketHandlers
+	@JvmStatic
+	fun <T : CustomPacketPayload> registerCodec(type: CustomPacketPayload.Type<T>, codec: StreamCodec<FriendlyByteBuf, T>) {
+		require(!packetCodecs.containsKey(type.id)) { "Packet type $type already has a codec" }
+		@Suppress("UNCHECKED_CAST")
+		packetCodecs[type.id] = CustomPacketPayload.TypeAndCodec(type, codec) as CustomPacketPayload.TypeAndCodec<FriendlyByteBuf, CustomPacketPayload>
 	}
-	require(!handlers.containsKey(type)) { "Packet type $type already has a handler" }
-	@Suppress("UNCHECKED_CAST")
-	handlers[type] = handler as PacketHandler<CustomPacketPayload>
-}
 
-@JvmName("registerHandler")
-fun <T : CustomPacketPayload> registerPacketHandler(type: CustomPacketPayload.Type<T>, handler: PacketHandler<T>) {
-	registerPacketHandler(PacketFlow.CLIENTBOUND, type, handler)
-	registerPacketHandler(PacketFlow.SERVERBOUND, type, handler)
+	@JvmStatic
+	fun <T : CustomPacketPayload> registerHandler(flow: PacketFlow, type: CustomPacketPayload.Type<T>, handler: PacketHandler<T>) {
+		val handlers = when (flow) {
+			PacketFlow.CLIENTBOUND -> clientPacketHandlers
+			PacketFlow.SERVERBOUND -> serverPacketHandlers
+		}
+		require(!handlers.containsKey(type)) { "Packet type $type already has a handler" }
+		@Suppress("UNCHECKED_CAST")
+		handlers[type] = handler as PacketHandler<CustomPacketPayload>
+	}
+
+	@JvmStatic
+	fun <T : CustomPacketPayload> registerHandler(type: CustomPacketPayload.Type<T>, handler: PacketHandler<T>) {
+		registerHandler(PacketFlow.CLIENTBOUND, type, handler)
+		registerHandler(PacketFlow.SERVERBOUND, type, handler)
+	}
 }

@@ -24,12 +24,12 @@ object ListenerFactory {
 			.bindTo(listener).invokeWithArguments(*args) as R
 	}
 
-	inline fun <reified E : Any, reified T : Listener<E>> create(): T {
-		return create(E::class.java) as T
+	inline fun <reified T : Function<Unit>> create(): Listener<T> {
+		return create(T::class.java)
 	}
 
 	@Suppress("UNCHECKED_CAST")
-	fun <T : Any> create(clazz: Class<T>): Listener<T> {
+	fun <T : Function<Unit>> create(clazz: Class<T>): Listener<T> {
 		return of { listeners ->
 			Proxy.newProxyInstance(ListenerFactory::class.java.classLoader, arrayOf(clazz), object : AbstractInvocationHandler() {
 				override fun handleInvocation(proxy: Any, method: Method, args: Array<*>): Any? {
@@ -40,24 +40,56 @@ object ListenerFactory {
 		}
 	}
 
+	inline fun <reified T : Function<Boolean>> createCancellable(): Listener<T> {
+		return createCancellable(T::class.java)
+	}
+
+	@Suppress("UNCHECKED_CAST")
+	fun <T : Function<Boolean>> createCancellable(clazz: Class<T>): Listener<T> {
+		return of { listeners ->
+			Proxy.newProxyInstance(ListenerFactory::class.java.classLoader, arrayOf(clazz), object : AbstractInvocationHandler() {
+				override fun handleInvocation(proxy: Any, method: Method, args: Array<*>): Any? {
+					listeners.forEach { listener ->
+						val result = invokeMethod<T, Boolean>(listener, method, args)
+						if (!result) return false
+					}
+					return true
+				}
+			}) as T
+		}
+	}
+
 	private class ListenerImpl<T : Any>(
 		private val function: (MutableList<T>) -> T
 	) : Listener<T> {
-		private val listeners = mutableListOf<T>()
+		private data class Entry<T>(val priority: Int, val order: Long, val listener: T)
+
+		private val entries = mutableListOf<Entry<T>>()
+		private var sequence: Long = 0L
+
+		private var orderedListeners: MutableList<T> = mutableListOf()
 		private var invoker: T? = null
 
-		override fun register(listener: T) {
-			listeners.add(listener)
+		override fun register(priority: Int, listener: T) {
+			val newEntry = Entry(priority, sequence++, listener)
+
+			entries.forEachIndexed { index, entry ->
+				if (newEntry.priority > entry.priority) {
+					entries.add(index, newEntry)
+					return@forEachIndexed
+				}
+			}
+
 			invoker = null
 		}
 
 		override fun unregister(listener: T) {
-			listeners.remove(listener)
+			entries.removeAll { it.listener == listener }
 			invoker = null
 		}
 
 		override fun clear() {
-			listeners.clear()
+			entries.clear()
 			invoker = null
 		}
 
@@ -69,10 +101,13 @@ object ListenerFactory {
 		}
 
 		fun update() {
-			invoker = if (listeners.size == 1) {
-				listeners[0]
+			// entries are already kept ordered by priority desc and stable among equals
+			orderedListeners = entries.mapTo(mutableListOf()) { it.listener }
+
+			invoker = if (orderedListeners.size == 1) {
+				orderedListeners[0]
 			} else {
-				function(listeners)
+				function(orderedListeners)
 			}
 		}
 	}

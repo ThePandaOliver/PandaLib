@@ -7,7 +7,6 @@
 
 package dev.pandasystems.pandalib.test
 
-import dev.pandasystems.pandalib.event.EventListener
 import dev.pandasystems.pandalib.event.commonevents.BlockBreakEvent
 import dev.pandasystems.pandalib.event.commonevents.BlockPlaceEvent
 import dev.pandasystems.pandalib.event.commonevents.ServerPlayerRespawnEvent

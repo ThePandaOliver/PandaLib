@@ -8,8 +8,7 @@
 package dev.pandasystems.pandalib.mixin.events;
 
 import com.llamalad7.mixinextras.sugar.Local;
-import dev.pandasystems.pandalib.event.EventListener;
-import dev.pandasystems.pandalib.event.commonevents.BlockPlaceEvent;
+import dev.pandasystems.pandalib.event.serverevents.BlockEvents;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -23,16 +22,15 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class BlockItemEventMixin {
 	@Inject(method = "place", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/BlockItem;placeBlock(Lnet/minecraft/world/item/context/BlockPlaceContext;Lnet/minecraft/world/level/block/state/BlockState;)Z"), cancellable = true)
 	public void beforeBlockPlace(BlockPlaceContext context, CallbackInfoReturnable<InteractionResult> cir, @Local(ordinal = 1) BlockPlaceContext newContext) {
-		var event = new BlockPlaceEvent.Pre(newContext.getLevel(), newContext.getClickedPos(), newContext.getPlayer());
-		EventListener.invoke(event);
-		if (event.getCancelled()) {
+		var blockState = newContext.getLevel().getBlockState(newContext.getClickedPos());
+		var cancelled = !BlockEvents.getBlockPlacePreEvent().invoker().invoke(newContext.getLevel(), newContext.getClickedPos(), blockState, newContext.getPlayer());
+		if (cancelled) {
 			cir.setReturnValue(InteractionResult.FAIL);
 		}
 	}
 
 	@Inject(method = "placeBlock", at = @At("TAIL"))
 	public void afterBlockPlace(BlockPlaceContext context, BlockState state, CallbackInfoReturnable<Boolean> cir) {
-		var event = new BlockPlaceEvent.Post(context.getLevel(), context.getClickedPos(), context.getPlayer());
-		EventListener.invoke(event);
+		BlockEvents.getBlockPlacePostEvent().invoker().invoke(context.getLevel(), context.getClickedPos(), state, context.getPlayer());
 	}
 }

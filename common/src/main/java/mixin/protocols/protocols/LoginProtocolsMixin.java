@@ -7,8 +7,8 @@
 
 package dev.pandasystems.pandalib.mixin.protocols.protocols;
 
-import dev.pandasystems.pandalib.api.networking.packets.ClientboundPLPayloadPacketKt;
-import dev.pandasystems.pandalib.api.networking.packets.ServerboundPLPayloadPacketKt;
+import dev.pandasystems.pandalib.networking.packets.ClientboundPLPayloadPacketKt;
+import dev.pandasystems.pandalib.networking.packets.ServerboundPLPayloadPacketKt;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.protocol.ProtocolInfoBuilder;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;

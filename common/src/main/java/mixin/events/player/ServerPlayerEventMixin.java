@@ -7,8 +7,8 @@
 
 package dev.pandasystems.pandalib.mixin.events.player;
 
-import dev.pandasystems.pandalib.api.event.EventListener;
-import dev.pandasystems.pandalib.api.event.commonevents.ServerPlayerWorldChangeEvent;
+import dev.pandasystems.pandalib.event.EventListener;
+import dev.pandasystems.pandalib.event.commonevents.ServerPlayerWorldChangeEvent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.portal.TeleportTransition;
@@ -34,7 +34,7 @@ public abstract class ServerPlayerEventMixin {
 	)
 	public void beforeDimensionChange(TeleportTransition teleportTransition, CallbackInfoReturnable<ServerPlayer> cir) {
 		var event = new ServerPlayerWorldChangeEvent.Pre((ServerPlayer) (Object) this, level(), teleportTransition);
-		EventListener.invokeEvent(event);
+		EventListener.invoke(event);
 		if (event.getCancelled()) {
 			cir.setReturnValue(null);
 		}
@@ -43,7 +43,7 @@ public abstract class ServerPlayerEventMixin {
 	@Inject(method = "teleport(Lnet/minecraft/world/level/portal/TeleportTransition;)Lnet/minecraft/server/level/ServerPlayer;", at = @At("RETURN"))
 	public void afterDimensionChange(TeleportTransition teleportTransition, CallbackInfoReturnable<ServerPlayer> cir) {
 		if (this.isChangingDimension) {
-			EventListener.invokeEvent(new ServerPlayerWorldChangeEvent.Post((ServerPlayer) (Object) this, level(), teleportTransition.newLevel(), teleportTransition));
+			EventListener.invoke(new ServerPlayerWorldChangeEvent.Post((ServerPlayer) (Object) this, level(), teleportTransition.newLevel(), teleportTransition));
 		}
 	}
 }

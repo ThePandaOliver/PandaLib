@@ -7,12 +7,12 @@
 
 package dev.pandasystems.pandalib.test
 
-import dev.pandasystems.pandalib.api.event.addEventListener
-import dev.pandasystems.pandalib.api.event.commonevents.BlockBreakEvent
-import dev.pandasystems.pandalib.api.event.commonevents.BlockPlaceEvent
-import dev.pandasystems.pandalib.api.event.commonevents.ServerPlayerRespawnEvent
-import dev.pandasystems.pandalib.api.event.commonevents.ServerPlayerWorldChangeEvent
-import dev.pandasystems.pandalib.api.registry.registerEntityRenderer
+import dev.pandasystems.pandalib.event.EventListener
+import dev.pandasystems.pandalib.event.commonevents.BlockBreakEvent
+import dev.pandasystems.pandalib.event.commonevents.BlockPlaceEvent
+import dev.pandasystems.pandalib.event.commonevents.ServerPlayerRespawnEvent
+import dev.pandasystems.pandalib.event.commonevents.ServerPlayerWorldChangeEvent
+import dev.pandasystems.pandalib.registry.registerEntityRenderer
 import dev.pandasystems.pandalib.test.entities.HelloEntityRenderer
 import net.minecraft.network.chat.Component
 import net.minecraft.server.level.ServerPlayer
@@ -25,14 +25,14 @@ object PandaLibTest {
 
 
 		// Events
-		addEventListener(::beforePlayerSwitchDimension)
-		addEventListener(::afterPlayerSwitchDimension)
-		addEventListener(::onPlayerRespawn)
+		EventListener.add(::beforePlayerSwitchDimension)
+		EventListener.add(::afterPlayerSwitchDimension)
+		EventListener.add(::onPlayerRespawn)
 
-		addEventListener(::beforeBlockBreak)
-		addEventListener(::afterBlockBreak)
-		addEventListener(::beforeBlockPlace)
-		addEventListener(::afterBlockPlace)
+		EventListener.add(::beforeBlockBreak)
+		EventListener.add(::afterBlockBreak)
+		EventListener.add(::beforeBlockPlace)
+		EventListener.add(::afterBlockPlace)
 
 		// Renderers
 		registerEntityRenderer(TestRegistry.helloEntity) { HelloEntityRenderer(it) }

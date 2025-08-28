@@ -8,7 +8,7 @@
 package dev.pandasystems.pandalib.neoforge.platform.registration
 
 import com.google.auto.service.AutoService
-import dev.pandasystems.pandalib.core.platform.registry.RegistryRegistrations
+import dev.pandasystems.pandalib.platform.registry.RegistryRegistrations
 import net.minecraft.core.Registry
 import net.minecraft.network.syncher.EntityDataSerializer
 import net.neoforged.neoforge.registries.NeoForgeRegistries

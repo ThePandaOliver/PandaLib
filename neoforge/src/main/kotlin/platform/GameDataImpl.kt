@@ -8,8 +8,8 @@
 package dev.pandasystems.pandalib.neoforge.platform
 
 import com.google.auto.service.AutoService
-import dev.pandasystems.pandalib.api.utils.Environment
-import dev.pandasystems.pandalib.core.platform.GameData
+import dev.pandasystems.pandalib.utils.Environment
+import dev.pandasystems.pandalib.platform.GameData
 import net.minecraft.server.MinecraftServer
 import net.neoforged.api.distmarker.Dist
 import net.neoforged.fml.ModContainer

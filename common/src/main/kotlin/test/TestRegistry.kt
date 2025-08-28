@@ -7,8 +7,8 @@
 
 package dev.pandasystems.pandalib.test
 
-import dev.pandasystems.pandalib.core.PandaLib
-import dev.pandasystems.pandalib.api.registry.deferred.DeferredRegister
+import dev.pandasystems.pandalib.PandaLib
+import dev.pandasystems.pandalib.registry.deferred.DeferredRegister
 import dev.pandasystems.pandalib.test.entities.HelloEntity
 import net.minecraft.core.registries.Registries
 import net.minecraft.world.entity.EntityType

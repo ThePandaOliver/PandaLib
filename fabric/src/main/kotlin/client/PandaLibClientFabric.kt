@@ -7,7 +7,7 @@
 
 package dev.pandasystems.pandalib.fabric.client
 
-import dev.pandasystems.pandalib.core.client.PandaLibClient
+import dev.pandasystems.pandalib.client.PandaLibClient
 import net.fabricmc.api.ClientModInitializer
 
 class PandaLibClientFabric : ClientModInitializer {

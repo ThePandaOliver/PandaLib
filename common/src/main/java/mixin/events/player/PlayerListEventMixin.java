@@ -7,10 +7,10 @@
 
 package dev.pandasystems.pandalib.mixin.events.player;
 
-import dev.pandasystems.pandalib.api.event.EventListener;
-import dev.pandasystems.pandalib.api.event.commonevents.ServerPlayerJoinEvent;
-import dev.pandasystems.pandalib.api.event.commonevents.ServerPlayerLeaveEvent;
-import dev.pandasystems.pandalib.api.event.commonevents.ServerPlayerRespawnEvent;
+import dev.pandasystems.pandalib.event.EventListener;
+import dev.pandasystems.pandalib.event.commonevents.ServerPlayerJoinEvent;
+import dev.pandasystems.pandalib.event.commonevents.ServerPlayerLeaveEvent;
+import dev.pandasystems.pandalib.event.commonevents.ServerPlayerRespawnEvent;
 import net.minecraft.network.Connection;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.CommonListenerCookie;
@@ -26,18 +26,18 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class PlayerListEventMixin {
 	@Inject(method = "placeNewPlayer", at = @At("RETURN"))
 	private void onPlayerJoinEvent(Connection connection, ServerPlayer player, CommonListenerCookie cookie, CallbackInfo ci) {
-		EventListener.invokeEvent(new ServerPlayerJoinEvent(player));
+		EventListener.invoke(new ServerPlayerJoinEvent(player));
 	}
 
 	@Inject(method = "remove", at = @At("HEAD"))
 	private void onPlayerLeaveEvent(ServerPlayer player, CallbackInfo ci) {
-		EventListener.invokeEvent(new ServerPlayerLeaveEvent(player));
+		EventListener.invoke(new ServerPlayerLeaveEvent(player));
 	}
 
 	@Inject(method = "respawn", at = @At("TAIL"))
 	private void onRespawn(ServerPlayer player, boolean keepInventory, Entity.RemovalReason removalReason, CallbackInfoReturnable<ServerPlayer> cir) {
 		ServerPlayer newPlayer = cir.getReturnValue();
 
-		EventListener.invokeEvent(new ServerPlayerRespawnEvent(player, newPlayer, keepInventory, removalReason));
+		EventListener.invoke(new ServerPlayerRespawnEvent(player, newPlayer, keepInventory, removalReason));
 	}
 }

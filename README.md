@@ -17,16 +17,21 @@ The library is written in Kotlin, but it can be used for Java development as wel
 
 - Multi-Loader Framework (WIP)
 - Config API
+  - Synchronization API
+  - Custom Serializer API
+  - Premade formats: JSON
+- Event/Listener API
+- Registration API
 - Networking API
 - Embedded Kotlin libraries
 
 ### Future Features:
 
-| Planned                    | In development |
-|----------------------------|----------------|
-| Config Menu API            |                |
-| Wiki / Docs                |                |
-| Custom Model Rendering API |                |
+| Planned                    | In development         |
+|----------------------------|------------------------|
+| Config Menu API            | Multi-Loader Framework |
+| Wiki / Docs                |                        |
+| Custom Model Rendering API |                        |
 
 ### Targeted versions and mod loaders:
 
@@ -38,16 +43,49 @@ Development is done on 1.21.8
 ---
 
 ### Development:
+
+#### Kotlin DSL
 <details>
-<summary>Kotlin DSL</summary>
+<summary>Fabric | Architectury/Fabric Loom</summary>
 
 ```kotlin
-repositories {
+repositories { 
 	mavenCentral()
+	maven {
+		name = "Github"
+		url = uri("https://maven.pkg.github.com/ThePandaOliver/Forgix")
+		credentials {
+			username = System.getenv("GITHUB_USER")
+			password = System.getenv("GITHUB_API_TOKEN")
+		}
+	}
 }
 
 dependencies {
-	// TODO: publish PandaLib to personel repository
+	modApi("dev.pandasystems:pandalib-fabric:<version>")
+}
+```
+
+</details>
+<details>
+<summary>[Neo]Forge | Architectury Loom</summary>
+
+```kotlin
+repositories { 
+	mavenCentral()
+	maven {
+		name = "Github"
+		url = uri("https://maven.pkg.github.com/ThePandaOliver/Forgix")
+		credentials {
+			username = System.getenv("GITHUB_USER")
+			password = System.getenv("GITHUB_API_TOKEN")
+		}
+	}
+}
+
+dependencies {
+	modApi("dev.pandasystems:pandalib-forge:<version>") // Forge
+	modApi("dev.pandasystems:pandalib-neoforge:<version>") // NeoForge
 
 	forgeRuntimeLibrary(kotlin("stdlib"))
 	forgeRuntimeLibrary(kotlin("stdlib-jdk8"))
@@ -63,6 +101,7 @@ dependencies {
 	forgeRuntimeLibrary("org.jetbrains.kotlinx:kotlinx-io-bytestring:0.7.0")
 }
 ```
+
 </details>
 
 ---

@@ -5,7 +5,7 @@
  * See: https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  */
 
-package dev.pandasystems.pandalib.mixin.protocols.protocols;
+package dev.pandasystems.pandalib.mixin.protocols;
 
 import dev.pandasystems.pandalib.networking.packets.ClientboundPLPayloadPacketKt;
 import dev.pandasystems.pandalib.networking.packets.ServerboundPLPayloadPacketKt;

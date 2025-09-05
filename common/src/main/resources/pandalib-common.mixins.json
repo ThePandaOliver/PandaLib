@@ -14,7 +14,7 @@
 		"protocols.ConfigurationProtocolsMixin",
 		"protocols.GameProtocolsMixin",
 		"protocols.StatusProtocolsMixin",
-		"protocols.protocols.LoginProtocolsMixin"
+		"protocols.LoginProtocolsMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

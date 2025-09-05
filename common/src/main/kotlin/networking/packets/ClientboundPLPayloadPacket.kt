@@ -25,7 +25,8 @@ data class ClientboundPLPayloadPacket(val payload: CustomPacketPayload) : Packet
 	}
 
 	override fun handle(handler: ClientCommonPacketListener) {
-		PacketRegistry.clientPacketHandlers[payload.type()]!!.handle(payload)
+		val handlers = PacketRegistry.clientPacketHandlers[handler.protocol()] ?: return
+		requireNotNull(handlers[payload.type()]).handle(payload)
 	}
 }
 

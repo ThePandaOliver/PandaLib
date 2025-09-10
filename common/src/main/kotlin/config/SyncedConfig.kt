@@ -7,7 +7,6 @@
 
 package dev.pandasystems.pandalib.config
 
-import dev.pandasystems.pandalib.event.serverevents.serverPlayerJoinEvent
 import java.util.*
 
 object SyncedConfig {

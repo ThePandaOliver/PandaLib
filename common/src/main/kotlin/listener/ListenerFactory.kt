@@ -59,56 +59,91 @@ object ListenerFactory {
 		}
 	}
 
-	private class ListenerImpl<T : Any>(
-		private val function: (MutableList<T>) -> T
-	) : Listener<T> {
-		private data class Entry<T>(val priority: Int, val order: Long, val listener: T)
-
-		private val entries = mutableListOf<Entry<T>>()
-		private var sequence: Long = 0L
-
-		private var orderedListeners: MutableList<T> = mutableListOf()
+	class ListenerImpl<T : Any>(private val function: (MutableList<T>) -> T) : Listener<T> {
 		private var invoker: T? = null
-
-		override fun register(priority: Int, listener: T) {
-			val newEntry = Entry(priority, sequence++, listener)
-
-			entries.forEachIndexed { index, entry ->
-				if (newEntry.priority > entry.priority) {
-					entries.add(index, newEntry)
-					return@forEachIndexed
-				}
-			}
-
-			invoker = null
-		}
-
-		override fun unregister(listener: T) {
-			entries.removeAll { it.listener == listener }
-			invoker = null
-		}
-
-		override fun clear() {
-			entries.clear()
-			invoker = null
-		}
+		private val listeners = mutableListOf<T>()
 
 		override fun invoker(): T {
 			if (invoker == null) {
 				update()
 			}
-			return requireNotNull(invoker) { "No invoker found" }
+			return invoker as T
+		}
+
+		override fun register(priority: Int, listener: T) {
+			listeners.add(listener)
+			invoker = null
+		}
+
+		override fun unregister(listener: T) {
+			listeners.remove(listener)
+			invoker = null
+		}
+
+		override fun clear() {
+			listeners.clear()
+			invoker = null
 		}
 
 		fun update() {
-			// entries are already kept ordered by priority desc and stable among equals
-			orderedListeners = entries.mapTo(mutableListOf()) { it.listener }
-
-			invoker = if (orderedListeners.size == 1) {
-				orderedListeners[0]
+			if (listeners.size == 1) {
+				invoker = listeners[0]
 			} else {
-				function(orderedListeners)
+				invoker = function(listeners)
 			}
 		}
 	}
+
+//	private class ListenerImpl<T : Any>(
+//		private val function: (MutableList<T>) -> T
+//	) : Listener<T> {
+//		private data class Entry<T>(val priority: Int, val order: Long, val listener: T)
+//
+//		private val entries = mutableListOf<Entry<T>>()
+//		private var sequence: Long = 0L
+//
+//		private var orderedListeners: MutableList<T> = mutableListOf()
+//		private var invoker: T? = null
+//
+//		override fun register(priority: Int, listener: T) {
+//			val newEntry = Entry(priority, sequence++, listener)
+//
+//			entries.forEachIndexed { index, entry ->
+//				if (newEntry.priority > entry.priority) {
+//					entries.add(index, newEntry)
+//					return@forEachIndexed
+//				}
+//			}
+//
+//			invoker = null
+//		}
+//
+//		override fun unregister(listener: T) {
+//			entries.removeAll { it.listener == listener }
+//			invoker = null
+//		}
+//
+//		override fun clear() {
+//			entries.clear()
+//			invoker = null
+//		}
+//
+//		override fun invoker(): T {
+//			if (invoker == null) {
+//				update()
+//			}
+//			return requireNotNull(invoker) { "No invoker found" }
+//		}
+//
+//		fun update() {
+//			// entries are already kept ordered by priority desc and stable among equals
+//			orderedListeners = entries.mapTo(mutableListOf()) { it.listener }
+//
+//			invoker = if (orderedListeners.size == 1) {
+//				orderedListeners[0]
+//			} else {
+//				function(orderedListeners)
+//			}
+//		}
+//	}
 }

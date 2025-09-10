@@ -21,9 +21,17 @@ The library is written in Kotlin, but it can be used for Java development as wel
   - Custom Serializer API
   - Premade formats: JSON
 - Event/Listener API
-- Registration API
+- Deferred registration API
 - Networking API
+  - Play phase support
+  - Configuration phase support
 - Embedded Kotlin libraries
+  - Kotlin Standard Library
+  - Reflect
+  - Coroutines
+  - Serialization
+  - IO
+  - DateTime
 
 ### Future Features:
 

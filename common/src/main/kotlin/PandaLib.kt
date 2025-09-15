@@ -8,15 +8,12 @@
 package dev.pandasystems.pandalib
 
 import com.mojang.logging.LogUtils
-import dev.pandasystems.pandalib.config.ConfigRegistry
 import net.minecraft.resources.ResourceLocation
 import org.slf4j.Logger
 
 object PandaLib {
 	const val MOD_ID = "pandalib"
-	
-	val config = ConfigRegistry.register<PandaLibConfig>()
-	
+
 	init {
 		logger.debug("PandaLib Core is initializing...")
 
@@ -24,6 +21,7 @@ object PandaLib {
 	}
 	
 	@JvmStatic
+	@Deprecated("Use the resourceLocation extension function instead", ReplaceWith("resourceLocation(path)"))
 	fun resourceLocation(path: String): ResourceLocation {
 		return dev.pandasystems.pandalib.utils.extensions.resourceLocation(MOD_ID, path)
 	}

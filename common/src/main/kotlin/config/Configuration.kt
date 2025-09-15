@@ -7,20 +7,40 @@
 
 package dev.pandasystems.pandalib.config
 
-@Retention(AnnotationRetention.RUNTIME)
-@Target(AnnotationTarget.CLASS)
-annotation class Configuration(
-	/**
-	 * The ID of the mod the config should be registered under
-	 */
-	val modId: String,
+import net.minecraft.resources.ResourceLocation
 
-	/**
-	 * Path of where the config will be stored.
-	 *
-	 * Examples:
-	 * - `config_name` will be located at `config/config_name.json`
-	 * - `mod_id/config_name` will be located at `config/mod_id/config_name.json`
-	 */
-	val pathName: String
-)
+class Configuration internal constructor(
+	name: ResourceLocation,
+	properties: List<ConfigProperty<*>>,
+	subMenus: List<ConfigMenu>
+) : ConfigMenu(name, properties, subMenus) {
+	init {
+		fun initializeMenu(menu: ConfigMenu) {
+			menu.properties.forEach {
+				it.configParent = this
+				it.menuParent = menu
+			}
+			menu.subMenus.forEach { initializeMenu(it) }
+		}
+		initializeMenu(this)
+
+		createMap()
+	}
+
+	fun load() {
+
+	}
+
+	fun save() {
+
+	}
+
+	fun resetToDefault() {
+		fun resetMenu(menu: ConfigMenu) {
+			menu.properties.forEach { it.resetToDefault() }
+			menu.subMenus.forEach { resetMenu(it) }
+		}
+
+		resetMenu(this)
+	}
+}

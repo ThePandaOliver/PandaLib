@@ -29,5 +29,5 @@ fun createConfigBuilder(name: ResourceLocation, block: ConfigBuilder.() -> Unit)
 		return ConfigMenu(path, menuBuilder.properties, menuBuilder.subMenus.map { createMenu(it, name.withPrefix("/${it.name}")) })
 	}
 
-	return Configuration(name, builder.properties, builder.subMenus.map { createMenu(it, name.withPrefix("/${it.name}")) })
+	return Configuration(name, builder.properties, builder.subMenus.map { createMenu(it, name.withSuffix("/${it.name}")) })
 }

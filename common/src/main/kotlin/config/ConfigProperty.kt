@@ -17,8 +17,8 @@ abstract class ConfigProperty<T>(val name: String, val comment: String, val defa
 		value = default
 	}
 
-	fun createMapEntry(): Map.Entry<String, Any?> = object : Map.Entry<String, Any?> {
+	fun createMapEntry() = object : Map.Entry<String, ConfigProperty<T>> {
 		override val key: String = name
-		override val value: Any? = this@ConfigProperty.value
+		override val value = this@ConfigProperty
 	}
 }

@@ -14,10 +14,15 @@ open class ConfigMenu internal constructor(
 	val properties: List<ConfigProperty<*>>,
 	val subMenus: List<ConfigMenu>
 ) {
-	protected val configMap = mutableMapOf<String, Any?>()
+	protected val configMap = mutableMapOf<String, ConfigStructElement>()
 
-	protected fun createMap(): Map<String, Any?> {
-		configMap += properties.associate { it.createMapEntry().toPair() } + subMenus.associate { it.name.path.substringAfterLast("/") to it.createMap() }
+	protected fun createMap(): Map<String, ConfigStructElement> {
+		configMap += properties.associate { 
+			val entry = it.createMapEntry()
+			entry.key to ConfigStructElement(property = entry.value)
+		} + subMenus.associate {
+			it.name.path.substringAfterLast("/") to ConfigStructElement(menu = it.createMap())
+		}
 		return configMap
 	}
 }

@@ -11,17 +11,17 @@ package dev.pandasystems.pandalib.utils
 
 import java.lang.reflect.Field
 
-fun <T : Any> constructClassUnsafely(clazz: Class<T>): T {
-	val constructor = clazz.getDeclaredConstructor()
+fun <T> Class<T>.constructClassUnsafely(): T {
+	val constructor = getDeclaredConstructor()
 	constructor.isAccessible = true
 	return constructor.newInstance()
 }
 
-fun <T : Any> setFieldUnsafely(parentObj: Any, field: Field, value: T?) {
-	field.set(parentObj, value)
+fun <T> Field.setFieldUnsafely(parentObj: Any, value: T) {
+	set(parentObj, value)
 }
 
-fun <T : Any> getFieldUnsafely(parentObj: Any, field: Field): T? {
+fun <T> Field.getFieldUnsafely(parentObj: Any): T {
 	@Suppress("UNCHECKED_CAST")
-	return field.get(parentObj) as T?
+	return get(parentObj) as T
 }

@@ -7,18 +7,21 @@
 
 package dev.pandasystems.pandalib
 
-import dev.pandasystems.pandalib.config.createConfigBuilder
-import dev.pandasystems.pandalib.config.properties.addGenericProperty
+import dev.pandasystems.pandalib.config.Option
+import dev.pandasystems.pandalib.config.`object`.ConfigObject
 import dev.pandasystems.pandalib.utils.extensions.resourceLocation
 
-val pandalibConfig = createConfigBuilder(resourceLocation("pandalib")) {
-	addGenericProperty("commonDebug", "Enables debug output", false)
+data class PandaLibConfig(
+	@Option(comment = "Debugging mode enables more verbose logging and additional checks.")
+	var debugging: Boolean = false,
+	@Option(comment = "Enables experimental features that are not yet stable. Use with caution.")
+	var experimentalFeatures: Boolean = false,
 
-	createSubMenu("client") {
-		addGenericProperty("clientDebug", "Enables debug output in the client side", false)
-	}
+	// TODO: Add hot reload functionality and add warning when enabled
+	@Option(comment = "Enables hot reloading of the configuration file when changes are detected. Might cause performance issues.")
+	var enableConfigHotReload: Boolean = true,
+	@Option(comment = "Delay in milliseconds between checks for configuration file changes when hot reload is enabled.")
+	var configHotReloadDelay: Long = 1_000L
+)
 
-	createSubMenu("server") {
-		addGenericProperty("serverDebug", "Enables debug output in the server side", false)
-	}
-}
+val pandalibConfig = ConfigObject(resourceLocation("pandalib_config"), PandaLibConfig::class.java)

@@ -27,7 +27,7 @@ public class ServerPlayerGameModeEventMixin {
 
 	@Inject(method = "destroyBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/Block;playerWillDestroy(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/entity/player/Player;)Lnet/minecraft/world/level/block/state/BlockState;"), cancellable = true)
 	public void onBlockBreakEvent(BlockPos pos, CallbackInfoReturnable<Boolean> cir) {
-		var cancelled = !BlockEvents.getBlockBreakPreEvent().invoker().invoke(this.level, pos, this.level.getBlockState(pos), this.player);
+		var cancelled = !BlockEvents.getBlockBreakPreEvent().getInvoker().invoke(this.level, pos, this.level.getBlockState(pos), this.player);
 		if (cancelled) {
 			cir.setReturnValue(false);
 		}
@@ -36,6 +36,6 @@ public class ServerPlayerGameModeEventMixin {
 	@Inject(method = "destroyBlock", at = @At("RETURN"))
 	public void onBlockBreakEventPost(BlockPos pos, CallbackInfoReturnable<Boolean> cir) {
 		if (!cir.getReturnValue()) return;
-		BlockEvents.getBlockBreakPostEvent().invoker().invoke(this.level, pos, this.level.getBlockState(pos), this.player);
+		BlockEvents.getBlockBreakPostEvent().getInvoker().invoke(this.level, pos, this.level.getBlockState(pos), this.player);
 	}
 }

@@ -18,7 +18,7 @@ class PandaLibFabric : ModInitializer {
 		serverStartingEvent.register { server = it }
 
 		ServerConfigurationConnectionEvents.CONFIGURE.register { handler, server ->
-			dev.pandasystems.pandalib.event.serverevents.ServerConfigurationConnectionEvents.configure.invoker().invoke(handler, server) }
+			dev.pandasystems.pandalib.event.serverevents.ServerConfigurationConnectionEvents.configure.invoker(handler, server) }
 
 		PandaLib // Initialize the core PandaLib functionality
 	}

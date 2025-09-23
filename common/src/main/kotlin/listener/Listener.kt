@@ -11,5 +11,5 @@ interface Listener<T> {
 	fun register(priority: Int = 0, listener: T)
 	fun unregister(listener: T)
 	fun clear()
-	fun invoker(): T
+	val invoker: T
 }

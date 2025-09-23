@@ -19,12 +19,12 @@ public class MinecraftServerEventMixin {
 	@Inject(method = "runServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;initServer()Z"))
 	public void beforeServerInit(CallbackInfo ci) {
 		var server = (MinecraftServer) (Object) this;
-		ServerLifecycleEvents.getServerStartingEvent().invoker().invoke(server);
+		ServerLifecycleEvents.getServerStartingEvent().getInvoker().invoke(server);
 	}
 
 	@Inject(method = "stopServer", at = @At("HEAD"))
 	public void beforeServerShutdown(CallbackInfo ci) {
 		var server = (MinecraftServer) (Object) this;
-		ServerLifecycleEvents.getServerStoppingEvent().invoker().invoke(server);
+		ServerLifecycleEvents.getServerStoppingEvent().getInvoker().invoke(server);
 	}
 }

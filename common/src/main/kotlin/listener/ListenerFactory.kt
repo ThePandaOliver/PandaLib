@@ -60,36 +60,37 @@ object ListenerFactory {
 	}
 
 	class ListenerImpl<T : Any>(private val function: (MutableList<T>) -> T) : Listener<T> {
-		private var invoker: T? = null
+		private var _invoker: T? = null
 		private val listeners = mutableListOf<T>()
 
-		override fun invoker(): T {
-			if (invoker == null) {
-				update()
+		override val invoker: T
+			get() {
+				if (_invoker == null) {
+					update()
+				}
+				return _invoker as T
 			}
-			return invoker as T
-		}
 
 		override fun register(priority: Int, listener: T) {
 			listeners.add(listener)
-			invoker = null
+			_invoker = null
 		}
 
 		override fun unregister(listener: T) {
 			listeners.remove(listener)
-			invoker = null
+			_invoker = null
 		}
 
 		override fun clear() {
 			listeners.clear()
-			invoker = null
+			_invoker = null
 		}
 
 		fun update() {
 			if (listeners.size == 1) {
-				invoker = listeners[0]
+				_invoker = listeners[0]
 			} else {
-				invoker = function(listeners)
+				_invoker = function(listeners)
 			}
 		}
 	}

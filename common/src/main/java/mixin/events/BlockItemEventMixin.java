@@ -23,7 +23,7 @@ public class BlockItemEventMixin {
 	@Inject(method = "place", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/BlockItem;placeBlock(Lnet/minecraft/world/item/context/BlockPlaceContext;Lnet/minecraft/world/level/block/state/BlockState;)Z"), cancellable = true)
 	public void beforeBlockPlace(BlockPlaceContext context, CallbackInfoReturnable<InteractionResult> cir, @Local(ordinal = 1) BlockPlaceContext newContext) {
 		var blockState = newContext.getLevel().getBlockState(newContext.getClickedPos());
-		var cancelled = !BlockEvents.getBlockPlacePreEvent().invoker().invoke(newContext.getLevel(), newContext.getClickedPos(), blockState, newContext.getPlayer());
+		var cancelled = !BlockEvents.getBlockPlacePreEvent().getInvoker().invoke(newContext.getLevel(), newContext.getClickedPos(), blockState, newContext.getPlayer());
 		if (cancelled) {
 			cir.setReturnValue(InteractionResult.FAIL);
 		}
@@ -31,6 +31,6 @@ public class BlockItemEventMixin {
 
 	@Inject(method = "placeBlock", at = @At("TAIL"))
 	public void afterBlockPlace(BlockPlaceContext context, BlockState state, CallbackInfoReturnable<Boolean> cir) {
-		BlockEvents.getBlockPlacePostEvent().invoker().invoke(context.getLevel(), context.getClickedPos(), state, context.getPlayer());
+		BlockEvents.getBlockPlacePostEvent().getInvoker().invoke(context.getLevel(), context.getClickedPos(), state, context.getPlayer());
 	}
 }

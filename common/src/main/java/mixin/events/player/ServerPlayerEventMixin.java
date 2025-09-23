@@ -33,7 +33,7 @@ public abstract class ServerPlayerEventMixin {
 			), cancellable = true
 	)
 	public void beforeDimensionChange(TeleportTransition teleportTransition, CallbackInfoReturnable<ServerPlayer> cir) {
-		var cancelled = !ServerPlayerEvents.getServerPlayerChangeDimensionPreEvent().invoker().invoke((ServerPlayer) (Object) this, level(),
+		var cancelled = !ServerPlayerEvents.getServerPlayerChangeDimensionPreEvent().getInvoker().invoke((ServerPlayer) (Object) this, level(),
 				teleportTransition.newLevel(), teleportTransition);
 		if (cancelled) {
 			cir.setReturnValue(null);
@@ -43,7 +43,7 @@ public abstract class ServerPlayerEventMixin {
 	@Inject(method = "teleport(Lnet/minecraft/world/level/portal/TeleportTransition;)Lnet/minecraft/server/level/ServerPlayer;", at = @At("RETURN"))
 	public void afterDimensionChange(TeleportTransition teleportTransition, CallbackInfoReturnable<ServerPlayer> cir) {
 		if (this.isChangingDimension) {
-			ServerPlayerEvents.getServerPlayerChangeDimensionPostEvent().invoker().invoke((ServerPlayer) (Object) this, level(), teleportTransition.newLevel(), teleportTransition);
+			ServerPlayerEvents.getServerPlayerChangeDimensionPostEvent().getInvoker().invoke((ServerPlayer) (Object) this, level(), teleportTransition.newLevel(), teleportTransition);
 		}
 	}
 }

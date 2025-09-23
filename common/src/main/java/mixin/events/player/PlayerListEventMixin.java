@@ -23,17 +23,17 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class PlayerListEventMixin {
 	@Inject(method = "placeNewPlayer", at = @At("RETURN"))
 	private void onPlayerJoinEvent(Connection connection, ServerPlayer player, CommonListenerCookie cookie, CallbackInfo ci) {
-		ServerPlayerEvents.getServerPlayerJoinEvent().invoker().invoke(player);
+		ServerPlayerEvents.getServerPlayerJoinEvent().getInvoker().invoke(player);
 	}
 
 	@Inject(method = "remove", at = @At("HEAD"))
 	private void onPlayerLeaveEvent(ServerPlayer player, CallbackInfo ci) {
-		ServerPlayerEvents.getServerPlayerLeaveEvent().invoker().invoke(player);
+		ServerPlayerEvents.getServerPlayerLeaveEvent().getInvoker().invoke(player);
 	}
 
 	@Inject(method = "respawn", at = @At("TAIL"))
 	private void onRespawn(ServerPlayer player, boolean keepInventory, Entity.RemovalReason removalReason, CallbackInfoReturnable<ServerPlayer> cir) {
 		ServerPlayer newPlayer = cir.getReturnValue();
-		ServerPlayerEvents.getServerPlayerRespawnEvent().invoker().invoke(player, newPlayer, keepInventory, removalReason);
+		ServerPlayerEvents.getServerPlayerRespawnEvent().getInvoker().invoke(player, newPlayer, keepInventory, removalReason);
 	}
 }

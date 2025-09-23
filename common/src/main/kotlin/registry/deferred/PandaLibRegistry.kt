@@ -26,7 +26,7 @@ class PandaLibRegistry<T : Any>(key: ResourceKey<Registry<T>>, registryLifecycle
 		value: T,
 		registrationInfo: RegistrationInfo
 	): Holder.Reference<T> {
-		listener.invoker().invoke(key, value, registrationInfo)
+		listener.invoker(key, value, registrationInfo)
 		return super.register(key, value, registrationInfo)
 	}
 }

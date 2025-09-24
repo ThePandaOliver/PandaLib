@@ -15,17 +15,17 @@ import dev.pandasystems.pandalib.logger
 import dev.pandasystems.pandalib.platform.game
 import dev.pandasystems.pandalib.utils.constructClassUnsafely
 import net.minecraft.resources.ResourceLocation
-import java.io.File
 import java.util.function.Supplier
 
-open class ConfigObject<T>(
+open class ConfigObject<T: Any>(
 	val resourceLocation: ResourceLocation,
 	val configClass: Class<T>,
-	val serializer: ConfigSerializer<T> = JsonConfigSerializer()
+	getSerializer: (configClass: Class<T>) -> ConfigSerializer<T> = ::JsonConfigSerializer
 ) : Supplier<T> {
-	private var instance: T = configClass.constructClassUnsafely()
+	private var instance = configClass.constructClassUnsafely()
+	private val serializer: ConfigSerializer<T> = getSerializer(configClass)
 
-	val path: File = game.configDir.toFile().resolve("${resourceLocation.namespace}/${resourceLocation.path}.${serializer.fileExtension}")
+	val path = game.configDir.toFile().resolve("${resourceLocation.namespace}/${resourceLocation.path}.${serializer.fileExtension}")
 
 	val onSave = ListenerFactory.create<(configObject: ConfigObject<T>) -> Unit>()
 	val onLoad = ListenerFactory.create<(configObject: ConfigObject<T>) -> Unit>()
@@ -35,7 +35,7 @@ open class ConfigObject<T>(
 	}
 
 	override fun get(): T {
-		return instance ?: throw IllegalStateException("ConfigObject instance not set for $resourceLocation")
+		return instance
 	}
 
 	fun set(newInstance: T) {
@@ -43,12 +43,9 @@ open class ConfigObject<T>(
 	}
 
 	fun save() {
-		if (!path.parentFile.exists()) {
+		if (!path.parentFile.exists())
 			path.parentFile.mkdirs()
-		}
 		val firstCreation = !path.exists()
-		// TODO: Validate the config structure of the previous config,
-		//  if it differs from the current structure, back it up and create a new one instead of overwriting it
 		path.writeText(serializer.serialize(instance))
 		if (firstCreation)
 			logger.info("Created new config at $path")
@@ -60,8 +57,9 @@ open class ConfigObject<T>(
 	fun load() {
 		if (!path.exists()) {
 			save()
+			return
 		}
-		instance = serializer.deserialize(path.readText(), configClass)
+		set(serializer.deserialize(path.readText()))
 		logger.info("Loaded config from $path")
 		onLoad.invoker(this)
 	}

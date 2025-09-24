@@ -7,21 +7,23 @@
 
 package dev.pandasystems.pandalib.config.serializer
 
+import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import dev.pandasystems.pandalib.utils.constructClassUnsafely
 
-/**
- * A JSON implementation of the ConfigSerializer interface using Gson.
- * > Comments in the JSON file are not supported.
- */
-class JsonConfigSerializer<T> : ConfigSerializer<T> {
-	private val gson = GsonBuilder().setPrettyPrinting().create()
-	override val fileExtension: String = "json"
-
-	override fun <T> serialize(config: T): String {
+class JsonConfigSerializer<T : Any>(
+	val configClass: Class<T>,
+	val gson: Gson = GsonBuilder().setPrettyPrinting().create()
+) : ConfigSerializer<T> {
+	override fun serialize(config: T): String {
 		return gson.toJson(config)
 	}
 
-	override fun <T> deserialize(data: String, configClass: Class<T>): T {
+	override fun deserialize(data: String): T {
 		return gson.fromJson(data, configClass)
 	}
+
+	override fun createDefault(): T = configClass.constructClassUnsafely()
+
+	override val fileExtension: String = "json"
 }

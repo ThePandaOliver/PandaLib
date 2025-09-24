@@ -7,13 +7,11 @@
 
 package dev.pandasystems.pandalib.config.serializer
 
-interface ConfigSerializer<T> {
+interface ConfigSerializer<T : Any> {
+	fun serialize(config: T): String
+	fun deserialize(data: String): T
+
+	fun createDefault(): T
+
 	val fileExtension: String
-
-	fun <T> serialize(config: T): String
-	fun <T> deserialize(data: String, configClass: Class<T>): T
-}
-
-inline fun <reified T> ConfigSerializer<T>.deserialize(data: String): T {
-	return deserialize(data, T::class.java)
 }

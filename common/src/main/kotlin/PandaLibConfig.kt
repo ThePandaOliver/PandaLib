@@ -9,6 +9,7 @@ package dev.pandasystems.pandalib
 
 import dev.pandasystems.pandalib.config.Option
 import dev.pandasystems.pandalib.config.`object`.ConfigObject
+import dev.pandasystems.pandalib.config.serializer.JsonConfigSerializer
 import dev.pandasystems.pandalib.utils.extensions.resourceLocation
 
 data class PandaLibConfig(
@@ -17,11 +18,14 @@ data class PandaLibConfig(
 	@Option(comment = "Enables experimental features that are not yet stable. Use with caution.")
 	var experimentalFeatures: Boolean = false,
 
-	// TODO: Add hot reload functionality and add warning when enabled
+	val hotReload: HotReloadConfig = HotReloadConfig()
+)
+
+data class HotReloadConfig(
 	@Option(comment = "Enables hot reloading of the configuration file when changes are detected. Might cause performance issues.")
-	var enableConfigHotReload: Boolean = true,
+	var enableConfigHotReload: Boolean = false,
 	@Option(comment = "Delay in milliseconds between checks for configuration file changes when hot reload is enabled.")
-	var configHotReloadDelay: Long = 1_000L
+	var configHotReloadDelay: Long = 1_000L,
 )
 
 val pandalibConfig = ConfigObject(resourceLocation("pandalib_config"), PandaLibConfig::class.java)

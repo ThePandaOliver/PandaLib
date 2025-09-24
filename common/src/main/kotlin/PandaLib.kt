@@ -18,6 +18,9 @@ object PandaLib {
 		logger.debug("PandaLib Core is initializing...")
 
 		pandalibConfig.load()
+		pandalibConfig.onLoad.register {
+			logger.info("PandaLib Config reloaded: $it")
+		}
 
 		logger.debug("PandaLib Core initialized successfully.")
 	}

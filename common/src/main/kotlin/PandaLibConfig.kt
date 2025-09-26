@@ -8,7 +8,7 @@
 package dev.pandasystems.pandalib
 
 import dev.pandasystems.pandalib.config.Option
-import dev.pandasystems.pandalib.config.`object`.ConfigObject
+import dev.pandasystems.pandalib.config.ConfigObject
 import dev.pandasystems.pandalib.config.serializer.JsonConfigSerializer
 import dev.pandasystems.pandalib.utils.extensions.resourceLocation
 

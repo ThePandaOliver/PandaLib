@@ -5,9 +5,8 @@
  * See: https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  */
 
-package dev.pandasystems.pandalib.config.`object`
+package dev.pandasystems.pandalib.config
 
-import dev.pandasystems.pandalib.config.ConfigRegistry
 import dev.pandasystems.pandalib.config.serializer.ConfigSerializer
 import dev.pandasystems.pandalib.config.serializer.JsonConfigSerializer
 import dev.pandasystems.pandalib.listener.ListenerFactory

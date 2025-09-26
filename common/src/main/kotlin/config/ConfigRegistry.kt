@@ -7,7 +7,7 @@
 
 package dev.pandasystems.pandalib.config
 
-import dev.pandasystems.pandalib.config.`object`.ConfigObject
+import dev.pandasystems.pandalib.config.ConfigObject
 import net.minecraft.resources.ResourceLocation
 
 object ConfigRegistry {

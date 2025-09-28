@@ -9,18 +9,45 @@ package dev.pandasystems.pandalib.config.serializer
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.google.gson.JsonObject
+import dev.pandasystems.pandalib.config.Config
 import dev.pandasystems.pandalib.utils.constructClassUnsafely
 
-class JsonConfigSerializer<T : Any>(
+class JsonConfigSerializer<T : Config>(
 	val configClass: Class<T>,
 	val gson: Gson = GsonBuilder().setPrettyPrinting().create()
 ) : ConfigSerializer<T> {
 	override fun serialize(config: T): String {
-		return gson.toJson(config)
+		val json = JsonObject()
+		config.options.forEach { property ->
+			val path = property.name
+			val name = path.substringAfterLast(".")
+			computeJsonObjectPath(json, path).add(name, gson.toJsonTree(property.value))
+		}
+		return gson.toJson(json)
 	}
 
-	override fun deserialize(data: String): T {
-		return gson.fromJson(data, configClass)
+	override fun deserialize(data: String, config: T) {
+		val json = gson.fromJson(data, JsonObject::class.java)
+		config.options.forEach { property ->
+			val path = property.name
+			val name = path.substringAfterLast(".")
+			computeJsonObjectPath(json, path).get(name)?.let { propertyValue -> property.value = gson.fromJson(propertyValue, property.type) }
+		}
+	}
+
+	fun computeJsonObjectPath(rootObject: JsonObject, path: String): JsonObject {
+		val pathNames = path.split(".")
+		val lastIndex = pathNames.size - 1
+		var parentObject = rootObject
+
+		pathNames.forEachIndexed { index, name ->
+			if (index != lastIndex) {
+				parentObject = parentObject.getAsJsonObject(name) // Get sub-object
+					?: JsonObject().also { parentObject.add(name, it) } // Create if not present
+			}
+		}
+		return parentObject
 	}
 
 	override fun createDefault(): T = configClass.constructClassUnsafely()

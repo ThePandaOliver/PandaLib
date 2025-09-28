@@ -7,9 +7,15 @@
 
 package dev.pandasystems.pandalib.config.serializer
 
-interface ConfigSerializer<T : Any> {
+import dev.pandasystems.pandalib.config.Config
+
+interface ConfigSerializer<T : Config> {
 	fun serialize(config: T): String
-	fun deserialize(data: String): T
+	fun deserialize(data: String, config: T)
+	@Deprecated("")
+	fun deserialize(data: String): T {
+		throw UnsupportedOperationException("Deserializing from a string is not supported by this serializer.")
+	}
 
 	fun createDefault(): T
 

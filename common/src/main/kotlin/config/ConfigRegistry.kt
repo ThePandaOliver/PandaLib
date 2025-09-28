@@ -13,7 +13,7 @@ import net.minecraft.resources.ResourceLocation
 object ConfigRegistry {
 	private val configObjects: MutableMap<ResourceLocation, ConfigObject<*>> = mutableMapOf()
 
-	fun <T: Any> register(configObject: ConfigObject<T>) {
+	fun <T: Config> register(configObject: ConfigObject<T>) {
 		val key = configObject.resourceLocation
 		if (configObjects.containsKey(key)) {
 			throw IllegalArgumentException("ConfigObject with resource location $key is already registered.")
@@ -22,7 +22,7 @@ object ConfigRegistry {
 	}
 
 	@Suppress("UNCHECKED_CAST")
-	fun <T: Any> get(resourceLocation: ResourceLocation): ConfigObject<T>? {
+	fun <T: Config> get(resourceLocation: ResourceLocation): ConfigObject<T>? {
 		return configObjects[resourceLocation] as? ConfigObject<T>
 	}
 }

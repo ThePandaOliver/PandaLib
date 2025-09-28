@@ -7,5 +7,9 @@
 
 package dev.pandasystems.pandalib.config.properties
 
-class GenericProperty {
+class DynamicConfigProperty : ConfigProperty<Any?>() {
+	override var value: Any?
+		@Suppress("UNCHECKED_CAST")
+		get() = this.field.get(parent)
+		set(value) = this.field.set(parent, value)
 }

@@ -16,12 +16,12 @@ import dev.pandasystems.pandalib.utils.constructClassUnsafely
 import net.minecraft.resources.ResourceLocation
 import java.util.function.Supplier
 
-open class ConfigObject<T: Any>(
+open class ConfigObject<T: Config>(
 	val resourceLocation: ResourceLocation,
 	val configClass: Class<T>,
 	getSerializer: (configClass: Class<T>) -> ConfigSerializer<T> = ::JsonConfigSerializer
 ) : Supplier<T> {
-	private var instance = configClass.constructClassUnsafely()
+	private var instance = configClass.constructClassUnsafely().apply { initialize() }
 	private val serializer: ConfigSerializer<T> = getSerializer(configClass)
 
 	val path = game.configDir.toFile().resolve("${resourceLocation.namespace}/${resourceLocation.path}.${serializer.fileExtension}")
@@ -58,7 +58,7 @@ open class ConfigObject<T: Any>(
 			save()
 			return
 		}
-		set(serializer.deserialize(path.readText()))
+		serializer.deserialize(path.readText(), instance)
 		logger.info("Loaded config from $path")
 		onLoad.invoker(this)
 	}

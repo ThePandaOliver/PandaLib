@@ -7,6 +7,37 @@
 
 package dev.pandasystems.pandalib.config.properties
 
-interface ConfigProperty {
+import dev.pandasystems.pandalib.config.Option
+import java.lang.reflect.Field
+import java.lang.reflect.Type
+import java.util.function.Supplier
 
+abstract class ConfigProperty<T> : Supplier<T> {
+	lateinit var name: String
+		internal set
+	lateinit var optionData: Option
+		internal set
+
+	lateinit var field: Field
+		internal set
+	lateinit var parent: Any
+		internal set
+
+	abstract var value: T
+
+	@Suppress("UNCHECKED_CAST")
+	val type: Type get() = this.field.genericType
+
+
+	override fun get(): T = value
+
+	fun onSave() {}
+	fun onLoad() {}
+
+	internal fun init(name: String, optionData: Option, field: Field, parent: Any) {
+		this.name = name
+		this.optionData = optionData
+		this.field = field
+		this.parent = parent
+	}
 }

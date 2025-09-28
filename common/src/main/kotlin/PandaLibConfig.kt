@@ -7,6 +7,7 @@
 
 package dev.pandasystems.pandalib
 
+import dev.pandasystems.pandalib.config.Config
 import dev.pandasystems.pandalib.config.Option
 import dev.pandasystems.pandalib.config.ConfigObject
 import dev.pandasystems.pandalib.config.serializer.JsonConfigSerializer
@@ -18,8 +19,8 @@ data class PandaLibConfig(
 	@Option(comment = "Enables experimental features that are not yet stable. Use with caution.")
 	var experimentalFeatures: Boolean = false,
 
-	val hotReload: HotReloadConfig = HotReloadConfig()
-)
+	val hotReload: HotReloadConfig = HotReloadConfig() //TODO: Implement hot reload functionality
+) : Config()
 
 data class HotReloadConfig(
 	@Option(comment = "Enables hot reloading of the configuration file when changes are detected. Might cause performance issues.")

@@ -7,10 +7,16 @@
 
 package dev.pandasystems.pandalib.config.serializer
 
-class TomlConfigSerializer<T : Any>(
+import dev.pandasystems.pandalib.config.Config
+
+class TomlConfigSerializer<T : Config>(
 	val configClass: Class<T>
 ) : ConfigSerializer<T> {
 	override fun serialize(config: T): String {
+		TODO("Not yet implemented")
+	}
+
+	override fun deserialize(data: String, config: T) {
 		TODO("Not yet implemented")
 	}
 

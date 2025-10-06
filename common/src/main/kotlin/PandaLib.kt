@@ -25,12 +25,6 @@ object PandaLib {
 
 		logger.debug("PandaLib Core initialized successfully.")
 	}
-	
-	@JvmStatic
-	@Deprecated("Use the resourceLocation extension function instead", ReplaceWith("resourceLocation(path)"))
-	fun resourceLocation(path: String): ResourceLocation {
-		return dev.pandasystems.pandalib.utils.extensions.resourceLocation(MOD_ID, path)
-	}
 }
 
 val logger: Logger = LogUtils.getLogger()

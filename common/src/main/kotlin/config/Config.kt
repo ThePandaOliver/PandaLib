@@ -7,39 +7,37 @@
 
 package dev.pandasystems.pandalib.config
 
-import dev.pandasystems.pandalib.config.properties.ConfigProperty
-import dev.pandasystems.pandalib.config.properties.DynamicConfigProperty
-import dev.pandasystems.pandalib.utils.getFieldUnsafely
-import kotlin.reflect.full.isSubclassOf
+import dev.pandasystems.pandalib.config.options.ConfigOption
 
 abstract class Config {
-	private val _options = mutableListOf<ConfigProperty<*>>()
-	val options: List<ConfigProperty<*>> get() = _options
+	private var isInitialized = false
+	lateinit var options: List<ConfigOption<*>>
+	lateinit var subCategories: Map<String, Config>
 
 	internal fun initialize() {
-		fun initializeProperties(basePath: String, parent: Any) {
-			parent::class.java.declaredFields.forEach { field ->
-				field.isAccessible = true
+		if (isInitialized) throw IllegalStateException("Config $this is already initialized")
+		isInitialized = true
+		val mutableOptions = mutableListOf<ConfigOption<*>>()
+		val mutableSubCategories = mutableMapOf<String, Config>()
 
-				// Initialize option properties
-				field.getAnnotation(Option::class.java)?.let { option ->
-					val property: ConfigProperty<*> = if (field.type.kotlin.isSubclassOf(ConfigProperty::class)) {
-						field.getFieldUnsafely(parent)
-					} else {
-						DynamicConfigProperty()
-					}
+		javaClass.declaredFields.forEach {
+			if (ConfigOption::class.java.isAssignableFrom(it.type)) {
+				it.isAccessible = true
 
-					property.init(basePath + field.name, option, field, parent)
-					_options.add(property)
-					return@forEach
-				}
+				val option = it.get(this) as? ConfigOption<*> ?: throw IllegalArgumentException("Field $it returns null")
+				option.fieldParent = this
+				option.field = it
 
-				// If it's not a config option, then it must be a sub-config
-				field.get(parent)?.let { subConfig ->
-					initializeProperties("$basePath${field.name}.", subConfig)
-				}
-			}
+				mutableOptions += option
+			} else if (Config::class.java.isAssignableFrom(it.type)) {
+				it.isAccessible = true
+				val subCategory = it.get(this) as Config
+				subCategory.initialize()
+				mutableSubCategories[it.name] = subCategory
+			} // else: ignore other types
 		}
-		initializeProperties("", this)
+
+		options = mutableOptions.toList()
+		subCategories = mutableSubCategories.toMap()
 	}
 }

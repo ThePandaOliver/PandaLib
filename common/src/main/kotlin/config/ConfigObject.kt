@@ -9,7 +9,6 @@ package dev.pandasystems.pandalib.config
 
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
-import dev.pandasystems.pandalib.config.options.ConfigOption
 import dev.pandasystems.pandalib.listener.ListenerFactory
 import dev.pandasystems.pandalib.logger
 import dev.pandasystems.pandalib.platform.game
@@ -19,9 +18,8 @@ import java.util.function.Supplier
 
 open class ConfigObject<T : Config>(
 	val resourceLocation: ResourceLocation,
-	val configClass: Class<T>
+	private val configInstance: T
 ) : Supplier<T> {
-	private var instance: T = configClass.constructClassUnsafely()
 	private val gson = GsonBuilder().setPrettyPrinting().create()
 
 	val path = game.configDir.toFile().resolve("${resourceLocation.namespace}/${resourceLocation.path}.json")
@@ -30,12 +28,11 @@ open class ConfigObject<T : Config>(
 	val onLoad = ListenerFactory.create<(configObject: ConfigObject<T>) -> Unit>()
 
 	init {
-		instance.initialize()
-		ConfigRegistry.register(this)
+		configInstance.initialize()
 	}
 
 	override fun get(): T {
-		return instance
+		return configInstance
 	}
 
 	fun save() {
@@ -68,7 +65,7 @@ open class ConfigObject<T : Config>(
 			return jsonObject
 		}
 
-		return instance.serialize()
+		return configInstance.serialize()
 	}
 
 	private fun deserialize(jsonObject: JsonObject) {
@@ -76,6 +73,6 @@ open class ConfigObject<T : Config>(
 			options.forEach { option -> jsonObject.get(option.name)?.let { option.deserialize(it) } }
 			subCategories.forEach { (name, config) -> jsonObject.getAsJsonObject(name)?.let { config.deserialize(it) } }
 		}
-		return instance.deserialize(jsonObject)
+		return configInstance.deserialize(jsonObject)
 	}
 }

@@ -9,6 +9,7 @@ package dev.pandasystems.pandalib
 
 import dev.pandasystems.pandalib.config.Config
 import dev.pandasystems.pandalib.config.ConfigObject
+import dev.pandasystems.pandalib.config.ConfigRegistry
 import dev.pandasystems.pandalib.config.options.ConfigOption
 import dev.pandasystems.pandalib.utils.extensions.resourceLocation
 
@@ -24,4 +25,4 @@ class PandaLibConfig: Config() {
 	}
 }
 
-val pandalibConfig = ConfigObject(resourceLocation("pandalib_config"), PandaLibConfig::class.java)
+val pandalibConfig = ConfigRegistry.create(resourceLocation("pandalib_config"), ::PandaLibConfig)

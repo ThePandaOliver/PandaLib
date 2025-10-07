@@ -35,29 +35,34 @@ The library is written in Kotlin, but it can be used for Java development as wel
 
 ### Future Features:
 
-| Planned                    | In development         |
-|----------------------------|------------------------|
-| Config Menu API            | Multi-Loader Framework |
-| Wiki / Docs                |                        |
-| Custom Model Rendering API |                        |
+| Planned                                          | In development         |
+|--------------------------------------------------|------------------------|
+| Config Serializers (TOML, YAML, XML, Properties) |                        |
+| Config Menu API                                  | Multi-Loader Framework |
+| Wiki / Docs                                      |                        |
+| Custom Model Rendering API                       |                        |
 
-### Targeted versions and mod loaders:
+### Supported versions and mod loaders:
 
-- Fabric and NeoForge 1.20.5 – 1.21.8
-- Fabric and Forge 1.20 – 1.20.4
+| Mod loader | Versions        |
+|------------|-----------------|
+| Fabric     | 1.20 – 1.21.8   |
+| Forge      | 1.20 – 1.20.4   |
+| NeoForge   | 1.20.5 – 1.21.8 |
 
-Development is done on 1.21.8
+Development is targeted 1.21.8
 
 ---
 
 ### Development:
 
 #### Kotlin DSL
+
 <details>
 <summary>Fabric | Architectury/Fabric Loom</summary>
 
 ```kotlin
-repositories { 
+repositories {
 	mavenCentral()
 	maven {
 		name = "Github"
@@ -79,7 +84,7 @@ dependencies {
 <summary>[Neo]Forge | Architectury Loom</summary>
 
 ```kotlin
-repositories { 
+repositories {
 	mavenCentral()
 	maven {
 		name = "Github"
@@ -96,7 +101,7 @@ dependencies {
 	modApi("dev.pandasystems:pandalib-neoforge:<version>") // NeoForge
 
 	forgeRuntimeLibrary(kotlin("stdlib"))
-	forgeRuntimeLibrary(kotlin("stdlib-jdk8"))
+	forgeRuntimeLibrary(kotlin("stdlib-jdk8"))[README.md](../../Documents/GitHub/ThePandaOliver/README.md)
 	forgeRuntimeLibrary(kotlin("stdlib-jdk7"))
 	forgeRuntimeLibrary(kotlin("reflect", version = "2.2.0"))
 	forgeRuntimeLibrary("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
@@ -120,10 +125,9 @@ dependencies {
 > [<img src="https://resources.jetbrains.com/storage/products/company/brand/logos/jetbrains.svg" width=300px>](https://jb.gg/OpenSourceSupport)
 
 > ### Thanks to **Kinetic Hosting** for supporting this project
-> [![Partner Banner](https://github.com/ThePandaOliver/Readme-Assets/blob/main/Support/Kinetic%20affiliate%20banner%20small.png?raw=true)](https://t.ly/B1Kui)
+> [![Partner Banner](https://github.com/ThePandaOliver/ThePandaOliver/blob/main/assets_for_readme/Support/kinetic_hosting_banner.png?raw=true)](https://t.ly/B1Kui)
 >
 > Every purchased server via my [affiliate link](https://t.ly/B1Kui) will help support me and my work.
-> On top of that, you can use code **PANDA** to get 15% off your first month.
 
 ## License
 

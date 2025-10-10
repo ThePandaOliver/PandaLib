@@ -8,51 +8,47 @@
 package dev.pandasystems.pandalib.config.options
 
 import com.google.gson.JsonElement
-import com.google.gson.JsonPrimitive
+import dev.pandasystems.pandalib.config.ConfigObject
+import org.spongepowered.asm.util.Annotations.setValue
 import java.lang.reflect.Field
 import java.util.function.Supplier
 import kotlin.reflect.KProperty
+import kotlin.reflect.KType
 import kotlin.reflect.jvm.isAccessible
 import kotlin.reflect.jvm.kotlinProperty
 
-open class ConfigOption<T>(private var value: T) : Supplier<T> {
-	lateinit var fieldParent: Any
+abstract class ConfigOption<T: Any> {
+	var isInitialized = false
+		private set
+
+	lateinit var configObject: ConfigObject<*>
 		internal set
-	lateinit var field: Field
+
+	lateinit var name: String
+		internal set
+	lateinit var path: String
 		internal set
 
-	val name: String by lazy {
-		field.kotlinProperty?.let { property ->
-			property.isAccessible = true
-			return@let property.name
-		} ?: field.name
+	abstract var value: T
+	val type: Class<T> get() = value.javaClass
+
+	open fun initialize(
+		configObject: ConfigObject<*>,
+		path: String, name: String
+	) {
+		require(!isInitialized) { "ConfigOption $name is already initialized" }
+		this.configObject = configObject
+
+		this.name = name
+		this.path = path
+
+		isInitialized = true
 	}
 
-	override fun get(): T = value
+	abstract fun serialize(): JsonElement
+	abstract fun deserialize(element: JsonElement): T
 
-	fun set(newValue: T) {
-		value = newValue
+	fun deserializeAndSet(element: JsonElement) {
+		value = deserialize(element)
 	}
-
-	fun serialize(): JsonElement {
-		return when (value) {
-			is Boolean -> JsonPrimitive(value as Boolean?)
-			is Number -> JsonPrimitive(value as Number?)
-			is String -> JsonPrimitive(value as String?)
-			else -> throw IllegalArgumentException("Cannot serialize unknown type: ${value!!::class.qualifiedName}")
-		}
-	}
-
-	@Suppress("UNCHECKED_CAST")
-	fun deserialize(element: JsonElement) {
-		value = when (value) {
-			is Boolean -> element.asBoolean
-			is Number -> element.asNumber
-			is String -> element.asString
-			else -> throw IllegalArgumentException("Cannot deserialize unknown type: ${value!!::class.qualifiedName}")
-		} as T
-	}
-
-	operator fun setValue(thisRef: Any?, property: KProperty<*>, newValue: T) { value = newValue }
-	operator fun getValue(thisRef: Any?, property: KProperty<*>): T = value
 }

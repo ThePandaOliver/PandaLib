@@ -8,36 +8,50 @@
 package dev.pandasystems.pandalib.config
 
 import dev.pandasystems.pandalib.config.options.ConfigOption
+import kotlin.reflect.jvm.isAccessible
+import kotlin.reflect.jvm.kotlinProperty
 
 abstract class Config {
 	private var isInitialized = false
 	lateinit var options: List<ConfigOption<*>>
-	lateinit var subCategories: Map<String, Config>
+		internal set
 
-	internal fun initialize() {
+	lateinit var configObject: ConfigObject<*>
+		internal set
+
+	internal fun initialize(configObject: ConfigObject<*>) {
 		if (isInitialized) throw IllegalStateException("Config $this is already initialized")
-		isInitialized = true
 		val mutableOptions = mutableListOf<ConfigOption<*>>()
-		val mutableSubCategories = mutableMapOf<String, Config>()
 
-		javaClass.declaredFields.forEach {
-			if (ConfigOption::class.java.isAssignableFrom(it.type)) {
-				it.isAccessible = true
+		fun Any.applyCategory(path: String? = null) {
+			this::class.java.declaredFields.forEach { field ->
+				val name = field.kotlinProperty?.let { property ->
+					property.isAccessible = true
+					return@let property.name
+				} ?: field.name
+				val path = path?.let { "$it.$name" } ?: name
 
-				val option = it.get(this) as? ConfigOption<*> ?: throw IllegalArgumentException("Field $it returns null")
-				option.fieldParent = this
-				option.field = it
+				if (ConfigOption::class.java.isAssignableFrom(field.type)) {
+					field.isAccessible = true
 
-				mutableOptions += option
-			} else if (Config::class.java.isAssignableFrom(it.type)) {
-				it.isAccessible = true
-				val subCategory = it.get(this) as Config
-				subCategory.initialize()
-				mutableSubCategories[it.name] = subCategory
-			} // else: ignore other types
+					val option = field.get(this) as? ConfigOption<*> ?: throw IllegalArgumentException("Field $field returns null")
+					option.initialize(
+						configObject = configObject,
+						path = path,
+						name = name
+					)
+
+					mutableOptions += option
+				} else if (field.isAnnotationPresent(ConfigCategory::class.java)) {
+					field.isAccessible = true
+					field.get(this).applyCategory(path)
+				} // else: ignore other types
+			}
 		}
+		applyCategory()
 
 		options = mutableOptions.toList()
-		subCategories = mutableSubCategories.toMap()
+		this.configObject = configObject
+		isInitialized = true
 	}
 }

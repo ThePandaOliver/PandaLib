@@ -8,18 +8,30 @@
 package dev.pandasystems.pandalib
 
 import com.mojang.logging.LogUtils
+import dev.pandasystems.pandalib.config.ConfigSynchronizer
+import dev.pandasystems.pandalib.event.serverevents.blockBreakPostEvent
 import net.minecraft.resources.ResourceLocation
+import net.minecraft.world.entity.player.Player
 import org.slf4j.Logger
 
 object PandaLib {
 	const val MOD_ID = "pandalib"
 
 	init {
-		logger.debug("PandaLib Core is initializing...")
+		logger.debug("PandaLib is initializing...")
 
 		pandalibConfig.load()
 
-		logger.debug("PandaLib Core initialized successfully.")
+		ConfigSynchronizer.init()
+
+		blockBreakPostEvent.register { level, pos, state, entity ->
+			if (entity is Player) {
+				println("Server value: ${pandalibConfig.get().debugging.syncedValue}")
+				println("Player ${entity.name} value: ${pandalibConfig.get().debugging[entity.uuid]}")
+			}
+		}
+
+		logger.debug("PandaLib initialized successfully.")
 	}
 }
 

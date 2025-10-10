@@ -29,6 +29,6 @@ public abstract class ServerConfigurationPacketListenerMixin extends ServerCommo
 	@Inject(method = "runConfiguration", at = @At("HEAD"))
 	public void runConfiguration(CallbackInfo ci) {
 		System.out.println(Thread.currentThread().getName());
-		ServerConfigurationConnectionEvents.configure.getInvoker().invoke((ServerConfigurationPacketListenerImpl) (Object) this, this.server);
+		ServerConfigurationConnectionEvents.configure().getInvoker().invoke((ServerConfigurationPacketListenerImpl) (Object) this, this.server);
 	}
 }

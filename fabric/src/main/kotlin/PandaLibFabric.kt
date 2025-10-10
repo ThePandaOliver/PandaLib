@@ -8,6 +8,7 @@
 package dev.pandasystems.pandalib.fabric
 
 import dev.pandasystems.pandalib.PandaLib
+import dev.pandasystems.pandalib.event.serverevents.serverConfigurationConnectionEvent
 import dev.pandasystems.pandalib.event.serverevents.serverStartingEvent
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationConnectionEvents
@@ -18,7 +19,7 @@ class PandaLibFabric : ModInitializer {
 		serverStartingEvent.register { server = it }
 
 		ServerConfigurationConnectionEvents.CONFIGURE.register { handler, server ->
-			dev.pandasystems.pandalib.event.serverevents.ServerConfigurationConnectionEvents.configure.invoker(handler, server) }
+			serverConfigurationConnectionEvent.invoker(handler, server) }
 
 		PandaLib // Initialize the core PandaLib functionality
 	}

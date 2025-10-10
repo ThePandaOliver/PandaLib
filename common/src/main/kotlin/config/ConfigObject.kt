@@ -10,10 +10,8 @@ package dev.pandasystems.pandalib.config
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
-import dev.pandasystems.pandalib.listener.ListenerFactory
 import dev.pandasystems.pandalib.logger
 import dev.pandasystems.pandalib.platform.game
-import kotlinx.serialization.json.Json
 import net.minecraft.resources.ResourceLocation
 import java.util.function.Supplier
 
@@ -25,8 +23,8 @@ open class ConfigObject<T : Config>(
 
 	val filePath = game.configDir.toFile().resolve("${resourceLocation.namespace}/${resourceLocation.path}.json")
 
-	val onSave = ListenerFactory.create<(configObject: ConfigObject<T>) -> Unit>()
-	val onLoad = ListenerFactory.create<(configObject: ConfigObject<T>) -> Unit>()
+	val onSave = EventFactory.create<(configObject: ConfigObject<T>) -> Unit>()
+	val onLoad = EventFactory.create<(configObject: ConfigObject<T>) -> Unit>()
 
 	init {
 		configInstance.initialize(this)

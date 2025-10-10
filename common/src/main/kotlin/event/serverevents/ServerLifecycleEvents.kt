@@ -8,8 +8,8 @@
 
 package dev.pandasystems.pandalib.event.serverevents
 
-import dev.pandasystems.pandalib.listener.ListenerFactory
+import dev.pandasystems.pandalib.utils.event
 import net.minecraft.server.MinecraftServer
 
-val serverStartingEvent = ListenerFactory.create<(server: MinecraftServer) -> Unit>()
-val ServerStoppingEvent = ListenerFactory.create<(server: MinecraftServer) -> Unit>()
+val serverStartingEvent = event<(server: MinecraftServer) -> Unit>()
+val ServerStoppingEvent = event<(server: MinecraftServer) -> Unit>()

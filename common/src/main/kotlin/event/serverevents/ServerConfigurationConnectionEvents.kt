@@ -8,9 +8,9 @@
 
 package dev.pandasystems.pandalib.event.serverevents
 
-import dev.pandasystems.pandalib.listener.ListenerFactory
+import dev.pandasystems.pandalib.utils.event
 import net.minecraft.server.MinecraftServer
 import net.minecraft.server.network.ServerConfigurationPacketListenerImpl
 
 @get:JvmName("configure")
-val serverConfigurationConnectionEvent = ListenerFactory.create<(handler: ServerConfigurationPacketListenerImpl, server: MinecraftServer) -> Unit>()
+val serverConfigurationConnectionEvent = event<(handler: ServerConfigurationPacketListenerImpl, server: MinecraftServer) -> Unit>()

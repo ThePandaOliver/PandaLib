@@ -8,24 +8,25 @@
 
 package dev.pandasystems.pandalib.event.serverevents
 
-import dev.pandasystems.pandalib.listener.ListenerFactory
+import dev.pandasystems.pandalib.utils.cancelableEvent
+import dev.pandasystems.pandalib.utils.event
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.level.portal.TeleportTransition
 
-val serverPlayerJoinEvent = ListenerFactory.create<(player: ServerPlayer) -> Unit>()
-val serverPlayerLeaveEvent = ListenerFactory.create<(player: ServerPlayer) -> Unit>()
-val serverPlayerRespawnEvent = ListenerFactory.create<(
+val serverPlayerJoinEvent = event<(player: ServerPlayer) -> Unit>()
+val serverPlayerLeaveEvent = event<(player: ServerPlayer) -> Unit>()
+val serverPlayerRespawnEvent = event<(
 	oldPlayer: ServerPlayer, newPlayer: ServerPlayer,
 	keepInventory: Boolean, removalReason: Entity.RemovalReason
 ) -> Unit>()
 
-val serverPlayerChangeDimensionPreEvent = ListenerFactory.createCancellable<(
+val serverPlayerChangeDimensionPreEvent = cancelableEvent<(
 	player: ServerPlayer, oldLevel: ServerLevel,
 	newLevel: ServerLevel, teleportTransition: TeleportTransition
 ) -> Boolean>()
-val serverPlayerChangeDimensionPostEvent = ListenerFactory.create<(
+val serverPlayerChangeDimensionPostEvent = event<(
 	player: ServerPlayer, oldLevel: ServerLevel,
 	newLevel: ServerLevel, teleportTransition: TeleportTransition
 ) -> Unit>()

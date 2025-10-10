@@ -34,7 +34,7 @@ class RegistryRegistrationsImpl : RegistryRegistrations {
 	}
 
 	init {
-		entityDataSerializers.listener.register { key, value, _ ->
+		entityDataSerializers.event.register { key, value, _ ->
 			FabricTrackedDataRegistry.register(key.location(), value)
 		}
 	}

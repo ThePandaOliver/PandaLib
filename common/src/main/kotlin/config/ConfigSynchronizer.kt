@@ -54,7 +54,6 @@ object ConfigSynchronizer {
 				}
 				ServerConfigurationNetworking.send(handler, payloads)
 
-
 				// Send request for all client's configs
 				ServerConfigurationNetworking.send(handler, ClientboundConfigRequestPayload(handler.owner.id))
 			}

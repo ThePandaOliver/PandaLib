@@ -29,9 +29,7 @@ object ClientConfigurationNetworking {
 	// Packet Registration
 
 	@JvmStatic
-	fun <T : CustomPacketPayload> registerHandler(
-		type: CustomPacketPayload.Type<T>, handler: ConfigurationPacketHandler<T>
-	) {
+	fun <T : CustomPacketPayload> registerHandler(type: CustomPacketPayload.Type<T>, handler: ConfigurationPacketHandler<T>) {
 		require(!packetHandlers.containsKey(type)) { "Packet type $type already has a handler" }
 		@Suppress("UNCHECKED_CAST")
 		packetHandlers[type] = handler as ConfigurationPacketHandler<CustomPacketPayload>
@@ -41,22 +39,17 @@ object ClientConfigurationNetworking {
 	// Packet Sending
 
 	@JvmStatic
-	fun send(payload: CustomPacketPayload, vararg payloads: CustomPacketPayload) {
+	fun send(payload: CustomPacketPayload, vararg payloads: CustomPacketPayload) = send(listOf(payload, *payloads))
+
+	@JvmStatic
+	fun send(payloads: Collection<CustomPacketPayload>) {
 		require(game.isClient) { "Cannot send serverbound payloads from the server" }
 		val listener = requireNotNull(Minecraft.getInstance().player!!.connection)
-		listener.send(makePacket(payload, *payloads))
+		listener.send(createPacket(*payloads.toTypedArray()))
 	}
 
-	private fun makePacket(payload: CustomPacketPayload, vararg payloads: CustomPacketPayload): Packet<*> {
-		if (payloads.isNotEmpty()) {
-			val packets = mutableListOf<Packet<in ServerGamePacketListener>>()
-			packets.add(ServerboundPLPayloadPacket(payload))
-			payloads.forEach { packets.add(ServerboundPLPayloadPacket(it)) }
-			return ServerboundPLBundlePacket(packets)
-		} else {
-			return ServerboundPLPayloadPacket(payload)
-		}
-	}
+	@JvmStatic
+	fun createPacket(vararg payloads: CustomPacketPayload): Packet<*> = ClientPlayNetworking.createPacket(*payloads)
 
 	fun interface ConfigurationPacketHandler<T : CustomPacketPayload> {
 		fun receive(payload: T, context: Context)

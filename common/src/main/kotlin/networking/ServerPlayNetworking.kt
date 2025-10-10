@@ -32,9 +32,7 @@ object ServerPlayNetworking {
 	// Packet Registration
 
 	@JvmStatic
-	fun <T : CustomPacketPayload> registerHandler(
-		type: CustomPacketPayload.Type<T>, handler: PlayPayloadHandler<T>
-	) {
+	fun <T : CustomPacketPayload> registerHandler(type: CustomPacketPayload.Type<T>, handler: PlayPayloadHandler<T>) {
 		require(!packetHandlers.containsKey(type)) { "Packet type $type already has a handler" }
 		@Suppress("UNCHECKED_CAST")
 		packetHandlers[type] = handler as PlayPayloadHandler<CustomPacketPayload>
@@ -44,13 +42,29 @@ object ServerPlayNetworking {
 	// Packet Sending
 
 	@JvmStatic
-	fun send(player: ServerPlayer, payload: CustomPacketPayload, vararg payloads: CustomPacketPayload) {
-		player.connection.send(makePacket(payload, *payloads))
+	fun send(player: ServerPlayer, payload: CustomPacketPayload, vararg payloads: CustomPacketPayload) = send(player, listOf(payload, *payloads))
+
+	@JvmStatic
+	fun send(player: ServerPlayer, payloads: Collection<CustomPacketPayload>) {
+		player.connection.send(createPacket(*payloads.toTypedArray()))
 	}
 
 	@JvmStatic
-	fun sendInDimension(level: ServerLevel, payload: CustomPacketPayload, vararg payloads: CustomPacketPayload) {
-		val packet = makePacket(payload, *payloads)
+	fun sendToAll(payload: CustomPacketPayload, vararg payloads: CustomPacketPayload) = sendToAll(listOf(payload, *payloads))
+
+	@JvmStatic
+	fun sendToAll(payloads: Collection<CustomPacketPayload>) {
+		val server = requireNotNull(game.server) { "Cannot send clientbound payloads from the client" }
+		server.playerList.broadcastAll(createPacket(*payloads.toTypedArray()))
+	}
+
+	@JvmStatic
+	fun sendInDimension(level: ServerLevel, payload: CustomPacketPayload, vararg payloads: CustomPacketPayload) =
+		sendInDimension(level, listOf(payload, *payloads))
+
+	@JvmStatic
+	fun sendInDimension(level: ServerLevel, payloads: Collection<CustomPacketPayload>) {
+		val packet = createPacket(*payloads.toTypedArray())
 		level.server.playerList.broadcastAll(packet, level.dimension())
 	}
 
@@ -58,36 +72,41 @@ object ServerPlayNetworking {
 	fun sendToNear(
 		level: ServerLevel, excluded: ServerPlayer, x: Double, y: Double, z: Double,
 		radius: Double, payload: CustomPacketPayload, vararg payloads: CustomPacketPayload
+	) = sendToNear(level, excluded, x, y, z, radius, listOf(payload, *payloads))
+
+	@JvmStatic
+	fun sendToNear(
+		level: ServerLevel, excluded: ServerPlayer, x: Double, y: Double, z: Double,
+		radius: Double, payloads: Collection<CustomPacketPayload>
 	) {
-		val packet = makePacket(payload, *payloads)
+		val packet = createPacket(*payloads.toTypedArray())
 		level.server.playerList.broadcast(excluded, x, y, z, radius, level.dimension(), packet)
 	}
 
 	@JvmStatic
-	fun sendToAll(payload: CustomPacketPayload, vararg payloads: CustomPacketPayload) {
-		val server = requireNotNull(game.server) { "Cannot send clientbound payloads from the client" }
-		server.playerList.broadcastAll(makePacket(payload, *payloads))
-	}
+	fun sendToTrackingEntity(entity: Entity, payload: CustomPacketPayload, vararg payloads: CustomPacketPayload) =
+		sendToTrackingEntity(entity, listOf(payload, *payloads))
 
 	@JvmStatic
-	fun sendToTrackingEntity(entity: Entity, payload: CustomPacketPayload, vararg payloads: CustomPacketPayload) {
+	fun sendToTrackingEntity(entity: Entity, payloads: Collection<CustomPacketPayload>) {
 		check(!entity.level().isClientSide()) { "Cannot send clientbound payloads on the client" }
 		val chunkSource = entity.level().chunkSource
 		if (chunkSource is ServerChunkCache) {
-			chunkSource.broadcast(entity, makePacket(payload, *payloads))
+			chunkSource.broadcast(entity, createPacket(*payloads.toTypedArray()))
 		}
 		// Silently ignore custom Level implementations which may not return ServerChunkCache.
 	}
 
 	@JvmStatic
-	fun sendToTrackingEntityAndSelf(
-		entity: Entity, payload: CustomPacketPayload,
-		vararg payloads: CustomPacketPayload
-	) {
+	fun sendToTrackingEntityAndSelf(entity: Entity, payload: CustomPacketPayload, vararg payloads: CustomPacketPayload) =
+		sendToTrackingEntityAndSelf(entity, listOf(payload, *payloads))
+
+	@JvmStatic
+	fun sendToTrackingEntityAndSelf(entity: Entity, payloads: Collection<CustomPacketPayload>) {
 		check(!entity.level().isClientSide()) { "Cannot send clientbound payloads on the client" }
 		val chunkSource = entity.level().chunkSource
 		if (chunkSource is ServerChunkCache) {
-			chunkSource.broadcastAndSend(entity, makePacket(payload, *payloads))
+			chunkSource.broadcastAndSend(entity, createPacket(*payloads.toTypedArray()))
 		}
 		// Silently ignore custom Level implementations which may not return ServerChunkCache.
 	}
@@ -96,19 +115,24 @@ object ServerPlayNetworking {
 	fun sendToTrackingChunk(
 		level: ServerLevel, chunkPos: ChunkPos,
 		payload: CustomPacketPayload, vararg payloads: CustomPacketPayload
+	) = sendToTrackingChunk(level, chunkPos, listOf(payload, *payloads))
+
+	@JvmStatic
+	fun sendToTrackingChunk(
+		level: ServerLevel, chunkPos: ChunkPos,
+		payloads: Collection<CustomPacketPayload>
 	) {
-		val packet: Packet<*> = makePacket(payload, *payloads)
+		val packet: Packet<*> = createPacket(*payloads.toTypedArray())
 		level.chunkSource.chunkMap.getPlayers(chunkPos, false).forEach { it.connection.send(packet) }
 	}
 
-	private fun makePacket(payload: CustomPacketPayload, vararg payloads: CustomPacketPayload): Packet<*> {
-		if (payloads.isNotEmpty()) {
-			val packets = mutableListOf<Packet<in ClientGamePacketListener>>()
-			packets.add(ClientboundPLPayloadPacket(payload))
-			payloads.forEach { packets.add(ClientboundPLPayloadPacket(it)) }
-			return ClientboundBundlePacket(packets)
+	@JvmStatic
+	fun createPacket(vararg payloads: CustomPacketPayload): Packet<*> {
+		require(payloads.isNotEmpty()) { "Requires at least one payload" }
+		return if (payloads.size > 1) {
+			ClientboundBundlePacket(payloads.map(::ClientboundPLPayloadPacket))
 		} else {
-			return ClientboundPLPayloadPacket(payload)
+			ClientboundPLPayloadPacket(payloads.first())
 		}
 	}
 

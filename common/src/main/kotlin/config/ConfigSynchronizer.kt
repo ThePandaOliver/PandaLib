@@ -15,8 +15,8 @@ import dev.pandasystems.pandalib.logger
 import dev.pandasystems.pandalib.networking.ClientConfigurationNetworking
 import dev.pandasystems.pandalib.networking.PayloadCodecRegistry
 import dev.pandasystems.pandalib.networking.ServerConfigurationNetworking
+import dev.pandasystems.pandalib.networking.payloads.config.ClientboundConfigRequestPayload
 import dev.pandasystems.pandalib.networking.payloads.config.CommonConfigPayload
-import dev.pandasystems.pandalib.networking.payloads.config.CommonConfigRequestPayload
 import net.minecraft.resources.ResourceLocation
 import java.util.*
 import kotlin.jvm.optionals.getOrNull
@@ -28,14 +28,14 @@ object ConfigSynchronizer {
 	internal fun init() {
 		logger.debug("Config Synchronizer is initializing...")
 		PayloadCodecRegistry.register(CommonConfigPayload.TYPE, CommonConfigPayload.CODEC)
-		PayloadCodecRegistry.register(CommonConfigRequestPayload.TYPE, CommonConfigRequestPayload.CODEC)
+		PayloadCodecRegistry.register(ClientboundConfigRequestPayload.TYPE, ClientboundConfigRequestPayload.CODEC)
 
 
 		// Config receiving
 
 		fun CommonConfigPayload.apply() {
 			val configObject = ConfigRegistry.get<Config>(resourceLocation)
-			configObject?.applyConfigPayload(optionMap, ownerUuid.getOrNull()?.let { UUID.fromString(it) })
+			configObject?.applyConfigPayload(optionMap, ownerUuid.getOrNull())
 				?: logger.error("Received config payload for unknown config object: $resourceLocation")
 		}
 
@@ -47,19 +47,29 @@ object ConfigSynchronizer {
 
 		if (configs.isNotEmpty()) {
 			serverConfigurationConnectionEvent.register { handler, _ ->
-				configs.forEach { (resourceLocation, _) ->
+				// Send all server configs
+				val payloads = configs.map { (resourceLocation, _) ->
 					val configObject = requireNotNull(ConfigRegistry.get<Config>(resourceLocation))
-					ServerConfigurationNetworking.send(handler, configObject.createConfigPayload()) // TODO: Bundle all config payloads into one packet
+					configObject.createConfigPayload()
 				}
+				ServerConfigurationNetworking.send(handler, payloads)
 
-				ServerConfigurationNetworking.send(handler, CommonConfigRequestPayload())
+
+				// Send request for all client's configs
+				ServerConfigurationNetworking.send(handler, ClientboundConfigRequestPayload(handler.owner.id))
 			}
 		}
 
-		ClientConfigurationNetworking.registerHandler(CommonConfigRequestPayload.TYPE) { _, context ->
+		ClientConfigurationNetworking.registerHandler(ClientboundConfigRequestPayload.TYPE) { payload, context ->
+			// Respond with all client configs
+			val payloads = configs.map { (resourceLocation, _) ->
+				val configObject = requireNotNull(ConfigRegistry.get<Config>(resourceLocation))
+				configObject.createConfigPayload(payload.ownerUuid)
+			}
+			context.responseSender().sendPacket(payloads)
 			configs.forEach { (resourceLocation, _) ->
 				val configObject = requireNotNull(ConfigRegistry.get<Config>(resourceLocation))
-				context.responseSender().sendPacket(configObject.createConfigPayload(context.client().player?.uuid)) // TODO: Bundle all config payloads into one packet
+				context.responseSender().sendPacket(configObject.createConfigPayload(payload.ownerUuid)) // TODO: Bundle all config payloads into one packet
 			}
 		}
 
@@ -70,7 +80,7 @@ object ConfigSynchronizer {
 		val options = requireNotNull(configs[resourceLocation]) { "Config $resourceLocation is not registered" }
 		val values = mutableMapOf<String, String>()
 		options.forEach { values[it.path] = it.serialize().toString() }
-		return CommonConfigPayload(resourceLocation, values, Optional.ofNullable(playerUuid?.toString()))
+		return CommonConfigPayload(resourceLocation, values, Optional.ofNullable(playerUuid))
 	}
 
 	private fun ConfigObject<*>.applyConfigPayload(values: Map<String, String>, playerUuid: UUID?) {

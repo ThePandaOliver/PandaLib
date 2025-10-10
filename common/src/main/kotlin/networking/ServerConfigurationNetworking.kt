@@ -27,9 +27,7 @@ object ServerConfigurationNetworking {
 	// Packet Registration
 
 	@JvmStatic
-	fun <T : CustomPacketPayload> registerHandler(
-		type: CustomPacketPayload.Type<T>, handler: ConfigurationPacketHandler<T>
-	) {
+	fun <T : CustomPacketPayload> registerHandler(type: CustomPacketPayload.Type<T>, handler: ConfigurationPacketHandler<T>) {
 		require(!packetHandlers.containsKey(type)) { "Packet type $type already has a handler" }
 		@Suppress("UNCHECKED_CAST")
 		packetHandlers[type] = handler as ConfigurationPacketHandler<CustomPacketPayload>
@@ -39,20 +37,16 @@ object ServerConfigurationNetworking {
 	// Packet Sending
 
 	@JvmStatic
-	fun send(handler: ServerConfigurationPacketListenerImpl, payload: CustomPacketPayload, vararg payloads: CustomPacketPayload) {
-		handler.send(makePacket(payload, *payloads))
+	fun send(handler: ServerConfigurationPacketListenerImpl, payload: CustomPacketPayload, vararg payloads: CustomPacketPayload) =
+		send(handler, listOf(payload, *payloads))
+
+	@JvmStatic
+	fun send(handler: ServerConfigurationPacketListenerImpl, payloads: Collection<CustomPacketPayload>) {
+		handler.send(createPacket(*payloads.toTypedArray()))
 	}
 
-	private fun makePacket(payload: CustomPacketPayload, vararg payloads: CustomPacketPayload): Packet<*> {
-		if (payloads.isNotEmpty()) {
-			val packets = mutableListOf<Packet<in ClientGamePacketListener>>()
-			packets.add(ClientboundPLPayloadPacket(payload))
-			payloads.forEach { packets.add(ClientboundPLPayloadPacket(it)) }
-			return ClientboundBundlePacket(packets)
-		} else {
-			return ClientboundPLPayloadPacket(payload)
-		}
-	}
+	@JvmStatic
+	fun createPacket(vararg payloads: CustomPacketPayload): Packet<*> = ServerPlayNetworking.createPacket(*payloads)
 
 	fun interface ConfigurationPacketHandler<T : CustomPacketPayload> {
 		fun receive(payload: T, context: Context)

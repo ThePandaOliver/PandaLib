@@ -9,6 +9,7 @@ package dev.pandasystems.pandalib.networking.payloads.config
 
 import dev.pandasystems.pandalib.utils.extensions.resourceLocation
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap
+import net.minecraft.core.UUIDUtil
 import net.minecraft.network.FriendlyByteBuf
 import net.minecraft.network.codec.ByteBufCodecs
 import net.minecraft.network.codec.StreamCodec
@@ -19,7 +20,7 @@ import java.util.*
 data class CommonConfigPayload(
 	val resourceLocation: ResourceLocation,
 	val optionMap: Map<String, String>, // option path -> option JSON value in string
-	val ownerUuid: Optional<String>
+	val ownerUuid: Optional<UUID>
 ) : CustomPacketPayload {
 	override fun type(): CustomPacketPayload.Type<CommonConfigPayload> = TYPE
 
@@ -28,7 +29,7 @@ data class CommonConfigPayload(
 		val CODEC: StreamCodec<FriendlyByteBuf, CommonConfigPayload> = StreamCodec.composite(
 			ResourceLocation.STREAM_CODEC, CommonConfigPayload::resourceLocation,
 			ByteBufCodecs.map(::Object2ObjectOpenHashMap, ByteBufCodecs.STRING_UTF8, ByteBufCodecs.STRING_UTF8), CommonConfigPayload::optionMap,
-			ByteBufCodecs.optional(ByteBufCodecs.STRING_UTF8), CommonConfigPayload::ownerUuid,
+			ByteBufCodecs.optional(UUIDUtil.STREAM_CODEC), CommonConfigPayload::ownerUuid,
 			::CommonConfigPayload
 		)
 	}

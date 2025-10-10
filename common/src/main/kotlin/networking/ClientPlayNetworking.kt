@@ -13,12 +13,8 @@ import dev.pandasystems.pandalib.networking.packets.bundle.ServerboundPLBundlePa
 import dev.pandasystems.pandalib.platform.game
 import net.minecraft.client.Minecraft
 import net.minecraft.client.player.LocalPlayer
-import net.minecraft.network.FriendlyByteBuf
-import net.minecraft.network.codec.StreamCodec
 import net.minecraft.network.protocol.Packet
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
-import net.minecraft.network.protocol.game.ServerGamePacketListener
-import net.minecraft.resources.ResourceLocation
 import org.jetbrains.annotations.ApiStatus
 
 object ClientPlayNetworking {
@@ -29,9 +25,7 @@ object ClientPlayNetworking {
 	// Packet Registration
 
 	@JvmStatic
-	fun <T : CustomPacketPayload> registerHandler(
-		type: CustomPacketPayload.Type<T>, handler: PlayPayloadHandler<T>
-	) {
+	fun <T : CustomPacketPayload> registerHandler(type: CustomPacketPayload.Type<T>, handler: PlayPayloadHandler<T>) {
 		require(!packetHandlers.containsKey(type)) { "Packet type $type already has a handler" }
 		@Suppress("UNCHECKED_CAST")
 		packetHandlers[type] = handler as PlayPayloadHandler<CustomPacketPayload>
@@ -41,20 +35,21 @@ object ClientPlayNetworking {
 	// Packet Sending
 
 	@JvmStatic
-	fun send(payload: CustomPacketPayload, vararg payloads: CustomPacketPayload) {
+	fun send(payload: CustomPacketPayload, vararg payloads: CustomPacketPayload) = send(listOf(payload, *payloads))
+
+	@JvmStatic
+	fun send(payloads: Collection<CustomPacketPayload>) {
 		require(game.isClient) { "Cannot send serverbound payloads from the server" }
 		val listener = requireNotNull(Minecraft.getInstance().player!!.connection)
-		listener.send(makePacket(payload, *payloads))
+		listener.send(createPacket(*payloads.toTypedArray()))
 	}
 
-	private fun makePacket(payload: CustomPacketPayload, vararg payloads: CustomPacketPayload): Packet<*> {
-		if (payloads.isNotEmpty()) {
-			val packets = mutableListOf<Packet<in ServerGamePacketListener>>()
-			packets.add(ServerboundPLPayloadPacket(payload))
-			payloads.forEach { packets.add(ServerboundPLPayloadPacket(it)) }
-			return ServerboundPLBundlePacket(packets)
+	fun createPacket(vararg payloads: CustomPacketPayload): Packet<*> {
+		require(payloads.isNotEmpty()) { "Requires at least one payload" }
+		return if (payloads.size > 1) {
+			ServerboundPLBundlePacket(payloads.map(::ServerboundPLPayloadPacket))
 		} else {
-			return ServerboundPLPayloadPacket(payload)
+			ServerboundPLPayloadPacket(payloads.first())
 		}
 	}
 

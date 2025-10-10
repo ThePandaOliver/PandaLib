@@ -22,7 +22,6 @@ import net.minecraft.network.protocol.PacketFlow
 import net.minecraft.network.protocol.PacketType
 import net.minecraft.network.protocol.common.ServerCommonPacketListener
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
-import net.minecraft.network.protocol.game.ClientGamePacketListener
 import net.minecraft.network.protocol.game.ClientboundBundlePacket
 import net.minecraft.server.MinecraftServer
 import net.minecraft.server.level.ServerPlayer
@@ -38,17 +37,11 @@ data class ServerboundPLPayloadPacket(val payload: CustomPacketPayload) : Packet
 
 	override fun handle(handler: ServerCommonPacketListener) {
 		class Sender(val connection: Connection): PacketSender {
-			override fun createPacket(
-				payload: CustomPacketPayload,
-				vararg payloads: CustomPacketPayload
-			): Packet<*> {
-				if (payloads.isNotEmpty()) {
-					val packets = mutableListOf<Packet<in ClientGamePacketListener>>()
-					packets.add(ClientboundPLPayloadPacket(payload))
-					payloads.forEach { packets.add(ClientboundPLPayloadPacket(it)) }
-					return ClientboundBundlePacket(packets)
+			override fun createPacket(payloads: Collection<CustomPacketPayload>): Packet<*> {
+				return if (payloads.size > 1) {
+					ClientboundBundlePacket(payloads.map { ClientboundPLPayloadPacket(it) })
 				} else {
-					return ClientboundPLPayloadPacket(payload)
+					ClientboundPLPayloadPacket(payloads.first())
 				}
 			}
 

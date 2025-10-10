@@ -12,7 +12,9 @@ import net.minecraft.network.protocol.Packet
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 
 interface PacketSender {
-	fun createPacket(payload: CustomPacketPayload, vararg payloads: CustomPacketPayload): Packet<*>
+	fun createPacket(payloads: Collection<CustomPacketPayload>): Packet<*>
+
+	fun createPacket(payload: CustomPacketPayload, vararg payloads: CustomPacketPayload): Packet<*> = createPacket(listOf(payload, *payloads))
 
 	fun sendPacket(packet: Packet<*>) {
 		sendPacket(null, packet)
@@ -20,6 +22,10 @@ interface PacketSender {
 
 	fun sendPacket(payload: CustomPacketPayload, vararg payloads: CustomPacketPayload) {
 		sendPacket(createPacket(payload, *payloads))
+	}
+
+	fun sendPacket(payloads: Collection<CustomPacketPayload>) {
+		sendPacket(createPacket(payloads))
 	}
 
 	fun sendPacket(callback: ChannelFutureListener?, packet: Packet<*>)

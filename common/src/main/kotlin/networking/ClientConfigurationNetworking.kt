@@ -14,6 +14,7 @@ import dev.pandasystems.pandalib.networking.packets.bundle.ServerboundPLBundlePa
 import dev.pandasystems.pandalib.platform.game
 import net.minecraft.client.Minecraft
 import net.minecraft.client.multiplayer.ClientConfigurationPacketListenerImpl
+import net.minecraft.network.Connection
 import net.minecraft.network.FriendlyByteBuf
 import net.minecraft.network.codec.StreamCodec
 import net.minecraft.network.protocol.Packet
@@ -22,6 +23,8 @@ import net.minecraft.network.protocol.game.ServerGamePacketListener
 import org.jetbrains.annotations.ApiStatus
 
 object ClientConfigurationNetworking {
+	internal lateinit var connection: Connection
+
 	@JvmField
 	internal val packetHandlers = mutableMapOf<CustomPacketPayload.Type<out CustomPacketPayload>, ConfigurationPacketHandler<CustomPacketPayload>>()
 
@@ -44,8 +47,7 @@ object ClientConfigurationNetworking {
 	@JvmStatic
 	fun send(payloads: Collection<CustomPacketPayload>) {
 		require(game.isClient) { "Cannot send serverbound payloads from the server" }
-		val listener = requireNotNull(Minecraft.getInstance().player!!.connection)
-		listener.send(createPacket(*payloads.toTypedArray()))
+		connection.send(createPacket(*payloads.toTypedArray()))
 	}
 
 	@JvmStatic

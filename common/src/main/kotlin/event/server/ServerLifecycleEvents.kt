@@ -6,10 +6,10 @@
  */
 @file:JvmName("ServerLifecycleEvents")
 
-package dev.pandasystems.pandalib.event.serverevents
+package dev.pandasystems.pandalib.event.server
 
 import dev.pandasystems.pandalib.utils.event
 import net.minecraft.server.MinecraftServer
 
 val serverStartingEvent = event<(server: MinecraftServer) -> Unit>()
-val ServerStoppingEvent = event<(server: MinecraftServer) -> Unit>()
+val serverStoppingEvent = event<(server: MinecraftServer) -> Unit>()

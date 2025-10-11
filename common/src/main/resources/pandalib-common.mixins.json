@@ -4,6 +4,9 @@
 	"compatibilityLevel": "JAVA_21",
 	"minVersion": "0.8",
 	"client": [
+		"events.ClientLevelEventMixin",
+		"events.player.ClientPacketListenerEventMixin",
+		"networking.client.ClientConfigurationPacketListenerImplMixin"
 	],
 	"mixins": [
 		"events.BlockItemEventMixin",
@@ -13,8 +16,8 @@
 		"events.player.ServerPlayerEventMixin",
 		"protocols.ConfigurationProtocolsMixin",
 		"protocols.GameProtocolsMixin",
-		"protocols.StatusProtocolsMixin",
-		"protocols.LoginProtocolsMixin"
+		"protocols.LoginProtocolsMixin",
+		"protocols.StatusProtocolsMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

@@ -11,21 +11,21 @@ import com.google.gson.JsonElement
 import dev.pandasystems.pandalib.config.ConfigObject
 import dev.pandasystems.pandalib.config.ConfigSynchronizer
 import dev.pandasystems.pandalib.logger
+import dev.pandasystems.pandalib.platform.game
 import net.minecraft.world.entity.player.Player
-import java.lang.reflect.Field
 import java.util.UUID
 
 class SyncableConfigOption<T: Any>(
 	val delegate: ConfigOption<T>
 ) : ConfigOption<T>() {
 	// The player specific values that is synced to the server from the client.
-	internal var syncedPlayerValues: MutableMap<UUID, T> = mutableMapOf()
+	internal var playerValues = mutableMapOf<UUID, T>()
 
 	// The value that is synced to the client from the server.
-	internal var syncedValue: T? = null // TODO: Set to null when player leaves the server
-
+	internal var serverValue: T? = null
+		get() = if (game.isHost) initialValue else field
 	override var value: T
-		get() = syncedValue ?: initialValue
+		get() = serverValue ?: initialValue
 		set(value) {
 			delegate.value = value
 		}
@@ -40,16 +40,19 @@ class SyncableConfigOption<T: Any>(
 		ConfigSynchronizer.registerSyncableConfigOption(this as SyncableConfigOption<Any>)
 	}
 
-	override fun serialize(): JsonElement = delegate.serialize()
+	override fun serialize(value: T): JsonElement = delegate.serialize(value)
+	override fun getAndSerialize(): JsonElement {
+		return delegate.serialize(initialValue)
+	}
 	override fun deserialize(element: JsonElement): T = delegate.deserialize(element)
 
 	operator fun get(player: UUID): T {
-		var syncedValue = syncedPlayerValues[player]
+		var syncedValue = playerValues[player]
 		if (syncedValue == null) {
 			logger.warn("No synced value for player $player in config option ${delegate.path}")
 			syncedValue = initialValue
 		}
-		return syncedValue!!
+		return syncedValue
 	}
 
 	operator fun get(player: Player): T = this[player.uuid]

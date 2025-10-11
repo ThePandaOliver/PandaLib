@@ -17,7 +17,7 @@
 
 ## Event API
 
-* Added 2 Event types `Event` and `CancellableEvent`
+* Reworked event API to fit kotlin practices
 * Events have priority levels
 
 ## Registration API

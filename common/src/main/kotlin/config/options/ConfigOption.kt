@@ -45,10 +45,12 @@ abstract class ConfigOption<T: Any> {
 		isInitialized = true
 	}
 
-	abstract fun serialize(): JsonElement
+	abstract fun serialize(value: T): JsonElement
 	abstract fun deserialize(element: JsonElement): T
 
-	fun deserializeAndSet(element: JsonElement) {
+	open fun getAndSerialize(): JsonElement = serialize(value)
+
+	open fun deserializeAndSet(element: JsonElement) {
 		value = deserialize(element)
 	}
 }

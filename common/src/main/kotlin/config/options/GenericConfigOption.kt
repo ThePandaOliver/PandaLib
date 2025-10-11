@@ -16,7 +16,7 @@ import kotlin.reflect.jvm.isAccessible
 import kotlin.reflect.jvm.kotlinProperty
 
 open class GenericConfigOption<T: Any>(override var value: T) : ConfigOption<T>() {
-	override fun serialize(): JsonElement {
+	override fun serialize(value: T): JsonElement {
 		return when (value) {
 			is Boolean -> JsonPrimitive(value as Boolean?)
 			is Number -> JsonPrimitive(value as Number?)

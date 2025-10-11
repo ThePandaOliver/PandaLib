@@ -14,13 +14,13 @@ import net.minecraft.network.codec.StreamCodec
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 import java.util.UUID
 
-class ClientboundConfigRequestPayload(val ownerUuid: UUID) : CustomPacketPayload {
+class ClientboundConfigRequestPayload(val playerId: UUID) : CustomPacketPayload {
 	override fun type(): CustomPacketPayload.Type<ClientboundConfigRequestPayload> = TYPE
 
 	companion object {
 		val TYPE = CustomPacketPayload.Type<ClientboundConfigRequestPayload>(resourceLocation("config_request_payload"))
 		val CODEC: StreamCodec<FriendlyByteBuf, ClientboundConfigRequestPayload> = StreamCodec.composite(
-			UUIDUtil.STREAM_CODEC, ClientboundConfigRequestPayload::ownerUuid,
+			UUIDUtil.STREAM_CODEC, ClientboundConfigRequestPayload::playerId,
 			::ClientboundConfigRequestPayload
 		)
 	}

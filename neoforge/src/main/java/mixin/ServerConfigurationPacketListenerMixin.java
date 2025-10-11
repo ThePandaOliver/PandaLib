@@ -7,10 +7,8 @@
 
 package dev.pandasystems.pandalib.neoforge.mixin;
 
-import dev.pandasystems.pandalib.PandaLibKt;
-import dev.pandasystems.pandalib.event.serverevents.ServerConfigurationConnectionEvents;
+import dev.pandasystems.pandalib.event.server.ServerConfigurationConnectionEvents;
 import net.minecraft.network.Connection;
-import net.minecraft.network.protocol.configuration.ServerConfigurationPacketListener;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.CommonListenerCookie;
 import net.minecraft.server.network.ServerCommonPacketListenerImpl;

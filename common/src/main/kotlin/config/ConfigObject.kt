@@ -12,6 +12,7 @@ import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import dev.pandasystems.pandalib.logger
 import dev.pandasystems.pandalib.platform.game
+import dev.pandasystems.pandalib.utils.event
 import net.minecraft.resources.ResourceLocation
 import java.util.function.Supplier
 
@@ -23,8 +24,8 @@ open class ConfigObject<T : Config>(
 
 	val filePath = game.configDir.toFile().resolve("${resourceLocation.namespace}/${resourceLocation.path}.json")
 
-	val onSave = EventFactory.create<(configObject: ConfigObject<T>) -> Unit>()
-	val onLoad = EventFactory.create<(configObject: ConfigObject<T>) -> Unit>()
+	val onSave = event<(configObject: ConfigObject<T>) -> Unit>()
+	val onLoad = event<(configObject: ConfigObject<T>) -> Unit>()
 
 	init {
 		configInstance.initialize(this)
@@ -63,7 +64,7 @@ open class ConfigObject<T : Config>(
 			val pathSegments = option.path.split('.')
 			pathSegments.forEachIndexed { index, string ->
 				if (index == pathSegments.lastIndex) {
-					current.add(string, option.serialize())
+					current.add(string, option.getAndSerialize())
 				} else {
 					current = current.getAsJsonObject(string) ?: JsonObject().also { current.add(string, it) }
 				}
@@ -82,7 +83,7 @@ open class ConfigObject<T : Config>(
 				current = current.asJsonObject.get(it)
 			}
 
-			current?.let { option.deserialize(it) }
+			current?.let { option.deserializeAndSet(it) }
 		}
 	}
 

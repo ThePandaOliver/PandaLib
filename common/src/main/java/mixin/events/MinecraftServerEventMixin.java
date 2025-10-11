@@ -7,7 +7,7 @@
 
 package dev.pandasystems.pandalib.mixin.events;
 
-import dev.pandasystems.pandalib.event.serverevents.ServerLifecycleEvents;
+import dev.pandasystems.pandalib.event.server.ServerLifecycleEvents;
 import net.minecraft.server.MinecraftServer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

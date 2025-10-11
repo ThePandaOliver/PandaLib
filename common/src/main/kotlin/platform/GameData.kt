@@ -23,6 +23,9 @@ interface GameData {
 	val isDedicatedServer
 		get() = environment.isDedicatedServer
 
+	val isHost: Boolean
+		get() = server != null
+
 	val gameDir: Path
 	val configDir: Path
 	val modDir: Path

@@ -7,7 +7,7 @@
 
 package dev.pandasystems.pandalib.mixin.events.player;
 
-import dev.pandasystems.pandalib.event.serverevents.ServerPlayerEvents;
+import dev.pandasystems.pandalib.event.server.ServerPlayerEvents;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.portal.TeleportTransition;

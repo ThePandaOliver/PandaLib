@@ -6,7 +6,7 @@
  */
 @file:JvmName("ServerConfigurationConnectionEvents")
 
-package dev.pandasystems.pandalib.event.serverevents
+package dev.pandasystems.pandalib.event.server
 
 import dev.pandasystems.pandalib.utils.event
 import net.minecraft.server.MinecraftServer

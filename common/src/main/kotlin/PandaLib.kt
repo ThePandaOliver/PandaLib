@@ -9,9 +9,10 @@ package dev.pandasystems.pandalib
 
 import com.mojang.logging.LogUtils
 import dev.pandasystems.pandalib.config.ConfigSynchronizer
-import dev.pandasystems.pandalib.event.serverevents.blockBreakPostEvent
-import net.minecraft.resources.ResourceLocation
-import net.minecraft.world.entity.player.Player
+import dev.pandasystems.pandalib.event.client.clientBlockPlaceEvent
+import dev.pandasystems.pandalib.event.client.clientPlayerJoinEvent
+import dev.pandasystems.pandalib.event.server.serverPlayerJoinEvent
+import dev.pandasystems.pandalib.platform.game
 import org.slf4j.Logger
 
 object PandaLib {
@@ -24,11 +25,9 @@ object PandaLib {
 
 		ConfigSynchronizer.init()
 
-		blockBreakPostEvent.register { level, pos, state, entity ->
-			if (entity is Player) {
-				println("Server value: ${pandalibConfig.get().debugging.syncedValue}")
-				println("Player ${entity.name} value: ${pandalibConfig.get().debugging[entity.uuid]}")
-			}
+		serverPlayerJoinEvent += { player ->
+			println("Server value: ${pandalibConfig.get().debugging.serverValue}")
+			println("Player ${player.name} value: ${pandalibConfig.get().debugging.playerValues[player.uuid]}")
 		}
 
 		logger.debug("PandaLib initialized successfully.")

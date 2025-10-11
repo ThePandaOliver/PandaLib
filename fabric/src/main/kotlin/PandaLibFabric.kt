@@ -8,8 +8,9 @@
 package dev.pandasystems.pandalib.fabric
 
 import dev.pandasystems.pandalib.PandaLib
-import dev.pandasystems.pandalib.event.serverevents.serverConfigurationConnectionEvent
-import dev.pandasystems.pandalib.event.serverevents.serverStartingEvent
+import dev.pandasystems.pandalib.event.server.serverConfigurationConnectionEvent
+import dev.pandasystems.pandalib.event.server.serverStartingEvent
+import dev.pandasystems.pandalib.event.server.serverStoppingEvent
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationConnectionEvents
 import net.minecraft.server.MinecraftServer
@@ -17,6 +18,7 @@ import net.minecraft.server.MinecraftServer
 class PandaLibFabric : ModInitializer {
 	override fun onInitialize() {
 		serverStartingEvent.register { server = it }
+		serverStoppingEvent.register { server = null }
 
 		ServerConfigurationConnectionEvents.CONFIGURE.register { handler, server ->
 			serverConfigurationConnectionEvent.invoker(handler, server) }

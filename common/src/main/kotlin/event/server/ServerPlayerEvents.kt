@@ -6,7 +6,7 @@
  */
 @file:JvmName("ServerPlayerEvents")
 
-package dev.pandasystems.pandalib.event.serverevents
+package dev.pandasystems.pandalib.event.server
 
 import dev.pandasystems.pandalib.utils.cancelableEvent
 import dev.pandasystems.pandalib.utils.event

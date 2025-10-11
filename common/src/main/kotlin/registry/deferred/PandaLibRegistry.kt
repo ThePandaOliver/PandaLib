@@ -9,6 +9,7 @@ package dev.pandasystems.pandalib.registry.deferred
 
 import com.mojang.serialization.Lifecycle
 import dev.pandasystems.pandalib.utils.Event
+import dev.pandasystems.pandalib.utils.event
 import net.minecraft.core.Holder
 import net.minecraft.core.MappedRegistry
 import net.minecraft.core.RegistrationInfo
@@ -18,7 +19,7 @@ import net.minecraft.resources.ResourceKey
 class PandaLibRegistry<T : Any>(key: ResourceKey<Registry<T>>, registryLifecycle: Lifecycle, hasIntrusiveHolders: Boolean) : MappedRegistry<T>(key, registryLifecycle, hasIntrusiveHolders) {
 	constructor(key: ResourceKey<Registry<T>>, registryLifecycle: Lifecycle) : this(key, registryLifecycle, false)
 
-	val event: Event<(key: ResourceKey<T>, value: T, registrationInfo: RegistrationInfo) -> Unit> = EventFactory.create()
+	val event: Event<(key: ResourceKey<T>, value: T, registrationInfo: RegistrationInfo) -> Unit> = event()
 
 	override fun register(
 		key: ResourceKey<T>,

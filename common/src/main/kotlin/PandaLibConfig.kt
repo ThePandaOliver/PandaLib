@@ -25,6 +25,12 @@ class PandaLibConfig: Config() {
 		var enableConfigHotReload by GenericConfigOption(false)
 		var configHotReloadDelay by GenericConfigOption(1_000L)
 	}
+
+	companion object {
+		fun configSynchronizerClientInit() {
+			TODO("Not yet implemented")
+		}
+	}
 }
 
 val pandalibConfig = ConfigRegistry.create(resourceLocation("pandalib_config"), ::PandaLibConfig)

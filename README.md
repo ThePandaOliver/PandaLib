@@ -11,7 +11,7 @@
 
 PandaLib is a library mod for Minecraft that provides various APIs and utilities to simplify mod development.
 
-The library is written in Kotlin, but it can be used for Java development as well.
+The library is written in Kotlin, and some APIs might not be fully supported by Java.
 
 ### Current Features:
 

@@ -19,6 +19,7 @@ import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundLoginPacket;
 import net.minecraft.network.protocol.game.ClientboundRespawnPacket;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -36,16 +37,17 @@ public abstract class ClientPacketListenerEventMixin extends ClientCommonPacketL
 		ClientPlayerEvents.getClientPlayerJoinEvent().getInvoker().invoke(Objects.requireNonNull(this.minecraft.player));
 	}
 
-	private LocalPlayer oldPlayer;
+	@Unique
+	private LocalPlayer pandaLib$oldPlayer;
 
 	@Inject(method = "handleRespawn", at = @At("HEAD"))
 	public void handleBeforeRespawn(ClientboundRespawnPacket packet, CallbackInfo ci) {
-		oldPlayer = this.minecraft.player;
+		pandaLib$oldPlayer = this.minecraft.player;
 	}
 
 	@Inject(method = "handleRespawn", at = @At("TAIL"))
 	public void handleRespawn(ClientboundRespawnPacket packet, CallbackInfo ci) {
 		var newPlayer = this.minecraft.player;
-		ClientPlayerEvents.getClientPlayerRespawnEvent().getInvoker().invoke(oldPlayer, newPlayer);
+		ClientPlayerEvents.getClientPlayerRespawnEvent().getInvoker().invoke(pandaLib$oldPlayer, newPlayer);
 	}
 }

@@ -8,8 +8,7 @@
 package dev.pandasystems.pandalib.config
 
 import dev.pandasystems.pandalib.config.options.ConfigOption
-import kotlin.reflect.jvm.isAccessible
-import kotlin.reflect.jvm.kotlinProperty
+import dev.pandasystems.pandalib.config.options.ConfigOptionBuilder
 
 abstract class Config {
 	private var isInitialized = false
@@ -19,29 +18,19 @@ abstract class Config {
 	lateinit var configObject: ConfigObject<*>
 		internal set
 
-	internal fun initialize(configObject: ConfigObject<*>) {
+	internal fun lateInit(configObject: ConfigObject<*>) {
 		if (isInitialized) throw IllegalStateException("Config $this is already initialized")
 		val mutableOptions = mutableListOf<ConfigOption<*>>()
 
 		fun Any.applyCategory(path: String? = null) {
 			this::class.java.declaredFields.forEach { field ->
-				val name = field.kotlinProperty?.let { property ->
-					property.isAccessible = true
-					return@let property.name
-				} ?: field.name
-				val path = path?.let { "$it.$name" } ?: name
-
-				if (ConfigOption::class.java.isAssignableFrom(field.type)) {
+				if (ConfigOptionBuilder::class.java.isAssignableFrom(field.type)) {
 					field.isAccessible = true
 
-					val option = field.get(this) as? ConfigOption<*> ?: throw IllegalArgumentException("Field $field returns null")
-					option.initialize(
-						configObject = configObject,
-						path = path,
-						name = name
-					)
+					val builder = field.get(this) as? ConfigOptionBuilder<*, *> ?: throw IllegalArgumentException("Field $field returns null")
+					builder.lateInit(configObject, field, path)
 
-					mutableOptions += option
+					mutableOptions += builder.delegate
 				} else if (field.isAnnotationPresent(ConfigCategory::class.java)) {
 					field.isAccessible = true
 					field.get(this).applyCategory(path)

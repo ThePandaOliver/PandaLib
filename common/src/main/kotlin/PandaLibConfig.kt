@@ -8,22 +8,22 @@
 package dev.pandasystems.pandalib
 
 import dev.pandasystems.pandalib.config.Config
-import dev.pandasystems.pandalib.config.ConfigRegistry
 import dev.pandasystems.pandalib.config.ConfigCategory
-import dev.pandasystems.pandalib.config.options.GenericConfigOption
+import dev.pandasystems.pandalib.config.ConfigRegistry
+import dev.pandasystems.pandalib.config.options.configOption
 import dev.pandasystems.pandalib.config.options.syncable
 import dev.pandasystems.pandalib.utils.extensions.resourceLocation
 
 class PandaLibConfig: Config() {
-	var debugging = GenericConfigOption(false).syncable()
-	var experimentalFeatures by GenericConfigOption(false)
+	val debugging by configOption(false).syncable()
+	val experimentalFeatures by configOption(false)
 
 	@ConfigCategory
 	val hotReload = HotReloadConfig() //TODO: Implement hot reload functionality
 
 	class HotReloadConfig {
-		var enableConfigHotReload by GenericConfigOption(false)
-		var configHotReloadDelay by GenericConfigOption(1_000L)
+		val enableConfigHotReload by configOption(false)
+		val configHotReloadDelay by configOption(1_000L)
 	}
 
 	companion object {

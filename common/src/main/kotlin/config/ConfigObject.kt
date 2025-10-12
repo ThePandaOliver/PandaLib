@@ -10,6 +10,8 @@ package dev.pandasystems.pandalib.config
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
+import dev.pandasystems.pandalib.config.options.ConfigOption
+import dev.pandasystems.pandalib.config.serializer.ConfigSerialization
 import dev.pandasystems.pandalib.logger
 import dev.pandasystems.pandalib.platform.game
 import dev.pandasystems.pandalib.utils.event
@@ -28,7 +30,7 @@ open class ConfigObject<T : Config>(
 	val onLoad = event<(configObject: ConfigObject<T>) -> Unit>()
 
 	init {
-		configInstance.initialize(this)
+		configInstance.lateInit(this)
 	}
 
 	override fun get(): T {
@@ -57,33 +59,23 @@ open class ConfigObject<T : Config>(
 		onLoad.invoker(this)
 	}
 
-	private fun serialize(): JsonObject {
-		val jsonObject = JsonObject()
-		configInstance.options.forEach { option ->
-			var current = jsonObject
-			val pathSegments = option.path.split('.')
-			pathSegments.forEachIndexed { index, string ->
-				if (index == pathSegments.lastIndex) {
-					current.add(string, option.getAndSerialize())
-				} else {
-					current = current.getAsJsonObject(string) ?: JsonObject().also { current.add(string, it) }
-				}
-			}
-		}
-		return jsonObject
-	}
+	private fun serialize(): JsonObject = ConfigSerialization.serialize(configInstance).asJsonObject
 
 	private fun deserialize(jsonObject: JsonObject) {
 		configInstance.options.forEach { option ->
 			var current: JsonElement? = jsonObject
-			val pathSegments = option.path.split('.')
+			val pathSegments = option.pathName.split('.')
 			pathSegments.forEach {
 				if (current == null || !current.isJsonObject)
 					return@forEach
 				current = current.asJsonObject.get(it)
 			}
 
-			current?.let { option.deserializeAndSet(it) }
+			current?.let {
+				@Suppress("UNCHECKED_CAST")
+				(option as ConfigOption<Any>).value =
+					requireNotNull(ConfigSerialization.deserialize(it, option.type)) { "Failed to deserialize value for option ${option.pathName}" }
+			}
 		}
 	}
 

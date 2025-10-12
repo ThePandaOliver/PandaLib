@@ -11,6 +11,7 @@ import com.mojang.logging.LogUtils
 import dev.pandasystems.pandalib.config.ConfigSynchronizer
 import dev.pandasystems.pandalib.event.client.clientBlockPlaceEvent
 import dev.pandasystems.pandalib.event.client.clientPlayerJoinEvent
+import dev.pandasystems.pandalib.event.server.serverBlockPlacePostEvent
 import dev.pandasystems.pandalib.event.server.serverPlayerJoinEvent
 import dev.pandasystems.pandalib.platform.game
 import org.slf4j.Logger
@@ -28,6 +29,11 @@ object PandaLib {
 		serverPlayerJoinEvent += { player ->
 			println("Server value: ${pandalibConfig.get().debugging.serverValue}")
 			println("Player ${player.name} value: ${pandalibConfig.get().debugging.playerValues[player.uuid]}")
+		}
+
+		serverBlockPlacePostEvent += { _, _, _, player ->
+			println("Server value: ${pandalibConfig.get().debugging.serverValue}")
+			println("Player ${player?.name} value: ${pandalibConfig.get().debugging.playerValues[player?.uuid]}")
 		}
 
 		logger.debug("PandaLib initialized successfully.")

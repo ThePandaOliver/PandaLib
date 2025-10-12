@@ -7,6 +7,8 @@
 
 package dev.pandasystems.pandalib.networking.payloads.config
 
+import com.google.gson.JsonObject
+import dev.pandasystems.pandalib.utils.codecs.JsonObjectCodec
 import dev.pandasystems.pandalib.utils.extensions.resourceLocation
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap
 import net.minecraft.core.UUIDUtil
@@ -19,7 +21,7 @@ import java.util.*
 
 data class CommonConfigPayload(
 	val resourceLocation: ResourceLocation,
-	val optionMap: Map<String, String>, // option path -> option JSON value in string
+	val optionObject: JsonObject,
 	val playerId: Optional<UUID>
 ) : CustomPacketPayload {
 	override fun type(): CustomPacketPayload.Type<CommonConfigPayload> = TYPE
@@ -28,7 +30,7 @@ data class CommonConfigPayload(
 		val TYPE = CustomPacketPayload.Type<CommonConfigPayload>(resourceLocation("config_payload"))
 		val CODEC: StreamCodec<FriendlyByteBuf, CommonConfigPayload> = StreamCodec.composite(
 			ResourceLocation.STREAM_CODEC, CommonConfigPayload::resourceLocation,
-			ByteBufCodecs.map(::Object2ObjectOpenHashMap, ByteBufCodecs.STRING_UTF8, ByteBufCodecs.STRING_UTF8), CommonConfigPayload::optionMap,
+			JsonObjectCodec, CommonConfigPayload::optionObject,
 			ByteBufCodecs.optional(UUIDUtil.STREAM_CODEC), CommonConfigPayload::playerId,
 			::CommonConfigPayload
 		)

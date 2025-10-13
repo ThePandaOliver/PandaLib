@@ -10,7 +10,7 @@ package dev.pandasystems.pandalib.networking.packets
 import dev.pandasystems.pandalib.networking.ClientConfigurationNetworking
 import dev.pandasystems.pandalib.networking.ClientPlayNetworking
 import dev.pandasystems.pandalib.networking.PayloadCodecRegistry
-import dev.pandasystems.pandalib.networking.interfaces.PacketSender
+import dev.pandasystems.pandalib.networking.PacketSender
 import dev.pandasystems.pandalib.networking.packets.bundle.ServerboundPLBundlePacket
 import dev.pandasystems.pandalib.utils.extensions.resourceLocation
 import io.netty.channel.ChannelFutureListener

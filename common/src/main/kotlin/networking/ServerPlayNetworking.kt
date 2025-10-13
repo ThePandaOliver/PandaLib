@@ -7,7 +7,7 @@
 
 package dev.pandasystems.pandalib.networking
 
-import dev.pandasystems.pandalib.networking.interfaces.PacketSender
+import dev.pandasystems.pandalib.networking.PacketSender
 import dev.pandasystems.pandalib.networking.packets.ClientboundPLPayloadPacket
 import dev.pandasystems.pandalib.platform.game
 import net.minecraft.network.FriendlyByteBuf

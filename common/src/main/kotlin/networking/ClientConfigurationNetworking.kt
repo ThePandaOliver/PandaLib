@@ -8,7 +8,7 @@
 package dev.pandasystems.pandalib.networking
 
 import com.mojang.authlib.minecraft.client.MinecraftClient
-import dev.pandasystems.pandalib.networking.interfaces.PacketSender
+import dev.pandasystems.pandalib.networking.PacketSender
 import dev.pandasystems.pandalib.networking.packets.ServerboundPLPayloadPacket
 import dev.pandasystems.pandalib.networking.packets.bundle.ServerboundPLBundlePacket
 import dev.pandasystems.pandalib.platform.game

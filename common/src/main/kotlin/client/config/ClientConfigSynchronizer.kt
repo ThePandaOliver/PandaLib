@@ -60,7 +60,7 @@ object ClientConfigSynchronizer {
 		}
 
 		// Cleanup
-		clientPlayerLeaveEvent += { _, _ ->
+		clientPlayerLeaveEvent += { _ ->
 			ConfigSynchronizer.configs.forEach { (_, options) ->
 				options.forEach { option ->
 					option.playerValues.clear()

@@ -7,9 +7,7 @@
 
 package dev.pandasystems.pandalib.mixin.events;
 
-import dev.pandasystems.pandalib.api.event.EventListener;
-import dev.pandasystems.pandalib.api.event.commonevents.ServerStartingEvent;
-import dev.pandasystems.pandalib.api.event.commonevents.ServerStoppingEvent;
+import dev.pandasystems.pandalib.event.server.ServerLifecycleEvents;
 import net.minecraft.server.MinecraftServer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -21,12 +19,12 @@ public class MinecraftServerEventMixin {
 	@Inject(method = "runServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;initServer()Z"))
 	public void beforeServerInit(CallbackInfo ci) {
 		var server = (MinecraftServer) (Object) this;
-		EventListener.invokeEvent(new ServerStartingEvent(server));
+		ServerLifecycleEvents.getServerStartingEvent().getInvoker().invoke(server);
 	}
 
 	@Inject(method = "stopServer", at = @At("HEAD"))
 	public void beforeServerShutdown(CallbackInfo ci) {
 		var server = (MinecraftServer) (Object) this;
-		EventListener.invokeEvent(new ServerStoppingEvent(server));
+		ServerLifecycleEvents.getServerStoppingEvent().getInvoker().invoke(server);
 	}
 }

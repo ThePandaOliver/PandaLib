@@ -13,9 +13,9 @@ import dev.pandasystems.pandalib.api.registry.RegistryRegister
 import dev.pandasystems.pandalib.api.registry.deferred.PandaLibRegistry
 import dev.pandasystems.pandalib.core.PandaLib.resourceLocation
 import dev.pandasystems.pandalib.core.platform.registry.RegistryRegistrations
+import net.fabricmc.fabric.api.`object`.builder.v1.entity.FabricTrackedDataRegistry
 import net.minecraft.core.Registry
 import net.minecraft.network.syncher.EntityDataSerializer
-import net.minecraft.network.syncher.EntityDataSerializers
 import net.minecraft.resources.ResourceKey
 
 
@@ -28,13 +28,13 @@ class RegistryRegistrationsImpl : RegistryRegistrations {
 		val ENTITY_DATA_SERIALIZERS: ResourceKey<Registry<EntityDataSerializer<*>>> = key("entity_data_serializers")
 
 		private fun <T> key(name: String): ResourceKey<Registry<T>> {
-			return ResourceKey.createRegistryKey<T>(resourceLocation(name))
+			return ResourceKey.createRegistryKey<T>(resourceLocation(PandaLib.MOD_ID, name))
 		}
 	}
 
 	init {
-		entityDataSerializers.listener.register { _, value, _ ->
-			EntityDataSerializers.registerSerializer(value)
+		entityDataSerializers.event.register { key, value, _ ->
+			FabricTrackedDataRegistry.register(key.location(), value)
 		}
 	}
 }

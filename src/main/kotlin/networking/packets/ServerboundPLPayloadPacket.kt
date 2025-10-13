@@ -20,6 +20,7 @@ import dev.pandasystems.pandalib.networking.ServerPlayNetworking
 import io.netty.channel.ChannelFutureListener
 import net.minecraft.network.Connection
 import net.minecraft.network.FriendlyByteBuf
+import net.minecraft.network.PacketSendListener
 import net.minecraft.network.chat.Component
 import net.minecraft.network.codec.StreamCodec
 import net.minecraft.network.protocol.Packet
@@ -45,7 +46,7 @@ data class ServerboundPLPayloadPacket(val payload: CustomPacketPayload) : Packet
 				return ClientboundPLPayloadPacket(payload)
 			}
 
-			override fun sendPacket(callback: ChannelFutureListener?, packet: Packet<*>) {
+			override fun sendPacket(callback: PacketSendListener?, packet: Packet<*>) {
 				connection.send(packet, callback)
 			}
 

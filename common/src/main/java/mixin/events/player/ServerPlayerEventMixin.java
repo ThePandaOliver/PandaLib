@@ -7,8 +7,7 @@
 
 package dev.pandasystems.pandalib.mixin.events.player;
 
-import dev.pandasystems.pandalib.api.event.EventListener;
-import dev.pandasystems.pandalib.api.event.commonevents.ServerPlayerWorldChangeEvent;
+import dev.pandasystems.pandalib.event.server.ServerPlayerEvents;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -21,7 +20,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ServerPlayer.class)
 public abstract class ServerPlayerEventMixin {
-	@Shadow private boolean isChangingDimension;
+	@Shadow
+	private boolean isChangingDimension;
 
 	@Shadow
 	public abstract ServerLevel serverLevel();
@@ -33,10 +33,10 @@ public abstract class ServerPlayerEventMixin {
 					target = "Lnet/minecraft/server/level/ServerPlayer;isChangingDimension:Z"
 			), cancellable = true
 	)
-	public void beforeDimensionChange(DimensionTransition transition, CallbackInfoReturnable<Entity> cir) {
-		var event = new ServerPlayerWorldChangeEvent.Pre((ServerPlayer) (Object) this, serverLevel(), transition);
-		EventListener.invokeEvent(event);
-		if (event.getCancelled()) {
+	public void beforeDimensionChange(DimensionTransition transition, CallbackInfoReturnable<ServerPlayer> cir) {
+		var cancelled = !ServerPlayerEvents.getServerPlayerChangeDimensionPreEvent().getInvoker().invoke((ServerPlayer) (Object) this, serverLevel(),
+				transition.newLevel(), transition);
+		if (cancelled) {
 			cir.setReturnValue(null);
 		}
 	}
@@ -44,7 +44,7 @@ public abstract class ServerPlayerEventMixin {
 	@Inject(method = "changeDimension", at = @At("RETURN"))
 	public void afterDimensionChange(DimensionTransition transition, CallbackInfoReturnable<Entity> cir) {
 		if (this.isChangingDimension) {
-			EventListener.invokeEvent(new ServerPlayerWorldChangeEvent.Post((ServerPlayer) (Object) this, serverLevel(), transition.newLevel(), transition));
+			ServerPlayerEvents.getServerPlayerChangeDimensionPostEvent().getInvoker().invoke((ServerPlayer) (Object) this, serverLevel(), transition.newLevel(), transition);
 		}
 	}
 }

@@ -27,12 +27,12 @@ object ConfigSynchronizer {
 
 	internal fun init() {
 		logger.debug("Config Synchronizer is initializing...")
-		PayloadCodecRegistry.register(CommonConfigPayload.TYPE, CommonConfigPayload.CODEC)
-		PayloadCodecRegistry.register(ClientboundConfigRequestPayload.TYPE, ClientboundConfigRequestPayload.CODEC)
+		PayloadCodecRegistry.register(CommonConfigPayload.RESOURCELOCATION, CommonConfigPayload.CODEC)
+		PayloadCodecRegistry.register(ClientboundConfigRequestPayload.RESOURCELOCATION, ClientboundConfigRequestPayload.CODEC)
 
 
 		// Config receiving
-		ServerConfigurationNetworking.registerHandler(CommonConfigPayload.TYPE) { payload, _ ->
+		ServerConfigurationNetworking.registerHandler<CommonConfigPayload>(CommonConfigPayload.RESOURCELOCATION) { payload, _ ->
 			val resourceLocation = payload.resourceLocation
 			val jsonObject = payload.optionObject
 			val playerId = payload.playerId

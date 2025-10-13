@@ -8,13 +8,13 @@
 package dev.pandasystems.pandalib.networking.payloads.config
 
 import com.google.gson.JsonObject
+import dev.pandasystems.pandalib.utils.codec.StreamCodec
 import dev.pandasystems.pandalib.utils.codecs.JsonObjectCodec
+import dev.pandasystems.pandalib.utils.codecs.OptionalCodec
+import dev.pandasystems.pandalib.utils.codecs.ResourceLocationCodec
+import dev.pandasystems.pandalib.utils.codecs.UUIDCodec
 import dev.pandasystems.pandalib.utils.extensions.resourceLocation
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap
-import net.minecraft.core.UUIDUtil
 import net.minecraft.network.FriendlyByteBuf
-import net.minecraft.network.codec.ByteBufCodecs
-import net.minecraft.network.codec.StreamCodec
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 import net.minecraft.resources.ResourceLocation
 import java.util.*
@@ -24,14 +24,20 @@ data class CommonConfigPayload(
 	val optionObject: JsonObject,
 	val playerId: Optional<UUID>
 ) : CustomPacketPayload {
-	override fun type(): CustomPacketPayload.Type<CommonConfigPayload> = TYPE
+	override fun write(buffer: FriendlyByteBuf) {
+		ResourceLocationCodec.encode(buffer, resourceLocation)
+		JsonObjectCodec.encode(buffer, optionObject)
+		OptionalCodec(UUIDCodec).encode(buffer, playerId)
+	}
+
+	override fun id(): ResourceLocation = RESOURCELOCATION
 
 	companion object {
-		val TYPE = CustomPacketPayload.Type<CommonConfigPayload>(resourceLocation("config_payload"))
+		val RESOURCELOCATION = resourceLocation("config_payload")
 		val CODEC: StreamCodec<FriendlyByteBuf, CommonConfigPayload> = StreamCodec.composite(
-			ResourceLocation.STREAM_CODEC, CommonConfigPayload::resourceLocation,
+			ResourceLocationCodec, CommonConfigPayload::resourceLocation,
 			JsonObjectCodec, CommonConfigPayload::optionObject,
-			ByteBufCodecs.optional(UUIDUtil.STREAM_CODEC), CommonConfigPayload::playerId,
+			OptionalCodec(UUIDCodec), CommonConfigPayload::playerId,
 			::CommonConfigPayload
 		)
 	}

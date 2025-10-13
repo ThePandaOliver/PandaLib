@@ -11,8 +11,8 @@ import com.google.gson.JsonArray
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.google.gson.JsonPrimitive
+import dev.pandasystems.pandalib.utils.codec.StreamCodec
 import net.minecraft.network.FriendlyByteBuf
-import net.minecraft.network.codec.StreamCodec
 
 object JsonElementCodec : StreamCodec<FriendlyByteBuf, JsonElement> {
 	// Type identifiers for efficient encoding

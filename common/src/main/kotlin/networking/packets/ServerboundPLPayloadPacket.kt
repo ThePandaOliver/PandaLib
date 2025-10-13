@@ -7,36 +7,29 @@
 
 package dev.pandasystems.pandalib.networking.packets
 
+import dev.pandasystems.pandalib.networking.PacketSender
 import dev.pandasystems.pandalib.networking.PayloadCodecRegistry
 import dev.pandasystems.pandalib.networking.ServerConfigurationNetworking
 import dev.pandasystems.pandalib.networking.ServerPlayNetworking
-import dev.pandasystems.pandalib.networking.PacketSender
-import dev.pandasystems.pandalib.utils.extensions.resourceLocation
-import io.netty.channel.ChannelFutureListener
+import dev.pandasystems.pandalib.utils.codec.StreamCodec
 import net.minecraft.network.Connection
 import net.minecraft.network.FriendlyByteBuf
 import net.minecraft.network.PacketSendListener
 import net.minecraft.network.chat.Component
-import net.minecraft.network.codec.StreamCodec
 import net.minecraft.network.protocol.Packet
-import net.minecraft.network.protocol.PacketFlow
-import net.minecraft.network.protocol.PacketType
 import net.minecraft.network.protocol.common.ServerCommonPacketListener
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 import net.minecraft.network.protocol.game.ClientboundBundlePacket
+import net.minecraft.network.protocol.game.ServerGamePacketListener
 import net.minecraft.server.MinecraftServer
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.server.network.ServerConfigurationPacketListenerImpl
 import net.minecraft.server.network.ServerGamePacketListenerImpl
 
-val serverboundPLPayloadPacketType = PacketType<ServerboundPLPayloadPacket>(PacketFlow.SERVERBOUND, resourceLocation("pandalib_custom_payload"))
+data class ServerboundPLPayloadPacket(val payload: CustomPacketPayload) : Packet<ServerGamePacketListener> {
+	override fun write(buffer: FriendlyByteBuf) = serverboundPLPayloadCodec.encode(buffer, this)
 
-data class ServerboundPLPayloadPacket(val payload: CustomPacketPayload) : Packet<ServerCommonPacketListener> {
-	override fun type(): PacketType<out Packet<ServerCommonPacketListener>> {
-		return serverboundPLPayloadPacketType
-	}
-
-	override fun handle(handler: ServerCommonPacketListener) {
+	override fun handle(handler: ServerGamePacketListener) {
 		class Sender(val connection: Connection): PacketSender {
 			override fun createPacket(payloads: Collection<CustomPacketPayload>): Packet<*> {
 				return if (payloads.size > 1) {
@@ -62,7 +55,7 @@ data class ServerboundPLPayloadPacket(val payload: CustomPacketPayload) : Packet
 					override fun networkHandler(): ServerConfigurationPacketListenerImpl = handler
 					override fun responseSender(): PacketSender = Sender(handler.connection)
 				}
-				ServerConfigurationNetworking.packetHandlers[payload.type()]?.receive(payload, context)
+				ServerConfigurationNetworking.packetHandlers[payload.id()]?.receive(payload, context)
 			}
 
 			is ServerGamePacketListenerImpl -> {
@@ -71,7 +64,7 @@ data class ServerboundPLPayloadPacket(val payload: CustomPacketPayload) : Packet
 					override fun player(): ServerPlayer = handler.player
 					override fun responseSender(): PacketSender = Sender(handler.connection)
 				}
-				ServerPlayNetworking.packetHandlers[payload.type()]?.receive(payload, context)
+				ServerPlayNetworking.packetHandlers[payload.id()]?.receive(payload, context)
 			}
 		}
 	}
@@ -79,12 +72,12 @@ data class ServerboundPLPayloadPacket(val payload: CustomPacketPayload) : Packet
 
 val serverboundPLPayloadCodec: StreamCodec<FriendlyByteBuf, ServerboundPLPayloadPacket> = StreamCodec.of(
 	{ byteBuf, packet ->
-		byteBuf.writeResourceLocation(packet.payload.type().id) // Writes the payload type ID
-		PayloadCodecRegistry.packetCodecs[packet.payload.type().id]!!.codec.encode(byteBuf, packet.payload) // Encodes the payload using the registered codec
+		byteBuf.writeResourceLocation(packet.payload.id()) // Writes the payload type ID
+		PayloadCodecRegistry.packetCodecs[packet.payload.id()]!!.encode(byteBuf, packet.payload) // Encodes the payload using the registered codec
 	},
 	{ byteBuf ->
 		val payloadId = byteBuf.readResourceLocation() // Reads the payload type ID
-		val payload = PayloadCodecRegistry.packetCodecs[payloadId]!!.codec.decode(byteBuf) // Decodes the payload using the registered codec
+		val payload = PayloadCodecRegistry.packetCodecs[payloadId]!!.decode(byteBuf) // Decodes the payload using the registered codec
 		return@of ServerboundPLPayloadPacket(payload)
 	}
 )

@@ -27,7 +27,7 @@ object ClientConfigSynchronizer {
 		logger.debug("Client Config Synchronizer is initializing...")
 
 		// Config receiving
-		ClientConfigurationNetworking.registerHandler(CommonConfigPayload.TYPE) { payload, _ ->
+		ClientConfigurationNetworking.registerHandler<CommonConfigPayload>(CommonConfigPayload.RESOURCELOCATION) { payload, _ ->
 			val resourceLocation = payload.resourceLocation
 			val jsonObject = payload.optionObject
 			val playerId = payload.playerId
@@ -39,7 +39,7 @@ object ClientConfigSynchronizer {
 
 
 		// Client Config request
-		ClientConfigurationNetworking.registerHandler(ClientboundConfigRequestPayload.TYPE) { payload, _ ->
+		ClientConfigurationNetworking.registerHandler<ClientboundConfigRequestPayload>(ClientboundConfigRequestPayload.RESOURCELOCATION) { payload, _ ->
 			logger.debug("Received config request payload")
 			// Respond with all client configs
 			val payloads = configs.map { (resourceLocation, _) ->

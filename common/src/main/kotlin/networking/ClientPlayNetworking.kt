@@ -7,7 +7,6 @@
 
 package dev.pandasystems.pandalib.networking
 
-import dev.pandasystems.pandalib.networking.PacketSender
 import dev.pandasystems.pandalib.networking.packets.ServerboundPLPayloadPacket
 import dev.pandasystems.pandalib.networking.packets.bundle.ServerboundPLBundlePacket
 import dev.pandasystems.pandalib.platform.game
@@ -15,20 +14,21 @@ import net.minecraft.client.Minecraft
 import net.minecraft.client.player.LocalPlayer
 import net.minecraft.network.protocol.Packet
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
+import net.minecraft.resources.ResourceLocation
 import org.jetbrains.annotations.ApiStatus
 
 object ClientPlayNetworking {
 	@JvmField
-	internal val packetHandlers = mutableMapOf<CustomPacketPayload.Type<out CustomPacketPayload>, PlayPayloadHandler<CustomPacketPayload>>()
+	internal val packetHandlers = mutableMapOf<ResourceLocation, PlayPayloadHandler<CustomPacketPayload>>()
 
 
 	// Packet Registration
 
 	@JvmStatic
-	fun <T : CustomPacketPayload> registerHandler(type: CustomPacketPayload.Type<T>, handler: PlayPayloadHandler<T>) {
-		require(!packetHandlers.containsKey(type)) { "Packet type $type already has a handler" }
+	fun <T : CustomPacketPayload> registerHandler(resourceLocation: ResourceLocation, handler: PlayPayloadHandler<T>) {
+		require(!packetHandlers.containsKey(resourceLocation)) { "Packet type $resourceLocation already has a handler" }
 		@Suppress("UNCHECKED_CAST")
-		packetHandlers[type] = handler as PlayPayloadHandler<CustomPacketPayload>
+		packetHandlers[resourceLocation] = handler as PlayPayloadHandler<CustomPacketPayload>
 	}
 
 

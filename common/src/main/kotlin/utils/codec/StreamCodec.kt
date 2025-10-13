@@ -4,7 +4,7 @@
  * This code is licensed under the GNU Lesser General Public License v3.0
  * See: https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  */
-package dev.pandasystems.pandalib.api.codec
+package dev.pandasystems.pandalib.utils.codec
 
 import com.google.common.base.Suppliers
 import com.mojang.datafixers.util.Function10

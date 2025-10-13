@@ -7,30 +7,25 @@
 
 package dev.pandasystems.pandalib.networking
 
-import dev.pandasystems.pandalib.networking.PacketSender
-import dev.pandasystems.pandalib.networking.packets.ClientboundPLPayloadPacket
-import net.minecraft.network.FriendlyByteBuf
-import net.minecraft.network.codec.StreamCodec
 import net.minecraft.network.protocol.Packet
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
-import net.minecraft.network.protocol.game.ClientGamePacketListener
-import net.minecraft.network.protocol.game.ClientboundBundlePacket
+import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.MinecraftServer
 import net.minecraft.server.network.ServerConfigurationPacketListenerImpl
 import org.jetbrains.annotations.ApiStatus
 
 object ServerConfigurationNetworking {
 	@JvmField
-	internal val packetHandlers = mutableMapOf<CustomPacketPayload.Type<out CustomPacketPayload>, ConfigurationPacketHandler<CustomPacketPayload>>()
+	internal val packetHandlers = mutableMapOf<ResourceLocation, ConfigurationPacketHandler<CustomPacketPayload>>()
 
 
 	// Packet Registration
 
 	@JvmStatic
-	fun <T : CustomPacketPayload> registerHandler(type: CustomPacketPayload.Type<T>, handler: ConfigurationPacketHandler<T>) {
-		require(!packetHandlers.containsKey(type)) { "Packet type $type already has a handler" }
+	fun <T : CustomPacketPayload> registerHandler(resourceLocation: ResourceLocation, handler: ConfigurationPacketHandler<T>) {
+		require(!packetHandlers.containsKey(resourceLocation)) { "Packet type $resourceLocation already has a handler" }
 		@Suppress("UNCHECKED_CAST")
-		packetHandlers[type] = handler as ConfigurationPacketHandler<CustomPacketPayload>
+		packetHandlers[resourceLocation] = handler as ConfigurationPacketHandler<CustomPacketPayload>
 	}
 
 

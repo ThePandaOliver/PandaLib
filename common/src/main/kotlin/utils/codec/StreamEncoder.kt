@@ -4,8 +4,8 @@
  * This code is licensed under the GNU Lesser General Public License v3.0
  * See: https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  */
-package dev.pandasystems.pandalib.api.codec
+package dev.pandasystems.pandalib.utils.codec
 
-fun interface StreamDecoder<I, T> {
-	fun decode(obj: I): T
+fun interface StreamEncoder<O, T> {
+	fun encode(obj: O, obj2: T)
 }

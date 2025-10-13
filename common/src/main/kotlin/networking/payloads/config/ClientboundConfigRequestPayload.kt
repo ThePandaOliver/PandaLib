@@ -7,20 +7,25 @@
 
 package dev.pandasystems.pandalib.networking.payloads.config
 
+import dev.pandasystems.pandalib.utils.codec.StreamCodec
+import dev.pandasystems.pandalib.utils.codecs.UUIDCodec
 import dev.pandasystems.pandalib.utils.extensions.resourceLocation
-import net.minecraft.core.UUIDUtil
 import net.minecraft.network.FriendlyByteBuf
-import net.minecraft.network.codec.StreamCodec
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
-import java.util.UUID
+import net.minecraft.resources.ResourceLocation
+import java.util.*
 
 class ClientboundConfigRequestPayload(val playerId: UUID) : CustomPacketPayload {
-	override fun type(): CustomPacketPayload.Type<ClientboundConfigRequestPayload> = TYPE
+	override fun write(buffer: FriendlyByteBuf) {
+		UUIDCodec.encode(buffer, playerId)
+	}
+
+	override fun id(): ResourceLocation = RESOURCELOCATION
 
 	companion object {
-		val TYPE = CustomPacketPayload.Type<ClientboundConfigRequestPayload>(resourceLocation("config_request_payload"))
+		val RESOURCELOCATION = resourceLocation("config_request_payload")
 		val CODEC: StreamCodec<FriendlyByteBuf, ClientboundConfigRequestPayload> = StreamCodec.composite(
-			UUIDUtil.STREAM_CODEC, ClientboundConfigRequestPayload::playerId,
+			UUIDCodec, ClientboundConfigRequestPayload::playerId,
 			::ClientboundConfigRequestPayload
 		)
 	}

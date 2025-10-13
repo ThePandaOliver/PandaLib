@@ -9,13 +9,14 @@ package dev.pandasystems.pandalib.fabric.platform.registry
 
 import com.google.auto.service.AutoService
 import com.mojang.serialization.Lifecycle
-import dev.pandasystems.pandalib.api.registry.RegistryRegister
-import dev.pandasystems.pandalib.api.registry.deferred.PandaLibRegistry
-import dev.pandasystems.pandalib.core.PandaLib.resourceLocation
-import dev.pandasystems.pandalib.core.platform.registry.RegistryRegistrations
-import net.fabricmc.fabric.api.`object`.builder.v1.entity.FabricTrackedDataRegistry
+import dev.pandasystems.pandalib.PandaLib
+import dev.pandasystems.pandalib.platform.registry.RegistryRegistrations
+import dev.pandasystems.pandalib.registry.RegistryRegister
+import dev.pandasystems.pandalib.registry.deferred.PandaLibRegistry
+import dev.pandasystems.pandalib.utils.extensions.resourceLocation
 import net.minecraft.core.Registry
 import net.minecraft.network.syncher.EntityDataSerializer
+import net.minecraft.network.syncher.EntityDataSerializers
 import net.minecraft.resources.ResourceKey
 
 
@@ -34,7 +35,7 @@ class RegistryRegistrationsImpl : RegistryRegistrations {
 
 	init {
 		entityDataSerializers.event.register { key, value, _ ->
-			FabricTrackedDataRegistry.register(key.location(), value)
+			EntityDataSerializers.registerSerializer(value)
 		}
 	}
 }

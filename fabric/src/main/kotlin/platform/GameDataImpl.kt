@@ -8,9 +8,9 @@
 package dev.pandasystems.pandalib.fabric.platform
 
 import com.google.auto.service.AutoService
-import dev.pandasystems.pandalib.core.platform.GameData
+import dev.pandasystems.pandalib.platform.GameData
 import dev.pandasystems.pandalib.fabric.PandaLibFabric
-import dev.pandasystems.pandalib.api.utils.Environment
+import dev.pandasystems.pandalib.utils.Environment
 import net.fabricmc.api.EnvType
 import net.fabricmc.loader.api.FabricLoader
 import net.fabricmc.loader.api.ModContainer

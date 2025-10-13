@@ -8,7 +8,7 @@
 package dev.pandasystems.pandalib.neoforge.platform.registration
 
 import com.google.auto.service.AutoService
-import dev.pandasystems.pandalib.core.platform.registry.RendererRegistrationHelper
+import dev.pandasystems.pandalib.platform.registry.RendererRegistrationHelper
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider
 import net.minecraft.client.renderer.entity.EntityRendererProvider
 import net.minecraft.world.entity.Entity

@@ -8,8 +8,8 @@
 package dev.pandasystems.pandalib.neoforge.platform.registration
 
 import com.google.auto.service.AutoService
-import dev.pandasystems.pandalib.core.platform.registry.ResourceLoaderHelper
 import net.minecraft.client.Minecraft
+import dev.pandasystems.pandalib.platform.registry.ResourceLoaderHelper
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.packs.PackType
 import net.minecraft.server.packs.resources.PreparableReloadListener

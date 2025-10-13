@@ -27,7 +27,7 @@ public class ClientLevelEventMixin {
 	private Minecraft minecraft;
 
 	@Inject(method = "disconnect", at = @At("HEAD"))
-	public void disconnect(Component reason, CallbackInfo ci) {
-		ClientPlayerEvents.getClientPlayerLeaveEvent().getInvoker().invoke(Objects.requireNonNull(this.minecraft.player), reason);
+	public void disconnect(CallbackInfo ci) {
+		ClientPlayerEvents.getClientPlayerLeaveEvent().getInvoker().invoke(Objects.requireNonNull(this.minecraft.player));
 	}
 }

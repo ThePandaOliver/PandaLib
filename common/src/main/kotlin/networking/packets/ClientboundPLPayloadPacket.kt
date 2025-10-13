@@ -20,6 +20,7 @@ import net.minecraft.client.multiplayer.ClientConfigurationPacketListenerImpl
 import net.minecraft.client.player.LocalPlayer
 import net.minecraft.network.Connection
 import net.minecraft.network.FriendlyByteBuf
+import net.minecraft.network.PacketSendListener
 import net.minecraft.network.chat.Component
 import net.minecraft.network.codec.StreamCodec
 import net.minecraft.network.protocol.Packet
@@ -45,7 +46,7 @@ data class ClientboundPLPayloadPacket(val payload: CustomPacketPayload) : Packet
 				}
 			}
 
-			override fun sendPacket(callback: ChannelFutureListener?, packet: Packet<*>) {
+			override fun sendPacket(callback: PacketSendListener?, packet: Packet<*>) {
 				connection.send(packet, callback)
 			}
 

@@ -8,6 +8,7 @@
 package dev.pandasystems.pandalib.networking
 
 import io.netty.channel.ChannelFutureListener
+import net.minecraft.network.PacketSendListener
 import net.minecraft.network.chat.Component
 import net.minecraft.network.protocol.Packet
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
@@ -29,9 +30,9 @@ interface PacketSender {
 		sendPacket(createPacket(payloads))
 	}
 
-	fun sendPacket(callback: ChannelFutureListener?, packet: Packet<*>)
+	fun sendPacket(callback: PacketSendListener?, packet: Packet<*>)
 
-	fun sendPacket(callback: ChannelFutureListener?, payload: CustomPacketPayload, vararg payloads: CustomPacketPayload) {
+	fun sendPacket(callback: PacketSendListener?, payload: CustomPacketPayload, vararg payloads: CustomPacketPayload) {
 		sendPacket(callback, createPacket(payload, *payloads))
 	}
 

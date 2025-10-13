@@ -18,5 +18,5 @@ import net.minecraft.world.entity.Entity
 import net.minecraft.world.level.portal.TeleportTransition
 
 val clientPlayerJoinEvent = event<(player: LocalPlayer) -> Unit>()
-val clientPlayerLeaveEvent = event<(player: LocalPlayer, reason: Component) -> Unit>()
+val clientPlayerLeaveEvent = event<(player: LocalPlayer) -> Unit>()
 val clientPlayerRespawnEvent = event<(oldPlayer: LocalPlayer, newPlayer: LocalPlayer) -> Unit>()

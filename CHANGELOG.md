@@ -7,6 +7,7 @@
 
 * Rewrote to fit kotlin practices
 * Its now possible to add or use premade serializers for your config files (Premade formats: JSON)
+* Config Synchronization has been fully rewritten
 
 ## Rewrote Networking API
 
@@ -17,7 +18,7 @@
 
 ## Event API
 
-* Reworked event API to fit kotlin practices
+* Rewrote to fit kotlin practices
 * Events have priority levels
 
 ## Registration API

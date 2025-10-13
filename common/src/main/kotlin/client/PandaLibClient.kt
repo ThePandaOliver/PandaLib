@@ -25,11 +25,6 @@ object PandaLibClient {
 
 		ClientConfigSynchronizer.init()
 
-		clientPlayerJoinEvent += { player ->
-			println("Client value: ${pandalibConfig.get().debugging.serverValue}")
-			println("Player ${player.name} value: ${pandalibConfig.get().debugging.playerValues[player.uuid]}")
-		}
-
 		logger.debug("PandaLib initialized successfully.")
 	}
 }

@@ -8,7 +8,7 @@
 package dev.pandasystems.pandalib.fabric.platform.registry
 
 import com.google.auto.service.AutoService
-import dev.pandasystems.pandalib.core.platform.registry.ResourceLoaderHelper
+import dev.pandasystems.pandalib.platform.registry.ResourceLoaderHelper
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper
 import net.minecraft.resources.ResourceLocation

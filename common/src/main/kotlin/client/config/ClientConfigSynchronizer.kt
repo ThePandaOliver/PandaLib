@@ -29,7 +29,7 @@ object ClientConfigSynchronizer {
 		// Config receiving
 		ClientConfigurationNetworking.registerHandler(CommonConfigPayload.TYPE) { payload, _ ->
 			val resourceLocation = payload.resourceLocation
-			val jsonObject = ConfigSynchronizer.createJsonObject(resourceLocation)
+			val jsonObject = payload.optionObject
 			val playerId = payload.playerId
 			logger.debug("Received config payload for {}: {}", resourceLocation, jsonObject)
 			val configObject = ConfigRegistry.get<Config>(resourceLocation)

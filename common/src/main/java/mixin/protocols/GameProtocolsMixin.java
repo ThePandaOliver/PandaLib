@@ -7,8 +7,8 @@
 
 package dev.pandasystems.pandalib.mixin.protocols;
 
-import dev.pandasystems.pandalib.api.networking.packets.*;
-import dev.pandasystems.pandalib.api.networking.packets.bundle.*;
+import dev.pandasystems.pandalib.networking.packets.*;
+import dev.pandasystems.pandalib.networking.packets.bundle.*;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.protocol.ProtocolInfoBuilder;
 import net.minecraft.network.protocol.game.*;

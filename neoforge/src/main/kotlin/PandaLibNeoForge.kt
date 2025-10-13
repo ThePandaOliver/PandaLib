@@ -14,6 +14,7 @@ import dev.pandasystems.pandalib.platform.registry.resourceLoaderHelper
 import dev.pandasystems.pandalib.neoforge.platform.registration.DeferredRegisterHelperImpl
 import dev.pandasystems.pandalib.neoforge.platform.registration.RendererRegistationHelperImpl
 import dev.pandasystems.pandalib.neoforge.platform.registration.ResourceLoaderHelperImpl
+import dev.pandasystems.pandalib.platform.game
 import net.neoforged.bus.api.IEventBus
 import net.neoforged.fml.common.Mod
 import net.neoforged.neoforge.common.NeoForge

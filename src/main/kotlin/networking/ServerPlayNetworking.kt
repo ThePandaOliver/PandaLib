@@ -13,10 +13,12 @@
 package dev.pandasystems.pandalib.networking
 
 import dev.pandasystems.pandalib.networking.packets.ClientboundPLPayloadPacket
-import dev.pandasystems.pandalib.utils.gameEnvironment
+import dev.pandasystems.pandalib.platform.game
 import net.minecraft.network.protocol.Packet
 import net.minecraft.network.protocol.common.ClientCommonPacketListener
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
+import net.minecraft.network.protocol.game.ClientboundBundlePacket
+import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.MinecraftServer
 import net.minecraft.server.level.ServerChunkCache
 import net.minecraft.server.level.ServerLevel
@@ -25,15 +27,15 @@ import net.minecraft.world.entity.Entity
 import net.minecraft.world.level.ChunkPos
 
 object ServerPlayNetworking {
-	internal val packetHandlers = mutableMapOf<CustomPacketPayload.Type<out CustomPacketPayload>, PlayPayloadHandler<CustomPacketPayload>>()
+	internal val packetHandlers = mutableMapOf<ResourceLocation, PlayPayloadHandler<CustomPacketPayload>>()
 
 
 	// Packet Registration
 
-	fun <T : CustomPacketPayload> registerHandler(type: CustomPacketPayload.Type<T>, handler: PlayPayloadHandler<T>) {
-		require(!packetHandlers.containsKey(type)) { "Packet type $type already has a handler" }
+	fun <T : CustomPacketPayload> registerHandler(resourceLocation: ResourceLocation, handler: PlayPayloadHandler<T>) {
+		require(!packetHandlers.containsKey(resourceLocation)) { "Packet type $resourceLocation already has a handler" }
 		@Suppress("UNCHECKED_CAST")
-		packetHandlers[type] = handler as PlayPayloadHandler<CustomPacketPayload>
+		packetHandlers[resourceLocation] = handler as PlayPayloadHandler<CustomPacketPayload>
 	}
 
 

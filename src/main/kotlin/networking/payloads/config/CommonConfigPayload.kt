@@ -17,8 +17,6 @@ import dev.pandasystems.pandalib.utils.codecs.TreeObjectCodec
 import dev.pandasystems.universalserializer.elements.TreeObject
 import net.minecraft.core.UUIDUtil
 import net.minecraft.network.FriendlyByteBuf
-import net.minecraft.network.codec.ByteBufCodecs
-import net.minecraft.network.codec.StreamCodec
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 import net.minecraft.resources.ResourceLocation
 import java.util.*
@@ -28,14 +26,20 @@ data class CommonConfigPayload(
 	val optionObject: TreeObject,
 	val playerId: Optional<UUID>
 ) : CustomPacketPayload {
-	override fun type(): CustomPacketPayload.Type<CommonConfigPayload> = TYPE
+	override fun write(buffer: FriendlyByteBuf) {
+		ResourceLocationCodec.encode(buffer, resourceLocation)
+		JsonObjectCodec.encode(buffer, optionObject)
+		OptionalCodec(UUIDCodec).encode(buffer, playerId)
+	}
+
+	override fun id(): ResourceLocation = RESOURCELOCATION
 
 	companion object {
-		val TYPE = CustomPacketPayload.Type<CommonConfigPayload>(PandaLib.resourceLocation("config_payload"))
+		val RESOURCELOCATION = PandaLib.resourceLocation("config_payload")
 		val CODEC: StreamCodec<FriendlyByteBuf, CommonConfigPayload> = StreamCodec.composite(
-			ResourceLocation.STREAM_CODEC, CommonConfigPayload::resourceLocation,
+			ResourceLocationCodec, CommonConfigPayload::resourceLocation,
 			TreeObjectCodec, CommonConfigPayload::optionObject,
-			ByteBufCodecs.optional(UUIDUtil.STREAM_CODEC), CommonConfigPayload::playerId,
+			OptionalCodec(UUIDCodec), CommonConfigPayload::playerId,
 			::CommonConfigPayload
 		)
 	}

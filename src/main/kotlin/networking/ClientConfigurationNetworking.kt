@@ -23,15 +23,15 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 object ClientConfigurationNetworking {
 	internal lateinit var connection: Connection
 
-	internal val packetHandlers = mutableMapOf<CustomPacketPayload.Type<out CustomPacketPayload>, ConfigurationPacketHandler<CustomPacketPayload>>()
+	internal val packetHandlers = mutableMapOf<ResourceLocation, ConfigurationPacketHandler<CustomPacketPayload>>()
 
 
 	// Packet Registration
 
-	fun <T : CustomPacketPayload> registerHandler(type: CustomPacketPayload.Type<T>, handler: ConfigurationPacketHandler<T>) {
-		require(!packetHandlers.containsKey(type)) { "Packet type $type already has a handler" }
+	fun <T : CustomPacketPayload> registerHandler(resourceLocation: ResourceLocation, handler: ConfigurationPacketHandler<T>) {
+		require(!packetHandlers.containsKey(resourceLocation)) { "Packet type $resourceLocation already has a handler" }
 		@Suppress("UNCHECKED_CAST")
-		packetHandlers[type] = handler as ConfigurationPacketHandler<CustomPacketPayload>
+		packetHandlers[resourceLocation] = handler as ConfigurationPacketHandler<CustomPacketPayload>
 	}
 
 

@@ -17,7 +17,6 @@ import dev.pandasystems.pandalib.utils.event
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.entity.Entity
-import net.minecraft.world.level.portal.DimensionTransition
 
 val serverPlayerJoinEvent = event<(player: ServerPlayer) -> Unit>()
 val serverPlayerLeaveEvent = event<(player: ServerPlayer) -> Unit>()
@@ -28,9 +27,9 @@ val serverPlayerRespawnEvent = event<(
 
 val serverPlayerChangeDimensionPreEvent = cancelableEvent<(
 	player: ServerPlayer, oldLevel: ServerLevel,
-	newLevel: ServerLevel, transition: DimensionTransition
+	newLevel: ServerLevel
 ) -> Boolean>()
 val serverPlayerChangeDimensionPostEvent = event<(
 	player: ServerPlayer, oldLevel: ServerLevel,
-	newLevel: ServerLevel, transition: DimensionTransition
+	newLevel: ServerLevel
 ) -> Unit>()

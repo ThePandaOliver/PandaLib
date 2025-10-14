@@ -88,17 +88,4 @@ forgix {
 			inputJar = it.tasks.named<RemapJarTask>("remapJar").get().archiveFile
 		}
 	}
-
-//	multiversion {
-//		destinationDirectory
-//		archiveVersion = modVersion
-//
-//		val versions =  file("versionProperties").listFiles { file ->
-//			file.isFile && file.extension == "properties"
-//		}!!.map { file -> file.nameWithoutExtension }
-//
-//		inputJars = project.files(
-//			versions.map { version -> "build/forgix/${rootProject.name}-$modVersion+$version.jar" }
-//		)
-//	}
 }

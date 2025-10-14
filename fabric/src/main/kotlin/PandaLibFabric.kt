@@ -7,21 +7,18 @@
 
 package dev.pandasystems.pandalib.fabric
 
-import dev.pandasystems.pandalib.api.event.addEventListener
-import dev.pandasystems.pandalib.api.event.commonevents.ServerStartingEvent
-import dev.pandasystems.pandalib.core.PandaLib
+import dev.pandasystems.pandalib.PandaLib
+import dev.pandasystems.pandalib.event.server.serverStartingEvent
+import dev.pandasystems.pandalib.event.server.serverStoppingEvent
 import net.fabricmc.api.ModInitializer
 import net.minecraft.server.MinecraftServer
 
 class PandaLibFabric : ModInitializer {
 	override fun onInitialize() {
-		addEventListener(::onServerStart)
+		serverStartingEvent.register { server = it }
+		serverStoppingEvent.register { server = null }
 
 		PandaLib // Initialize the core PandaLib functionality
-	}
-
-	private fun onServerStart(event: ServerStartingEvent) {
-		server = event.server
 	}
 
 	companion object {

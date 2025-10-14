@@ -8,9 +8,9 @@
 package dev.pandasystems.pandalib.fabric.platform.registry
 
 import com.google.auto.service.AutoService
-import dev.pandasystems.pandalib.api.registry.deferred.DeferredObject
-import dev.pandasystems.pandalib.core.logger
-import dev.pandasystems.pandalib.core.platform.registry.DeferredRegisterHelper
+import dev.pandasystems.pandalib.registry.deferred.DeferredObject
+import dev.pandasystems.pandalib.logger
+import dev.pandasystems.pandalib.platform.registry.DeferredRegisterHelper
 import net.minecraft.core.Registry
 import net.minecraft.core.WritableRegistry
 import net.minecraft.core.registries.BuiltInRegistries

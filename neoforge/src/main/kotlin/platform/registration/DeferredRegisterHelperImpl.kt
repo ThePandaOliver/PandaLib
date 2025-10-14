@@ -8,8 +8,8 @@
 package dev.pandasystems.pandalib.neoforge.platform.registration
 
 import com.google.auto.service.AutoService
-import dev.pandasystems.pandalib.api.registry.deferred.DeferredObject
-import dev.pandasystems.pandalib.core.platform.registry.DeferredRegisterHelper
+import dev.pandasystems.pandalib.registry.deferred.DeferredObject
+import dev.pandasystems.pandalib.platform.registry.DeferredRegisterHelper
 import net.minecraft.core.Registry
 import net.minecraft.resources.ResourceKey
 import net.neoforged.neoforge.registries.NewRegistryEvent

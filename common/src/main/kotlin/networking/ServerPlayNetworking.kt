@@ -92,7 +92,7 @@ object ServerPlayNetworking {
 		check(!entity.level().isClientSide()) { "Cannot send clientbound payloads on the client" }
 		val chunkSource = entity.level().chunkSource
 		if (chunkSource is ServerChunkCache) {
-			chunkSource.broadcast(entity, createPacket(*payloads.toTypedArray()))
+			chunkSource.sendToTrackingPlayers(entity, createPacket(*payloads.toTypedArray()))
 		}
 		// Silently ignore custom Level implementations which may not return ServerChunkCache.
 	}
@@ -106,7 +106,7 @@ object ServerPlayNetworking {
 		check(!entity.level().isClientSide()) { "Cannot send clientbound payloads on the client" }
 		val chunkSource = entity.level().chunkSource
 		if (chunkSource is ServerChunkCache) {
-			chunkSource.broadcastAndSend(entity, createPacket(*payloads.toTypedArray()))
+			chunkSource.sendToTrackingPlayersAndSelf(entity, createPacket(*payloads.toTypedArray()))
 		}
 		// Silently ignore custom Level implementations which may not return ServerChunkCache.
 	}
@@ -127,7 +127,7 @@ object ServerPlayNetworking {
 	}
 
 	@JvmStatic
-	fun createPacket(vararg payloads: CustomPacketPayload): Packet<*> {
+	fun createPacket(vararg payloads: CustomPacketPayload): Packet<ClientGamePacketListener> {
 		require(payloads.isNotEmpty()) { "Requires at least one payload" }
 		return if (payloads.size > 1) {
 			ClientboundBundlePacket(payloads.map(::ClientboundPLPayloadPacket))

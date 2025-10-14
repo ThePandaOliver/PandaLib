@@ -26,7 +26,7 @@ class ServerboundPLBundlePacket(iterable: Iterable<Packet<in ServerGamePacketLis
 
 fun ServerGamePacketListener.handlePandalibBundlePacket(packet: ServerboundPLBundlePacket) {
 	if (this is ServerCommonPacketListenerImpl) {
-		PacketUtils.ensureRunningOnSameThread(packet, this, this.server)
+		PacketUtils.ensureRunningOnSameThread(packet, this, this.server.packetProcessor())
 
 		for (subpacket in packet.subPackets()) {
 			subpacket.handle(this)

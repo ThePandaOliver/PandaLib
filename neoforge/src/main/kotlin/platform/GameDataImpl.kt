@@ -14,6 +14,7 @@ import net.minecraft.server.MinecraftServer
 import net.neoforged.api.distmarker.Dist
 import net.neoforged.fml.ModContainer
 import net.neoforged.fml.ModList
+import net.neoforged.fml.loading.FMLEnvironment
 import net.neoforged.fml.loading.FMLLoader
 import net.neoforged.fml.loading.FMLPaths
 import net.neoforged.neoforge.server.ServerLifecycleHooks
@@ -23,10 +24,10 @@ import kotlin.jvm.optionals.getOrNull
 
 @AutoService(GameData::class)
 class GameDataImpl : GameData {
-	override val isDevelopment = !FMLLoader.isProduction()
-	override val isProduction = FMLLoader.isProduction()
+	override val isDevelopment = !FMLEnvironment.isProduction()
+	override val isProduction = FMLEnvironment.isProduction()
 
-	override val environment = when (FMLLoader.getDist()) {
+	override val environment = when (FMLEnvironment.getDist()) {
 		Dist.CLIENT -> Environment.CLIENT
 		Dist.DEDICATED_SERVER -> Environment.DEDICATED_SERVER
 	}

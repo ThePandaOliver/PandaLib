@@ -11,6 +11,7 @@ import com.google.auto.service.AutoService
 import dev.pandasystems.pandalib.platform.registry.ResourceLoaderHelper
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper
+import net.fabricmc.fabric.api.resource.v1.ResourceLoader
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.packs.PackType
 import net.minecraft.server.packs.resources.PreparableReloadListener
@@ -26,27 +27,9 @@ class ResourceLoaderHelperImpl : ResourceLoaderHelper {
 		id: ResourceLocation,
 		dependencies: Collection<ResourceLocation>
 	) {
-		ResourceManagerHelper.get(packType).registerReloadListener(object : IdentifiableResourceReloadListener {
-			override fun getFabricId(): ResourceLocation {
-				return id
-			}
-
-			override fun reload(
-				preparationBarrier: PreparableReloadListener.PreparationBarrier,
-				resourceManager: ResourceManager,
-				backgroundExecutor: Executor,
-				gameExecutor: Executor
-			): CompletableFuture<Void> {
-				return listener.reload(preparationBarrier, resourceManager, backgroundExecutor, gameExecutor)
-			}
-
-			override fun getFabricDependencies(): Collection<ResourceLocation> {
-				return dependencies
-			}
-
-			override fun getName(): String {
-				return listener.name
-			}
-		})
+		ResourceLoader.get(packType).registerReloader(id, listener)
+		dependencies.forEach {
+			ResourceLoader.get(packType).addReloaderOrdering(it, id)
+		}
 	}
 }

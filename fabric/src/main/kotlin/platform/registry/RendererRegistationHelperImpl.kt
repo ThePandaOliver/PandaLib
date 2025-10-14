@@ -9,10 +9,11 @@ package dev.pandasystems.pandalib.fabric.platform.registry
 
 import com.google.auto.service.AutoService
 import dev.pandasystems.pandalib.platform.registry.RendererRegistrationHelper
-import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers
+import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState
 import net.minecraft.client.renderer.entity.EntityRendererProvider
+import net.minecraft.client.renderer.entity.EntityRenderers
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.EntityType
 import net.minecraft.world.level.block.entity.BlockEntity
@@ -25,12 +26,12 @@ class RendererRegistationHelperImpl : RendererRegistrationHelper {
 		typeProvider: Supplier<EntityType<R>>,
 		provider: EntityRendererProvider<R>
 	) {
-		EntityRendererRegistry.register<R>(typeProvider.get(), provider)
+		EntityRenderers.register(typeProvider.get(), provider)
 	}
 
-	override fun <R : BlockEntity> registerBlockEntityRenderer(
+	override fun <R : BlockEntity, S : BlockEntityRenderState> registerBlockEntityRenderer(
 		typeProvider: Supplier<BlockEntityType<R>>,
-		provider: BlockEntityRendererProvider<R>
+		provider: BlockEntityRendererProvider<R, S>
 	) {
 		BlockEntityRenderers.register(typeProvider.get(), provider)
 	}

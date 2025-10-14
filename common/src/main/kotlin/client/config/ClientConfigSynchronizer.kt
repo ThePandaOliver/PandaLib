@@ -15,7 +15,7 @@ import dev.pandasystems.pandalib.config.ConfigSynchronizer.createConfigPayload
 import dev.pandasystems.pandalib.event.client.clientPlayerJoinEvent
 import dev.pandasystems.pandalib.event.client.clientPlayerLeaveEvent
 import dev.pandasystems.pandalib.logger
-import dev.pandasystems.pandalib.networking.ClientConfigurationNetworking
+import dev.pandasystems.pandalib.networking.ClientPlayNetworking
 import dev.pandasystems.pandalib.networking.payloads.config.ClientboundConfigRequestPayload
 import dev.pandasystems.pandalib.networking.payloads.config.CommonConfigPayload
 import kotlin.jvm.optionals.getOrNull
@@ -27,7 +27,7 @@ object ClientConfigSynchronizer {
 		logger.debug("Client Config Synchronizer is initializing...")
 
 		// Config receiving
-		ClientConfigurationNetworking.registerHandler<CommonConfigPayload>(CommonConfigPayload.RESOURCELOCATION) { payload, _ ->
+		ClientPlayNetworking.registerHandler<CommonConfigPayload>(CommonConfigPayload.RESOURCELOCATION) { payload, _ ->
 			val resourceLocation = payload.resourceLocation
 			val jsonObject = payload.optionObject
 			val playerId = payload.playerId
@@ -39,14 +39,14 @@ object ClientConfigSynchronizer {
 
 
 		// Client Config request
-		ClientConfigurationNetworking.registerHandler<ClientboundConfigRequestPayload>(ClientboundConfigRequestPayload.RESOURCELOCATION) { payload, _ ->
+		ClientPlayNetworking.registerHandler<ClientboundConfigRequestPayload>(ClientboundConfigRequestPayload.RESOURCELOCATION) { payload, _ ->
 			logger.debug("Received config request payload")
 			// Respond with all client configs
 			val payloads = configs.map { (resourceLocation, _) ->
 				val configObject = requireNotNull(ConfigRegistry.get<Config>(resourceLocation))
 				configObject.createConfigPayload(payload.playerId)
 			}
-			ClientConfigurationNetworking.send(payloads)
+			ClientPlayNetworking.send(payloads)
 			logger.debug("Sent all client configs")
 		}
 

@@ -7,9 +7,9 @@
 
 package dev.pandasystems.pandalib.networking.packets
 
+import dev.pandasystems.pandalib.networking.CustomPacketPayload
 import dev.pandasystems.pandalib.networking.PacketSender
 import dev.pandasystems.pandalib.networking.PayloadCodecRegistry
-import dev.pandasystems.pandalib.networking.ServerConfigurationNetworking
 import dev.pandasystems.pandalib.networking.ServerPlayNetworking
 import dev.pandasystems.pandalib.utils.codec.StreamCodec
 import net.minecraft.network.Connection
@@ -17,14 +17,12 @@ import net.minecraft.network.FriendlyByteBuf
 import net.minecraft.network.PacketSendListener
 import net.minecraft.network.chat.Component
 import net.minecraft.network.protocol.Packet
-import net.minecraft.network.protocol.common.ServerCommonPacketListener
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 import net.minecraft.network.protocol.game.ClientboundBundlePacket
 import net.minecraft.network.protocol.game.ServerGamePacketListener
 import net.minecraft.server.MinecraftServer
 import net.minecraft.server.level.ServerPlayer
-import net.minecraft.server.network.ServerConfigurationPacketListenerImpl
 import net.minecraft.server.network.ServerGamePacketListenerImpl
+import net.minecraft.server.network.ServerLoginPacketListenerImpl
 
 data class ServerboundPLPayloadPacket(val payload: CustomPacketPayload) : Packet<ServerGamePacketListener> {
 	override fun write(buffer: FriendlyByteBuf) = serverboundPLPayloadCodec.encode(buffer, this)
@@ -49,15 +47,6 @@ data class ServerboundPLPayloadPacket(val payload: CustomPacketPayload) : Packet
 		}
 
 		when (handler) {
-			is ServerConfigurationPacketListenerImpl -> {
-				val context = object : ServerConfigurationNetworking.Context {
-					override fun server(): MinecraftServer = handler.server
-					override fun networkHandler(): ServerConfigurationPacketListenerImpl = handler
-					override fun responseSender(): PacketSender = Sender(handler.connection)
-				}
-				ServerConfigurationNetworking.packetHandlers[payload.id()]?.receive(payload, context)
-			}
-
 			is ServerGamePacketListenerImpl -> {
 				val context = object : ServerPlayNetworking.Context {
 					override fun server(): MinecraftServer = handler.server

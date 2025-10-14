@@ -7,22 +7,20 @@
 
 package dev.pandasystems.pandalib.networking.packets
 
-import dev.pandasystems.pandalib.networking.ClientConfigurationNetworking
 import dev.pandasystems.pandalib.networking.ClientPlayNetworking
+import dev.pandasystems.pandalib.networking.CustomPacketPayload
 import dev.pandasystems.pandalib.networking.PacketSender
 import dev.pandasystems.pandalib.networking.PayloadCodecRegistry
 import dev.pandasystems.pandalib.networking.packets.bundle.ServerboundPLBundlePacket
 import dev.pandasystems.pandalib.utils.codec.StreamCodec
 import net.minecraft.client.Minecraft
-import net.minecraft.client.multiplayer.ClientCommonPacketListenerImpl
-import net.minecraft.client.multiplayer.ClientConfigurationPacketListenerImpl
+import net.minecraft.client.multiplayer.ClientPacketListener
 import net.minecraft.client.player.LocalPlayer
 import net.minecraft.network.Connection
 import net.minecraft.network.FriendlyByteBuf
 import net.minecraft.network.PacketSendListener
 import net.minecraft.network.chat.Component
 import net.minecraft.network.protocol.Packet
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 import net.minecraft.network.protocol.game.ClientGamePacketListener
 
 data class ClientboundPLPayloadPacket(val payload: CustomPacketPayload) : Packet<ClientGamePacketListener> {
@@ -48,16 +46,7 @@ data class ClientboundPLPayloadPacket(val payload: CustomPacketPayload) : Packet
 		}
 
 		when (handler) {
-			is ClientConfigurationPacketListenerImpl -> {
-				val context = object : ClientConfigurationNetworking.Context {
-					override fun client(): Minecraft = handler.minecraft
-					override fun networkHandler(): ClientConfigurationPacketListenerImpl = handler
-					override fun responseSender(): PacketSender = Sender(handler.connection)
-				}
-				ClientConfigurationNetworking.packetHandlers[payload.id()]?.receive(payload, context)
-			}
-
-			is ClientCommonPacketListenerImpl -> {
+			is ClientPacketListener -> {
 				val context = object : ClientPlayNetworking.Context {
 					override fun client(): Minecraft = handler.minecraft
 					override fun player(): LocalPlayer = requireNotNull(handler.minecraft.player) { "Player is null" }

@@ -13,7 +13,6 @@ import dev.pandasystems.pandalib.platform.game
 import net.minecraft.client.Minecraft
 import net.minecraft.client.player.LocalPlayer
 import net.minecraft.network.protocol.Packet
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 import net.minecraft.resources.ResourceLocation
 import org.jetbrains.annotations.ApiStatus
 

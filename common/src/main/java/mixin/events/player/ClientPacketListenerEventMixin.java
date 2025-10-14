@@ -9,16 +9,15 @@ package dev.pandasystems.pandalib.mixin.events.player;
 
 import dev.pandasystems.pandalib.event.client.ClientPlayerEvents;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientCommonPacketListenerImpl;
 import net.minecraft.client.multiplayer.ClientPacketListener;
-import net.minecraft.client.multiplayer.CommonListenerCookie;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.network.Connection;
 import net.minecraft.network.TickablePacketListener;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundLoginPacket;
 import net.minecraft.network.protocol.game.ClientboundRespawnPacket;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -27,10 +26,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.Objects;
 
 @Mixin(ClientPacketListener.class)
-public abstract class ClientPacketListenerEventMixin extends ClientCommonPacketListenerImpl implements ClientGamePacketListener, TickablePacketListener {
-	protected ClientPacketListenerEventMixin(Minecraft minecraft, Connection connection, CommonListenerCookie commonListenerCookie) {
-		super(minecraft, connection, commonListenerCookie);
-	}
+public abstract class ClientPacketListenerEventMixin implements ClientGamePacketListener, TickablePacketListener {
+	@Shadow
+	@Final
+	public Minecraft minecraft;
 
 	@Inject(method = "handleLogin", at = @At("TAIL"))
 	public void handleLogin(ClientboundLoginPacket packet, CallbackInfo ci) {

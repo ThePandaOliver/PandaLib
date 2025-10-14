@@ -5,8 +5,7 @@
 	"minVersion": "0.8",
 	"client": [
 		"events.ClientLevelEventMixin",
-		"events.player.ClientPacketListenerEventMixin",
-		"networking.client.ClientConfigurationPacketListenerImplMixin"
+		"events.player.ClientPacketListenerEventMixin"
 	],
 	"mixins": [
 		"events.BlockItemEventMixin",

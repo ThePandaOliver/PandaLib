@@ -8,6 +8,7 @@
 package dev.pandasystems.pandalib.networking.payloads.config
 
 import com.google.gson.JsonObject
+import dev.pandasystems.pandalib.networking.CustomPacketPayload
 import dev.pandasystems.pandalib.utils.codec.StreamCodec
 import dev.pandasystems.pandalib.utils.codecs.JsonObjectCodec
 import dev.pandasystems.pandalib.utils.codecs.OptionalCodec
@@ -15,7 +16,6 @@ import dev.pandasystems.pandalib.utils.codecs.ResourceLocationCodec
 import dev.pandasystems.pandalib.utils.codecs.UUIDCodec
 import dev.pandasystems.pandalib.utils.extensions.resourceLocation
 import net.minecraft.network.FriendlyByteBuf
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 import net.minecraft.resources.ResourceLocation
 import java.util.*
 

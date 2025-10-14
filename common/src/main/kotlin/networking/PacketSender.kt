@@ -7,11 +7,9 @@
 
 package dev.pandasystems.pandalib.networking
 
-import io.netty.channel.ChannelFutureListener
 import net.minecraft.network.PacketSendListener
 import net.minecraft.network.chat.Component
 import net.minecraft.network.protocol.Packet
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 
 interface PacketSender {
 	fun createPacket(payloads: Collection<CustomPacketPayload>): Packet<*>

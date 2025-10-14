@@ -10,10 +10,9 @@ package dev.pandasystems.pandalib.config
 import com.google.gson.JsonObject
 import dev.pandasystems.pandalib.config.options.SyncableConfigOption
 import dev.pandasystems.pandalib.config.serializer.ConfigSerialization
-import dev.pandasystems.pandalib.event.server.serverConfigurationConnectionEvent
+import dev.pandasystems.pandalib.event.server.serverPlayerJoinEvent
 import dev.pandasystems.pandalib.logger
 import dev.pandasystems.pandalib.networking.PayloadCodecRegistry
-import dev.pandasystems.pandalib.networking.ServerConfigurationNetworking
 import dev.pandasystems.pandalib.networking.ServerPlayNetworking
 import dev.pandasystems.pandalib.networking.payloads.config.ClientboundConfigRequestPayload
 import dev.pandasystems.pandalib.networking.payloads.config.CommonConfigPayload
@@ -32,7 +31,7 @@ object ConfigSynchronizer {
 
 
 		// Config receiving
-		ServerConfigurationNetworking.registerHandler<CommonConfigPayload>(CommonConfigPayload.RESOURCELOCATION) { payload, _ ->
+		ServerPlayNetworking.registerHandler<CommonConfigPayload>(CommonConfigPayload.RESOURCELOCATION) { payload, _ ->
 			val resourceLocation = payload.resourceLocation
 			val jsonObject = payload.optionObject
 			val playerId = payload.playerId
@@ -52,24 +51,24 @@ object ConfigSynchronizer {
 		// Config sending
 
 		if (configs.isNotEmpty()) {
-			serverConfigurationConnectionEvent.register { handler, _ ->
+			serverPlayerJoinEvent += { player ->
 				// Send all server configs
-				logger.debug("Sending all server configs to {}", handler.owner.name)
+				logger.debug("Sending all server configs to {}", player.name)
 				val payloads = configs.map { (resourceLocation, _) ->
 					val configObject = requireNotNull(ConfigRegistry.get<Config>(resourceLocation))
 					configObject.createConfigPayload()
 				}
-				ServerConfigurationNetworking.send(handler, payloads)
+				ServerPlayNetworking.send(player, payloads)
 
 				// Send all previous client configs to the new client
-				logger.debug("Sending previous client configs to {}", handler.owner.name)
+				logger.debug("Sending previous client configs to {}", player.name)
 				createConfigPayloadsWithClientConfigs()
 					.takeIf { it.isNotEmpty() }
-					?.let { ServerConfigurationNetworking.send(handler, it) }
+					?.let { ServerPlayNetworking.send(player, it) }
 
 				// Send request for all client's configs
-				logger.debug("Sending config request to {}", handler.owner.name)
-				ServerConfigurationNetworking.send(handler, ClientboundConfigRequestPayload(handler.owner.id))
+				logger.debug("Sending config request to {}", player.name)
+				ServerPlayNetworking.send(player, ClientboundConfigRequestPayload(player.uuid))
 			}
 		}
 

@@ -15,8 +15,7 @@ package dev.pandasystems.pandalib.networking
 import dev.pandasystems.pandalib.networking.packets.ClientboundPLPayloadPacket
 import dev.pandasystems.pandalib.utils.gameEnvironment
 import net.minecraft.network.protocol.Packet
-import net.minecraft.network.protocol.common.ClientCommonPacketListener
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload
+import net.minecraft.network.protocol.game.ClientboundBundlePacket
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.MinecraftServer
 import net.minecraft.server.level.ServerChunkCache

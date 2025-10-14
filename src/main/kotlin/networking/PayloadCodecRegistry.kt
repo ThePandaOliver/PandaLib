@@ -14,7 +14,6 @@ package dev.pandasystems.pandalib.networking
 
 import dev.pandasystems.pandalib.utils.codecs.StreamCodec
 import net.minecraft.network.FriendlyByteBuf
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 import net.minecraft.resources.ResourceLocation
 
 object PayloadCodecRegistry {

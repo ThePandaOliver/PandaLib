@@ -13,22 +13,20 @@
 package dev.pandasystems.pandalib.fabric
 
 import dev.pandasystems.pandalib.PandaLib
-import dev.pandasystems.pandalib.event.server.serverConfigurationConnectionEvent
 import dev.pandasystems.pandalib.event.server.serverStartingEvent
 import dev.pandasystems.pandalib.event.server.serverStoppingEvent
 import dev.pandasystems.pandalib.fabric.platform.GameEnvironmentImpl
 import dev.pandasystems.pandalib.utils.gameEnvironment
 import net.fabricmc.api.ModInitializer
-import net.fabricmc.fabric.api.networking.v1.ServerConfigurationConnectionEvents
+import net.minecraft.server.MinecraftServer
 
 class PandaLibFabric : ModInitializer {
 	override fun onInitialize() {
 		serverStartingEvent.register { (gameEnvironment as GameEnvironmentImpl).server = it }
 		serverStoppingEvent.register { (gameEnvironment as GameEnvironmentImpl).server = null }
 
-		ServerConfigurationConnectionEvents.CONFIGURE.register { handler, server ->
-			serverConfigurationConnectionEvent.invoker(handler, server)
-		}
+		PandaLib // Initialize the core PandaLib functionality
+	}
 
 		PandaLib
 	}

@@ -5,13 +5,18 @@
  * See: https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  */
 
-package mixin.protocols;
+package dev.pandasystems.pandalib.mixin.protocols;
 
-import dev.pandasystems.pandalib.networking.packets.*;
-import dev.pandasystems.pandalib.networking.packets.bundle.*;
+import dev.pandasystems.pandalib.networking.packets.ClientboundPLPayloadPacketKt;
+import dev.pandasystems.pandalib.networking.packets.ServerboundPLPayloadPacketKt;
+import dev.pandasystems.pandalib.networking.packets.bundle.ServerboundBundlePacketKt;
+import dev.pandasystems.pandalib.networking.packets.bundle.ServerboundPLBundleDelimiterPacket;
+import dev.pandasystems.pandalib.networking.packets.bundle.ServerboundPLBundlePacket;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.protocol.ProtocolInfoBuilder;
-import net.minecraft.network.protocol.game.*;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.GameProtocols;
+import net.minecraft.network.protocol.game.ServerGamePacketListener;
 import net.minecraft.util.Unit;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

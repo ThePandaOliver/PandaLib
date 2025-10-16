@@ -5,7 +5,7 @@
  * See: https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  */
 
-package mixin.events;
+package dev.pandasystems.pandalib.mixin.events;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import dev.pandasystems.pandalib.event.client.ClientBlockEvents;

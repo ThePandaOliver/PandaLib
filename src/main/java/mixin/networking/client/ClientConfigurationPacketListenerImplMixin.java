@@ -5,7 +5,7 @@
  * See: https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  */
 
-package mixin.networking.client;
+package dev.pandasystems.pandalib.mixin.networking.client;
 
 import dev.pandasystems.pandalib.networking.ClientConfigurationNetworking;
 import net.minecraft.client.Minecraft;

@@ -5,7 +5,7 @@
  * See: https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  */
 
-package mixin.events.player;
+package dev.pandasystems.pandalib.mixin.events.player;
 
 import dev.pandasystems.pandalib.event.server.ServerPlayerEvents;
 import net.minecraft.network.Connection;

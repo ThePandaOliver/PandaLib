@@ -7,24 +7,37 @@
 
 package dev.pandasystems.pandalib.client
 
+//? if fabric {
+import net.fabricmc.api.ClientModInitializer
+
+//?} else if neoforge {
+/*import net.neoforged.fml.common.Mod
+*///?}
+
 import dev.pandasystems.pandalib.client.config.ClientConfigSynchronizer
-import dev.pandasystems.pandalib.config.ConfigSynchronizer
-import dev.pandasystems.pandalib.event.client.clientPlayerJoinEvent
-import dev.pandasystems.pandalib.event.client.clientPlayerLeaveEvent
 import dev.pandasystems.pandalib.logger
-import dev.pandasystems.pandalib.pandalibConfig
-import net.fabricmc.api.EnvType
-import net.fabricmc.api.Environment
-import kotlin.collections.component1
-import kotlin.collections.component2
-import kotlin.collections.set
 
-object PandaLibClient {
-	init {
-		logger.debug("PandaLib Client is initializing...")
+internal fun initializeClientMod() {
+	logger.debug("PandaLib Client is initializing...")
 
-		ClientConfigSynchronizer.init()
+	ClientConfigSynchronizer.init()
 
-		logger.debug("PandaLib initialized successfully.")
+	logger.debug("PandaLib initialized successfully.")
+}
+
+//? if fabric {
+class PandaLibClientFabric : ClientModInitializer {
+	override fun onInitializeClient() {
+		initializeClientMod()
 	}
 }
+//?}
+
+//? if neoforge {
+/*@Mod(MOD_ID)
+class PandaLibClientNeoForge {
+	init {
+		initializeClientMod()
+	}
+}
+*///?}

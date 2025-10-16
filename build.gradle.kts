@@ -1,11 +1,3 @@
-/*
- * Copyright (c) 2025. Oliver Froberg
- *
- * This code is licensed under the GNU Lesser General Public License v3.0
- * See: https://www.gnu.org/licenses/lgpl-3.0-standalone.html
- */
-@file:Suppress("UnstableApiUsage")
-
 import org.jetbrains.gradle.ext.packagePrefix
 import org.jetbrains.gradle.ext.settings
 
@@ -13,9 +5,6 @@ plugins {
 	kotlin("jvm")
 	id("dev.architectury.loom")
 	id("architectury-plugin")
-	id("org.jetbrains.gradle.plugin.idea-ext")
-
-	id("com.google.devtools.ksp")
 }
 
 val mcVersion = stonecutter.current.version
@@ -120,10 +109,6 @@ dependencies {
 	nonModImplementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.2")
 	nonModImplementation("org.jetbrains.kotlinx:kotlinx-io-core:0.7.0")
 	nonModImplementation("org.jetbrains.kotlinx:kotlinx-io-bytestring:0.7.0")
-
-	runtimeOnly("com.google.auto.service:auto-service-annotations:1.1.1")
-	compileOnly("com.google.auto.service:auto-service-annotations:1.1.1")
-	ksp("dev.zacsweers.autoservice:auto-service-ksp:1.2.0")
 }
 
 val javaVersion: String by project
@@ -146,10 +131,8 @@ tasks {
 			"mod_name" to modName,
 			"mod_description" to modDescription,
 			"mod_license" to modLicense,
-			"mod_authors" to when (loaderPlatform) {
-				"fabric" -> modAuthors.split(",").joinToString(", ") { "\"$it\"" }
-				else -> modAuthors
-			},
+			"fabric_mod_authors" to modAuthors.split(",").joinToString(", ") { "\"$it\"" },
+			"mod_authors" to modAuthors,
 
 			"loader_version" to when (loaderPlatform) {
 				"fabric" -> loaderVersion
@@ -177,14 +160,4 @@ kotlin {
 
 java {
 	withSourcesJar()
-}
-
-idea {
-	module {
-		settings {
-			val packagePrefixStr = "$modGroup.$modId"
-			packagePrefix["src/main/kotlin"] = packagePrefixStr
-			packagePrefix["src/main/java"] = packagePrefixStr
-		}
-	}
 }

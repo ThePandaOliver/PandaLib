@@ -4,9 +4,7 @@
 	"version": "${mod_version}",
 	"name": "${mod_name}",
 	"description": "${mod_description}",
-	"authors": [
-		${mod_authors}
-	],
+	"authors": [${fabric_mod_authors}],
 	"contact": {
 		"issues": "https://github.com/ThePandaOliver/PandaLib/issues",
 		"sources": "https://github.com/ThePandaOliver/PandaLib"
@@ -16,10 +14,10 @@
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"dev.pandasystems.pandalib.fabric.PandaLibFabric"
+			"PandaLibFabric"
 		],
 		"client": [
-			"dev.pandasystems.pandalib.fabric.client.PandaLibClientFabric"
+			"dev.pandasystems.pandalib.client.PandaLibClientFabric"
 		]
 	},
 	"mixins": [

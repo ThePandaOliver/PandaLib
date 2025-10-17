@@ -1,6 +1,3 @@
-import org.jetbrains.gradle.ext.packagePrefix
-import org.jetbrains.gradle.ext.settings
-
 plugins {
 	kotlin("jvm")
 	id("dev.architectury.loom")

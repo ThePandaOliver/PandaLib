@@ -11,8 +11,9 @@ plugins {
 stonecutter active "1.21.10-fabric"
 
 stonecutter parameters {
+	val loaderPlatform = node.metadata.project.substringAfterLast("-")
 	constants {
-		match(node.metadata.project.substringAfterLast("-"), "fabric", "neoforge", "forge")
+		match(loaderPlatform, "fabric", "neoforge", "forge")
 	}
 }
 

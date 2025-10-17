@@ -5,6 +5,10 @@ import net.fabricmc.api.ModInitializer
 
 //?} else if neoforge {
 /*import net.neoforged.fml.common.Mod
+import net.neoforged.neoforge.common.NeoForge
+import net.neoforged.bus.api.IEventBus
+import dev.pandasystems.pandalib.registry.addServerReloadListenerEvent
+import dev.pandasystems.pandalib.registry.addClientReloadListenerEvent
 *///?}
 
 import com.mojang.logging.LogUtils
@@ -35,9 +39,12 @@ class PandaLibFabric : ModInitializer {
 
 //? if neoforge {
 /*@Mod(MOD_ID)
-class PandaLibNeoForge {
+class PandaLibNeoForge(val eventBus: IEventBus) {
 	init {
 		initializeMod()
+
+		NeoForge.EVENT_BUS.addListener(::addServerReloadListenerEvent)
+		eventBus.addListener(::addClientReloadListenerEvent)
 	}
 }
 *///?}

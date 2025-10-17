@@ -11,12 +11,12 @@ import com.google.gson.JsonObject
 import dev.pandasystems.pandalib.config.options.SyncableConfigOption
 import dev.pandasystems.pandalib.config.serializer.ConfigSerialization
 import dev.pandasystems.pandalib.event.server.serverConfigurationConnectionEvent
-import dev.pandasystems.pandalib.logger
 import dev.pandasystems.pandalib.networking.PayloadCodecRegistry
 import dev.pandasystems.pandalib.networking.ServerConfigurationNetworking
 import dev.pandasystems.pandalib.networking.ServerPlayNetworking
 import dev.pandasystems.pandalib.networking.payloads.config.ClientboundConfigRequestPayload
 import dev.pandasystems.pandalib.networking.payloads.config.CommonConfigPayload
+import dev.pandasystems.pandalib.pandalibLogger
 import net.minecraft.resources.ResourceLocation
 import java.util.*
 import kotlin.jvm.optionals.getOrNull
@@ -26,7 +26,7 @@ object ConfigSynchronizer {
 	internal val configs = mutableMapOf<ResourceLocation, MutableList<SyncableConfigOption<Any>>>()
 
 	internal fun init() {
-		logger.debug("Config Synchronizer is initializing...")
+		pandalibLogger.debug("Config Synchronizer is initializing...")
 		PayloadCodecRegistry.register(CommonConfigPayload.TYPE, CommonConfigPayload.CODEC)
 		PayloadCodecRegistry.register(ClientboundConfigRequestPayload.TYPE, ClientboundConfigRequestPayload.CODEC)
 
@@ -36,14 +36,14 @@ object ConfigSynchronizer {
 			val resourceLocation = payload.resourceLocation
 			val jsonObject = payload.optionObject
 			val playerId = payload.playerId
-			logger.debug("Received config payload for {}: {}", resourceLocation, jsonObject)
+			pandalibLogger.debug("Received config payload for {}: {}", resourceLocation, jsonObject)
 			val configObject = ConfigRegistry.get<Config>(resourceLocation)
 			configObject?.applyConfigPayload(jsonObject, playerId.getOrNull())
-				?: logger.error("Received config payload for unknown config object: $resourceLocation")
+				?: pandalibLogger.error("Received config payload for unknown config object: $resourceLocation")
 
 			// Provide the new player config to all already connected clients
 			playerId.ifPresent {
-				logger.debug("Sending config payload to player {}", it)
+				pandalibLogger.debug("Sending config payload to player {}", it)
 				ServerPlayNetworking.sendToAll(payload)
 			}
 		}
@@ -54,7 +54,7 @@ object ConfigSynchronizer {
 		if (configs.isNotEmpty()) {
 			serverConfigurationConnectionEvent.register { handler, _ ->
 				// Send all server configs
-				logger.debug("Sending all server configs to {}", handler.owner.name)
+				pandalibLogger.debug("Sending all server configs to {}", handler.owner.name)
 				val payloads = configs.map { (resourceLocation, _) ->
 					val configObject = requireNotNull(ConfigRegistry.get<Config>(resourceLocation))
 					configObject.createConfigPayload()
@@ -62,18 +62,18 @@ object ConfigSynchronizer {
 				ServerConfigurationNetworking.send(handler, payloads)
 
 				// Send all previous client configs to the new client
-				logger.debug("Sending previous client configs to {}", handler.owner.name)
+				pandalibLogger.debug("Sending previous client configs to {}", handler.owner.name)
 				createConfigPayloadsWithClientConfigs()
 					.takeIf { it.isNotEmpty() }
 					?.let { ServerConfigurationNetworking.send(handler, it) }
 
 				// Send request for all client's configs
-				logger.debug("Sending config request to {}", handler.owner.name)
+				pandalibLogger.debug("Sending config request to {}", handler.owner.name)
 				ServerConfigurationNetworking.send(handler, ClientboundConfigRequestPayload(handler.owner.id))
 			}
 		}
 
-		logger.debug("Config Synchronizer initialized successfully.")
+		pandalibLogger.debug("Config Synchronizer initialized successfully.")
 	}
 
 	/**

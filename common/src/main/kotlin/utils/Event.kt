@@ -12,7 +12,6 @@ import java.lang.invoke.MethodHandles
 import java.lang.reflect.Method
 import java.lang.reflect.Proxy
 
-@JvmOverloads
 @Suppress("UNCHECKED_CAST")
 fun <T : Function<R>, R> event(
 	classType: Class<T>,

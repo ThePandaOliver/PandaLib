@@ -8,7 +8,7 @@
 package dev.pandasystems.pandalib.neoforge.platform.registration
 
 import com.google.auto.service.AutoService
-import dev.pandasystems.pandalib.platform.registry.RendererRegistrationHelper
+import dev.pandasystems.pandalib.registry.RendererRegistryPlatform
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState
 import net.minecraft.client.renderer.entity.EntityRendererProvider
@@ -19,8 +19,8 @@ import net.minecraft.world.level.block.entity.BlockEntityType
 import net.neoforged.neoforge.client.event.EntityRenderersEvent
 import java.util.function.Supplier
 
-@AutoService(RendererRegistrationHelper::class)
-class RendererRegistationHelperImpl : RendererRegistrationHelper {
+@AutoService(RendererRegistryPlatform::class)
+class RendererRegistryImpl : RendererRegistryPlatform {
 	val entityRendererProviders = mutableMapOf<Supplier<EntityType<*>>, EntityRendererProvider<*>>()
 	val blockEntityRendererProviders = mutableMapOf<Supplier<BlockEntityType<*>>, BlockEntityRendererProvider<*, *>>()
 

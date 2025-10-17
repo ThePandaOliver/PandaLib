@@ -7,7 +7,7 @@
 
 package dev.pandasystems.pandalib.mixin.events;
 
-import dev.pandasystems.pandalib.event.client.ClientPlayerEvents;
+import dev.pandasystems.pandalib.event.client.ClientPlayerEventsKt;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.chat.Component;
@@ -28,6 +28,6 @@ public class ClientLevelEventMixin {
 
 	@Inject(method = "disconnect", at = @At("HEAD"))
 	public void disconnect(Component reason, CallbackInfo ci) {
-		ClientPlayerEvents.getClientPlayerLeaveEvent().getInvoker().invoke(Objects.requireNonNull(this.minecraft.player), reason);
+		ClientPlayerEventsKt.getClientPlayerLeaveEvent().getInvoker().invoke(Objects.requireNonNull(this.minecraft.player), reason);
 	}
 }

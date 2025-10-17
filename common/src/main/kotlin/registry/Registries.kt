@@ -5,15 +5,19 @@
  * See: https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  */
 
-package dev.pandasystems.pandalib.platform.registry
+package dev.pandasystems.pandalib.registry
 
+import dev.pandasystems.pandalib.utils.InternalPandaLibApi
 import dev.pandasystems.pandalib.utils.loadFirstService
 import net.minecraft.core.Registry
 import net.minecraft.network.syncher.EntityDataSerializer
 
-interface RegistryRegistrations {
+@OptIn(InternalPandaLibApi::class)
+val ENTITY_DATA_SERIALIZERS_REGISTRY: Registry<EntityDataSerializer<*>> get() = registries.entityDataSerializers
+
+@InternalPandaLibApi
+val registries = loadFirstService<RegistriesPlatform>()
+
+interface RegistriesPlatform {
 	val entityDataSerializers: Registry<EntityDataSerializer<*>>
 }
-
-@JvmField
-val registryRegistrations = loadFirstService<RegistryRegistrations>()

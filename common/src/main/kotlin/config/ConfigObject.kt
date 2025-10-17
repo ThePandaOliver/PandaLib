@@ -12,19 +12,19 @@ import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import dev.pandasystems.pandalib.config.options.ConfigOption
 import dev.pandasystems.pandalib.config.serializer.ConfigSerialization
-import dev.pandasystems.pandalib.logger
-import dev.pandasystems.pandalib.platform.game
+import dev.pandasystems.pandalib.pandalibLogger
 import dev.pandasystems.pandalib.utils.event
+import dev.pandasystems.pandalib.utils.gamePaths
 import net.minecraft.resources.ResourceLocation
 import java.util.function.Supplier
 
-open class ConfigObject<T : Config>(
+class ConfigObject<T : Config>(
 	val resourceLocation: ResourceLocation,
 	private val configInstance: T
 ) : Supplier<T> {
 	private val gson = GsonBuilder().setPrettyPrinting().create()
 
-	val filePath = game.configDir.toFile().resolve("${resourceLocation.namespace}/${resourceLocation.path}.json")
+	val filePath = gamePaths.configDir.toFile().resolve("${resourceLocation.namespace}/${resourceLocation.path}.json")
 
 	val onSave = event<(configObject: ConfigObject<T>) -> Unit>()
 	val onLoad = event<(configObject: ConfigObject<T>) -> Unit>()
@@ -43,9 +43,9 @@ open class ConfigObject<T : Config>(
 		val firstCreation = !filePath.exists()
 		filePath.writeText(gson.toJson(serialize()))
 		if (firstCreation)
-			logger.info("Created new config at $filePath")
+			pandalibLogger.info("Created new config at $filePath")
 		else
-			logger.info("Saved config to $filePath")
+			pandalibLogger.info("Saved config to $filePath")
 		onSave.invoker(this)
 	}
 
@@ -55,7 +55,7 @@ open class ConfigObject<T : Config>(
 			return
 		}
 		deserialize(gson.fromJson(filePath.readText(), JsonObject::class.java))
-		logger.info("Loaded config from $filePath")
+		pandalibLogger.info("Loaded config from $filePath")
 		onLoad.invoker(this)
 	}
 

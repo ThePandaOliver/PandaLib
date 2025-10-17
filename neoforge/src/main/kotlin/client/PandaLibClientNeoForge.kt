@@ -7,15 +7,17 @@
 
 package dev.pandasystems.pandalib.neoforge.client
 
-import dev.pandasystems.pandalib.PandaLib
-import dev.pandasystems.pandalib.client.PandaLibClient
+import dev.pandasystems.pandalib.client.initializePandaLibClient
+import dev.pandasystems.pandalib.pandalibModid
+import dev.pandasystems.pandalib.utils.InternalPandaLibApi
 import net.neoforged.api.distmarker.Dist
 import net.neoforged.bus.api.IEventBus
 import net.neoforged.fml.common.Mod
 
-@Mod(value = PandaLib.MOD_ID, dist = [Dist.CLIENT])
+@OptIn(InternalPandaLibApi::class)
+@Mod(value = pandalibModid, dist = [Dist.CLIENT])
 class PandaLibClientNeoForge(eventBus: IEventBus) {
 	init {
-		PandaLibClient
+		initializePandaLibClient()
 	}
 }

@@ -1,8 +1,13 @@
 /*
- * Copyright (c) 2025. Oliver Froberg
+ * Copyright (C) 2025-2025 Oliver Froberg (The Panda Oliver)
  *
- * This code is licensed under the GNU Lesser General Public License v3.0
- * See: https://www.gnu.org/licenses/lgpl-3.0-standalone.html
+ * This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU Lesser General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  any later version.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package dev.pandasystems.pandalib.config.options
@@ -13,7 +18,7 @@ import java.lang.reflect.Field
 import kotlin.reflect.KProperty
 import kotlin.reflect.jvm.kotlinProperty
 
-class ConfigOptionBuilder<T : Any?, C : ConfigOption<T>>(
+class ConfigOptionBuilder<T : Any, C : ConfigOption<T>>(
 	val value: T,
 	val valueType: Class<T>,
 	val constructor: (configObject: ConfigObject<*>, pathName: String, type: TypeToken<T>, value: T) -> C
@@ -33,10 +38,10 @@ class ConfigOptionBuilder<T : Any?, C : ConfigOption<T>>(
 	operator fun getValue(thisRef: Any?, property: KProperty<*>): C = delegate
 }
 
-fun <T: Any?> ConfigOptionBuilder<T, GenericConfigOption<T>>.syncable() : ConfigOptionBuilder<T, SyncableConfigOption<T>> {
+fun <T: Any> ConfigOptionBuilder<T, GenericConfigOption<T>>.syncable() : ConfigOptionBuilder<T, SyncableConfigOption<T>> {
 	return ConfigOptionBuilder(this.value, this.valueType, ::SyncableConfigOption)
 }
 
-inline fun <reified T> configOption(value: T): ConfigOptionBuilder<T, GenericConfigOption<T>> {
+inline fun <reified T : Any> configOption(value: T): ConfigOptionBuilder<T, GenericConfigOption<T>> {
 	return ConfigOptionBuilder(value, T::class.java, ::GenericConfigOption)
 }

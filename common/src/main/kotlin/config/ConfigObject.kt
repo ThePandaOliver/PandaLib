@@ -27,7 +27,7 @@ import java.util.function.Supplier
 class ConfigObject<T : Config>(
 	val resourceLocation: ResourceLocation,
 	private val configInstance: T,
-	val serializer: Serializer = Serializer(JsonFormat())
+	val serializer: Serializer = Serializer(JsonFormat(prettyPrint = true))
 ) : Supplier<T> {
 	val filePath = gamePaths.configDir.toFile().resolve("${resourceLocation.namespace}/${resourceLocation.path}.json")
 
@@ -51,6 +51,7 @@ class ConfigObject<T : Config>(
 			pandalibLogger.info("Created new config at $filePath")
 		else
 			pandalibLogger.info("Saved config to $filePath")
+		pandalibLogger.debug(" - config data ${serializer.toValue(serialize())}")
 		onSave.invoker(this)
 	}
 
@@ -59,10 +60,11 @@ class ConfigObject<T : Config>(
 			save()
 			return
 		}
-		val tree = serializer.fromValue(filePath.readText(), TypeToken.of(TreeObject::class.java))
+		val tree = serializer.fromValue<TreeObject>(filePath.readText())
 		requireNotNull(tree) { "Failed to load config from $filePath" }
 		deserialize(tree)
 		pandalibLogger.info("Loaded config from $filePath")
+		pandalibLogger.debug(" - config data ${serializer.toValue(tree)}")
 		onLoad.invoker(this)
 	}
 
@@ -72,12 +74,12 @@ class ConfigObject<T : Config>(
 			var current: TreeElement = treeObject
 			val pathSegments = option.pathName.split('.')
 			pathSegments.forEachIndexed { index, segment ->
-				if (current.isObject) return@forEachIndexed
-				if (index == pathSegments.lastIndex) {
-					current.asObject[segment] = serializer.toTree(option.value)
-					return@forEachIndexed
+				if (index == pathSegments.lastIndex && current.isObject) {
+					@Suppress("UNCHECKED_CAST")
+					current.asObject[segment] = serializer.toTree(option.value, option.type as TypeToken<Any>)
+				} else {
+					current = current.asObject.computeIfAbsent(segment) { TreeObject() }
 				}
-				current = current.asObject.computeIfAbsent(segment) { TreeObject() }
 			}
 		}
 		return treeObject
@@ -94,9 +96,10 @@ class ConfigObject<T : Config>(
 			}
 
 			current?.let {
+				val deserializedValue = serializer.fromTree(it, option.type)
+				requireNotNull(deserializedValue) { "Failed to deserialize value for option ${option.pathName}" }
 				@Suppress("UNCHECKED_CAST")
-				(option as ConfigOption<Any>).value =
-					requireNotNull(serializer.fromTree(it, option.type)) { "Failed to deserialize value for option ${option.pathName}" }
+				(option as ConfigOption<Any>).value = deserializedValue
 			}
 		}
 	}

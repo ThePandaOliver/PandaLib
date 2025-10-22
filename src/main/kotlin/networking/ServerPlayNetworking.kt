@@ -86,7 +86,7 @@ object ServerPlayNetworking {
 		check(!entity.level().isClientSide) { "Cannot send clientbound payloads on the client" }
 		val chunkSource = entity.level().chunkSource
 		if (chunkSource is ServerChunkCache) {
-			payloads.forEach { chunkSource.sendToTrackingPlayers(entity, createPacket(it)) }
+			payloads.forEach { chunkSource.broadcast(entity, createPacket(it)) }
 		}
 		// Silently ignore custom Level implementations which may not return ServerChunkCache.
 	}
@@ -98,7 +98,7 @@ object ServerPlayNetworking {
 		check(!entity.level().isClientSide) { "Cannot send clientbound payloads on the client" }
 		val chunkSource = entity.level().chunkSource
 		if (chunkSource is ServerChunkCache) {
-			payloads.forEach { chunkSource.sendToTrackingPlayersAndSelf(entity, createPacket(it)) }
+			payloads.forEach { chunkSource.broadcastAndSend(entity, createPacket(it)) }
 		}
 		// Silently ignore custom Level implementations which may not return ServerChunkCache.
 	}

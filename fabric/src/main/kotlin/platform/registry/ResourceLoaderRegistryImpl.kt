@@ -14,10 +14,14 @@ package dev.pandasystems.pandalib.fabric.platform.registry
 
 import com.google.auto.service.AutoService
 import dev.pandasystems.pandalib.registry.ResourceLoaderRegistryPlatform
-import net.fabricmc.fabric.api.resource.v1.ResourceLoader
+import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener
+import net.fabricmc.fabric.api.resource.ResourceManagerHelper
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.packs.PackType
 import net.minecraft.server.packs.resources.PreparableReloadListener
+import net.minecraft.server.packs.resources.ResourceManager
+import java.util.concurrent.CompletableFuture
+import java.util.concurrent.Executor
 
 @AutoService(ResourceLoaderRegistryPlatform::class)
 class ResourceLoaderRegistryImpl : ResourceLoaderRegistryPlatform {
@@ -27,9 +31,27 @@ class ResourceLoaderRegistryImpl : ResourceLoaderRegistryPlatform {
 		id: ResourceLocation,
 		dependencies: Collection<ResourceLocation>
 	) {
-		ResourceLoader.get(packType).registerReloader(id, listener)
-		dependencies.forEach {
-			ResourceLoader.get(packType).addReloaderOrdering(it, id)
-		}
+		ResourceManagerHelper.get(packType).registerReloadListener(object : IdentifiableResourceReloadListener {
+			override fun getFabricId(): ResourceLocation {
+				return id
+			}
+
+			override fun reload(
+				preparationBarrier: PreparableReloadListener.PreparationBarrier,
+				resourceManager: ResourceManager,
+				backgroundExecutor: Executor,
+				gameExecutor: Executor
+			): CompletableFuture<Void> {
+				return listener.reload(preparationBarrier, resourceManager, backgroundExecutor, gameExecutor)
+			}
+
+			override fun getFabricDependencies(): Collection<ResourceLocation> {
+				return dependencies
+			}
+
+			override fun getName(): String {
+				return listener.name
+			}
+		})
 	}
 }

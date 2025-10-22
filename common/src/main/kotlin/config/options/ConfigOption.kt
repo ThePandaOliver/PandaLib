@@ -14,11 +14,12 @@ package dev.pandasystems.pandalib.config.options
 
 import com.google.common.reflect.TypeToken
 import dev.pandasystems.pandalib.config.ConfigObject
+import kotlin.reflect.KType
 
 abstract class ConfigOption<T : Any>(
 	val configObject: ConfigObject<*>,
 	val pathName: String,
-	val type: TypeToken<T>
+	val type: KType
 ) {
 	val name: String = pathName.substringAfterLast('.')
 

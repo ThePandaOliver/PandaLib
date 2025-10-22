@@ -14,8 +14,9 @@ package dev.pandasystems.pandalib.config.options
 
 import com.google.common.reflect.TypeToken
 import dev.pandasystems.pandalib.config.ConfigObject
+import kotlin.reflect.KType
 
 class GenericConfigOption<T : Any>(
-	configObject: ConfigObject<*>, pathName: String, type: TypeToken<T>,
+	configObject: ConfigObject<*>, pathName: String, type: KType,
 	override var value: T
 ) : ConfigOption<T>(configObject, pathName, type)

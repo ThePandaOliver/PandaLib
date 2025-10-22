@@ -19,9 +19,10 @@ import dev.pandasystems.pandalib.pandalibLogger
 import dev.pandasystems.pandalib.utils.gameEnvironment
 import net.minecraft.world.entity.player.Player
 import java.util.*
+import kotlin.reflect.KType
 
 class SyncableConfigOption<T : Any>(
-	configObject: ConfigObject<*>, pathName: String, type: TypeToken<T>, value: T
+	configObject: ConfigObject<*>, pathName: String, type: KType, value: T
 ) : ConfigOption<T>(configObject, pathName, type) {
 	// The player specific values that is synced to the server from the client.
 	internal var playerValues = mutableMapOf<UUID, T>()

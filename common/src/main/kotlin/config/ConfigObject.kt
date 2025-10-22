@@ -76,7 +76,7 @@ class ConfigObject<T : Config>(
 			pathSegments.forEachIndexed { index, segment ->
 				if (index == pathSegments.lastIndex && current.isObject) {
 					@Suppress("UNCHECKED_CAST")
-					current.asObject[segment] = serializer.toTree(option.value, option.type as TypeToken<Any>)
+					current.asObject[segment] = serializer.toTree(option.value, option.type)
 				} else {
 					current = current.asObject.computeIfAbsent(segment) { TreeObject() }
 				}

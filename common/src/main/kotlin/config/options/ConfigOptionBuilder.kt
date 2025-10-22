@@ -16,12 +16,14 @@ import com.google.common.reflect.TypeToken
 import dev.pandasystems.pandalib.config.ConfigObject
 import java.lang.reflect.Field
 import kotlin.reflect.KProperty
+import kotlin.reflect.KType
 import kotlin.reflect.jvm.kotlinProperty
+import kotlin.reflect.typeOf
 
 class ConfigOptionBuilder<T : Any, C : ConfigOption<T>>(
 	val value: T,
-	val valueType: Class<T>,
-	val constructor: (configObject: ConfigObject<*>, pathName: String, type: TypeToken<T>, value: T) -> C
+	val valueType: KType,
+	val constructor: (configObject: ConfigObject<*>, pathName: String, type: KType, value: T) -> C
 ) {
 	lateinit var delegate: C
 
@@ -32,7 +34,7 @@ class ConfigOptionBuilder<T : Any, C : ConfigOption<T>>(
 		val path = path?.let { "$it.$name" } ?: name
 
 		@Suppress("UNCHECKED_CAST")
-		delegate = constructor(configObject, path, TypeToken.of(valueType) as TypeToken<T>, value)
+		delegate = constructor(configObject, path, valueType, value)
 	}
 
 	operator fun getValue(thisRef: Any?, property: KProperty<*>): C = delegate
@@ -43,5 +45,5 @@ fun <T: Any> ConfigOptionBuilder<T, GenericConfigOption<T>>.syncable() : ConfigO
 }
 
 inline fun <reified T : Any> configOption(value: T): ConfigOptionBuilder<T, GenericConfigOption<T>> {
-	return ConfigOptionBuilder(value, T::class.java, ::GenericConfigOption)
+	return ConfigOptionBuilder(value, typeOf<T>(), ::GenericConfigOption)
 }

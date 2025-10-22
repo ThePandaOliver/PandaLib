@@ -101,7 +101,7 @@ object ConfigSynchronizer {
 				val configObject = option.configObject
 				option.playerValues.forEach { (playerUuid, value) ->
 					payloadValues.computeIfAbsent(playerUuid) { resourceLocation to TreeObject() }
-						.second[option.pathName] = configObject.serializer.toTree(value)
+						.second[option.pathName] = configObject.serializer.toTree(value, option.type)
 				}
 			}
 		}
@@ -128,7 +128,7 @@ object ConfigSynchronizer {
 		val tree = TreeObject()
 		for (option in options) {
 			val configObject = option.configObject
-			tree[option.pathName] = configObject.serializer.toTree(option.initialValue)
+			tree[option.pathName] = configObject.serializer.toTree(option.initialValue, option.type)
 		}
 		return tree
 	}

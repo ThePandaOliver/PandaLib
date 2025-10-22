@@ -7,7 +7,7 @@
 
 package dev.pandasystems.pandalib.mixin.events.player;
 
-import dev.pandasystems.pandalib.event.server.ServerPlayerEvents;
+import dev.pandasystems.pandalib.event.server.ServerPlayerEventsKt;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -34,7 +34,7 @@ public abstract class ServerPlayerEventMixin {
 			), cancellable = true
 	)
 	public void beforeDimensionChange(DimensionTransition transition, CallbackInfoReturnable<ServerPlayer> cir) {
-		var cancelled = !ServerPlayerEvents.getServerPlayerChangeDimensionPreEvent().getInvoker().invoke((ServerPlayer) (Object) this, serverLevel(),
+		var cancelled = !ServerPlayerEventsKt.getServerPlayerChangeDimensionPreEvent().getInvoker().invoke((ServerPlayer) (Object) this, serverLevel(),
 				transition.newLevel(), transition);
 		if (cancelled) {
 			cir.setReturnValue(null);
@@ -44,7 +44,7 @@ public abstract class ServerPlayerEventMixin {
 	@Inject(method = "changeDimension", at = @At("RETURN"))
 	public void afterDimensionChange(DimensionTransition transition, CallbackInfoReturnable<Entity> cir) {
 		if (this.isChangingDimension) {
-			ServerPlayerEvents.getServerPlayerChangeDimensionPostEvent().getInvoker().invoke((ServerPlayer) (Object) this, serverLevel(), transition.newLevel(), transition);
+			ServerPlayerEventsKt.getServerPlayerChangeDimensionPostEvent().getInvoker().invoke((ServerPlayer) (Object) this, serverLevel(), transition.newLevel(), transition);
 		}
 	}
 }

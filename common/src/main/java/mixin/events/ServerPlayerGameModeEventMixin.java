@@ -7,7 +7,7 @@
 
 package dev.pandasystems.pandalib.mixin.events;
 
-import dev.pandasystems.pandalib.event.server.ServerBlockEvents;
+import dev.pandasystems.pandalib.event.server.ServerBlockEventsKt;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -27,7 +27,7 @@ public class ServerPlayerGameModeEventMixin {
 
 	@Inject(method = "destroyBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/Block;playerWillDestroy(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/entity/player/Player;)Lnet/minecraft/world/level/block/state/BlockState;"), cancellable = true)
 	public void onBlockBreakEvent(BlockPos pos, CallbackInfoReturnable<Boolean> cir) {
-		var cancelled = !ServerBlockEvents.breakPreEvent().getInvoker().invoke(this.level, pos, this.level.getBlockState(pos), this.player);
+		var cancelled = !ServerBlockEventsKt.getServerBlockBreakPreEvent().getInvoker().invoke(this.level, pos, this.level.getBlockState(pos), this.player);
 		if (cancelled) {
 			cir.setReturnValue(false);
 		}
@@ -36,6 +36,6 @@ public class ServerPlayerGameModeEventMixin {
 	@Inject(method = "destroyBlock", at = @At("RETURN"))
 	public void onBlockBreakEventPost(BlockPos pos, CallbackInfoReturnable<Boolean> cir) {
 		if (!cir.getReturnValue()) return;
-		ServerBlockEvents.breakPostEvent().getInvoker().invoke(this.level, pos, this.level.getBlockState(pos), this.player);
+		ServerBlockEventsKt.getServerBlockBreakPostEvent().getInvoker().invoke(this.level, pos, this.level.getBlockState(pos), this.player);
 	}
 }

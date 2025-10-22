@@ -9,7 +9,7 @@ package dev.pandasystems.pandalib.neoforge.platform.registration
 
 import com.google.auto.service.AutoService
 import dev.pandasystems.pandalib.registry.deferred.DeferredObject
-import dev.pandasystems.pandalib.platform.registry.DeferredRegisterHelper
+import dev.pandasystems.pandalib.registry.deferred.DeferredRegisterPlatform
 import net.minecraft.core.Registry
 import net.minecraft.resources.ResourceKey
 import net.neoforged.neoforge.registries.NewRegistryEvent
@@ -17,8 +17,8 @@ import net.neoforged.neoforge.registries.RegisterEvent
 import java.util.function.Consumer
 import java.util.function.Supplier
 
-@AutoService(DeferredRegisterHelper::class)
-class DeferredRegisterHelperImpl : DeferredRegisterHelper {
+@AutoService(DeferredRegisterPlatform::class)
+class DeferredRegisterImpl : DeferredRegisterPlatform {
 	private val pendingRegistries: MutableMap<ResourceKey<out Registry<*>>, PendingRegistries<*>> = mutableMapOf()
 	private val pendingRegistryTypes: MutableList<Registry<*>> = mutableListOf()
 

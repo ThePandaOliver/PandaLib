@@ -31,12 +31,12 @@ import net.minecraft.network.protocol.game.ClientGamePacketListener
 
 val clientboundPLPayloadPacketType = PacketType<ClientboundPLPayloadPacket>(PacketFlow.CLIENTBOUND, resourceLocation("pandalib_custom_payload"))
 
-data class ClientboundPLPayloadPacket(val payload: CustomPacketPayload) : Packet<ClientGamePacketListener> {
-	override fun type(): PacketType<out Packet<ClientGamePacketListener>> {
+data class ClientboundPLPayloadPacket(val payload: CustomPacketPayload) : Packet<ClientCommonPacketListener> {
+	override fun type(): PacketType<out Packet<ClientCommonPacketListener>> {
 		return clientboundPLPayloadPacketType
 	}
 
-	override fun handle(handler: ClientGamePacketListener) {
+	override fun handle(handler: ClientCommonPacketListener) {
 		class Sender(val connection: Connection): PacketSender {
 			override fun createPacket(payloads: Collection<CustomPacketPayload>): Packet<*> {
 				return if (payloads.size > 1) {

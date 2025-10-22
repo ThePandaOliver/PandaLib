@@ -8,19 +8,14 @@
 package dev.pandasystems.pandalib.fabric.platform.registry
 
 import com.google.auto.service.AutoService
-import dev.pandasystems.pandalib.platform.registry.ResourceLoaderHelper
-import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener
-import net.fabricmc.fabric.api.resource.ResourceManagerHelper
+import dev.pandasystems.pandalib.registry.ResourceLoaderRegistryPlatform
 import net.fabricmc.fabric.api.resource.v1.ResourceLoader
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.packs.PackType
 import net.minecraft.server.packs.resources.PreparableReloadListener
-import net.minecraft.server.packs.resources.ResourceManager
-import java.util.concurrent.CompletableFuture
-import java.util.concurrent.Executor
 
-@AutoService(ResourceLoaderHelper::class)
-class ResourceLoaderHelperImpl : ResourceLoaderHelper {
+@AutoService(ResourceLoaderRegistryPlatform::class)
+class ResourceLoaderRegistryImpl : ResourceLoaderRegistryPlatform {
 	override fun registerReloadListener(
 		packType: PackType,
 		listener: PreparableReloadListener,

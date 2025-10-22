@@ -8,7 +8,7 @@
 package dev.pandasystems.pandalib.fabric.platform.registry
 
 import com.google.auto.service.AutoService
-import dev.pandasystems.pandalib.platform.registry.RendererRegistrationHelper
+import dev.pandasystems.pandalib.registry.RendererRegistryPlatform
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState
@@ -20,8 +20,8 @@ import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.entity.BlockEntityType
 import java.util.function.Supplier
 
-@AutoService(RendererRegistrationHelper::class)
-class RendererRegistationHelperImpl : RendererRegistrationHelper {
+@AutoService(RendererRegistryPlatform::class)
+class RendererRegistryImpl : RendererRegistryPlatform {
 	override fun <R : Entity> registerEntityRenderer(
 		typeProvider: Supplier<EntityType<R>>,
 		provider: EntityRendererProvider<R>

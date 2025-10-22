@@ -1,98 +1,100 @@
 /*
- * Copyright (c) 2025. Oliver Froberg
+ * Copyright (C) 2025-2025 Oliver Froberg (The Panda Oliver)
  *
- * This code is licensed under the GNU Lesser General Public License v3.0
- * See: https://www.gnu.org/licenses/lgpl-3.0-standalone.html
+ * This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU Lesser General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  any later version.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package dev.pandasystems.pandalib.utils.codecs
 
-import com.google.gson.JsonArray
-import com.google.gson.JsonElement
-import com.google.gson.JsonObject
-import com.google.gson.JsonPrimitive
+import dev.pandasystems.universalserializer.elements.*
 import net.minecraft.network.FriendlyByteBuf
 import net.minecraft.network.codec.StreamCodec
 
-object JsonElementCodec : StreamCodec<FriendlyByteBuf, JsonElement> {
+object TreeElementCodec : StreamCodec<FriendlyByteBuf, TreeElement> {
 	// Type identifiers for efficient encoding
 	private const val TYPE_NULL = 0.toByte()
 	private const val TYPE_PRIMITIVE = 1.toByte()
 	private const val TYPE_OBJECT = 2.toByte()
 	private const val TYPE_ARRAY = 3.toByte()
 
-	override fun decode(byteBuf: FriendlyByteBuf): JsonElement {
+	override fun decode(byteBuf: FriendlyByteBuf): TreeElement {
 		return when (val type = byteBuf.readByte()) {
-			TYPE_NULL -> com.google.gson.JsonNull.INSTANCE
-			TYPE_PRIMITIVE -> JsonPrimitiveCodec.decode(byteBuf)
-			TYPE_OBJECT -> JsonObjectCodec.decode(byteBuf)
-			TYPE_ARRAY -> JsonArrayCodec.decode(byteBuf)
-			else -> throw IllegalArgumentException("Unknown JSON element type: $type")
+			TYPE_NULL -> TreeNull
+			TYPE_PRIMITIVE -> TreePrimitiveCodec.decode(byteBuf)
+			TYPE_OBJECT -> TreeObjectCodec.decode(byteBuf)
+			TYPE_ARRAY -> TreeArrayCodec.decode(byteBuf)
+			else -> throw IllegalArgumentException("Unknown element type: $type")
 		}
 	}
 
-	override fun encode(byteBuf: FriendlyByteBuf, element: JsonElement) {
+	override fun encode(byteBuf: FriendlyByteBuf, element: TreeElement) {
 		when {
-			element.isJsonNull -> {
+			element.isNull -> {
 				byteBuf.writeByte(TYPE_NULL.toInt())
 			}
-			element.isJsonPrimitive -> {
+			element.isPrimitive -> {
 				byteBuf.writeByte(TYPE_PRIMITIVE.toInt())
-				JsonPrimitiveCodec.encode(byteBuf, element.asJsonPrimitive)
+				TreePrimitiveCodec.encode(byteBuf, element.asPrimitive)
 			}
-			element.isJsonObject -> {
+			element.isObject -> {
 				byteBuf.writeByte(TYPE_OBJECT.toInt())
-				JsonObjectCodec.encode(byteBuf, element.asJsonObject)
+				TreeObjectCodec.encode(byteBuf, element.asObject)
 			}
-			element.isJsonArray -> {
+			element.isArray -> {
 				byteBuf.writeByte(TYPE_ARRAY.toInt())
-				JsonArrayCodec.encode(byteBuf, element.asJsonArray)
+				TreeArrayCodec.encode(byteBuf, element.asArray)
 			}
 			else -> throw IllegalArgumentException("Unknown JSON element type: ${element.javaClass}")
 		}
 	}
 }
 
-object JsonObjectCodec : StreamCodec<FriendlyByteBuf, JsonObject> {
-	override fun decode(byteBuf: FriendlyByteBuf): JsonObject {
+object TreeObjectCodec : StreamCodec<FriendlyByteBuf, TreeObject> {
+	override fun decode(byteBuf: FriendlyByteBuf): TreeObject {
 		val size = byteBuf.readVarInt()
-		val obj = JsonObject()
+		val obj = TreeObject()
 		repeat(size) {
 			val key = byteBuf.readUtf()
-			val value = JsonElementCodec.decode(byteBuf)
-			obj.add(key, value)
+			val value = TreeElementCodec.decode(byteBuf)
+			obj[key] = value
 		}
 		return obj
 	}
 
-	override fun encode(byteBuf: FriendlyByteBuf, obj: JsonObject) {
-		byteBuf.writeVarInt(obj.size())
-		for ((key, value) in obj.entrySet()) {
+	override fun encode(byteBuf: FriendlyByteBuf, obj: TreeObject) {
+		byteBuf.writeVarInt(obj.size)
+		for ((key, value) in obj.entries) {
 			byteBuf.writeUtf(key)
-			JsonElementCodec.encode(byteBuf, value)
+			TreeElementCodec.encode(byteBuf, value)
 		}
 	}
 }
 
-object JsonArrayCodec : StreamCodec<FriendlyByteBuf, JsonArray> {
-	override fun decode(byteBuf: FriendlyByteBuf): JsonArray {
+object TreeArrayCodec : StreamCodec<FriendlyByteBuf, TreeArray> {
+	override fun decode(byteBuf: FriendlyByteBuf): TreeArray {
 		val size = byteBuf.readVarInt()
-		val array = JsonArray(size)
+		val array = TreeArray()
 		repeat(size) {
-			array.add(JsonElementCodec.decode(byteBuf))
+			array.add(TreeElementCodec.decode(byteBuf))
 		}
 		return array
 	}
 
-	override fun encode(byteBuf: FriendlyByteBuf, array: JsonArray) {
-		byteBuf.writeVarInt(array.size())
+	override fun encode(byteBuf: FriendlyByteBuf, array: TreeArray) {
+		byteBuf.writeVarInt(array.size)
 		for (element in array) {
-			JsonElementCodec.encode(byteBuf, element)
+			TreeElementCodec.encode(byteBuf, element)
 		}
 	}
 }
 
-object JsonPrimitiveCodec : StreamCodec<FriendlyByteBuf, JsonPrimitive> {
+object TreePrimitiveCodec : StreamCodec<FriendlyByteBuf, TreePrimitive> {
 	// Type identifiers for primitives
 	private const val TYPE_BOOLEAN = 0.toByte()
 	private const val TYPE_NUMBER_BYTE = 1.toByte()
@@ -103,21 +105,21 @@ object JsonPrimitiveCodec : StreamCodec<FriendlyByteBuf, JsonPrimitive> {
 	private const val TYPE_NUMBER_DOUBLE = 6.toByte()
 	private const val TYPE_STRING = 7.toByte()
 
-	override fun decode(byteBuf: FriendlyByteBuf): JsonPrimitive {
+	override fun decode(byteBuf: FriendlyByteBuf): TreePrimitive {
 		return when (val type = byteBuf.readByte()) {
-			TYPE_BOOLEAN -> JsonPrimitive(byteBuf.readBoolean())
-			TYPE_NUMBER_BYTE -> JsonPrimitive(byteBuf.readByte())
-			TYPE_NUMBER_SHORT -> JsonPrimitive(byteBuf.readShort())
-			TYPE_NUMBER_INT -> JsonPrimitive(byteBuf.readVarInt())
-			TYPE_NUMBER_LONG -> JsonPrimitive(byteBuf.readVarLong())
-			TYPE_NUMBER_FLOAT -> JsonPrimitive(byteBuf.readFloat())
-			TYPE_NUMBER_DOUBLE -> JsonPrimitive(byteBuf.readDouble())
-			TYPE_STRING -> JsonPrimitive(byteBuf.readUtf())
+			TYPE_BOOLEAN -> TreePrimitive(byteBuf.readBoolean())
+			TYPE_NUMBER_BYTE -> TreePrimitive(byteBuf.readByte())
+			TYPE_NUMBER_SHORT -> TreePrimitive(byteBuf.readShort())
+			TYPE_NUMBER_INT -> TreePrimitive(byteBuf.readVarInt())
+			TYPE_NUMBER_LONG -> TreePrimitive(byteBuf.readVarLong())
+			TYPE_NUMBER_FLOAT -> TreePrimitive(byteBuf.readFloat())
+			TYPE_NUMBER_DOUBLE -> TreePrimitive(byteBuf.readDouble())
+			TYPE_STRING -> TreePrimitive(byteBuf.readUtf())
 			else -> throw IllegalArgumentException("Unknown JSON primitive type: $type")
 		}
 	}
 
-	override fun encode(byteBuf: FriendlyByteBuf, primitive: JsonPrimitive) {
+	override fun encode(byteBuf: FriendlyByteBuf, primitive: TreePrimitive) {
 		when {
 			primitive.isBoolean -> {
 				byteBuf.writeByte(TYPE_BOOLEAN.toInt())

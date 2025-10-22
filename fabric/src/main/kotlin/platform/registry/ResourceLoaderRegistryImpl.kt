@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025-2025 Oliver Froberg (The Panda Oliver)
+ * Copyright (C) 2025 Oliver Froberg (The Panda Oliver)
  *
  * This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU Lesser General Public License as published by
@@ -20,6 +20,7 @@ import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.packs.PackType
 import net.minecraft.server.packs.resources.PreparableReloadListener
 import net.minecraft.server.packs.resources.ResourceManager
+import net.minecraft.util.profiling.ProfilerFiller
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Executor
 
@@ -39,10 +40,12 @@ class ResourceLoaderRegistryImpl : ResourceLoaderRegistryPlatform {
 			override fun reload(
 				preparationBarrier: PreparableReloadListener.PreparationBarrier,
 				resourceManager: ResourceManager,
+				preparationsProfiler: ProfilerFiller,
+				reloadProfiler: ProfilerFiller,
 				backgroundExecutor: Executor,
 				gameExecutor: Executor
-			): CompletableFuture<Void> {
-				return listener.reload(preparationBarrier, resourceManager, backgroundExecutor, gameExecutor)
+			): CompletableFuture<Void?>? {
+				return listener.reload(preparationBarrier, resourceManager, preparationsProfiler, reloadProfiler, backgroundExecutor, gameExecutor)
 			}
 
 			override fun getFabricDependencies(): Collection<ResourceLocation> {

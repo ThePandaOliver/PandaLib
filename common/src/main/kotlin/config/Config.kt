@@ -9,6 +9,7 @@ package dev.pandasystems.pandalib.config
 
 import dev.pandasystems.pandalib.config.options.ConfigOption
 import dev.pandasystems.pandalib.config.options.ConfigOptionBuilder
+import kotlin.reflect.jvm.kotlinProperty
 
 abstract class Config {
 	private var isInitialized = false
@@ -24,6 +25,7 @@ abstract class Config {
 
 		fun Any.applyCategory(path: String? = null) {
 			this::class.java.declaredFields.forEach { field ->
+				val name = field.kotlinProperty?.name ?: field.name
 				if (ConfigOptionBuilder::class.java.isAssignableFrom(field.type)) {
 					field.isAccessible = true
 
@@ -33,7 +35,7 @@ abstract class Config {
 					mutableOptions += builder.delegate
 				} else if (field.isAnnotationPresent(ConfigCategory::class.java)) {
 					field.isAccessible = true
-					field.get(this).applyCategory(path)
+					field.get(this).applyCategory(path?.let { "$it.$name" } ?: name)
 				} // else: ignore other types
 			}
 		}

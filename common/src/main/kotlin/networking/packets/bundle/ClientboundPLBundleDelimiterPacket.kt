@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025-2025 Oliver Froberg (The Panda Oliver)
+ * Copyright (C) 2025 Oliver Froberg (The Panda Oliver)
  *
  * This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU Lesser General Public License as published by
@@ -11,8 +11,8 @@
  */
 package dev.pandasystems.pandalib.networking.packets.bundle
 
+import net.minecraft.client.multiplayer.ClientPacketListener
 import net.minecraft.network.protocol.BundleDelimiterPacket
-import net.minecraft.network.protocol.common.ClientCommonPacketListener
 
-class ClientboundPLBundleDelimiterPacket : BundleDelimiterPacket<ClientCommonPacketListener>()
+class ClientboundPLBundleDelimiterPacket : BundleDelimiterPacket<ClientPacketListener>()
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025-2025 Oliver Froberg (The Panda Oliver)
+ * Copyright (C) 2025 Oliver Froberg (The Panda Oliver)
  *
  * This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU Lesser General Public License as published by
@@ -12,8 +12,8 @@
 
 package dev.pandasystems.pandalib.networking.packets
 
-import dev.pandasystems.pandalib.networking.ClientConfigurationNetworking
 import dev.pandasystems.pandalib.networking.ClientPlayNetworking
+import dev.pandasystems.pandalib.networking.CustomPacketPayload
 import dev.pandasystems.pandalib.networking.PacketSender
 import dev.pandasystems.pandalib.networking.PayloadCodecRegistry
 import dev.pandasystems.pandalib.networking.packets.bundle.ServerboundPLBundlePacket
@@ -26,7 +26,6 @@ import net.minecraft.network.FriendlyByteBuf
 import net.minecraft.network.PacketSendListener
 import net.minecraft.network.chat.Component
 import net.minecraft.network.protocol.Packet
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 
 data class ClientboundPLPayloadPacket(val payload: CustomPacketPayload) : Packet<ClientPacketListener> {
 	override fun write(buffer: FriendlyByteBuf) = clientboundPLPayloadCodec.encode(buffer, this)

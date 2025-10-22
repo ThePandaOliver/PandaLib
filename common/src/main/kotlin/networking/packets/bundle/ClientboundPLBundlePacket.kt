@@ -12,24 +12,21 @@
 
 package dev.pandasystems.pandalib.networking.packets.bundle
 
-import net.minecraft.client.multiplayer.ClientCommonPacketListenerImpl
+import net.minecraft.client.multiplayer.ClientPacketListener
 import net.minecraft.network.protocol.BundlePacket
 import net.minecraft.network.protocol.Packet
 import net.minecraft.network.protocol.PacketUtils
-import net.minecraft.network.protocol.common.ClientCommonPacketListener
 
-class ClientboundPLBundlePacket(iterable: Iterable<Packet<ClientCommonPacketListener>>): BundlePacket<ClientCommonPacketListener>(iterable) {
-	override fun handle(listener: ClientCommonPacketListener) {
+class ClientboundPLBundlePacket(iterable: Iterable<Packet<ClientPacketListener>>) : BundlePacket<ClientPacketListener>(iterable) {
+	override fun handle(listener: ClientPacketListener) {
 		listener.handlePandalibBundlePacket(this)
 	}
 }
 
-fun ClientCommonPacketListener.handlePandalibBundlePacket(packet: ClientboundPLBundlePacket) {
-	if (this is ClientCommonPacketListenerImpl) {
-		PacketUtils.ensureRunningOnSameThread(packet, this, this.minecraft)
+fun ClientPacketListener.handlePandalibBundlePacket(packet: ClientboundPLBundlePacket) {
+	PacketUtils.ensureRunningOnSameThread(packet, this, this.minecraft)
 
-		for (subpacket in packet.subPackets()) {
-			subpacket.handle(this)
-		}
+	for (subpacket in packet.subPackets()) {
+		subpacket.handle(this)
 	}
 }

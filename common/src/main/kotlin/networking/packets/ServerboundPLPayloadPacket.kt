@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025-2025 Oliver Froberg (The Panda Oliver)
+ * Copyright (C) 2025 Oliver Froberg (The Panda Oliver)
  *
  * This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU Lesser General Public License as published by
@@ -22,18 +22,17 @@ import net.minecraft.network.FriendlyByteBuf
 import net.minecraft.network.PacketSendListener
 import net.minecraft.network.chat.Component
 import net.minecraft.network.protocol.Packet
-import net.minecraft.network.protocol.common.ServerCommonPacketListener
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 import net.minecraft.network.protocol.game.ClientGamePacketListener
 import net.minecraft.network.protocol.game.ClientboundBundlePacket
+import net.minecraft.network.protocol.game.ServerGamePacketListener
 import net.minecraft.server.MinecraftServer
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.server.network.ServerGamePacketListenerImpl
 
-data class ServerboundPLPayloadPacket(val payload: CustomPacketPayload) : Packet<ServerCommonPacketListener> {
+data class ServerboundPLPayloadPacket(val payload: CustomPacketPayload) : Packet<ServerGamePacketListener> {
 	override fun write(buffer: FriendlyByteBuf) = serverboundPLPayloadCodec.encode(buffer, this)
 
-	override fun handle(handler: ServerCommonPacketListener) {
+	override fun handle(handler: ServerGamePacketListener) {
 		class Sender(val connection: Connection): PacketSender {
 			override fun createPacket(payloads: Collection<CustomPacketPayload>): Packet<*> {
 				return if (payloads.size > 1) {

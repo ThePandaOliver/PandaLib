@@ -15,8 +15,7 @@ package dev.pandasystems.pandalib.networking
 import dev.pandasystems.pandalib.networking.packets.ClientboundPLPayloadPacket
 import dev.pandasystems.pandalib.utils.gameEnvironment
 import net.minecraft.network.protocol.Packet
-import net.minecraft.network.protocol.common.ClientCommonPacketListener
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload
+import net.minecraft.network.protocol.game.ClientGamePacketListener
 import net.minecraft.network.protocol.game.ClientboundBundlePacket
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.MinecraftServer
@@ -112,11 +111,11 @@ object ServerPlayNetworking {
 		level.chunkSource.chunkMap.getPlayers(chunkPos, false).forEach { it.connection.send(packet) }
 	}
 
-	fun createPacket(vararg payloads: CustomPacketPayload): Packet<ClientPacketListener> {
+	fun createPacket(vararg payloads: CustomPacketPayload): Packet<out ClientGamePacketListener> {
 		require(payloads.isNotEmpty()) { "Requires at least one payload" }
 		return if (payloads.size > 1) {
 			@Suppress("UNCHECKED_CAST")
-			ClientboundBundlePacket(payloads.map(::ClientboundPLPayloadPacket) as Iterable<Packet<ClientPacketListener>>) as Packet<ClientCommonPacketListener>
+			ClientboundBundlePacket(payloads.map(::ClientboundPLPayloadPacket) as Iterable<Packet<ClientGamePacketListener>>)
 		} else {
 			ClientboundPLPayloadPacket(payloads.first())
 		}

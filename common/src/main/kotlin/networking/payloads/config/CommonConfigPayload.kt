@@ -1,16 +1,20 @@
 /*
- * Copyright (c) 2025. Oliver Froberg
+ * Copyright (C) 2025-2025 Oliver Froberg (The Panda Oliver)
  *
- * This code is licensed under the GNU Lesser General Public License v3.0
- * See: https://www.gnu.org/licenses/lgpl-3.0-standalone.html
+ * This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU Lesser General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  any later version.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package dev.pandasystems.pandalib.networking.payloads.config
 
-import com.google.gson.JsonObject
-import dev.pandasystems.pandalib.utils.codecs.JsonObjectCodec
+import dev.pandasystems.pandalib.utils.codecs.TreeObjectCodec
 import dev.pandasystems.pandalib.utils.extensions.resourceLocation
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap
+import dev.pandasystems.universalserializer.elements.TreeObject
 import net.minecraft.core.UUIDUtil
 import net.minecraft.network.FriendlyByteBuf
 import net.minecraft.network.codec.ByteBufCodecs
@@ -21,7 +25,7 @@ import java.util.*
 
 data class CommonConfigPayload(
 	val resourceLocation: ResourceLocation,
-	val optionObject: JsonObject,
+	val optionObject: TreeObject,
 	val playerId: Optional<UUID>
 ) : CustomPacketPayload {
 	override fun type(): CustomPacketPayload.Type<CommonConfigPayload> = TYPE
@@ -30,7 +34,7 @@ data class CommonConfigPayload(
 		val TYPE = CustomPacketPayload.Type<CommonConfigPayload>(resourceLocation("config_payload"))
 		val CODEC: StreamCodec<FriendlyByteBuf, CommonConfigPayload> = StreamCodec.composite(
 			ResourceLocation.STREAM_CODEC, CommonConfigPayload::resourceLocation,
-			JsonObjectCodec, CommonConfigPayload::optionObject,
+			TreeObjectCodec, CommonConfigPayload::optionObject,
 			ByteBufCodecs.optional(UUIDUtil.STREAM_CODEC), CommonConfigPayload::playerId,
 			::CommonConfigPayload
 		)

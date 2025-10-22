@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025-2025 Oliver Froberg (The Panda Oliver)
+ * Copyright (C) 2025 Oliver Froberg (The Panda Oliver)
  *
  * This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU Lesser General Public License as published by
@@ -17,6 +17,7 @@ import dev.pandasystems.pandalib.utils.gameEnvironment
 import net.minecraft.network.protocol.Packet
 import net.minecraft.network.protocol.common.ClientCommonPacketListener
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
+import net.minecraft.network.protocol.game.ClientGamePacketListener
 import net.minecraft.network.protocol.game.ClientboundBundlePacket
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.MinecraftServer
@@ -116,7 +117,7 @@ object ServerPlayNetworking {
 		require(payloads.isNotEmpty()) { "Requires at least one payload" }
 		return if (payloads.size > 1) {
 			@Suppress("UNCHECKED_CAST")
-			ClientboundBundlePacket(payloads.map(::ClientboundPLPayloadPacket)) as Packet<ClientCommonPacketListener>
+			ClientboundBundlePacket(payloads.map(::ClientboundPLPayloadPacket) as Iterable<Packet<ClientGamePacketListener>>) as Packet<ClientCommonPacketListener>
 		} else {
 			ClientboundPLPayloadPacket(payloads.first())
 		}

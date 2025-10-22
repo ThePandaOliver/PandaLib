@@ -9,7 +9,7 @@ package dev.pandasystems.pandalib.networking.packets.bundle
 import dev.pandasystems.pandalib.utils.extensions.resourceLocation
 import net.minecraft.network.protocol.BundleDelimiterPacket
 import net.minecraft.network.protocol.PacketFlow
-import net.minecraft.network.protocol.game.ServerGamePacketListener
+import net.minecraft.network.protocol.common.ServerCommonPacketListener
 
-class ServerboundPLBundleDelimiterPacket : BundleDelimiterPacket<ServerGamePacketListener>()
+class ServerboundPLBundleDelimiterPacket : BundleDelimiterPacket<ServerCommonPacketListener>()
 

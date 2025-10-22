@@ -30,10 +30,10 @@ import net.minecraft.server.level.ServerPlayer
 import net.minecraft.server.network.ServerConfigurationPacketListenerImpl
 import net.minecraft.server.network.ServerGamePacketListenerImpl
 
-data class ServerboundPLPayloadPacket(val payload: CustomPacketPayload) : Packet<ServerGamePacketListener> {
+data class ServerboundPLPayloadPacket(val payload: CustomPacketPayload) : Packet<ServerCommonPacketListener> {
 	override fun write(buffer: FriendlyByteBuf) = serverboundPLPayloadCodec.encode(buffer, this)
 
-	override fun handle(handler: ServerGamePacketListener) {
+	override fun handle(handler: ServerCommonPacketListener) {
 		class Sender(val connection: Connection): PacketSender {
 			override fun createPacket(payload: CustomPacketPayload): Packet<*> {
 				return ClientboundPLPayloadPacket(payload)

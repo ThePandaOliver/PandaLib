@@ -8,9 +8,3 @@ accessible field net/minecraft/server/network/ServerCommonPacketListenerImpl con
 accessible field net/minecraft/client/multiplayer/ClientCommonPacketListenerImpl minecraft Lnet/minecraft/client/Minecraft;
 accessible field net/minecraft/client/multiplayer/ClientCommonPacketListenerImpl connection Lnet/minecraft/network/Connection;
 
-# ProtocolInfoBuilder Class
-accessible field net/minecraft/network/protocol/ProtocolInfoBuilder codecs Ljava/util/List;
-accessible field net/minecraft/network/protocol/ProtocolInfoBuilder bundlerInfo Lnet/minecraft/network/protocol/BundlerInfo;
-accessible class net/minecraft/network/protocol/ProtocolInfoBuilder$CodecEntry
-accessible method net/minecraft/network/protocol/ProtocolInfoBuilder$CodecEntry <init> (Lnet/minecraft/network/protocol/PacketType;Lnet/minecraft/network/codec/StreamCodec;)V
-

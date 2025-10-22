@@ -28,13 +28,13 @@ import net.minecraft.network.FriendlyByteBuf
 import net.minecraft.network.PacketSendListener
 import net.minecraft.network.chat.Component
 import net.minecraft.network.protocol.Packet
+import net.minecraft.network.protocol.common.ClientCommonPacketListener
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
-import net.minecraft.network.protocol.game.ClientGamePacketListener
 
-data class ClientboundPLPayloadPacket(val payload: CustomPacketPayload) : Packet<ClientGamePacketListener> {
+data class ClientboundPLPayloadPacket(val payload: CustomPacketPayload) : Packet<ClientCommonPacketListener> {
 	override fun write(buffer: FriendlyByteBuf) = clientboundPLPayloadCodec.encode(buffer, this)
 
-	override fun handle(handler: ClientGamePacketListener) {
+	override fun handle(handler: ClientCommonPacketListener) {
 		class Sender(val connection: Connection): PacketSender {
 			override fun createPacket(payload: CustomPacketPayload): Packet<*> {
 				return ServerboundPLPayloadPacket(payload)

@@ -1,8 +1,13 @@
 /*
- * Copyright (c) 2025. Oliver Froberg
+ * Copyright (C) 2025-2025 Oliver Froberg (The Panda Oliver)
  *
- * This code is licensed under the GNU Lesser General Public License v3.0
- * See: https://www.gnu.org/licenses/lgpl-3.0-standalone.html
+ * This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU Lesser General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  any later version.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package dev.pandasystems.pandalib.neoforge
@@ -16,6 +21,7 @@ import dev.pandasystems.pandalib.registry.deferred.deferredRegister
 import dev.pandasystems.pandalib.registry.rendererRegistry
 import dev.pandasystems.pandalib.registry.resourceLoaderRegistry
 import dev.pandasystems.pandalib.utils.InternalPandaLibApi
+import dev.pandasystems.pandalib.utils.gameEnvironment
 import net.neoforged.bus.api.IEventBus
 import net.neoforged.fml.common.Mod
 import net.neoforged.neoforge.common.NeoForge
@@ -33,7 +39,7 @@ class PandaLibNeoForge(val eventBus: IEventBus) {
 
 		initializePandaLib()
 
-		if (game.isClient) {
+		if (gameEnvironment.isClient) {
 			dev.pandasystems.pandalib.neoforge.client.PandaLibClientNeoForge(eventBus)
 		}
 	}

@@ -1,13 +1,17 @@
 /*
- * Copyright (c) 2025. Oliver Froberg
+ * Copyright (C) 2025-2025 Oliver Froberg (The Panda Oliver)
  *
- * This code is licensed under the GNU Lesser General Public License v3.0
- * See: https://www.gnu.org/licenses/lgpl-3.0-standalone.html
+ * This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU Lesser General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  any later version.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package dev.pandasystems.pandalib.config
 
-import com.google.gson.JsonObject
 import dev.pandasystems.pandalib.config.options.SyncableConfigOption
 import dev.pandasystems.pandalib.config.serializer.ConfigSerialization
 import dev.pandasystems.pandalib.event.server.serverPlayerJoinEvent
@@ -16,6 +20,8 @@ import dev.pandasystems.pandalib.networking.PayloadCodecRegistry
 import dev.pandasystems.pandalib.networking.ServerPlayNetworking
 import dev.pandasystems.pandalib.networking.payloads.config.ClientboundConfigRequestPayload
 import dev.pandasystems.pandalib.networking.payloads.config.CommonConfigPayload
+import dev.pandasystems.pandalib.pandalibLogger
+import dev.pandasystems.universalserializer.elements.TreeObject
 import net.minecraft.resources.ResourceLocation
 import java.util.*
 import kotlin.jvm.optionals.getOrNull
@@ -25,7 +31,7 @@ object ConfigSynchronizer {
 	internal val configs = mutableMapOf<ResourceLocation, MutableList<SyncableConfigOption<Any>>>()
 
 	internal fun init() {
-		logger.debug("Config Synchronizer is initializing...")
+		pandalibLogger.debug("Config Synchronizer is initializing...")
 		PayloadCodecRegistry.register(CommonConfigPayload.RESOURCELOCATION, CommonConfigPayload.CODEC)
 		PayloadCodecRegistry.register(ClientboundConfigRequestPayload.RESOURCELOCATION, ClientboundConfigRequestPayload.CODEC)
 
@@ -35,14 +41,14 @@ object ConfigSynchronizer {
 			val resourceLocation = payload.resourceLocation
 			val jsonObject = payload.optionObject
 			val playerId = payload.playerId
-			logger.debug("Received config payload for {}: {}", resourceLocation, jsonObject)
+			pandalibLogger.debug("Received config payload for {}: {}", resourceLocation, jsonObject)
 			val configObject = ConfigRegistry.get<Config>(resourceLocation)
 			configObject?.applyConfigPayload(jsonObject, playerId.getOrNull())
-				?: logger.error("Received config payload for unknown config object: $resourceLocation")
+				?: pandalibLogger.error("Received config payload for unknown config object: $resourceLocation")
 
 			// Provide the new player config to all already connected clients
 			playerId.ifPresent {
-				logger.debug("Sending config payload to player {}", it)
+				pandalibLogger.debug("Sending config payload to player {}", it)
 				ServerPlayNetworking.sendToAll(payload)
 			}
 		}
@@ -53,7 +59,7 @@ object ConfigSynchronizer {
 		if (configs.isNotEmpty()) {
 			serverPlayerJoinEvent += { player ->
 				// Send all server configs
-				logger.debug("Sending all server configs to {}", player.name)
+				pandalibLogger.debug("Sending all server configs to {}", player.name)
 				val payloads = configs.map { (resourceLocation, _) ->
 					val configObject = requireNotNull(ConfigRegistry.get<Config>(resourceLocation))
 					configObject.createConfigPayload()
@@ -61,18 +67,18 @@ object ConfigSynchronizer {
 				ServerPlayNetworking.send(player, payloads)
 
 				// Send all previous client configs to the new client
-				logger.debug("Sending previous client configs to {}", player.name)
+				pandalibLogger.debug("Sending previous client configs to {}", player.name)
 				createConfigPayloadsWithClientConfigs()
 					.takeIf { it.isNotEmpty() }
 					?.let { ServerPlayNetworking.send(player, it) }
 
 				// Send request for all client's configs
-				logger.debug("Sending config request to {}", player.name)
+				pandalibLogger.debug("Sending config request to {}", player.name)
 				ServerPlayNetworking.send(player, ClientboundConfigRequestPayload(player.uuid))
 			}
 		}
 
-		logger.debug("Config Synchronizer initialized successfully.")
+		pandalibLogger.debug("Config Synchronizer initialized successfully.")
 	}
 
 	/**
@@ -90,12 +96,13 @@ object ConfigSynchronizer {
 	 * Should be called on the server when a new client connects to provide the client with all connected client configs.
 	 */
 	fun createConfigPayloadsWithClientConfigs(): Collection<CommonConfigPayload> {
-		val payloadValues = mutableMapOf<UUID, Pair<ResourceLocation, JsonObject>>()
+		val payloadValues = mutableMapOf<UUID, Pair<ResourceLocation, TreeObject>>()
 		configs.forEach { (resourceLocation, options) ->
 			options.forEach { option ->
+				val configObject = option.configObject
 				option.playerValues.forEach { (playerUuid, value) ->
-					payloadValues.computeIfAbsent(playerUuid) { resourceLocation to JsonObject() }
-						.second.add(option.pathName, ConfigSerialization.serialize(value))
+					payloadValues.computeIfAbsent(playerUuid) { resourceLocation to TreeObject() }
+						.second[option.pathName] = configObject.serializer.toTree(value, option.type)
 				}
 			}
 		}
@@ -105,12 +112,11 @@ object ConfigSynchronizer {
 	/**
 	 * Applies the given values to the given config object.
 	 */
-	fun ConfigObject<*>.applyConfigPayload(jsonObj: JsonObject, playerUuid: UUID?) {
+	fun ConfigObject<*>.applyConfigPayload(tree: TreeObject, playerUuid: UUID?) {
 		val options = requireNotNull(configs[resourceLocation]) { "Config $resourceLocation is not registered" }
 		for (option in options) {
-			val deserialized = requireNotNull(ConfigSerialization.deserialize(jsonObj.get(option.pathName), option.type)) {
-				"Failed to deserialize value for option ${option.pathName}"
-			}
+			val deserialized = serializer.fromTree(tree[option.pathName]!!, option.type)
+			requireNotNull(deserialized) { "Failed to deserialize value for option ${option.pathName}" }
 			if (playerUuid != null) // Set synced value for the player
 				option.playerValues[playerUuid] = deserialized
 			else // Set synced value for the server
@@ -118,13 +124,14 @@ object ConfigSynchronizer {
 		}
 	}
 
-	fun createJsonObject(resourceLocation: ResourceLocation): JsonObject {
+	fun createJsonObject(resourceLocation: ResourceLocation): TreeObject {
 		val options = requireNotNull(configs[resourceLocation]) { "Config $resourceLocation is not registered" }
-		val jsonObject = JsonObject()
+		val tree = TreeObject()
 		for (option in options) {
-			jsonObject.add(option.pathName, ConfigSerialization.serialize(option.initialValue))
+			val configObject = option.configObject
+			tree[option.pathName] = configObject.serializer.toTree(option.initialValue, option.type)
 		}
-		return jsonObject
+		return tree
 	}
 
 	internal fun registerSyncableConfigOption(option: SyncableConfigOption<Any>) {

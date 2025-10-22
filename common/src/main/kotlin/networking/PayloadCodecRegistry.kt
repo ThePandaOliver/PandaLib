@@ -12,7 +12,6 @@ import net.minecraft.network.FriendlyByteBuf
 import net.minecraft.resources.ResourceLocation
 
 object PayloadCodecRegistry {
-	@JvmField
 	internal val packetCodecs = mutableMapOf<ResourceLocation, StreamCodec<FriendlyByteBuf, CustomPacketPayload>>()
 
 	@JvmStatic

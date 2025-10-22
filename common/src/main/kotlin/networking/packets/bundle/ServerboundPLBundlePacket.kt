@@ -14,7 +14,7 @@ import net.minecraft.network.protocol.PacketUtils
 import net.minecraft.network.protocol.game.ServerGamePacketListener
 import net.minecraft.server.network.ServerGamePacketListenerImpl
 
-class ServerboundPLBundlePacket(iterable: Iterable<ServerboundPLPayloadPacket?>): BundlePacket<ServerGamePacketListener>(iterable) {
+class ServerboundPLBundlePacket(iterable: Iterable<Packet<in ServerGamePacketListener>>): BundlePacket<ServerGamePacketListener>(iterable) {
 	override fun handle(listener: ServerGamePacketListener) {
 		listener.handlePandalibBundlePacket(this)
 	}

@@ -9,7 +9,7 @@ package dev.pandasystems.pandalib.networking
 
 import dev.pandasystems.pandalib.networking.packets.ServerboundPLPayloadPacket
 import dev.pandasystems.pandalib.networking.packets.bundle.ServerboundPLBundlePacket
-import dev.pandasystems.pandalib.platform.game
+import dev.pandasystems.pandalib.utils.gameEnvironment
 import net.minecraft.client.Minecraft
 import net.minecraft.client.player.LocalPlayer
 import net.minecraft.network.protocol.Packet
@@ -18,7 +18,6 @@ import net.minecraft.resources.ResourceLocation
 import org.jetbrains.annotations.ApiStatus
 
 object ClientPlayNetworking {
-	@JvmField
 	internal val packetHandlers = mutableMapOf<ResourceLocation, PlayPayloadHandler<CustomPacketPayload>>()
 
 
@@ -34,12 +33,10 @@ object ClientPlayNetworking {
 
 	// Packet Sending
 
-	@JvmStatic
 	fun send(payload: CustomPacketPayload, vararg payloads: CustomPacketPayload) = send(listOf(payload, *payloads))
 
-	@JvmStatic
 	fun send(payloads: Collection<CustomPacketPayload>) {
-		require(game.isClient) { "Cannot send serverbound payloads from the server" }
+		require(gameEnvironment.isClient) { "Cannot send serverbound payloads from the server" }
 		val listener = requireNotNull(Minecraft.getInstance().player!!.connection)
 		listener.send(createPacket(*payloads.toTypedArray()))
 	}

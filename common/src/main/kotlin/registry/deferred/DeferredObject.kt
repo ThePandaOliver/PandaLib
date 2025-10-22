@@ -14,7 +14,7 @@ import net.minecraft.resources.ResourceKey
 import net.minecraft.resources.ResourceLocation
 import java.util.function.Supplier
 
-class DeferredObject<T>(@JvmField val key: ResourceKey<*>) : Supplier<T> {
+class DeferredObject<T>(val key: ResourceKey<*>) : Supplier<T> {
 	private var holder: Holder<*>? = null
 
 	init {

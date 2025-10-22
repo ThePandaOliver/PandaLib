@@ -25,12 +25,6 @@ class PandaLibConfig: Config() {
 		val enableConfigHotReload by configOption(false)
 		val configHotReloadDelay by configOption(1_000L)
 	}
-
-	companion object {
-		fun configSynchronizerClientInit() {
-			TODO("Not yet implemented")
-		}
-	}
 }
 
 val pandalibConfig = ConfigRegistry.create(resourceLocation("pandalib_config"), ::PandaLibConfig)

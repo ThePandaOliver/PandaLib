@@ -7,7 +7,7 @@
 
 package dev.pandasystems.pandalib.neoforge.mixin;
 
-import dev.pandasystems.pandalib.event.server.ServerConfigurationConnectionEvents;
+import dev.pandasystems.pandalib.event.server.ServerConfigurationConnectionEventsKt;
 import net.minecraft.network.Connection;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.CommonListenerCookie;
@@ -26,7 +26,7 @@ public abstract class ServerConfigurationPacketListenerMixin extends ServerCommo
 
 	@Inject(method = "runConfiguration", at = @At("HEAD"))
 	public void runConfiguration(CallbackInfo ci) {
-		System.out.println(Thread.currentThread().getName());
-		ServerConfigurationConnectionEvents.configure().getInvoker().invoke((ServerConfigurationPacketListenerImpl) (Object) this, this.server);
+		ServerConfigurationConnectionEventsKt.getServerConfigurationConnectionEvent().getInvoker()
+				.invoke((ServerConfigurationPacketListenerImpl) (Object) this, this.server);
 	}
 }

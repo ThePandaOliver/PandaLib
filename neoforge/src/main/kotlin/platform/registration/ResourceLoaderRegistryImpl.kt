@@ -8,7 +8,7 @@
 package dev.pandasystems.pandalib.neoforge.platform.registration
 
 import com.google.auto.service.AutoService
-import dev.pandasystems.pandalib.platform.registry.ResourceLoaderHelper
+import dev.pandasystems.pandalib.registry.ResourceLoaderRegistryPlatform
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.packs.PackType
 import net.minecraft.server.packs.resources.PreparableReloadListener
@@ -16,8 +16,8 @@ import net.neoforged.neoforge.client.event.AddClientReloadListenersEvent
 import net.neoforged.neoforge.event.AddServerReloadListenersEvent
 import java.util.function.Consumer
 
-@AutoService(ResourceLoaderHelper::class)
-class ResourceLoaderHelperImpl : ResourceLoaderHelper {
+@AutoService(ResourceLoaderRegistryPlatform::class)
+class ResourceLoaderRegistryImpl : ResourceLoaderRegistryPlatform {
 	private val serverDataReloadListeners = mutableListOf<Pair<ResourceLocation, PreparableReloadListener>>()
 	private val clientDataReloadListeners = mutableListOf<Pair<ResourceLocation, PreparableReloadListener>>()
 

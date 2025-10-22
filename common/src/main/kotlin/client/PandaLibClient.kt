@@ -8,23 +8,15 @@
 package dev.pandasystems.pandalib.client
 
 import dev.pandasystems.pandalib.client.config.ClientConfigSynchronizer
-import dev.pandasystems.pandalib.config.ConfigSynchronizer
-import dev.pandasystems.pandalib.event.client.clientPlayerJoinEvent
-import dev.pandasystems.pandalib.event.client.clientPlayerLeaveEvent
-import dev.pandasystems.pandalib.logger
-import dev.pandasystems.pandalib.pandalibConfig
-import net.fabricmc.api.EnvType
-import net.fabricmc.api.Environment
-import kotlin.collections.component1
-import kotlin.collections.component2
-import kotlin.collections.set
+import dev.pandasystems.pandalib.pandalibLogger
+import dev.pandasystems.pandalib.utils.InternalPandaLibApi
 
-object PandaLibClient {
-	init {
-		logger.debug("PandaLib Client is initializing...")
 
-		ClientConfigSynchronizer.init()
+@InternalPandaLibApi
+fun initializePandaLibClient() {
+	pandalibLogger.debug("PandaLib Client is initializing...")
 
-		logger.debug("PandaLib initialized successfully.")
-	}
+	ClientConfigSynchronizer.init()
+
+	pandalibLogger.debug("PandaLib initialized successfully.")
 }

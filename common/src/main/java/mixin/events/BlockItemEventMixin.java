@@ -8,9 +8,9 @@
 package dev.pandasystems.pandalib.mixin.events;
 
 import com.llamalad7.mixinextras.sugar.Local;
-import dev.pandasystems.pandalib.event.client.ClientBlockEvents;
-import dev.pandasystems.pandalib.event.server.ServerBlockEvents;
-import dev.pandasystems.pandalib.platform.GameDataKt;
+import dev.pandasystems.pandalib.event.client.ClientBlockEventsKt;
+import dev.pandasystems.pandalib.event.server.ServerBlockEventsKt;
+import dev.pandasystems.pandalib.utils.GameEnvironmentKt;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -25,13 +25,13 @@ public class BlockItemEventMixin {
 	@Inject(method = "place", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/BlockItem;placeBlock(Lnet/minecraft/world/item/context/BlockPlaceContext;Lnet/minecraft/world/level/block/state/BlockState;)Z"), cancellable = true)
 	public void beforeBlockPlace(BlockPlaceContext context, CallbackInfoReturnable<InteractionResult> cir, @Local(ordinal = 1) BlockPlaceContext newContext) {
 		var blockState = newContext.getLevel().getBlockState(newContext.getClickedPos());
-		if (!GameDataKt.game.isHost()) {
-			ClientBlockEvents.placeEvent().getInvoker()
+		if (!GameEnvironmentKt.getGameEnvironment().isHost()) {
+			ClientBlockEventsKt.getClientBlockPlaceEvent().getInvoker()
 					.invoke(newContext.getLevel(), newContext.getClickedPos(), blockState, newContext.getPlayer());
 		}
 
-		if (GameDataKt.game.isHost()) {
-			var cancelled = !ServerBlockEvents.placePreEvent().getInvoker()
+		if (GameEnvironmentKt.getGameEnvironment().isHost()) {
+			var cancelled = !ServerBlockEventsKt.getServerBlockPlacePreEvent().getInvoker()
 					.invoke(newContext.getLevel(), newContext.getClickedPos(), blockState, newContext.getPlayer());
 			if (cancelled) {
 				cir.setReturnValue(InteractionResult.FAIL);
@@ -41,12 +41,12 @@ public class BlockItemEventMixin {
 
 	@Inject(method = "placeBlock", at = @At("TAIL"))
 	public void afterBlockPlace(BlockPlaceContext context, BlockState state, CallbackInfoReturnable<Boolean> cir) {
-		if (!GameDataKt.game.isHost()) {
-			ClientBlockEvents.placeEvent().getInvoker()
+		if (!GameEnvironmentKt.getGameEnvironment().isHost()) {
+			ClientBlockEventsKt.getClientBlockPlaceEvent().getInvoker()
 					.invoke(context.getLevel(), context.getClickedPos(), state, context.getPlayer());
 		}
-		if (GameDataKt.game.isHost()) {
-			ServerBlockEvents.placePostEvent().getInvoker()
+		if (GameEnvironmentKt.getGameEnvironment().isHost()) {
+			ServerBlockEventsKt.getServerBlockPlacePostEvent().getInvoker()
 					.invoke(context.getLevel(), context.getClickedPos(), state, context.getPlayer());
 		}
 	}

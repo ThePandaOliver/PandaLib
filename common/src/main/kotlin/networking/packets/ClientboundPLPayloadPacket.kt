@@ -27,6 +27,7 @@ import net.minecraft.network.protocol.PacketFlow
 import net.minecraft.network.protocol.PacketType
 import net.minecraft.network.protocol.common.ClientCommonPacketListener
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
+import net.minecraft.network.protocol.game.ClientGamePacketListener
 
 val clientboundPLPayloadPacketType = PacketType<ClientboundPLPayloadPacket>(PacketFlow.CLIENTBOUND, resourceLocation("pandalib_custom_payload"))
 

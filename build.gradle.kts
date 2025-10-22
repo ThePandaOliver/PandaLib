@@ -33,6 +33,15 @@ subprojects {
 
 	val nonModImplementation: Configuration by configurations.creating
 
+	repositories {
+		maven("https://maven.pkg.github.com/ThePandaOliver/universal-serializer") {
+			credentials {
+				username = System.getenv("GITHUB_USER")
+				password = System.getenv("GITHUB_API_TOKEN")
+			}
+		}
+	}
+
 	dependencies {
 		nonModImplementation(kotlin("stdlib"))
 		nonModImplementation(kotlin("stdlib-jdk8"))
@@ -46,6 +55,8 @@ subprojects {
 		nonModImplementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.2")
 		nonModImplementation("org.jetbrains.kotlinx:kotlinx-io-core:0.7.0")
 		nonModImplementation("org.jetbrains.kotlinx:kotlinx-io-bytestring:0.7.0")
+
+		nonModImplementation("dev.pandasystems:universal-serializer:0.1.0.+")
 
 		runtimeOnly("com.google.auto.service:auto-service-annotations:1.1.1")
 		compileOnly("com.google.auto.service:auto-service-annotations:1.1.1")

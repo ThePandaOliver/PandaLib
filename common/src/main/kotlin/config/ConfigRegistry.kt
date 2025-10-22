@@ -7,7 +7,6 @@
 
 package dev.pandasystems.pandalib.config
 
-import dev.pandasystems.pandalib.config.ConfigObject
 import dev.pandasystems.pandalib.utils.constructClassUnsafely
 import net.minecraft.resources.ResourceLocation
 

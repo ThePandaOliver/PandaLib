@@ -12,5 +12,5 @@ accessible field net/minecraft/client/multiplayer/ClientCommonPacketListenerImpl
 accessible field net/minecraft/network/protocol/ProtocolInfoBuilder codecs Ljava/util/List;
 accessible field net/minecraft/network/protocol/ProtocolInfoBuilder bundlerInfo Lnet/minecraft/network/protocol/BundlerInfo;
 accessible class net/minecraft/network/protocol/ProtocolInfoBuilder$CodecEntry
-accessible method net/minecraft/network/protocol/ProtocolInfoBuilder$CodecEntry <init> (Lnet/minecraft/network/protocol/PacketType;Lnet/minecraft/network/codec/StreamCodec;Lnet/minecraft/network/protocol/CodecModifier;)V
+accessible method net/minecraft/network/protocol/ProtocolInfoBuilder$CodecEntry <init> (Lnet/minecraft/network/protocol/PacketType;Lnet/minecraft/network/codec/StreamCodec;)V
 

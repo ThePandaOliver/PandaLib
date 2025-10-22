@@ -44,7 +44,7 @@ class ResourceLoaderRegistryImpl : ResourceLoaderRegistryPlatform {
 				reloadProfiler: ProfilerFiller,
 				backgroundExecutor: Executor,
 				gameExecutor: Executor
-			): CompletableFuture<Void> {
+			): CompletableFuture<Void?>? {
 				return listener.reload(preparationBarrier, resourceManager, preparationsProfiler, reloadProfiler, backgroundExecutor, gameExecutor)
 			}
 

@@ -9,25 +9,19 @@ package dev.pandasystems.pandalib
 
 import com.mojang.logging.LogUtils
 import dev.pandasystems.pandalib.config.ConfigSynchronizer
-import dev.pandasystems.pandalib.event.client.clientBlockPlaceEvent
-import dev.pandasystems.pandalib.event.client.clientPlayerJoinEvent
-import dev.pandasystems.pandalib.event.server.serverBlockPlacePostEvent
-import dev.pandasystems.pandalib.event.server.serverPlayerJoinEvent
-import dev.pandasystems.pandalib.platform.game
+import dev.pandasystems.pandalib.utils.InternalPandaLibApi
 import org.slf4j.Logger
 
-object PandaLib {
-	const val MOD_ID = "pandalib"
+@InternalPandaLibApi
+fun initializePandaLib() {
+	pandalibLogger.debug("PandaLib is initializing...")
 
-	init {
-		logger.debug("PandaLib is initializing...")
+	pandalibConfig.load()
 
-		pandalibConfig.load()
+	ConfigSynchronizer.init()
 
-		ConfigSynchronizer.init()
-
-		logger.debug("PandaLib initialized successfully.")
-	}
+	pandalibLogger.debug("PandaLib initialized successfully.")
 }
 
-val logger: Logger = LogUtils.getLogger()
+const val pandalibModid = "pandalib"
+val pandalibLogger: Logger = LogUtils.getLogger()

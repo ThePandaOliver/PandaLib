@@ -7,13 +7,13 @@
 
 package dev.pandasystems.pandalib.registry.deferred
 
-import dev.pandasystems.pandalib.platform.registry.deferredRegisterHelper
+import dev.pandasystems.pandalib.utils.InternalPandaLibApi
+import dev.pandasystems.pandalib.utils.loadFirstService
 import net.minecraft.core.Registry
 import net.minecraft.resources.ResourceKey
 import net.minecraft.resources.ResourceLocation
 import java.util.function.Supplier
 
-@Suppress("unused")
 class DeferredRegister<T> private constructor(private val namespace: String, private val registryKey: ResourceKey<out Registry<T>>) {
 	private val entries = mutableMapOf<DeferredObject<out T>, Supplier<out T>>()
 
@@ -32,24 +32,36 @@ class DeferredRegister<T> private constructor(private val namespace: String, pri
 		return deferredObject
 	}
 
+	@OptIn(InternalPandaLibApi::class)
 	fun register() {
-		entries.forEach { (deferredObject: DeferredObject<out T>, supplier: Supplier<out T>) -> deferredRegisterHelper.registerObject(deferredObject, supplier) }
+		entries.forEach { (deferredObject: DeferredObject<out T>, supplier: Supplier<out T>) -> deferredRegister.registerObject(deferredObject, supplier) }
 	}
 
 	companion object {
-		@JvmStatic
 		fun <T> create(namespace: String, registry: Registry<T>): DeferredRegister<T> {
 			return create<T>(namespace, registry.key())
 		}
 
-		@JvmStatic
 		fun <T> create(namespace: String, registryLocation: ResourceLocation): DeferredRegister<T> {
 			return create<T>(namespace, ResourceKey.createRegistryKey<T>(registryLocation))
 		}
 
-		@JvmStatic
 		fun <T> create(namespace: String, registryKey: ResourceKey<out Registry<T>>): DeferredRegister<T> {
 			return DeferredRegister(namespace, registryKey)
 		}
+
+		@OptIn(InternalPandaLibApi::class)
+		fun <T, R : Registry<T>> registerNewRegistry(registry: R): R {
+			deferredRegister.registerNewRegistry(registry)
+			return registry
+		}
 	}
+}
+
+@InternalPandaLibApi
+val deferredRegister = loadFirstService<DeferredRegisterPlatform>()
+
+interface DeferredRegisterPlatform {
+	fun <T> registerObject(deferredObject: DeferredObject<out T>, supplier: Supplier<out T>)
+	fun <T> registerNewRegistry(registry: Registry<T>)
 }

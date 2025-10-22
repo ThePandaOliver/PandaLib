@@ -7,7 +7,7 @@
 
 package dev.pandasystems.pandalib.mixin.events.player;
 
-import dev.pandasystems.pandalib.event.server.ServerPlayerEvents;
+import dev.pandasystems.pandalib.event.server.ServerPlayerEventsKt;
 import net.minecraft.network.Connection;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.PlayerList;
@@ -21,17 +21,17 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class PlayerListEventMixin {
 	@Inject(method = "placeNewPlayer", at = @At("RETURN"))
 	private void onPlayerJoinEvent(Connection connection, ServerPlayer player, CallbackInfo ci) {
-		ServerPlayerEvents.getServerPlayerJoinEvent().getInvoker().invoke(player);
+		ServerPlayerEventsKt.getServerPlayerJoinEvent().getInvoker().invoke(player);
 	}
 
 	@Inject(method = "remove", at = @At("HEAD"))
 	private void onPlayerLeaveEvent(ServerPlayer player, CallbackInfo ci) {
-		ServerPlayerEvents.getServerPlayerLeaveEvent().getInvoker().invoke(player);
+		ServerPlayerEventsKt.getServerPlayerLeaveEvent().getInvoker().invoke(player);
 	}
 
 	@Inject(method = "respawn", at = @At("TAIL"))
 	private void onRespawn(ServerPlayer player, boolean keepInventory, CallbackInfoReturnable<ServerPlayer> cir) {
 		ServerPlayer newPlayer = cir.getReturnValue();
-		ServerPlayerEvents.getServerPlayerRespawnEvent().getInvoker().invoke(player, newPlayer, keepInventory);
+		ServerPlayerEventsKt.getServerPlayerRespawnEvent().getInvoker().invoke(player, newPlayer, keepInventory);
 	}
 }

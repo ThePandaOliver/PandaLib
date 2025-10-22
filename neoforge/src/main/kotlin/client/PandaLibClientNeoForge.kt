@@ -7,11 +7,13 @@
 
 package dev.pandasystems.pandalib.neoforge.client
 
-import dev.pandasystems.pandalib.client.PandaLibClient
+import dev.pandasystems.pandalib.client.initializePandaLibClient
+import dev.pandasystems.pandalib.utils.InternalPandaLibApi
 import net.neoforged.bus.api.IEventBus
 
+@OptIn(InternalPandaLibApi::class)
 class PandaLibClientNeoForge(eventBus: IEventBus) {
 	init {
-		PandaLibClient
+		initializePandaLibClient()
 	}
 }

@@ -8,22 +8,22 @@
 package dev.pandasystems.pandalib.fabric.platform.registry
 
 import com.google.auto.service.AutoService
+import dev.pandasystems.pandalib.pandalibLogger
 import dev.pandasystems.pandalib.registry.deferred.DeferredObject
-import dev.pandasystems.pandalib.logger
-import dev.pandasystems.pandalib.platform.registry.DeferredRegisterHelper
+import dev.pandasystems.pandalib.registry.deferred.DeferredRegisterPlatform
 import net.minecraft.core.Registry
 import net.minecraft.core.WritableRegistry
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.resources.ResourceKey
 import java.util.function.Supplier
 
-@AutoService(DeferredRegisterHelper::class)
-class DeferredRegisterHelperImpl : DeferredRegisterHelper {
+@AutoService(DeferredRegisterPlatform::class)
+class DeferredRegisterImpl : DeferredRegisterPlatform {
 	override fun <T> registerObject(
 		deferredObject: DeferredObject<out T>,
 		supplier: Supplier<out T>
 	) {
-		logger.info("Registering ${deferredObject.id} to ${deferredObject.registryKey}")
+		pandalibLogger.info("Registering ${deferredObject.id} to ${deferredObject.registryKey}")
 		@Suppress("UNCHECKED_CAST")
 		Registry.register(deferredObject.registry as Registry<T>, deferredObject.id, supplier.get())
 	}

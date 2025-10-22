@@ -14,40 +14,40 @@ import dev.pandasystems.pandalib.config.ConfigSynchronizer.applyConfigPayload
 import dev.pandasystems.pandalib.config.ConfigSynchronizer.createConfigPayload
 import dev.pandasystems.pandalib.event.client.clientPlayerJoinEvent
 import dev.pandasystems.pandalib.event.client.clientPlayerLeaveEvent
-import dev.pandasystems.pandalib.logger
 import dev.pandasystems.pandalib.networking.ClientPlayNetworking
 import dev.pandasystems.pandalib.networking.payloads.config.ClientboundConfigRequestPayload
 import dev.pandasystems.pandalib.networking.payloads.config.CommonConfigPayload
+import dev.pandasystems.pandalib.pandalibLogger
 import kotlin.jvm.optionals.getOrNull
 
 object ClientConfigSynchronizer {
 	val configs get() = ConfigSynchronizer.configs
 
 	internal fun init() {
-		logger.debug("Client Config Synchronizer is initializing...")
+		pandalibLogger.debug("Client Config Synchronizer is initializing...")
 
 		// Config receiving
 		ClientPlayNetworking.registerHandler<CommonConfigPayload>(CommonConfigPayload.RESOURCELOCATION) { payload, _ ->
 			val resourceLocation = payload.resourceLocation
 			val jsonObject = payload.optionObject
 			val playerId = payload.playerId
-			logger.debug("Received config payload for {}: {}", resourceLocation, jsonObject)
+			pandalibLogger.debug("Received config payload for {}: {}", resourceLocation, jsonObject)
 			val configObject = ConfigRegistry.get<Config>(resourceLocation)
 			configObject?.applyConfigPayload(jsonObject, playerId.getOrNull())
-				?: logger.error("Received config payload for unknown config object: $resourceLocation")
+				?: pandalibLogger.error("Received config payload for unknown config object: $resourceLocation")
 		}
 
 
 		// Client Config request
 		ClientPlayNetworking.registerHandler<ClientboundConfigRequestPayload>(ClientboundConfigRequestPayload.RESOURCELOCATION) { payload, _ ->
-			logger.debug("Received config request payload")
+			ClientPlayNetworking.debug("Received config request payload")
 			// Respond with all client configs
 			val payloads = configs.map { (resourceLocation, _) ->
 				val configObject = requireNotNull(ConfigRegistry.get<Config>(resourceLocation))
 				configObject.createConfigPayload(payload.playerId)
 			}
 			ClientPlayNetworking.send(payloads)
-			logger.debug("Sent all client configs")
+			pandalibLogger.debug("Sent all client configs")
 		}
 
 		// Adding local players configs to player configs
@@ -69,6 +69,6 @@ object ClientConfigSynchronizer {
 			}
 		}
 
-		logger.debug("Client Config Synchronizer initialized successfully.")
+		pandalibLogger.debug("Client Config Synchronizer initialized successfully.")
 	}
 }

@@ -7,7 +7,7 @@
 
 package dev.pandasystems.pandalib.mixin.events.player;
 
-import dev.pandasystems.pandalib.event.client.ClientPlayerEvents;
+import dev.pandasystems.pandalib.event.client.ClientPlayerEventsKt;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.player.LocalPlayer;
@@ -33,7 +33,7 @@ public abstract class ClientPacketListenerEventMixin implements ClientGamePacket
 
 	@Inject(method = "handleLogin", at = @At("TAIL"))
 	public void handleLogin(ClientboundLoginPacket packet, CallbackInfo ci) {
-		ClientPlayerEvents.getClientPlayerJoinEvent().getInvoker().invoke(Objects.requireNonNull(this.minecraft.player));
+		ClientPlayerEventsKt.getClientPlayerJoinEvent().getInvoker().invoke(Objects.requireNonNull(this.minecraft.player));
 	}
 
 	@Unique
@@ -47,6 +47,6 @@ public abstract class ClientPacketListenerEventMixin implements ClientGamePacket
 	@Inject(method = "handleRespawn", at = @At("TAIL"))
 	public void handleRespawn(ClientboundRespawnPacket packet, CallbackInfo ci) {
 		var newPlayer = this.minecraft.player;
-		ClientPlayerEvents.getClientPlayerRespawnEvent().getInvoker().invoke(pandaLib$oldPlayer, newPlayer);
+		ClientPlayerEventsKt.getClientPlayerRespawnEvent().getInvoker().invoke(pandaLib$oldPlayer, newPlayer);
 	}
 }

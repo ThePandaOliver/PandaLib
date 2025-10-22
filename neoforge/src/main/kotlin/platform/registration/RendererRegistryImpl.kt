@@ -1,8 +1,13 @@
 /*
- * Copyright (c) 2025. Oliver Froberg
+ * Copyright (C) 2025-2025 Oliver Froberg (The Panda Oliver)
  *
- * This code is licensed under the GNU Lesser General Public License v3.0
- * See: https://www.gnu.org/licenses/lgpl-3.0-standalone.html
+ * This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU Lesser General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  any later version.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package dev.pandasystems.pandalib.neoforge.platform.registration
@@ -10,7 +15,6 @@ package dev.pandasystems.pandalib.neoforge.platform.registration
 import com.google.auto.service.AutoService
 import dev.pandasystems.pandalib.registry.RendererRegistryPlatform
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider
-import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState
 import net.minecraft.client.renderer.entity.EntityRendererProvider
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.EntityType
@@ -22,7 +26,7 @@ import java.util.function.Supplier
 @AutoService(RendererRegistryPlatform::class)
 class RendererRegistryImpl : RendererRegistryPlatform {
 	val entityRendererProviders = mutableMapOf<Supplier<EntityType<*>>, EntityRendererProvider<*>>()
-	val blockEntityRendererProviders = mutableMapOf<Supplier<BlockEntityType<*>>, BlockEntityRendererProvider<*, *>>()
+	val blockEntityRendererProviders = mutableMapOf<Supplier<BlockEntityType<*>>, BlockEntityRendererProvider<*>>()
 
 	override fun <R : Entity> registerEntityRenderer(
 		typeProvider: Supplier<EntityType<R>>,
@@ -32,9 +36,9 @@ class RendererRegistryImpl : RendererRegistryPlatform {
 		entityRendererProviders[typeProvider as Supplier<EntityType<*>>] = provider
 	}
 
-	override fun <R : BlockEntity, S : BlockEntityRenderState> registerBlockEntityRenderer(
+	override fun <R : BlockEntity> registerBlockEntityRenderer(
 		typeProvider: Supplier<BlockEntityType<R>>,
-		provider: BlockEntityRendererProvider<R, S>
+		provider: BlockEntityRendererProvider<R>
 	) {
 		@Suppress("UNCHECKED_CAST")
 		blockEntityRendererProviders[typeProvider as Supplier<BlockEntityType<*>>] = provider
@@ -43,6 +47,6 @@ class RendererRegistryImpl : RendererRegistryPlatform {
 	@Suppress("UNCHECKED_CAST")
 	fun onEntityRendererRegistryEvent(event: EntityRenderersEvent.RegisterRenderers) {
 		entityRendererProviders.forEach { event.registerEntityRenderer(it.key.get(), it.value as EntityRendererProvider<in Entity>) }
-		blockEntityRendererProviders.forEach { event.registerBlockEntityRenderer(it.key.get(), it.value as BlockEntityRendererProvider<in BlockEntity, in BlockEntityRenderState>) }
+		blockEntityRendererProviders.forEach { event.registerBlockEntityRenderer(it.key.get(), it.value as BlockEntityRendererProvider<in BlockEntity>) }
 	}
 }

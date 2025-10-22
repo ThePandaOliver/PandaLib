@@ -8,13 +8,13 @@
 package dev.pandasystems.pandalib.neoforge.platform.registration
 
 import com.google.auto.service.AutoService
-import dev.pandasystems.pandalib.platform.registry.RegistryRegistrations
+import dev.pandasystems.pandalib.registry.RegistriesPlatform
 import net.minecraft.core.Registry
 import net.minecraft.network.syncher.EntityDataSerializer
 import net.neoforged.neoforge.registries.NeoForgeRegistries
 
-@AutoService(RegistryRegistrations::class)
-class RegistryRegistrationsImpl : RegistryRegistrations {
+@AutoService(RegistriesPlatform::class)
+class RegistriesImpl : RegistriesPlatform {
 	override val entityDataSerializers: Registry<EntityDataSerializer<*>>
 		get() = NeoForgeRegistries.ENTITY_DATA_SERIALIZERS
 }

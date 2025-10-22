@@ -7,38 +7,31 @@
 
 package dev.pandasystems.pandalib.neoforge
 
-import dev.pandasystems.pandalib.PandaLib
-import dev.pandasystems.pandalib.platform.registry.deferredRegisterHelper
-import dev.pandasystems.pandalib.platform.registry.rendererRegistrationHelper
-import dev.pandasystems.pandalib.platform.registry.resourceLoaderHelper
-import dev.pandasystems.pandalib.neoforge.platform.registration.DeferredRegisterHelperImpl
-import dev.pandasystems.pandalib.neoforge.platform.registration.RendererRegistationHelperImpl
-import dev.pandasystems.pandalib.neoforge.platform.registration.ResourceLoaderHelperImpl
-import dev.pandasystems.pandalib.platform.game
+import dev.pandasystems.pandalib.initializePandaLib
+import dev.pandasystems.pandalib.neoforge.platform.registration.DeferredRegisterImpl
+import dev.pandasystems.pandalib.neoforge.platform.registration.RendererRegistryImpl
+import dev.pandasystems.pandalib.neoforge.platform.registration.ResourceLoaderRegistryImpl
+import dev.pandasystems.pandalib.pandalibModid
+import dev.pandasystems.pandalib.registry.deferred.deferredRegister
+import dev.pandasystems.pandalib.registry.rendererRegistry
+import dev.pandasystems.pandalib.registry.resourceLoaderRegistry
+import dev.pandasystems.pandalib.utils.InternalPandaLibApi
 import net.neoforged.bus.api.IEventBus
 import net.neoforged.fml.common.Mod
 import net.neoforged.neoforge.common.NeoForge
 
-@Mod(PandaLib.MOD_ID)
+@OptIn(InternalPandaLibApi::class)
+@Mod(pandalibModid)
 class PandaLibNeoForge(val eventBus: IEventBus) {
 	init {
-		PandaLib // Initialize the core PandaLib functionality
+		eventBus.addListener((deferredRegister as DeferredRegisterImpl)::registerEvent)
+		eventBus.addListener((deferredRegister as DeferredRegisterImpl)::registerNewRegistryEvent)
 
-		if (deferredRegisterHelper is DeferredRegisterHelperImpl) {
-			val impl = deferredRegisterHelper as DeferredRegisterHelperImpl
-			eventBus.addListener(impl::registerEvent)
-			eventBus.addListener(impl::registerNewRegistryEvent)
-		}
+		NeoForge.EVENT_BUS.addListener((resourceLoaderRegistry as ResourceLoaderRegistryImpl)::addServerReloadListenerEvent)
 
-		if (resourceLoaderHelper is ResourceLoaderHelperImpl) {
-			val impl = resourceLoaderHelper as ResourceLoaderHelperImpl
-			NeoForge.EVENT_BUS.addListener(impl::addServerReloadListenerEvent)
-		}
+		eventBus.addListener((rendererRegistry as RendererRegistryImpl)::onEntityRendererRegistryEvent)
 
-		if (rendererRegistrationHelper is RendererRegistationHelperImpl) {
-			val impl = rendererRegistrationHelper as RendererRegistationHelperImpl
-			eventBus.addListener(impl::onEntityRendererRegistryEvent)
-		}
+		initializePandaLib()
 
 		if (game.isClient) {
 			dev.pandasystems.pandalib.neoforge.client.PandaLibClientNeoForge(eventBus)

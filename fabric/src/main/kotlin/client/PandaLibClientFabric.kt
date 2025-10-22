@@ -7,11 +7,13 @@
 
 package dev.pandasystems.pandalib.fabric.client
 
-import dev.pandasystems.pandalib.client.PandaLibClient
+import dev.pandasystems.pandalib.client.initializePandaLibClient
+import dev.pandasystems.pandalib.utils.InternalPandaLibApi
 import net.fabricmc.api.ClientModInitializer
 
+@OptIn(InternalPandaLibApi::class)
 class PandaLibClientFabric : ClientModInitializer {
 	override fun onInitializeClient() {
-		PandaLibClient
+		initializePandaLibClient()
 	}
 }

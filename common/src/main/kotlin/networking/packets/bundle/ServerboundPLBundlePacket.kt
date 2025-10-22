@@ -11,16 +11,17 @@ import dev.pandasystems.pandalib.networking.packets.ServerboundPLPayloadPacket
 import net.minecraft.network.protocol.BundlePacket
 import net.minecraft.network.protocol.Packet
 import net.minecraft.network.protocol.PacketUtils
-import net.minecraft.network.protocol.game.ServerGamePacketListener
+import dev.pandasystems.pandalib.utils.extensions.resourceLocation
+import net.minecraft.network.protocol.common.ServerCommonPacketListener
 import net.minecraft.server.network.ServerCommonPacketListenerImpl
 
-class ServerboundPLBundlePacket(iterable: Iterable<ServerboundPLPayloadPacket?>): BundlePacket<ServerGamePacketListener>(iterable) {
-	override fun handle(listener: ServerGamePacketListener) {
+class ServerboundPLBundlePacket(iterable: Iterable<Packet<in ServerCommonPacketListener>>): BundlePacket<ServerCommonPacketListener>(iterable) {
+	override fun handle(listener: ServerCommonPacketListener) {
 		listener.handlePandalibBundlePacket(this)
 	}
 }
 
-fun ServerGamePacketListener.handlePandalibBundlePacket(packet: ServerboundPLBundlePacket) {
+fun ServerCommonPacketListener.handlePandalibBundlePacket(packet: ServerboundPLBundlePacket) {
 	if (this is ServerCommonPacketListenerImpl) {
 		PacketUtils.ensureRunningOnSameThread(packet, this, this.server)
 

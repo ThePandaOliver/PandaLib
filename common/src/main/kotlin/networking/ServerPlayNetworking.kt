@@ -1,8 +1,13 @@
 /*
- * Copyright (c) 2025. Oliver Froberg
+ * Copyright (C) 2025 Oliver Froberg (The Panda Oliver)
  *
- * This code is licensed under the GNU Lesser General Public License v3.0
- * See: https://www.gnu.org/licenses/lgpl-3.0-standalone.html
+ * This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU Lesser General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  any later version.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package dev.pandasystems.pandalib.networking
@@ -10,8 +15,7 @@ package dev.pandasystems.pandalib.networking
 import dev.pandasystems.pandalib.networking.packets.ClientboundPLPayloadPacket
 import dev.pandasystems.pandalib.utils.gameEnvironment
 import net.minecraft.network.protocol.Packet
-import net.minecraft.network.protocol.common.ClientCommonPacketListener
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload
+import net.minecraft.network.protocol.game.ClientGamePacketListener
 import net.minecraft.network.protocol.game.ClientboundBundlePacket
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.MinecraftServer
@@ -107,10 +111,11 @@ object ServerPlayNetworking {
 		level.chunkSource.chunkMap.getPlayers(chunkPos, false).forEach { it.connection.send(packet) }
 	}
 
-	fun createPacket(vararg payloads: CustomPacketPayload): Packet<*> {
+	fun createPacket(vararg payloads: CustomPacketPayload): Packet<out ClientGamePacketListener> {
 		require(payloads.isNotEmpty()) { "Requires at least one payload" }
 		return if (payloads.size > 1) {
-			ClientboundBundlePacket(payloads.map(::ClientboundPLPayloadPacket))
+			@Suppress("UNCHECKED_CAST")
+			ClientboundBundlePacket(payloads.map(::ClientboundPLPayloadPacket) as Iterable<Packet<ClientGamePacketListener>>)
 		} else {
 			ClientboundPLPayloadPacket(payloads.first())
 		}

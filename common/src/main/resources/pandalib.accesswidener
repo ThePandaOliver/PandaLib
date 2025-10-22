@@ -1,15 +1,10 @@
 accessWidener v2 named
 
-# ServerCommonPacketListenerImpl Class
-accessible field net/minecraft/server/network/ServerCommonPacketListenerImpl server Lnet/minecraft/server/MinecraftServer;
-accessible field net/minecraft/server/network/ServerCommonPacketListenerImpl connection Lnet/minecraft/network/Connection;
+# ServerGamePacketListenerImpl Class
+accessible field net/minecraft/server/network/ServerGamePacketListenerImpl server Lnet/minecraft/server/MinecraftServer;
+accessible field net/minecraft/server/network/ServerGamePacketListenerImpl connection Lnet/minecraft/network/Connection;
 
 # ClientPacketListener Class
 accessible field net/minecraft/client/multiplayer/ClientPacketListener minecraft Lnet/minecraft/client/Minecraft;
 accessible field net/minecraft/client/multiplayer/ClientPacketListener connection Lnet/minecraft/network/Connection;
 
-# ProtocolInfoBuilder Class
-accessible field net/minecraft/network/protocol/ProtocolInfoBuilder codecs Ljava/util/List;
-accessible field net/minecraft/network/protocol/ProtocolInfoBuilder bundlerInfo Lnet/minecraft/network/protocol/BundlerInfo;
-accessible class net/minecraft/network/protocol/ProtocolInfoBuilder$CodecEntry
-accessible method net/minecraft/network/protocol/ProtocolInfoBuilder$CodecEntry <init> (Lnet/minecraft/network/protocol/PacketType;Lnet/minecraft/network/codec/StreamCodec;Lnet/minecraft/network/protocol/CodecModifier;)V

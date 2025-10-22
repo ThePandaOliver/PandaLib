@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2026 Oliver Froberg (The Panda Oliver)
+ * Copyright (c) 2025. Oliver Froberg
  *
  * This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU Lesser General Public License as published by
@@ -13,13 +13,16 @@
 package dev.pandasystems.pandalib.neoforge
 
 import dev.pandasystems.pandalib.PandaLib
-import dev.pandasystems.pandalib.platform.registry.deferredRegisterHelper
-import dev.pandasystems.pandalib.platform.registry.rendererRegistrationHelper
-import dev.pandasystems.pandalib.platform.registry.resourceLoaderHelper
-import dev.pandasystems.pandalib.neoforge.platform.registration.DeferredRegisterHelperImpl
-import dev.pandasystems.pandalib.neoforge.platform.registration.RendererRegistationHelperImpl
-import dev.pandasystems.pandalib.neoforge.platform.registration.ResourceLoaderHelperImpl
-import dev.pandasystems.pandalib.platform.game
+import dev.pandasystems.pandalib.initializePandaLib
+import dev.pandasystems.pandalib.neoforge.platform.registration.DeferredRegisterImpl
+import dev.pandasystems.pandalib.neoforge.platform.registration.RendererRegistryImpl
+import dev.pandasystems.pandalib.neoforge.platform.registration.ResourceLoaderRegistryImpl
+import dev.pandasystems.pandalib.pandalibModid
+import dev.pandasystems.pandalib.registry.deferred.deferredRegister
+import dev.pandasystems.pandalib.registry.rendererRegistry
+import dev.pandasystems.pandalib.registry.resourceLoaderRegistry
+import dev.pandasystems.pandalib.utils.InternalPandaLibApi
+import dev.pandasystems.pandalib.utils.gameEnvironment
 import net.neoforged.bus.api.IEventBus
 import net.neoforged.fml.common.Mod
 import net.neoforged.neoforge.common.NeoForge
@@ -36,5 +39,9 @@ class PandaLibNeoForge(val eventBus: IEventBus) {
 		eventBus.addListener((rendererRegistry as RendererRegistryImpl)::onEntityRendererRegistryEvent)
 
 		PandaLib
+
+		if (gameEnvironment.isClient) {
+			dev.pandasystems.pandalib.neoforge.client.PandaLibClientNeoForge(eventBus)
+		}
 	}
 }

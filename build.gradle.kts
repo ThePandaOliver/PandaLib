@@ -56,7 +56,8 @@ subprojects {
 		nonModImplementation("org.jetbrains.kotlinx:kotlinx-io-core:0.7.0")
 		nonModImplementation("org.jetbrains.kotlinx:kotlinx-io-bytestring:0.7.0")
 
-		nonModImplementation("dev.pandasystems:universal-serializer:0.1.0.+")
+//		nonModImplementation("dev.pandasystems:universal-serializer:0.1.0.+")
+		nonModImplementation("dev.pandasystems:universal-serializer:0.1.0.13")
 
 		runtimeOnly("com.google.auto.service:auto-service-annotations:1.1.1")
 		compileOnly("com.google.auto.service:auto-service-annotations:1.1.1")

@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" factoryName="Application" name="Client (:fabric)" type="Application">
+  <configuration default="false" factoryName="Application" folderName="fabric" name="Client (:fabric)" type="Application">
     <option name="MAIN_CLASS_NAME" value="dev.architectury.transformer.TransformerRuntime"/>
     <module name="PandaLib.fabric.main"/>
     <option name="PROGRAM_PARAMETERS" value="--username=Dev"/>

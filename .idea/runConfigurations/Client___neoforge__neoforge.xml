@@ -4,7 +4,7 @@
     <module name="PandaLib.neoforge.main"/>
     <option name="PROGRAM_PARAMETERS" value="--username=Dev"/>
     <option name="VM_PARAMETERS" value="-Dfabric.dli.config=C:\Users\Olive\IdeaProjects\PandaLib\neoforge\.gradle\loom-cache\launch.cfg -Dfabric.dli.env=client --add-opens java.base/java.lang.invoke=ALL-UNNAMED --add-exports jdk.naming.dns/com.sun.jndi.dns=java.naming --add-opens java.base/java.lang.invoke=ALL-UNNAMED --add-exports jdk.naming.dns/com.sun.jndi.dns=java.naming -Dfabric.dli.main=net.neoforged.fml.startup.Client -Darchitectury.main.class=C:\Users\Olive\IdeaProjects\PandaLib\neoforge\.gradle\architectury\.main_class -Darchitectury.runtime.transformer=C:\Users\Olive\IdeaProjects\PandaLib\neoforge\.gradle\architectury\.transforms -Darchitectury.properties=C:\Users\Olive\IdeaProjects\PandaLib\neoforge\.gradle\architectury\.properties -Djdk.attach.allowAttachSelf=true -javaagent:C:\Users\Olive\IdeaProjects\PandaLib\.gradle\architectury\architectury-transformer-agent.jar"/>
-    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/neoforge/../.runs/client/"/>
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/neoforge/..\.runs/client/"/>
     <method v="2">
       <option enabled="true" name="Make"/>
     </method>

@@ -92,20 +92,23 @@ allprojects {
 
 		if (loomPlatform != null) {
 			runs {
+				val path = project.projectDir.toPath().relativize(rootProject.file(".runs").toPath())
+
+				configureEach {
+					ideConfigFolder = loomPlatform
+					ideConfigGenerated(true)
+				}
+
 				named("client") {
 					client()
 					configName = "Client"
-					ideConfigFolder = loomPlatform
-					runDir("../.runs/client")
+					runDir("$path/client")
 					programArg("--username=Dev")
-					ideConfigGenerated(true)
 				}
 				named("server") {
 					server()
 					configName = "Server"
-					ideConfigFolder = loomPlatform
-					runDir("../.runs/server")
-					ideConfigGenerated(true)
+					runDir("$path/server")
 				}
 			}
 		} else runs.configureEach { ideConfigGenerated(false) }

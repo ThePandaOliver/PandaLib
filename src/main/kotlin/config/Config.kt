@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025-2025 Oliver Froberg (The Panda Oliver)
+ * Copyright (C) 2025 Oliver Froberg (The Panda Oliver)
  *
  * This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU Lesser General Public License as published by
@@ -12,42 +12,53 @@
 
 package dev.pandasystems.pandalib.config
 
-import dev.pandasystems.pandalib.config.options.ConfigOption
-import dev.pandasystems.pandalib.config.options.ConfigOptionBuilder
-import kotlin.reflect.jvm.kotlinProperty
+import dev.pandasystems.pandalib.config.datatypes.ConfigDataType
+import dev.pandasystems.universalserializer.elements.TreeObject
+import kotlin.reflect.KMutableProperty
+import kotlin.reflect.KProperty
+import kotlin.reflect.KType
+import kotlin.reflect.full.memberProperties
+import kotlin.reflect.jvm.isAccessible
 
 abstract class Config {
-	private var isInitialized = false
-	lateinit var options: List<ConfigOption<*>>
-		internal set
+	private val options = mutableListOf<Option<*>>()
 
-	lateinit var configObject: ConfigObject<*>
-		internal set
+	abstract val version: Int
+	open fun migrate(oldVersion: Int, data: TreeObject) {}
 
-	internal fun lateInit(configObject: ConfigObject<*>) {
-		if (isInitialized) throw IllegalStateException("Config $this is already initialized")
-		val mutableOptions = mutableListOf<ConfigOption<*>>()
+	internal fun <T : Config> initialize(configObject: ConfigObject<T>) {
+		fun iterateProperties(memberProperties: Collection<KProperty<*>>, instance: Any) {
+			for (property in memberProperties) {
+				if (property !is KMutableProperty<*>) continue
+				property.isAccessible = true
+				val returnType = property.returnType
 
-		fun Any.applyCategory(path: String? = null) {
-			this::class.java.fields.forEach { field ->
-				val name = field.kotlinProperty?.name ?: field.name
-				if (ConfigOptionBuilder::class.java.isAssignableFrom(field.type)) {
-					field.isAccessible = true
+				@Suppress("UNCHECKED_CAST")
+				val dataType = returnType.classifier as? ConfigDataType<Any?> ?: object : ConfigDataType<Any?> {
+					override var value: Any?
+						get() = property.getter.call(instance)
+						set(value) {
+							property.setter.call(instance, value)
+						}
+					override val valueType: KType
+						get() = returnType
 
-					val builder = field.get(this) as? ConfigOptionBuilder<*, *> ?: throw IllegalArgumentException("Field $field returns null")
-					builder.lateInit(configObject, field, path)
+				}
 
-					mutableOptions += builder.delegate
-				} else if (field.isAnnotationPresent(ConfigCategory::class.java)) {
-					field.isAccessible = true
-					field.get(this).applyCategory(path?.let { "$it.$name" } ?: name)
-				} // else: ignore other types
+				options += Option(property.name, dataType, returnType)
 			}
 		}
-		applyCategory()
 
-		options = mutableOptions.toList()
-		this.configObject = configObject
-		isInitialized = true
+		val klass = this::class
+		iterateProperties(klass.memberProperties, klass.objectInstance ?: this)
+	}
+
+	inner class Option<T>(
+		val name: String,
+		val dataType: ConfigDataType<T>,
+		val optionType: KType
+	) : ConfigDataType<T> by dataType {
+		val config: Config
+			get() = this@Config
 	}
 }

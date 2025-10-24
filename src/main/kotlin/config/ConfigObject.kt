@@ -34,7 +34,7 @@ class ConfigObject<T : Config>(
 	val onLoad = event<(configObject: ConfigObject<T>) -> Unit>()
 
 	init {
-		configInstance.lateInit(this)
+		configInstance.initialize(this)
 	}
 
 	override fun get(): T {

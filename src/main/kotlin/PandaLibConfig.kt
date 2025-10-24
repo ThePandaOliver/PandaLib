@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025-2025 Oliver Froberg (The Panda Oliver)
+ * Copyright (C) 2025 Oliver Froberg (The Panda Oliver)
  *
  * This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU Lesser General Public License as published by
@@ -13,22 +13,21 @@
 package dev.pandasystems.pandalib
 
 import dev.pandasystems.pandalib.config.Config
-import dev.pandasystems.pandalib.config.ConfigCategory
 import dev.pandasystems.pandalib.config.ConfigRegistry
-import dev.pandasystems.pandalib.config.options.configOption
-import dev.pandasystems.pandalib.config.options.syncable
+import dev.pandasystems.pandalib.config.datatypes.Synced
 import dev.pandasystems.pandalib.utils.extensions.resourceLocation
 
 class PandaLibConfig: Config() {
-	val debugging by configOption(false).syncable()
-	val experimentalFeatures by configOption(false)
+	override val version: Int = 1
 
-	@ConfigCategory
+	val debugging = Synced(false)
+	val experimentalFeatures = false
+
 	val hotReload = HotReloadConfig() //TODO: Implement hot reload functionality
 
 	class HotReloadConfig {
-		val enableConfigHotReload by configOption(false)
-		val configHotReloadDelay by configOption(1_000L)
+		val enableConfigHotReload = false
+		val configHotReloadDelay = 1_000L
 	}
 }
 

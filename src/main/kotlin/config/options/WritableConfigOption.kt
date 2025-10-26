@@ -7,15 +7,15 @@
  *  any later version.
  *
  * You should have received a copy of the GNU Lesser General Public License
- *  along with this program. If not, see <https://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.pandasystems.pandalib.config.datatypes
+package dev.pandasystems.pandalib.config.options
 
-import kotlin.reflect.KType
+import dev.pandasystems.pandalib.config.ConfigObject
 
-interface ConfigDataType<T> {
-	var value: T
-
-	val valueType: KType
+interface WritableConfigOption<T : Any?> : ConfigOption<T> {
+	override var name: String
+	override var parentPath: String
+	override var configObject: ConfigObject<*>
 }

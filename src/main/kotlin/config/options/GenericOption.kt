@@ -7,15 +7,15 @@
  *  any later version.
  *
  * You should have received a copy of the GNU Lesser General Public License
- *  along with this program. If not, see <https://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package dev.pandasystems.pandalib.config.options
 
-import dev.pandasystems.pandalib.config.ConfigObject
+import dev.pandasystems.pandalib.config.OptionContainer
 import kotlin.reflect.KType
 
-class GenericConfigOption<T : Any>(
-	configObject: ConfigObject<*>, pathName: String, type: KType,
-	override var value: T
-) : ConfigOption<T>(configObject, pathName, type)
+class GenericOption<T : Any?>(value: T, valueType: KType, name: String, parent: OptionContainer) : ConfigOption<T>(value, valueType, name, parent)
+
+inline fun <reified T : Any?> OptionContainer.option(value: T): ConfigOptionDelegate<T, GenericOption<T>> =
+	ConfigOptionDelegate(value, ::GenericOption)

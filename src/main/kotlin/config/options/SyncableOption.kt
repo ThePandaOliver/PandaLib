@@ -7,48 +7,41 @@
  *  any later version.
  *
  * You should have received a copy of the GNU Lesser General Public License
- *  along with this program. If not, see <https://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package dev.pandasystems.pandalib.config.options
 
-import dev.pandasystems.pandalib.config.ConfigObject
 import dev.pandasystems.pandalib.config.ConfigSynchronizer
+import dev.pandasystems.pandalib.config.OptionContainer
 import dev.pandasystems.pandalib.pandalibLogger
 import dev.pandasystems.pandalib.utils.gameEnvironment
 import net.minecraft.world.entity.player.Player
 import java.util.*
 import kotlin.reflect.KType
 
-class SyncableConfigOption<T : Any>(
-	configObject: ConfigObject<*>, pathName: String, type: KType, value: T
-) : ConfigOption<T>(configObject, pathName, type) {
+class SyncableOption<T : Any?>(value: T, valueType: KType, name: String, parent: OptionContainer) : ConfigOption<T>(value, valueType, name, parent) {
 	// The player specific values that is synced to the server from the client.
-	internal var playerValues = mutableMapOf<UUID, T>()
+	var playerValues = mutableMapOf<UUID, T>()
 
 	// The value that is synced to the client from the server.
-	internal var serverValue: T? = null
-		get() = if (gameEnvironment.isHost) initialValue else field
-
-	override var value: T
-		get() = serverValue ?: initialValue
-		set(value) {
-			initialValue = value
-		}
-
-	var initialValue: T = value
+	var serverValue: T? = null
+		get() = if (gameEnvironment.isHost) value else field
 
 	init {
 		@Suppress("UNCHECKED_CAST")
-		ConfigSynchronizer.registerSyncableConfigOption(this as SyncableConfigOption<Any>)
+		ConfigSynchronizer.registerSyncableConfigOption(this as SyncableOption<Any?>)
 	}
 
 	operator fun get(player: UUID): T {
 		val playerValue = playerValues[player]
 		if (playerValue != null) return playerValue
-		pandalibLogger.warn("No synced value for player $player in config option $pathName")
-		return initialValue
+		pandalibLogger.warn("No synced value for player $player in config option $path")
+		return value
 	}
 
 	operator fun get(player: Player): T = this[player.uuid]
 }
+
+inline fun <reified T : Any?> OptionContainer.synced(value: T): ConfigOptionDelegate<T, SyncableOption<T>> =
+	ConfigOptionDelegate(value, ::SyncableOption)

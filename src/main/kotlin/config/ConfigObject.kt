@@ -7,17 +7,15 @@
  *  any later version.
  *
  * You should have received a copy of the GNU Lesser General Public License
- *  along with this program. If not, see <https://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package dev.pandasystems.pandalib.config
 
-import dev.pandasystems.pandalib.config.options.ConfigOption
 import dev.pandasystems.pandalib.pandalibLogger
 import dev.pandasystems.pandalib.utils.event
 import dev.pandasystems.pandalib.utils.gamePaths
 import dev.pandasystems.universalserializer.Serializer
-import dev.pandasystems.universalserializer.elements.TreeElement
 import dev.pandasystems.universalserializer.elements.TreeObject
 import dev.pandasystems.universalserializer.formats.JsonFormat
 import net.minecraft.resources.ResourceLocation
@@ -32,10 +30,6 @@ class ConfigObject<T : Config>(
 
 	val onSave = event<(configObject: ConfigObject<T>) -> Unit>()
 	val onLoad = event<(configObject: ConfigObject<T>) -> Unit>()
-
-	init {
-		configInstance.initialize(this)
-	}
 
 	override fun get(): T {
 		return configInstance
@@ -69,36 +63,35 @@ class ConfigObject<T : Config>(
 
 	private fun serialize(): TreeObject {
 		val treeObject = TreeObject()
-		configInstance.options.forEach { option ->
-			var current: TreeElement = treeObject
-			val pathSegments = option.pathName.split('.')
-			pathSegments.forEachIndexed { index, segment ->
-				if (index == pathSegments.lastIndex && current.isObject) {
-					@Suppress("UNCHECKED_CAST")
-					current.asObject[segment] = serializer.toTree(option.value, option.type)
-				} else {
-					current = current.asObject.computeIfAbsent(segment) { TreeObject() }
+		configInstance.allOptions.forEach { option ->
+			var current = treeObject
+			if (option.parentPath.isNotEmpty()) {
+				option.parentPath.split(".").forEach { segment ->
+					check(current.isObject) { "Cannot create object segment '$segment' under non-object parent" }
+					current = current.asObject.computeIfAbsent(segment) { TreeObject() }.asObject
 				}
 			}
+			check(!current.contains(option.name)) { "Option '${option.name}' already exists in config tree" }
+			current[option.name] = serializer.toTree(option.value, option.valueType)
 		}
 		return treeObject
 	}
 
 	private fun deserialize(treeObject: TreeObject) {
-		configInstance.options.forEach { option ->
-			var current: TreeElement? = treeObject
-			val pathSegments = option.pathName.split('.')
-			pathSegments.forEach {
-				if (current == null || !current.isObject)
-					return@forEach
-				current = current.asObject[it]
+		configInstance.allOptions.forEach { option ->
+			var current = treeObject
+			if (option.parentPath.isNotEmpty()) {
+				for (segment in option.parentPath.split(".")) {
+					val currentElement = current[segment] ?: break
+					check(currentElement.isObject) { "Cannot deserialize object segment '$segment' under non-object parent" }
+					current = currentElement.asObject
+				}
 			}
-
-			current?.let {
-				val deserializedValue = serializer.fromTree(it, option.type)
-				requireNotNull(deserializedValue) { "Failed to deserialize value for option ${option.pathName}" }
+			current[option.name]?.let {
+				val deserializedValue = serializer.fromTree(it, option.valueType)
+				requireNotNull(deserializedValue) { "Failed to deserialize value for option ${option.name}" }
 				@Suppress("UNCHECKED_CAST")
-				(option as ConfigOption<Any>).value = deserializedValue
+				(option as? Config.Option<Any>)?.value = deserializedValue
 			}
 		}
 	}

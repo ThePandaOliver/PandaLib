@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025-2025 Oliver Froberg (The Panda Oliver)
+ * Copyright (C) 2025 Oliver Froberg (The Panda Oliver)
  *
  * This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU Lesser General Public License as published by
@@ -7,12 +7,11 @@
  *  any later version.
  *
  * You should have received a copy of the GNU Lesser General Public License
- *  along with this program. If not, see <https://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package dev.pandasystems.pandalib.config
 
-import dev.pandasystems.pandalib.utils.constructClassUnsafely
 import net.minecraft.resources.ResourceLocation
 
 object ConfigRegistry {
@@ -38,7 +37,6 @@ object ConfigRegistry {
 	}
 
 	fun <T : Config> create(resourceLocation: ResourceLocation, configConstructor: () -> T): ConfigObject<T> = create(resourceLocation, configConstructor())
-	fun <T : Config> create(resourceLocation: ResourceLocation, configClass: Class<T>): ConfigObject<T> = create(resourceLocation, configClass.constructClassUnsafely())
 
 	@Suppress("UNCHECKED_CAST")
 	fun <T : Config> get(resourceLocation: ResourceLocation): ConfigObject<T>? {

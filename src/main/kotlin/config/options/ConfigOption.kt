@@ -7,20 +7,19 @@
  *  any later version.
  *
  * You should have received a copy of the GNU Lesser General Public License
- *  along with this program. If not, see <https://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package dev.pandasystems.pandalib.config.options
 
-import dev.pandasystems.pandalib.config.ConfigObject
+import dev.pandasystems.pandalib.config.OptionContainer
 import kotlin.reflect.KType
 
-abstract class ConfigOption<T : Any>(
-	val configObject: ConfigObject<*>,
-	val pathName: String,
-	val type: KType
+abstract class ConfigOption<T : Any?>(
+	var value: T,
+	val valueType: KType,
+	val name: String,
+	val parent: OptionContainer
 ) {
-	val name: String = pathName.substringAfterLast('.')
-
-	abstract var value: T
+	val path: String get() = if (parent.path.isEmpty()) name else "${parent.path}.$name"
 }

@@ -7,28 +7,21 @@
  *  any later version.
  *
  * You should have received a copy of the GNU Lesser General Public License
- *  along with this program. If not, see <https://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package dev.pandasystems.pandalib.config.options
 
-import dev.pandasystems.pandalib.config.ConfigObject
-import kotlin.properties.ReadOnlyProperty
+import dev.pandasystems.pandalib.config.OptionContainer
 import kotlin.reflect.KProperty
 import kotlin.reflect.KType
 
-class ConfigOptionDelegate<T : Any>(
-	private val defaultValue: T,
-	private val type: KType,
-	private val optionFactory: (ConfigObject<*>, String, KType, T) -> ConfigOption<T>
-) : ReadOnlyProperty<Any?, ConfigOption<T>> {
-    private var option: ConfigOption<T>? = null
-    
-    override fun getValue(thisRef: Any?, property: KProperty<*>): ConfigOption<T> {
-        return option ?: throw IllegalStateException("Config not initialized")
-    }
-    
-    internal fun initialize(configObject: ConfigObject<*>, fullPath: String) {
-        option = optionFactory(configObject, fullPath, type, defaultValue)
-    }
+class ConfigOptionDelegate<T : Any?, R: ConfigOption<T>>(
+	val defaultValue: T,
+	val optionFactory: (value: T, valueType: KType, name: String, parent: OptionContainer) -> R
+) {
+	operator fun provideDelegate(thisRef: OptionContainer, property: KProperty<*>): R {
+		return optionFactory(defaultValue, property.returnType, property.name, thisRef)
+			.also { thisRef.addOption(it) }
+	}
 }

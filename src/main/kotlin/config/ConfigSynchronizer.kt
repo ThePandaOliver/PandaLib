@@ -7,12 +7,12 @@
  *  any later version.
  *
  * You should have received a copy of the GNU Lesser General Public License
- *  along with this program. If not, see <https://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package dev.pandasystems.pandalib.config
 
-import dev.pandasystems.pandalib.config.options.SyncableConfigOption
+import dev.pandasystems.pandalib.config.options.SyncableOption
 import dev.pandasystems.pandalib.event.server.serverConfigurationConnectionEvent
 import dev.pandasystems.pandalib.networking.PayloadCodecRegistry
 import dev.pandasystems.pandalib.networking.ServerConfigurationNetworking
@@ -27,7 +27,7 @@ import kotlin.jvm.optionals.getOrNull
 
 object ConfigSynchronizer {
 	// ConfigObjects resourceLocation -> List of SyncableConfigOptions
-	internal val configs = mutableMapOf<ResourceLocation, MutableList<SyncableConfigOption<Any>>>()
+	internal val configs = mutableMapOf<ResourceLocation, MutableList<SyncableOption<Any?>>>()
 
 	internal fun init() {
 		pandalibLogger.debug("Config Synchronizer is initializing...")
@@ -101,7 +101,7 @@ object ConfigSynchronizer {
 				val configObject = option.configObject
 				option.playerValues.forEach { (playerUuid, value) ->
 					payloadValues.computeIfAbsent(playerUuid) { resourceLocation to TreeObject() }
-						.second[option.pathName] = configObject.serializer.toTree(value, option.type)
+						.second[option.path] = configObject.serializer.toTree(value, option.valueType)
 				}
 			}
 		}
@@ -114,8 +114,8 @@ object ConfigSynchronizer {
 	fun ConfigObject<*>.applyConfigPayload(tree: TreeObject, playerUuid: UUID?) {
 		val options = requireNotNull(configs[resourceLocation]) { "Config $resourceLocation is not registered" }
 		for (option in options) {
-			val deserialized = serializer.fromTree(tree[option.pathName]!!, option.type)
-			requireNotNull(deserialized) { "Failed to deserialize value for option ${option.pathName}" }
+			val deserialized = serializer.fromTree(tree[option.path]!!, option.valueType)
+			requireNotNull(deserialized) { "Failed to deserialize value for option ${option.path}" }
 			if (playerUuid != null) // Set synced value for the player
 				option.playerValues[playerUuid] = deserialized
 			else // Set synced value for the server
@@ -128,12 +128,12 @@ object ConfigSynchronizer {
 		val tree = TreeObject()
 		for (option in options) {
 			val configObject = option.configObject
-			tree[option.pathName] = configObject.serializer.toTree(option.initialValue, option.type)
+			tree[option.path] = configObject.serializer.toTree(option.initialValue, option.valueType)
 		}
 		return tree
 	}
 
-	internal fun registerSyncableConfigOption(option: SyncableConfigOption<Any>) {
+	internal fun registerSyncableConfigOption(option: SyncableOption<Any?>) {
 		configs.computeIfAbsent(option.configObject.resourceLocation) { mutableListOf(option) } += option
 	}
 }

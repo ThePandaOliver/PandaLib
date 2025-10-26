@@ -20,8 +20,9 @@ import dev.pandasystems.universalserializer.elements.TreeObject
 import dev.pandasystems.universalserializer.formats.JsonFormat
 import net.minecraft.resources.ResourceLocation
 import java.util.function.Supplier
+import kotlin.reflect.full.createType
 
-class ConfigObject<T : Config>(
+class ConfigObject<T : Any>(
 	val resourceLocation: ResourceLocation,
 	private val configInstance: T,
 	val serializer: Serializer = Serializer(JsonFormat(prettyPrint = true))
@@ -62,38 +63,11 @@ class ConfigObject<T : Config>(
 	}
 
 	private fun serialize(): TreeObject {
-		val treeObject = TreeObject()
-		configInstance.allOptions.forEach { option ->
-			var current = treeObject
-			if (option.parentPath.isNotEmpty()) {
-				option.parentPath.split(".").forEach { segment ->
-					check(current.isObject) { "Cannot create object segment '$segment' under non-object parent" }
-					current = current.asObject.computeIfAbsent(segment) { TreeObject() }.asObject
-				}
-			}
-			check(!current.contains(option.name)) { "Option '${option.name}' already exists in config tree" }
-			current[option.name] = serializer.toTree(option.value, option.valueType)
-		}
-		return treeObject
+		return serializer.toTree(configInstance, configInstance::class.createType()).asObject
 	}
 
 	private fun deserialize(treeObject: TreeObject) {
-		configInstance.allOptions.forEach { option ->
-			var current = treeObject
-			if (option.parentPath.isNotEmpty()) {
-				for (segment in option.parentPath.split(".")) {
-					val currentElement = current[segment] ?: break
-					check(currentElement.isObject) { "Cannot deserialize object segment '$segment' under non-object parent" }
-					current = currentElement.asObject
-				}
-			}
-			current[option.name]?.let {
-				val deserializedValue = serializer.fromTree(it, option.valueType)
-				requireNotNull(deserializedValue) { "Failed to deserialize value for option ${option.name}" }
-				@Suppress("UNCHECKED_CAST")
-				(option as? Config.Option<Any>)?.value = deserializedValue
-			}
-		}
+		TODO("Implement config deserialization")
 	}
 
 	override fun toString(): String {

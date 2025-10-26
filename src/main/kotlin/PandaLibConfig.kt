@@ -12,24 +12,18 @@
 
 package dev.pandasystems.pandalib
 
-import dev.pandasystems.pandalib.config.Config
-import dev.pandasystems.pandalib.config.ConfigObject
 import dev.pandasystems.pandalib.config.ConfigRegistry
-import dev.pandasystems.pandalib.config.OptionContainer
-import dev.pandasystems.pandalib.config.options.option
 import dev.pandasystems.pandalib.config.options.synced
 import dev.pandasystems.pandalib.utils.extensions.resourceLocation
 
-class PandaLibConfig(configObject: ConfigObject<Config>) : Config(configObject) {
+object PandaLibConfig {
 	val debugging = synced(false)
-	val experimentalFeatures = option(false)
+	val experimentalFeatures = false
 
-	val hotReload = HotReloadConfig() //TODO: Implement hot reload functionality
-
-	class HotReloadConfig : OptionContainer() {
-		val enableConfigHotReload = option(false)
-		val configHotReloadDelay = option(1_000L)
+	object HotReloadConfig { //TODO: Implement hot reload functionality
+		val enableConfigHotReload = false
+		val configHotReloadDelay = 1_000L
 	}
 }
 
-val pandalibConfig = ConfigRegistry.create(resourceLocation("pandalib_config"), ::PandaLibConfig)
+val pandalibConfig = ConfigRegistry.create(resourceLocation("pandalib_config"), PandaLibConfig)

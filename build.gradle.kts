@@ -45,10 +45,6 @@ val parchmentMappingsVersion: String by project
 
 val fabricApiVersion: String by project
 
-version = modVersion
-group = modGroup
-base { archivesName = "${modId}-${project.name}" }
-
 allprojects {
 	val loomPlatform = project.findProperty("loom.platform") as? String
 
@@ -60,6 +56,12 @@ allprojects {
 		apply(plugin = "com.gradleup.shadow")
 	apply(plugin = "com.google.devtools.ksp")
 	apply(plugin = "maven-publish")
+
+	version = "$modVersion-$mcVersion".let { version ->
+		System.getenv("BUILD_NUMBER")?.let { "$version-BUILD.$it" } ?: version
+	}
+	group = modGroup
+	base { archivesName = modId.let { if (loomPlatform != null) "$it-$loomPlatform" else it} }
 
 	architectury {
 		when (loomPlatform) {

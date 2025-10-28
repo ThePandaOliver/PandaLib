@@ -58,8 +58,8 @@ allprojects {
 	apply(plugin = "maven-publish")
 
 	version = modVersion
-		.let { version -> System.getenv("BUILD_NUMBER")?.let { "$version-BUILD.$it" } ?: version }
-		.let { version -> "$version-mc$mcVersion" }
+		.let { version -> System.getenv("BUILD_NUMBER")?.let { "$version-$it" } ?: version }
+		.let { version -> "$version+mc$mcVersion" }
 	group = modGroup
 	base { archivesName = modId.let { if (loomPlatform != null) "$it-$loomPlatform" else it } }
 

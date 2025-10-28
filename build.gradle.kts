@@ -282,6 +282,9 @@ allprojects {
 		publications {
 			create<MavenPublication>("maven") {
 				from(components["java"])
+				artifactId = modId
+				version = modVersion
+					.let { version -> System.getenv("BUILD_NUMBER")?.let { "$version-$it" } ?: version }
 			}
 		}
 

@@ -13,24 +13,30 @@
 package dev.pandasystems.pandalib
 
 import com.mojang.logging.LogUtils
+import dev.pandasystems.pandalib.config.ConfigRegistry
 import dev.pandasystems.pandalib.config.ConfigSynchronizer
 import dev.pandasystems.pandalib.config.syncOption
-import dev.pandasystems.pandalib.utils.InternalPandaLibApi
+import net.minecraft.resources.ResourceLocation
 import org.slf4j.Logger
 
-@InternalPandaLibApi
-fun initializePandaLib() {
-	pandalibLogger.debug("PandaLib is initializing...")
+object PandaLib {
+	const val modid = "pandalib"
+	val logger: Logger = LogUtils.getLogger()
 
-	pandalibConfig.load()
-	pandalibConfig.syncOption(PandaLibConfig::debugging)
-	pandalibConfig.syncOption(PandaLibConfig.HotReloadConfig::configHotReloadDelay)
-	pandalibConfig.syncOption(PandaLibConfig.HotReloadConfig::enableConfigHotReload)
+	val config = ConfigRegistry.create(resourceLocation("pandalib_config"), PandaLibConfig)
 
-	ConfigSynchronizer.init()
+	init {
+		logger.debug("PandaLib is initializing...")
 
-	pandalibLogger.debug("PandaLib initialized successfully.")
+		config.load()
+		config.syncOption(PandaLibConfig::debugging)
+		config.syncOption(PandaLibConfig.HotReloadConfig::configHotReloadDelay)
+		config.syncOption(PandaLibConfig.HotReloadConfig::enableConfigHotReload)
+
+		ConfigSynchronizer.init()
+
+		logger.debug("PandaLib initialized successfully.")
+	}
+
+	fun resourceLocation(path: String): ResourceLocation = ResourceLocation.fromNamespaceAndPath(modid, path)
 }
-
-const val pandalibModid = "pandalib"
-val pandalibLogger: Logger = LogUtils.getLogger()

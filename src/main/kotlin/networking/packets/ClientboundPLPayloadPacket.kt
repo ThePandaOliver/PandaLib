@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025-2025 Oliver Froberg (The Panda Oliver)
+ * Copyright (C) 2025 Oliver Froberg (The Panda Oliver)
  *
  * This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU Lesser General Public License as published by
@@ -12,12 +12,12 @@
 
 package dev.pandasystems.pandalib.networking.packets
 
+import dev.pandasystems.pandalib.PandaLib
 import dev.pandasystems.pandalib.networking.ClientConfigurationNetworking
 import dev.pandasystems.pandalib.networking.ClientPlayNetworking
 import dev.pandasystems.pandalib.networking.PacketSender
 import dev.pandasystems.pandalib.networking.PayloadCodecRegistry
 import dev.pandasystems.pandalib.networking.packets.bundle.ServerboundPLBundlePacket
-import dev.pandasystems.pandalib.utils.extensions.resourceLocation
 import io.netty.channel.ChannelFutureListener
 import net.minecraft.client.Minecraft
 import net.minecraft.client.multiplayer.ClientCommonPacketListenerImpl
@@ -33,7 +33,7 @@ import net.minecraft.network.protocol.PacketType
 import net.minecraft.network.protocol.common.ClientCommonPacketListener
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 
-val clientboundPLPayloadPacketType = PacketType<ClientboundPLPayloadPacket>(PacketFlow.CLIENTBOUND, resourceLocation("pandalib_custom_payload"))
+val clientboundPLPayloadPacketType = PacketType<ClientboundPLPayloadPacket>(PacketFlow.CLIENTBOUND, PandaLib.resourceLocation("pandalib_custom_payload"))
 
 data class ClientboundPLPayloadPacket(val payload: CustomPacketPayload) : Packet<ClientCommonPacketListener> {
 	override fun type(): PacketType<out Packet<ClientCommonPacketListener>> {

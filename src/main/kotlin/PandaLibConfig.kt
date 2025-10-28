@@ -12,9 +12,6 @@
 
 package dev.pandasystems.pandalib
 
-import dev.pandasystems.pandalib.config.ConfigRegistry
-import dev.pandasystems.pandalib.utils.extensions.resourceLocation
-
 data object PandaLibConfig {
 	var debugging = false
 	var experimentalFeatures = false
@@ -24,5 +21,3 @@ data object PandaLibConfig {
 		var configHotReloadDelay = 1_000L
 	}
 }
-
-val pandalibConfig = ConfigRegistry.create(resourceLocation("pandalib_config"), PandaLibConfig)

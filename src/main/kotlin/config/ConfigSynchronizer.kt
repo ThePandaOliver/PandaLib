@@ -12,6 +12,7 @@
 
 package dev.pandasystems.pandalib.config
 
+import dev.pandasystems.pandalib.PandaLib
 import dev.pandasystems.pandalib.config.ConfigSynchronizer.configs
 import dev.pandasystems.pandalib.event.server.serverConfigurationConnectionEvent
 import dev.pandasystems.pandalib.networking.PayloadCodecRegistry
@@ -19,7 +20,6 @@ import dev.pandasystems.pandalib.networking.ServerConfigurationNetworking
 import dev.pandasystems.pandalib.networking.ServerPlayNetworking
 import dev.pandasystems.pandalib.networking.payloads.config.ClientboundConfigRequestPayload
 import dev.pandasystems.pandalib.networking.payloads.config.CommonConfigPayload
-import dev.pandasystems.pandalib.pandalibLogger
 import dev.pandasystems.universalserializer.elements.TreeObject
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.entity.player.Player
@@ -34,7 +34,7 @@ object ConfigSynchronizer {
 	internal val configs = mutableMapOf<ResourceLocation, MutableList<SyncableOption<Any?>>>()
 
 	internal fun init() {
-		pandalibLogger.debug("Config Synchronizer is initializing...")
+		PandaLib.logger.debug("Config Synchronizer is initializing...")
 		PayloadCodecRegistry.register(CommonConfigPayload.TYPE, CommonConfigPayload.CODEC)
 		PayloadCodecRegistry.register(ClientboundConfigRequestPayload.TYPE, ClientboundConfigRequestPayload.CODEC)
 
@@ -44,14 +44,14 @@ object ConfigSynchronizer {
 			val resourceLocation = payload.resourceLocation
 			val jsonObject = payload.optionObject
 			val playerId = payload.playerId
-			pandalibLogger.debug("Received config payload for {}: {}", resourceLocation, jsonObject)
+			PandaLib.logger.debug("Received config payload for {}: {}", resourceLocation, jsonObject)
 			val configObject = ConfigRegistry.get<Any>(resourceLocation)
 			configObject?.applyConfigPayload(jsonObject, playerId.getOrNull())
-				?: pandalibLogger.error("Received config payload for unknown config object: $resourceLocation")
+				?: PandaLib.logger.error("Received config payload for unknown config object: $resourceLocation")
 
 			// Provide the new player config to all already connected clients
 			playerId.ifPresent {
-				pandalibLogger.debug("Sending config payload to player {}", it)
+				PandaLib.logger.debug("Sending config payload to player {}", it)
 				ServerPlayNetworking.sendToAll(payload)
 			}
 		}
@@ -62,7 +62,7 @@ object ConfigSynchronizer {
 		if (configs.isNotEmpty()) {
 			serverConfigurationConnectionEvent.register { handler, _ ->
 				// Send all server configs
-				pandalibLogger.debug("Sending all server configs to {}", handler.owner.name)
+				PandaLib.logger.debug("Sending all server configs to {}", handler.owner.name)
 				val payloads = configs.map { (resourceLocation, _) ->
 					val configObject = requireNotNull(ConfigRegistry.get<Any>(resourceLocation))
 					configObject.createConfigPayload()
@@ -70,18 +70,18 @@ object ConfigSynchronizer {
 				ServerConfigurationNetworking.send(handler, payloads)
 
 				// Send all previous client configs to the new client
-				pandalibLogger.debug("Sending previous client configs to {}", handler.owner.name)
+				PandaLib.logger.debug("Sending previous client configs to {}", handler.owner.name)
 				createConfigPayloadsWithClientConfigs()
 					.takeIf { it.isNotEmpty() }
 					?.let { ServerConfigurationNetworking.send(handler, it) }
 
 				// Send request for all client's configs
-				pandalibLogger.debug("Sending config request to {}", handler.owner.name)
+				PandaLib.logger.debug("Sending config request to {}", handler.owner.name)
 				ServerConfigurationNetworking.send(handler, ClientboundConfigRequestPayload(handler.owner.id))
 			}
 		}
 
-		pandalibLogger.debug("Config Synchronizer initialized successfully.")
+		PandaLib.logger.debug("Config Synchronizer initialized successfully.")
 	}
 
 	/**
@@ -149,7 +149,7 @@ object ConfigSynchronizer {
 		operator fun get(player: UUID): T {
 			val playerValue = playerValues[player]
 			if (playerValue != null) return playerValue
-			pandalibLogger.warn("No synced value for player $player in config option ${property.name}")
+			PandaLib.logger.warn("No synced value for player $player in config option ${property.name}")
 			return initialValue
 		}
 

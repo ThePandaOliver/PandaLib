@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025-2025 Oliver Froberg (The Panda Oliver)
+ * Copyright (C) 2025 Oliver Froberg (The Panda Oliver)
  *
  * This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU Lesser General Public License as published by
@@ -12,12 +12,12 @@
 
 package dev.pandasystems.pandalib.networking.packets.bundle
 
-import dev.pandasystems.pandalib.utils.extensions.resourceLocation
+import dev.pandasystems.pandalib.PandaLib
 import net.minecraft.client.multiplayer.ClientCommonPacketListenerImpl
 import net.minecraft.network.protocol.*
 import net.minecraft.network.protocol.common.ClientCommonPacketListener
 
-val clientboundPLBundleType = PacketType<ClientboundPLBundlePacket>(PacketFlow.CLIENTBOUND, resourceLocation("bundle"))
+val clientboundPLBundleType = PacketType<ClientboundPLBundlePacket>(PacketFlow.CLIENTBOUND, PandaLib.resourceLocation("bundle"))
 
 class ClientboundPLBundlePacket(iterable: Iterable<Packet<in ClientCommonPacketListener>>): BundlePacket<ClientCommonPacketListener>(iterable) {
 	override fun type(): PacketType<ClientboundPLBundlePacket> {

@@ -12,8 +12,8 @@
 
 package dev.pandasystems.pandalib.networking.payloads.config
 
+import dev.pandasystems.pandalib.PandaLib
 import dev.pandasystems.pandalib.utils.codecs.TreeObjectCodec
-import dev.pandasystems.pandalib.utils.extensions.resourceLocation
 import dev.pandasystems.universalserializer.elements.TreeObject
 import net.minecraft.core.UUIDUtil
 import net.minecraft.network.FriendlyByteBuf
@@ -31,7 +31,7 @@ data class CommonConfigPayload(
 	override fun type(): CustomPacketPayload.Type<CommonConfigPayload> = TYPE
 
 	companion object {
-		val TYPE = CustomPacketPayload.Type<CommonConfigPayload>(resourceLocation("config_payload"))
+		val TYPE = CustomPacketPayload.Type<CommonConfigPayload>(PandaLib.resourceLocation("config_payload"))
 		val CODEC: StreamCodec<FriendlyByteBuf, CommonConfigPayload> = StreamCodec.composite(
 			ResourceLocation.STREAM_CODEC, CommonConfigPayload::resourceLocation,
 			TreeObjectCodec, CommonConfigPayload::optionObject,

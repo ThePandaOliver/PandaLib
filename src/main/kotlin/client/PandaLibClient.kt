@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025-2025 Oliver Froberg (The Panda Oliver)
+ * Copyright (C) 2025 Oliver Froberg (The Panda Oliver)
  *
  * This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU Lesser General Public License as published by
@@ -12,16 +12,16 @@
 
 package dev.pandasystems.pandalib.client
 
+import dev.pandasystems.pandalib.PandaLib
 import dev.pandasystems.pandalib.client.config.ClientConfigSynchronizer
-import dev.pandasystems.pandalib.pandalibLogger
-import dev.pandasystems.pandalib.utils.InternalPandaLibApi
 
 
-@InternalPandaLibApi
-fun initializePandaLibClient() {
-	pandalibLogger.debug("PandaLib Client is initializing...")
+object PandaLibClient {
+	init {
+		PandaLib.logger.debug("PandaLib Client is initializing...")
 
-	ClientConfigSynchronizer.init()
+		ClientConfigSynchronizer.init()
 
-	pandalibLogger.debug("PandaLib initialized successfully.")
+		PandaLib.logger.debug("PandaLib initialized successfully.")
+	}
 }

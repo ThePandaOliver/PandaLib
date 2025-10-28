@@ -10,8 +10,6 @@
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-@file:JvmName("ClassUtils")
-
 package dev.pandasystems.pandalib.utils
 
 import java.lang.reflect.Field

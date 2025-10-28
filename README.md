@@ -18,7 +18,7 @@ The library is written in Kotlin, and some APIs might not be fully supported by 
 - Multi-Loader Framework (WIP)
 - Config API
 	- Synchronization API
-	- Custom Serializer API
+	- ~~Custom Serializer API~~ (Uses [Universal Serializer](https://github.com/ThePandaOliver/universal-serializer))
 	- Premade formats: JSON
 - Event/Listener API
 - Deferred registration API

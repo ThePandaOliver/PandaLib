@@ -12,7 +12,7 @@
 
 package dev.pandasystems.pandalib.config
 
-import dev.pandasystems.pandalib.pandalibLogger
+import dev.pandasystems.pandalib.PandaLib
 import dev.pandasystems.pandalib.utils.event
 import dev.pandasystems.pandalib.utils.gamePaths
 import dev.pandasystems.pandalib.utils.objects
@@ -45,10 +45,10 @@ class ConfigObject<T : Any>(
 		val firstCreation = !filePath.exists()
 		filePath.writeText(serializer.toValue(serialize()))
 		if (firstCreation)
-			pandalibLogger.info("Created new config at $filePath")
+			PandaLib.logger.info("Created new config at $filePath")
 		else
-			pandalibLogger.info("Saved config to $filePath")
-		pandalibLogger.debug(" - config data ${serializer.toValue(serialize())}")
+			PandaLib.logger.info("Saved config to $filePath")
+		PandaLib.logger.debug(" - config data ${serializer.toValue(serialize())}")
 		onSave.invoker(this)
 	}
 
@@ -60,8 +60,8 @@ class ConfigObject<T : Any>(
 		val tree = serializer.fromValue<TreeObject>(filePath.readText())
 		requireNotNull(tree) { "Failed to load config from $filePath" }
 		deserialize(tree)
-		pandalibLogger.info("Loaded config from $filePath")
-		pandalibLogger.debug(" - config data ${serializer.toValue(tree)}")
+		PandaLib.logger.info("Loaded config from $filePath")
+		PandaLib.logger.debug(" - config data ${serializer.toValue(tree)}")
 		onLoad.invoker(this)
 	}
 

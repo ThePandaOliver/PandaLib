@@ -283,6 +283,7 @@ allprojects {
 			create<MavenPublication>("maven") {
 				from(components["java"])
 				artifactId = modId
+					.let { if (loomPlatform != null) "$it-$loomPlatform" else "$it-common" }
 				version = modVersion
 					.let { version -> System.getenv("BUILD_NUMBER")?.let { "$version-$it" } ?: version }
 			}

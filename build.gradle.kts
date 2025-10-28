@@ -282,9 +282,6 @@ allprojects {
 		publications {
 			create<MavenPublication>("maven") {
 				from(components["java"])
-
-				artifactId = modId
-				version = "mc${mcVersion}-${project.version}"
 			}
 		}
 

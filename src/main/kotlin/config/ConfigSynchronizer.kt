@@ -26,6 +26,7 @@ import net.minecraft.world.entity.player.Player
 import java.util.*
 import kotlin.jvm.optionals.getOrNull
 import kotlin.reflect.KProperty
+import kotlin.reflect.KProperty0
 import kotlin.reflect.KType
 
 object ConfigSynchronizer {
@@ -136,10 +137,10 @@ object ConfigSynchronizer {
 		return tree
 	}
 
-	class SyncableOption<T : Any?>(val configObject: ConfigObject<*>, val property: KProperty<T>, val instanceProvider: () -> Any) {
+	class SyncableOption<T : Any?>(val configObject: ConfigObject<*>, val property: KProperty0<T>) {
 		val id = property.name
 		val valueType: KType = property.returnType
-		val initialValue: T get() = property.getter.call()
+		val initialValue: T get() = property.get()
 
 		internal val playerValues = mutableMapOf<UUID, T>()
 		var serverValue: T? = null
@@ -156,9 +157,9 @@ object ConfigSynchronizer {
 	}
 }
 
-fun ConfigObject<*>.syncOption(instanceProvider: () -> Any, property: KProperty<*>) {
+fun ConfigObject<*>.syncOption(property: KProperty0<*>) {
 	configs.computeIfAbsent(this.resourceLocation) { mutableListOf() } +=
-		ConfigSynchronizer.SyncableOption(this, property, instanceProvider)
+		ConfigSynchronizer.SyncableOption(this, property)
 }
 
 @Suppress("UNCHECKED_CAST")

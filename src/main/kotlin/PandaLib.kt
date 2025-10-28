@@ -23,7 +23,9 @@ fun initializePandaLib() {
 	pandalibLogger.debug("PandaLib is initializing...")
 
 	pandalibConfig.load()
-	pandalibConfig.syncOption({ PandaLibConfig }, PandaLibConfig::debugging)
+	pandalibConfig.syncOption(PandaLibConfig::debugging)
+	pandalibConfig.syncOption(PandaLibConfig.HotReloadConfig::configHotReloadDelay)
+	pandalibConfig.syncOption(PandaLibConfig.HotReloadConfig::enableConfigHotReload)
 
 	ConfigSynchronizer.init()
 

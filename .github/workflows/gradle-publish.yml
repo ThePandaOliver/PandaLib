@@ -20,6 +20,11 @@ jobs:
       contents: read
       packages: write
 
+    env:
+      GITHUB_USER: ${{ github.actor }}
+      GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      BUILD_NUMBER: ${{ github.run_number }}
+
     steps:
       - uses: actions/checkout@v4
       - name: Set up JDK 21
@@ -43,7 +48,3 @@ jobs:
       # the publishing section of your build.gradle
       - name: Publish to GitHub Packages
         run: ./gradlew publish
-        env:
-          GITHUB_USER: ${{ github.actor }}
-          GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BUILD_NUMBER: ${{ github.run_number }}

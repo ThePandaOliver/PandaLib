@@ -57,11 +57,11 @@ allprojects {
 	apply(plugin = "com.google.devtools.ksp")
 	apply(plugin = "maven-publish")
 
-	version = "$modVersion-$mcVersion".let { version ->
-		System.getenv("BUILD_NUMBER")?.let { "$version-BUILD.$it" } ?: version
-	}
+	version = modVersion
+		.let { version -> System.getenv("BUILD_NUMBER")?.let { "$version-BUILD.$it" } ?: version }
+		.let { version -> "$version-mc$mcVersion" }
 	group = modGroup
-	base { archivesName = modId.let { if (loomPlatform != null) "$it-$loomPlatform" else it} }
+	base { archivesName = modId.let { if (loomPlatform != null) "$it-$loomPlatform" else it } }
 
 	architectury {
 		when (loomPlatform) {

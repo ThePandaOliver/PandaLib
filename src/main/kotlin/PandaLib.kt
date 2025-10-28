@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025-2025 Oliver Froberg (The Panda Oliver)
+ * Copyright (C) 2025 Oliver Froberg (The Panda Oliver)
  *
  * This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU Lesser General Public License as published by
@@ -14,6 +14,7 @@ package dev.pandasystems.pandalib
 
 import com.mojang.logging.LogUtils
 import dev.pandasystems.pandalib.config.ConfigSynchronizer
+import dev.pandasystems.pandalib.config.syncOption
 import dev.pandasystems.pandalib.utils.InternalPandaLibApi
 import org.slf4j.Logger
 
@@ -22,6 +23,7 @@ fun initializePandaLib() {
 	pandalibLogger.debug("PandaLib is initializing...")
 
 	pandalibConfig.load()
+	pandalibConfig.syncOption({ PandaLibConfig }, PandaLibConfig::debugging)
 
 	ConfigSynchronizer.init()
 

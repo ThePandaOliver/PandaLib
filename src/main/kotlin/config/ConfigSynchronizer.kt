@@ -7,12 +7,12 @@
  *  any later version.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package dev.pandasystems.pandalib.config
 
-import dev.pandasystems.pandalib.config.options.SyncableOption
+import dev.pandasystems.pandalib.config.ConfigSynchronizer.configs
 import dev.pandasystems.pandalib.event.server.serverConfigurationConnectionEvent
 import dev.pandasystems.pandalib.networking.PayloadCodecRegistry
 import dev.pandasystems.pandalib.networking.ServerConfigurationNetworking
@@ -22,8 +22,11 @@ import dev.pandasystems.pandalib.networking.payloads.config.CommonConfigPayload
 import dev.pandasystems.pandalib.pandalibLogger
 import dev.pandasystems.universalserializer.elements.TreeObject
 import net.minecraft.resources.ResourceLocation
+import net.minecraft.world.entity.player.Player
 import java.util.*
 import kotlin.jvm.optionals.getOrNull
+import kotlin.reflect.KProperty
+import kotlin.reflect.KType
 
 object ConfigSynchronizer {
 	// ConfigObjects resourceLocation -> List of SyncableConfigOptions
@@ -41,7 +44,7 @@ object ConfigSynchronizer {
 			val jsonObject = payload.optionObject
 			val playerId = payload.playerId
 			pandalibLogger.debug("Received config payload for {}: {}", resourceLocation, jsonObject)
-			val configObject = ConfigRegistry.get<Config>(resourceLocation)
+			val configObject = ConfigRegistry.get<Any>(resourceLocation)
 			configObject?.applyConfigPayload(jsonObject, playerId.getOrNull())
 				?: pandalibLogger.error("Received config payload for unknown config object: $resourceLocation")
 
@@ -60,7 +63,7 @@ object ConfigSynchronizer {
 				// Send all server configs
 				pandalibLogger.debug("Sending all server configs to {}", handler.owner.name)
 				val payloads = configs.map { (resourceLocation, _) ->
-					val configObject = requireNotNull(ConfigRegistry.get<Config>(resourceLocation))
+					val configObject = requireNotNull(ConfigRegistry.get<Any>(resourceLocation))
 					configObject.createConfigPayload()
 				}
 				ServerConfigurationNetworking.send(handler, payloads)
@@ -101,7 +104,7 @@ object ConfigSynchronizer {
 				val configObject = option.configObject
 				option.playerValues.forEach { (playerUuid, value) ->
 					payloadValues.computeIfAbsent(playerUuid) { resourceLocation to TreeObject() }
-						.second[option.path] = configObject.serializer.toTree(value, option.valueType)
+						.second[option.id] = configObject.serializer.toTree(value, option.valueType)
 				}
 			}
 		}
@@ -114,8 +117,8 @@ object ConfigSynchronizer {
 	fun ConfigObject<*>.applyConfigPayload(tree: TreeObject, playerUuid: UUID?) {
 		val options = requireNotNull(configs[resourceLocation]) { "Config $resourceLocation is not registered" }
 		for (option in options) {
-			val deserialized = serializer.fromTree(tree[option.path]!!, option.valueType)
-			requireNotNull(deserialized) { "Failed to deserialize value for option ${option.path}" }
+			val deserialized = serializer.fromTree(tree[option.id]!!, option.valueType)
+			requireNotNull(deserialized) { "Failed to deserialize value for option ${option.property.name}" }
 			if (playerUuid != null) // Set synced value for the player
 				option.playerValues[playerUuid] = deserialized
 			else // Set synced value for the server
@@ -128,12 +131,39 @@ object ConfigSynchronizer {
 		val tree = TreeObject()
 		for (option in options) {
 			val configObject = option.configObject
-			tree[option.path] = configObject.serializer.toTree(option.initialValue, option.valueType)
+			tree[option.id] = configObject.serializer.toTree(option.initialValue, option.valueType)
 		}
 		return tree
 	}
 
-	internal fun registerSyncableConfigOption(option: SyncableOption<Any?>) {
-		configs.computeIfAbsent(option.configObject.resourceLocation) { mutableListOf(option) } += option
+	class SyncableOption<T : Any?>(val configObject: ConfigObject<*>, val property: KProperty<T>, val instanceProvider: () -> Any) {
+		val id = property.name
+		val valueType: KType = property.returnType
+		val initialValue: T get() = property.getter.call()
+
+		internal val playerValues = mutableMapOf<UUID, T>()
+		var serverValue: T? = null
+			get() = field ?: initialValue
+
+		operator fun get(player: UUID): T {
+			val playerValue = playerValues[player]
+			if (playerValue != null) return playerValue
+			pandalibLogger.warn("No synced value for player $player in config option ${property.name}")
+			return initialValue
+		}
+
+		operator fun get(player: Player): T = this[player.uuid]
 	}
+}
+
+fun ConfigObject<*>.syncOption(instanceProvider: () -> Any, property: KProperty<*>) {
+	configs.computeIfAbsent(this.resourceLocation) { mutableListOf() } +=
+		ConfigSynchronizer.SyncableOption(this, property, instanceProvider)
+}
+
+@Suppress("UNCHECKED_CAST")
+fun <T : Any?> ConfigObject<*>.getSynced(property: KProperty<T>): ConfigSynchronizer.SyncableOption<T> {
+	return requireNotNull(configs[this.resourceLocation]?.find { it.property == property }) {
+		"Synced property $property is not registered for config ${this.resourceLocation}"
+	} as ConfigSynchronizer.SyncableOption<T>
 }

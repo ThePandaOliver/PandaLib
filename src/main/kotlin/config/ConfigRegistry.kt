@@ -7,7 +7,7 @@
  *  any later version.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package dev.pandasystems.pandalib.config
@@ -17,7 +17,7 @@ import net.minecraft.resources.ResourceLocation
 object ConfigRegistry {
 	private val configObjects: MutableMap<ResourceLocation, ConfigObject<*>> = mutableMapOf()
 
-	fun <T> register(configObject: ConfigObject<T>) {
+	fun <T : Any> register(configObject: ConfigObject<T>) {
 		val key = configObject.resourceLocation
 		if (configObjects.containsKey(key)) {
 			throw IllegalArgumentException("ConfigObject with resource location $key is already registered.")
@@ -26,7 +26,7 @@ object ConfigRegistry {
 	}
 
 
-	fun <T> create(resourceLocation: ResourceLocation, configInstance: T): ConfigObject<T> {
+	fun <T : Any> create(resourceLocation: ResourceLocation, configInstance: T): ConfigObject<T> {
 		val configObject = ConfigObject(resourceLocation, configInstance)
 		val key = configObject.resourceLocation
 		if (configObjects.containsKey(key)) {
@@ -37,7 +37,7 @@ object ConfigRegistry {
 	}
 
 	@Suppress("UNCHECKED_CAST")
-	fun <T> get(resourceLocation: ResourceLocation): ConfigObject<T>? {
+	fun <T : Any> get(resourceLocation: ResourceLocation): ConfigObject<T>? {
 		return configObjects[resourceLocation] as? ConfigObject<T>
 	}
 }

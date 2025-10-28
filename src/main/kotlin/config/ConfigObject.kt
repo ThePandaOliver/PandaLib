@@ -7,7 +7,7 @@
  *  any later version.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package dev.pandasystems.pandalib.config
@@ -15,16 +15,19 @@ package dev.pandasystems.pandalib.config
 import dev.pandasystems.pandalib.pandalibLogger
 import dev.pandasystems.pandalib.utils.event
 import dev.pandasystems.pandalib.utils.gamePaths
+import dev.pandasystems.pandalib.utils.objects
 import dev.pandasystems.universalserializer.Serializer
 import dev.pandasystems.universalserializer.elements.TreeObject
 import dev.pandasystems.universalserializer.formats.JsonFormat
 import net.minecraft.resources.ResourceLocation
 import java.util.function.Supplier
+import kotlin.reflect.KClass
 import kotlin.reflect.full.createType
+import kotlin.reflect.jvm.jvmName
 
 class ConfigObject<T : Any>(
 	val resourceLocation: ResourceLocation,
-	private val configInstance: T,
+	private var configInstance: T,
 	val serializer: Serializer = Serializer(JsonFormat(prettyPrint = true))
 ) : Supplier<T> {
 	val filePath = gamePaths.configDir.toFile().resolve("${resourceLocation.namespace}/${resourceLocation.path}.json")
@@ -63,11 +66,29 @@ class ConfigObject<T : Any>(
 	}
 
 	private fun serialize(): TreeObject {
-		return serializer.toTree(configInstance, configInstance::class.createType()).asObject
+		fun Any.serializeObject(): TreeObject {
+			val treeElement = serializer.toTree(this, this::class.createType())
+			if (!treeElement.isObject) return TreeObject()
+			for ((klass, obj) in this::class.objects) {
+				treeElement.asObject[klass.simpleName ?: klass.jvmName] = obj.serializeObject()
+			}
+			return treeElement.asObject
+		}
+		return configInstance.serializeObject()
 	}
 
 	private fun deserialize(treeObject: TreeObject) {
-		TODO("Implement config deserialization")
+		fun Any.deserializeObject(treeObject: TreeObject, klass: KClass<*>): Any {
+			serializer.fromTree(treeObject, klass)
+			for ((klass, obj) in klass.objects) {
+				val nextObject = treeObject.asObject[klass.simpleName ?: klass.jvmName]
+				if (nextObject == null || !nextObject.isObject) continue
+				obj.deserializeObject(nextObject.asObject, klass)
+			}
+			return this
+		}
+		@Suppress("UNCHECKED_CAST")
+		configInstance = configInstance.deserializeObject(treeObject, configInstance::class) as T
 	}
 
 	override fun toString(): String {

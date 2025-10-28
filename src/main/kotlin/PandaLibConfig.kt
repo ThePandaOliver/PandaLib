@@ -7,22 +7,21 @@
  *  any later version.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package dev.pandasystems.pandalib
 
 import dev.pandasystems.pandalib.config.ConfigRegistry
-import dev.pandasystems.pandalib.config.options.synced
 import dev.pandasystems.pandalib.utils.extensions.resourceLocation
 
-object PandaLibConfig {
-	val debugging = synced(false)
-	val experimentalFeatures = false
+data object PandaLibConfig {
+	var debugging = false
+	var experimentalFeatures = false
 
-	object HotReloadConfig { //TODO: Implement hot reload functionality
-		val enableConfigHotReload = false
-		val configHotReloadDelay = 1_000L
+	data object HotReloadConfig { // TODO: Implement hot reload functionality
+		var enableConfigHotReload = false
+		var configHotReloadDelay = 1_000L
 	}
 }
 

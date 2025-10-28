@@ -7,7 +7,7 @@
  *  any later version.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package dev.pandasystems.pandalib.client.config
@@ -36,7 +36,7 @@ object ClientConfigSynchronizer {
 			val jsonObject = payload.optionObject
 			val playerId = payload.playerId
 			pandalibLogger.debug("Received config payload for {}: {}", resourceLocation, jsonObject)
-			val configObject = ConfigRegistry.get<Config>(resourceLocation)
+			val configObject = ConfigRegistry.get<Any>(resourceLocation)
 			configObject?.applyConfigPayload(jsonObject, playerId.getOrNull())
 				?: pandalibLogger.error("Received config payload for unknown config object: $resourceLocation")
 		}
@@ -47,7 +47,7 @@ object ClientConfigSynchronizer {
 			pandalibLogger.debug("Received config request payload")
 			// Respond with all client configs
 			val payloads = configs.map { (resourceLocation, _) ->
-				val configObject = requireNotNull(ConfigRegistry.get<Config>(resourceLocation))
+				val configObject = requireNotNull(ConfigRegistry.get<Any>(resourceLocation))
 				configObject.createConfigPayload(payload.playerId)
 			}
 			ClientConfigurationNetworking.send(payloads)

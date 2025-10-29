@@ -116,6 +116,7 @@ object ConfigSynchronizer {
 	 * Applies the given values to the given config object.
 	 */
 	fun ConfigObject<*>.applyConfigPayload(tree: TreeObject, playerUuid: UUID?) {
+		println(tree)
 		val options = requireNotNull(configs[resourceLocation]) { "Config $resourceLocation is not registered" }
 		for (option in options) {
 			val deserialized = serializer.fromTree(tree[option.id]!!, option.valueType)
@@ -138,7 +139,7 @@ object ConfigSynchronizer {
 	}
 
 	class SyncableOption<T : Any?>(val configObject: ConfigObject<*>, val property: KProperty0<T>) {
-		val id = property.name
+		val id: String = "${configObject.resourceLocation}#${property.name}.${configs[configObject.resourceLocation]!!.size}"
 		val valueType: KType = property.returnType
 		val initialValue: T get() = property.get()
 

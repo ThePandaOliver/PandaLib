@@ -35,8 +35,8 @@ object ConfigSynchronizer {
 
 	internal fun init() {
 		PandaLib.logger.debug("Config Synchronizer is initializing...")
-		PayloadCodecRegistry.register(CommonConfigPayload.RESOURCELOCATION, CommonConfigPayload.CODEC)
-		PayloadCodecRegistry.register(ClientboundConfigRequestPayload.RESOURCELOCATION, ClientboundConfigRequestPayload.CODEC)
+		PayloadCodecRegistry.register<CommonConfigPayload>(CommonConfigPayload.RESOURCELOCATION, CommonConfigPayload.CODEC)
+		PayloadCodecRegistry.register<ClientboundConfigRequestPayload>(ClientboundConfigRequestPayload.RESOURCELOCATION, ClientboundConfigRequestPayload.CODEC)
 
 
 		// Config receiving

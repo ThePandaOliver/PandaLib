@@ -14,7 +14,6 @@ package dev.pandasystems.pandalib.utils.codecs
 
 import dev.pandasystems.universalserializer.elements.*
 import net.minecraft.network.FriendlyByteBuf
-import dev.pandasystems.pandalib.utils.codec.StreamCodec
 
 object TreeElementCodec : StreamCodec<FriendlyByteBuf, TreeElement> {
 	// Type identifiers for efficient encoding

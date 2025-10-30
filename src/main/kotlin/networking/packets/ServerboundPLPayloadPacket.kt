@@ -16,7 +16,7 @@ import dev.pandasystems.pandalib.networking.PacketSender
 import dev.pandasystems.pandalib.networking.PayloadCodecRegistry
 import dev.pandasystems.pandalib.networking.ServerConfigurationNetworking
 import dev.pandasystems.pandalib.networking.ServerPlayNetworking
-import dev.pandasystems.pandalib.utils.codec.StreamCodec
+import dev.pandasystems.pandalib.utils.codecs.StreamCodec
 import net.minecraft.network.Connection
 import net.minecraft.network.FriendlyByteBuf
 import net.minecraft.network.PacketSendListener

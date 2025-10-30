@@ -9,9 +9,8 @@
  * You should have received a copy of the GNU Lesser General Public License
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-package dev.pandasystems.pandalib.networking.packets.bundle
+package dev.pandasystems.pandalib.utils.codecs
 
-import net.minecraft.network.protocol.BundleDelimiterPacket
-import net.minecraft.network.protocol.common.ServerCommonPacketListener
-
-class ServerboundPLBundleDelimiterPacket : BundleDelimiterPacket<ServerCommonPacketListener>()
+fun interface StreamDecoder<I, T> {
+	fun decode(obj: I): T
+}

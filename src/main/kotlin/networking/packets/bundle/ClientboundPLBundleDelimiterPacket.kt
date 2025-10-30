@@ -11,17 +11,7 @@
  */
 package dev.pandasystems.pandalib.networking.packets.bundle
 
-import dev.pandasystems.pandalib.PandaLib
 import net.minecraft.network.protocol.BundleDelimiterPacket
-import net.minecraft.network.protocol.PacketFlow
-import net.minecraft.network.protocol.PacketType
 import net.minecraft.network.protocol.common.ClientCommonPacketListener
 
-val clientboundPLBundleDelimiterType = PacketType<ClientboundPLBundleDelimiterPacket>(PacketFlow.CLIENTBOUND, PandaLib.resourceLocation("bundle_delimiter"))
-
-class ClientboundPLBundleDelimiterPacket : BundleDelimiterPacket<ClientCommonPacketListener>() {
-	override fun type(): PacketType<ClientboundPLBundleDelimiterPacket> {
-		return clientboundPLBundleDelimiterType
-	}
-}
-
+class ClientboundPLBundleDelimiterPacket : BundleDelimiterPacket<ClientCommonPacketListener>()

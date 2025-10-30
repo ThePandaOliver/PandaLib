@@ -9,9 +9,10 @@
  * You should have received a copy of the GNU Lesser General Public License
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-package dev.pandasystems.pandalib.networking.packets.bundle
 
-import net.minecraft.network.protocol.BundleDelimiterPacket
-import net.minecraft.network.protocol.common.ServerCommonPacketListener
+package dev.pandasystems.pandalib.utils.codecs;
 
-class ServerboundPLBundleDelimiterPacket : BundleDelimiterPacket<ServerCommonPacketListener>()
+@FunctionalInterface
+public interface StreamMemberEncoder<O, T> {
+    void encode(T object, O object2);
+}

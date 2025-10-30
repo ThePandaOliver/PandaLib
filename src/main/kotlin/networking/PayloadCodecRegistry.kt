@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025-2025 Oliver Froberg (The Panda Oliver)
+ * Copyright (C) 2025 Oliver Froberg (The Panda Oliver)
  *
  * This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU Lesser General Public License as published by
@@ -12,7 +12,7 @@
 
 package dev.pandasystems.pandalib.networking
 
-import dev.pandasystems.pandalib.utils.codec.StreamCodec
+import dev.pandasystems.pandalib.utils.codecs.StreamCodec
 import net.minecraft.network.FriendlyByteBuf
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 import net.minecraft.resources.ResourceLocation

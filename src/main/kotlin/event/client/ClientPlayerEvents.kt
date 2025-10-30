@@ -14,8 +14,7 @@ package dev.pandasystems.pandalib.event.client
 
 import dev.pandasystems.pandalib.utils.event
 import net.minecraft.client.player.LocalPlayer
-import net.minecraft.network.chat.Component
 
 val clientPlayerJoinEvent = event<(player: LocalPlayer) -> Unit>()
-val clientPlayerLeaveEvent = event<(player: LocalPlayer, reason: Component) -> Unit>()
+val clientPlayerLeaveEvent = event<(player: LocalPlayer) -> Unit>()
 val clientPlayerRespawnEvent = event<(oldPlayer: LocalPlayer, newPlayer: LocalPlayer) -> Unit>()

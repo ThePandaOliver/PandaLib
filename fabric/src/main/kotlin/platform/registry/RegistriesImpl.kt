@@ -1,15 +1,20 @@
 /*
- * Copyright (c) 2025. Oliver Froberg
+ * Copyright (C) 2025-2025 Oliver Froberg (The Panda Oliver)
  *
- * This code is licensed under the GNU Lesser General Public License v3.0
- * See: https://www.gnu.org/licenses/lgpl-3.0-standalone.html
+ * This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU Lesser General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  any later version.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package dev.pandasystems.pandalib.fabric.platform.registry
 
 import com.google.auto.service.AutoService
 import com.mojang.serialization.Lifecycle
-import dev.pandasystems.pandalib.pandalibModid
+import dev.pandasystems.pandalib.PandaLib
 import dev.pandasystems.pandalib.registry.RegistriesPlatform
 import dev.pandasystems.pandalib.registry.deferred.DeferredRegister
 import dev.pandasystems.pandalib.registry.deferred.PandaLibRegistry
@@ -28,7 +33,7 @@ class RegistriesImpl : RegistriesPlatform {
 		val ENTITY_DATA_SERIALIZERS: ResourceKey<Registry<EntityDataSerializer<*>>> = key("entity_data_serializers")
 
 		private fun <T> key(name: String): ResourceKey<Registry<T>> {
-			return ResourceKey.createRegistryKey<T>(resourceLocation(pandalibModid, name))
+			return ResourceKey.createRegistryKey<T>(PandaLib.resourceLocation(name))
 		}
 	}
 

@@ -17,21 +17,21 @@ The library is written in Kotlin, and some APIs might not be fully supported by 
 
 - Multi-Loader Framework (WIP)
 - Config API
-  - Synchronization API
-  - Custom Serializer API
-  - Premade formats: JSON
+	- Synchronization API
+	- ~~Custom Serializer API~~ (Uses [Universal Serializer](https://github.com/ThePandaOliver/universal-serializer))
+	- Premade formats: JSON
 - Event/Listener API
 - Deferred registration API
 - Networking API
-  - Play phase support
-  - Configuration phase support
+	- Play phase support
+	- Configuration phase support
 - Embedded Kotlin libraries
-  - Kotlin Standard Library
-  - Reflect
-  - Coroutines
-  - Serialization
-  - IO
-  - DateTime
+	- Kotlin Standard Library
+	- Reflect
+	- Coroutines
+	- Serialization
+	- IO
+	- DateTime
 
 ### Future Features:
 
@@ -58,64 +58,42 @@ Development is targeted 1.21.8
 
 #### Kotlin DSL
 
-<details>
-<summary>Fabric | Architectury/Fabric Loom</summary>
-
 ```kotlin
 repositories {
 	mavenCentral()
 	maven {
 		name = "Github"
-		url = uri("https://maven.pkg.github.com/ThePandaOliver/Forgix")
+		url = uri("https://maven.pkg.github.com/ThePandaOliver/PandaLib")
 		credentials {
-			username = System.getenv("GITHUB_USER")
-			password = System.getenv("GITHUB_API_TOKEN")
+			username = System.getenv("GITHUB_ACTER")
+			password = System.getenv("GITHUB_TOKEN")
 		}
 	}
 }
 
 dependencies {
-	modApi("dev.pandasystems:pandalib-fabric:<version>")
+	implementation("dev.pandasystems:pandalib-forge:<version>") // Forge
+	implementation("dev.pandasystems:pandalib-neoforge:<version>") // NeoForge
+	modApi("dev.pandasystems:pandalib-fabric:<version>") // Fabric
+
+	// Only needed if you want to use the embedded Kotlin libraries in Forge-like environments.
+	// "additionalRuntimeClasspath(...)" works for NeoGradle,
+	// but for ForgeGradle, then you need to replace "additionalRuntimeClasspath(...)" with "minecraftLibrary(...)",
+	// for Architectury Loom, then you need to replace "additionalRuntimeClasspath(...)" with "forgeRuntimeLibrary(...)"
+	additionalRuntimeClasspath(kotlin("stdlib"))
+	additionalRuntimeClasspath(kotlin("stdlib-jdk8"))
+	additionalRuntimeClasspath(kotlin("stdlib-jdk7"))
+	additionalRuntimeClasspath(kotlin("reflect", version = "2.2.0"))
+	additionalRuntimeClasspath("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
+	additionalRuntimeClasspath("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.10.2")
+	additionalRuntimeClasspath("org.jetbrains.kotlinx:kotlinx-serialization-core:1.8.1")
+	additionalRuntimeClasspath("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.1")
+	additionalRuntimeClasspath("org.jetbrains.kotlinx:kotlinx-serialization-cbor:1.8.1")
+	additionalRuntimeClasspath("org.jetbrains.kotlinx:kotlinx-datetime:0.6.2")
+	additionalRuntimeClasspath("org.jetbrains.kotlinx:kotlinx-io-core:0.7.0")
+	additionalRuntimeClasspath("org.jetbrains.kotlinx:kotlinx-io-bytestring:0.7.0")
 }
 ```
-
-</details>
-<details>
-<summary>[Neo]Forge | Architectury Loom</summary>
-
-```kotlin
-repositories {
-	mavenCentral()
-	maven {
-		name = "Github"
-		url = uri("https://maven.pkg.github.com/ThePandaOliver/Forgix")
-		credentials {
-			username = System.getenv("GITHUB_USER")
-			password = System.getenv("GITHUB_API_TOKEN")
-		}
-	}
-}
-
-dependencies {
-	modApi("dev.pandasystems:pandalib-forge:<version>") // Forge
-	modApi("dev.pandasystems:pandalib-neoforge:<version>") // NeoForge
-
-	forgeRuntimeLibrary(kotlin("stdlib"))
-	forgeRuntimeLibrary(kotlin("stdlib-jdk8"))[README.md](../../Documents/GitHub/ThePandaOliver/README.md)
-	forgeRuntimeLibrary(kotlin("stdlib-jdk7"))
-	forgeRuntimeLibrary(kotlin("reflect", version = "2.2.0"))
-	forgeRuntimeLibrary("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
-	forgeRuntimeLibrary("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.10.2")
-	forgeRuntimeLibrary("org.jetbrains.kotlinx:kotlinx-serialization-core:1.8.1")
-	forgeRuntimeLibrary("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.1")
-	forgeRuntimeLibrary("org.jetbrains.kotlinx:kotlinx-serialization-cbor:1.8.1")
-	forgeRuntimeLibrary("org.jetbrains.kotlinx:kotlinx-datetime:0.6.2")
-	forgeRuntimeLibrary("org.jetbrains.kotlinx:kotlinx-io-core:0.7.0")
-	forgeRuntimeLibrary("org.jetbrains.kotlinx:kotlinx-io-bytestring:0.7.0")
-}
-```
-
-</details>
 
 ---
 

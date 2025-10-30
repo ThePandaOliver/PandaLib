@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025-2025 Oliver Froberg (The Panda Oliver)
+ * Copyright (C) 2025 Oliver Froberg (The Panda Oliver)
  *
  * This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU Lesser General Public License as published by
@@ -14,8 +14,7 @@ package dev.pandasystems.pandalib.event.client
 
 import dev.pandasystems.pandalib.utils.event
 import net.minecraft.client.player.LocalPlayer
-import net.minecraft.network.chat.Component
 
 val clientPlayerJoinEvent = event<(player: LocalPlayer) -> Unit>()
-val clientPlayerLeaveEvent = event<(player: LocalPlayer, reason: Component) -> Unit>()
+val clientPlayerLeaveEvent = event<(player: LocalPlayer) -> Unit>()
 val clientPlayerRespawnEvent = event<(oldPlayer: LocalPlayer, newPlayer: LocalPlayer) -> Unit>()

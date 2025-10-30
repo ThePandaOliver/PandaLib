@@ -12,22 +12,20 @@
 
 package dev.pandasystems.pandalib.neoforge
 
-import dev.pandasystems.pandalib.initializePandaLib
+import dev.pandasystems.pandalib.PandaLib
 import dev.pandasystems.pandalib.neoforge.platform.registration.DeferredRegisterImpl
 import dev.pandasystems.pandalib.neoforge.platform.registration.RendererRegistryImpl
 import dev.pandasystems.pandalib.neoforge.platform.registration.ResourceLoaderRegistryImpl
-import dev.pandasystems.pandalib.pandalibModid
 import dev.pandasystems.pandalib.registry.deferred.deferredRegister
 import dev.pandasystems.pandalib.registry.rendererRegistry
 import dev.pandasystems.pandalib.registry.resourceLoaderRegistry
 import dev.pandasystems.pandalib.utils.InternalPandaLibApi
-import dev.pandasystems.pandalib.utils.gameEnvironment
 import net.neoforged.bus.api.IEventBus
 import net.neoforged.fml.common.Mod
 import net.neoforged.neoforge.common.NeoForge
 
 @OptIn(InternalPandaLibApi::class)
-@Mod(pandalibModid)
+@Mod(PandaLib.modid)
 class PandaLibNeoForge(val eventBus: IEventBus) {
 	init {
 		eventBus.addListener((deferredRegister as DeferredRegisterImpl)::registerEvent)
@@ -37,7 +35,7 @@ class PandaLibNeoForge(val eventBus: IEventBus) {
 
 		eventBus.addListener((rendererRegistry as RendererRegistryImpl)::onEntityRendererRegistryEvent)
 
-		initializePandaLib()
+		PandaLib
 
 		if (gameEnvironment.isClient) {
 			dev.pandasystems.pandalib.neoforge.client.PandaLibClientNeoForge(eventBus)

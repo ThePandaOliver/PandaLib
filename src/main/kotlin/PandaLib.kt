@@ -38,5 +38,5 @@ object PandaLib {
 		logger.debug("PandaLib initialized successfully.")
 	}
 
-	fun resourceLocation(path: String): ResourceLocation = ResourceLocation.fromNamespaceAndPath(modid, path)
+	fun resourceLocation(path: String): ResourceLocation = ResourceLocation(modid, path)
 }

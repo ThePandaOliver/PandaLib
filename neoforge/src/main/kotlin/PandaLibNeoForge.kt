@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025-2025 Oliver Froberg (The Panda Oliver)
+ * Copyright (C) 2025 Oliver Froberg (The Panda Oliver)
  *
  * This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU Lesser General Public License as published by
@@ -20,6 +20,7 @@ import dev.pandasystems.pandalib.registry.deferred.deferredRegister
 import dev.pandasystems.pandalib.registry.rendererRegistry
 import dev.pandasystems.pandalib.registry.resourceLoaderRegistry
 import dev.pandasystems.pandalib.utils.InternalPandaLibApi
+import dev.pandasystems.pandalib.utils.gameEnvironment
 import net.neoforged.bus.api.IEventBus
 import net.neoforged.fml.common.Mod
 import net.neoforged.neoforge.common.NeoForge

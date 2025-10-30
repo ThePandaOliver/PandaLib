@@ -14,8 +14,6 @@ package dev.pandasystems.pandalib.config
 
 import dev.pandasystems.pandalib.PandaLib
 import dev.pandasystems.pandalib.config.ConfigSynchronizer.configs
-import dev.pandasystems.pandalib.event.server.serverConfigurationConnectionEvent
-import dev.pandasystems.pandalib.config.options.SyncableConfigOption
 import dev.pandasystems.pandalib.event.server.serverPlayerJoinEvent
 import dev.pandasystems.pandalib.networking.PayloadCodecRegistry
 import dev.pandasystems.pandalib.networking.ServerPlayNetworking

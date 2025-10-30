@@ -12,6 +12,7 @@
 package dev.pandasystems.pandalib.networking.packets.bundle
 
 import net.minecraft.network.protocol.BundleDelimiterPacket
-import net.minecraft.network.protocol.common.ServerCommonPacketListener
+import net.minecraft.network.protocol.game.ServerGamePacketListener
 
-class ServerboundPLBundleDelimiterPacket : BundleDelimiterPacket<ServerCommonPacketListener>()
+class ServerboundPLBundleDelimiterPacket : BundleDelimiterPacket<ServerGamePacketListener>()
+

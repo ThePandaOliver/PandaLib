@@ -11,7 +11,8 @@
  */
 package dev.pandasystems.pandalib.networking.packets.bundle
 
+import net.minecraft.client.multiplayer.ClientPacketListener
 import net.minecraft.network.protocol.BundleDelimiterPacket
-import net.minecraft.network.protocol.common.ClientCommonPacketListener
 
-class ClientboundPLBundleDelimiterPacket : BundleDelimiterPacket<ClientCommonPacketListener>()
+class ClientboundPLBundleDelimiterPacket : BundleDelimiterPacket<ClientPacketListener>()
+

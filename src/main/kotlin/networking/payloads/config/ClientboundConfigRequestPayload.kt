@@ -13,6 +13,7 @@
 package dev.pandasystems.pandalib.networking.payloads.config
 
 import dev.pandasystems.pandalib.PandaLib
+import dev.pandasystems.pandalib.networking.CustomPacketPayload
 import dev.pandasystems.pandalib.utils.codecs.StreamCodec
 import dev.pandasystems.pandalib.utils.codecs.UUIDCodec
 import net.minecraft.network.FriendlyByteBuf

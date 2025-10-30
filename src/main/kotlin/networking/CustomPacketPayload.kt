@@ -9,10 +9,13 @@
  * You should have received a copy of the GNU Lesser General Public License
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-package dev.pandasystems.pandalib.networking.packets.bundle
 
-import net.minecraft.client.multiplayer.ClientPacketListener
-import net.minecraft.network.protocol.BundleDelimiterPacket
+package dev.pandasystems.pandalib.networking
 
-class ClientboundPLBundleDelimiterPacket : BundleDelimiterPacket<ClientPacketListener>()
+import net.minecraft.network.FriendlyByteBuf
+import net.minecraft.resources.ResourceLocation
 
+interface CustomPacketPayload {
+	fun id(): ResourceLocation
+	fun write(buffer: FriendlyByteBuf)
+}

@@ -13,13 +13,8 @@
 package dev.pandasystems.pandalib.networking.payloads.config
 
 import dev.pandasystems.pandalib.PandaLib
-import dev.pandasystems.pandalib.utils.codecs.TreeObjectCodec
 import dev.pandasystems.pandalib.networking.CustomPacketPayload
-import dev.pandasystems.pandalib.utils.codec.StreamCodec
-import dev.pandasystems.pandalib.utils.codecs.OptionalCodec
-import dev.pandasystems.pandalib.utils.codecs.ResourceLocationCodec
-import dev.pandasystems.pandalib.utils.codecs.UUIDCodec
-import dev.pandasystems.pandalib.utils.extensions.resourceLocation
+import dev.pandasystems.pandalib.utils.codecs.*
 import dev.pandasystems.universalserializer.elements.TreeObject
 import net.minecraft.network.FriendlyByteBuf
 import net.minecraft.resources.ResourceLocation

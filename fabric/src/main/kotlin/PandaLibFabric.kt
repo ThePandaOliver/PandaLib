@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025-2025 Oliver Froberg (The Panda Oliver)
+ * Copyright (C) 2025 Oliver Froberg (The Panda Oliver)
  *
  * This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU Lesser General Public License as published by
@@ -13,7 +13,6 @@
 package dev.pandasystems.pandalib.fabric
 
 import dev.pandasystems.pandalib.PandaLib
-import dev.pandasystems.pandalib.event.server.serverConfigurationConnectionEvent
 import dev.pandasystems.pandalib.event.server.serverStartingEvent
 import dev.pandasystems.pandalib.event.server.serverStoppingEvent
 import dev.pandasystems.pandalib.fabric.platform.GameEnvironmentImpl

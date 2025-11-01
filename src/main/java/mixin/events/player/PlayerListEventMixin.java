@@ -35,8 +35,8 @@ public class PlayerListEventMixin {
 	}
 
 	@Inject(method = "respawn", at = @At("TAIL"))
-	private void onRespawn(ServerPlayer player, boolean keepInventory, CallbackInfoReturnable<ServerPlayer> cir) {
+	private void onRespawn(ServerPlayer player, boolean keepEverything, CallbackInfoReturnable<ServerPlayer> cir) {
 		ServerPlayer newPlayer = cir.getReturnValue();
-		ServerPlayerEventsKt.getServerPlayerRespawnEvent().getInvoker().invoke(player, newPlayer, keepInventory);
+		ServerPlayerEventsKt.getServerPlayerRespawnEvent().getInvoker().invoke(player, newPlayer, keepEverything);
 	}
 }

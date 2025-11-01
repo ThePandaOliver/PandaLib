@@ -30,7 +30,7 @@ public class ServerPlayerGameModeEventMixin {
 
 	@Shadow @Final protected ServerPlayer player;
 
-	@Inject(method = "destroyBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/Block;playerWillDestroy(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/entity/player/Player;)Lnet/minecraft/world/level/block/state/BlockState;"), cancellable = true)
+	@Inject(method = "destroyBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/Block;playerWillDestroy(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/entity/player/Player;)V"), cancellable = true)
 	public void onBlockBreakEvent(BlockPos pos, CallbackInfoReturnable<Boolean> cir) {
 		var cancelled = !ServerBlockEventsKt.getServerBlockBreakPreEvent().getInvoker().invoke(this.level, pos, this.level.getBlockState(pos), this.player);
 		if (cancelled) {

@@ -22,7 +22,7 @@ val serverPlayerJoinEvent = event<(player: ServerPlayer) -> Unit>()
 val serverPlayerLeaveEvent = event<(player: ServerPlayer) -> Unit>()
 val serverPlayerRespawnEvent = event<(
 	oldPlayer: ServerPlayer, newPlayer: ServerPlayer,
-	keepInventory: Boolean, removalReason: Entity.RemovalReason
+	keepInventory: Boolean
 ) -> Unit>()
 
 val serverPlayerChangeDimensionPreEvent = cancelableEvent<(

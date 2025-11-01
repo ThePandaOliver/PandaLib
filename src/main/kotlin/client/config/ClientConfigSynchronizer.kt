@@ -44,37 +44,34 @@ object ClientConfigSynchronizer {
 		// Client Config request
 		ClientConfigurationNetworking.registerHandler<ClientboundConfigRequestPayload>(ClientboundConfigRequestPayload.RESOURCELOCATION) { payload, _ ->
 			PandaLib.logger.debug("Received config request payload")
-			ClientConfigurationNetworking.registerHandler<ClientboundConfigRequestPayload>(ClientboundConfigRequestPayload.RESOURCELOCATION) { payload, _ ->
-				PandaLib.logger.debug("Received config request payload")
-				// Respond with all client configs
-				val payloads = configs.map { (resourceLocation, _) ->
-					val configObject = requireNotNull(ConfigRegistry.get<Any>(resourceLocation))
-					configObject.createConfigPayload(payload.playerId)
-				}
-				ClientConfigurationNetworking.send(payloads)
-				PandaLib.logger.debug("Sent all client configs")
+			// Respond with all client configs
+			val payloads = configs.map { (resourceLocation, _) ->
+				val configObject = requireNotNull(ConfigRegistry.get<Any>(resourceLocation))
+				configObject.createConfigPayload(payload.playerId)
 			}
-
-			// Adding local players configs to player configs
-			clientPlayerJoinEvent += { player ->
-				ConfigSynchronizer.configs.forEach { (_, options) ->
-					options.forEach { option ->
-						option.playerValues[player.uuid] = option.initialValue
-					}
-				}
-			}
-
-			// Cleanup
-			clientPlayerLeaveEvent += { _ ->
-				ConfigSynchronizer.configs.forEach { (_, options) ->
-					options.forEach { option ->
-						option.playerValues.clear()
-						option.serverValue = null
-					}
-				}
-			}
-
-			PandaLib.logger.debug("Client Config Synchronizer initialized successfully.")
+			ClientConfigurationNetworking.send(payloads)
+			PandaLib.logger.debug("Sent all client configs")
 		}
+
+		// Adding local players configs to player configs
+		clientPlayerJoinEvent += { player ->
+			ConfigSynchronizer.configs.forEach { (_, options) ->
+				options.forEach { option ->
+					option.playerValues[player.uuid] = option.initialValue
+				}
+			}
+		}
+
+		// Cleanup
+		clientPlayerLeaveEvent += { _ ->
+			ConfigSynchronizer.configs.forEach { (_, options) ->
+				options.forEach { option ->
+					option.playerValues.clear()
+					option.serverValue = null
+				}
+			}
+		}
+
+		PandaLib.logger.debug("Client Config Synchronizer initialized successfully.")
 	}
 }

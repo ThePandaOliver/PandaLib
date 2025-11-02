@@ -43,22 +43,26 @@ object ServerPlayNetworking {
 	fun send(player: ServerPlayer, payload: CustomPacketPayload, vararg payloads: CustomPacketPayload) = send(player, listOf(payload, *payloads))
 
 	fun send(player: ServerPlayer, payloads: Collection<CustomPacketPayload>) {
-		player.connection.send(createPacket(*payloads.toTypedArray()))
+		payloads.forEach { player.connection.send(createPacket(it)) }
 	}
 
 	fun sendToAll(payload: CustomPacketPayload, vararg payloads: CustomPacketPayload) = sendToAll(listOf(payload, *payloads))
 
 	fun sendToAll(payloads: Collection<CustomPacketPayload>) {
-		val server = requireNotNull(gameEnvironment.server) { "Cannot send clientbound payloads from the client" }
-		server.playerList.broadcastAll(createPacket(*payloads.toTypedArray()))
+		payloads.forEach {
+			val server = requireNotNull(gameEnvironment.server) { "Cannot send clientbound payloads from the client" }
+			server.playerList.broadcastAll(createPacket(it))
+		}
 	}
 
 	fun sendInDimension(level: ServerLevel, payload: CustomPacketPayload, vararg payloads: CustomPacketPayload) =
 		sendInDimension(level, listOf(payload, *payloads))
 
 	fun sendInDimension(level: ServerLevel, payloads: Collection<CustomPacketPayload>) {
-		val packet = createPacket(*payloads.toTypedArray())
-		level.server.playerList.broadcastAll(packet, level.dimension())
+		payloads.forEach {
+			val packet = createPacket(it)
+			level.server.playerList.broadcastAll(packet, level.dimension())
+		}
 	}
 
 	fun sendToNear(
@@ -70,18 +74,20 @@ object ServerPlayNetworking {
 		level: ServerLevel, excluded: ServerPlayer, x: Double, y: Double, z: Double,
 		radius: Double, payloads: Collection<CustomPacketPayload>
 	) {
-		val packet = createPacket(*payloads.toTypedArray())
-		level.server.playerList.broadcast(excluded, x, y, z, radius, level.dimension(), packet)
+		payloads.forEach {
+			val packet = createPacket(it)
+			level.server.playerList.broadcast(excluded, x, y, z, radius, level.dimension(), packet)
+		}
 	}
 
 	fun sendToTrackingEntity(entity: Entity, payload: CustomPacketPayload, vararg payloads: CustomPacketPayload) =
 		sendToTrackingEntity(entity, listOf(payload, *payloads))
 
 	fun sendToTrackingEntity(entity: Entity, payloads: Collection<CustomPacketPayload>) {
-		check(!entity.level().isClientSide()) { "Cannot send clientbound payloads on the client" }
+		check(!entity.level().isClientSide) { "Cannot send clientbound payloads on the client" }
 		val chunkSource = entity.level().chunkSource
 		if (chunkSource is ServerChunkCache) {
-			chunkSource.broadcast(entity, createPacket(*payloads.toTypedArray()))
+			payloads.forEach { chunkSource.broadcast(entity, createPacket(it)) }
 		}
 		// Silently ignore custom Level implementations which may not return ServerChunkCache.
 	}
@@ -90,10 +96,10 @@ object ServerPlayNetworking {
 		sendToTrackingEntityAndSelf(entity, listOf(payload, *payloads))
 
 	fun sendToTrackingEntityAndSelf(entity: Entity, payloads: Collection<CustomPacketPayload>) {
-		check(!entity.level().isClientSide()) { "Cannot send clientbound payloads on the client" }
+		check(!entity.level().isClientSide) { "Cannot send clientbound payloads on the client" }
 		val chunkSource = entity.level().chunkSource
 		if (chunkSource is ServerChunkCache) {
-			chunkSource.broadcastAndSend(entity, createPacket(*payloads.toTypedArray()))
+			payloads.forEach { chunkSource.broadcastAndSend(entity, createPacket(it)) }
 		}
 		// Silently ignore custom Level implementations which may not return ServerChunkCache.
 	}
@@ -107,18 +113,14 @@ object ServerPlayNetworking {
 		level: ServerLevel, chunkPos: ChunkPos,
 		payloads: Collection<CustomPacketPayload>
 	) {
-		val packet: Packet<*> = createPacket(*payloads.toTypedArray())
-		level.chunkSource.chunkMap.getPlayers(chunkPos, false).forEach { it.connection.send(packet) }
+		payloads.forEach { payload ->
+			val packet: Packet<*> = createPacket(payload)
+			level.chunkSource.chunkMap.getPlayers(chunkPos, false).forEach { it.connection.send(packet) }
+		}
 	}
 
-	fun createPacket(vararg payloads: CustomPacketPayload): Packet<ClientCommonPacketListener> {
-		require(payloads.isNotEmpty()) { "Requires at least one payload" }
-		return if (payloads.size > 1) {
-			@Suppress("UNCHECKED_CAST")
-			ClientboundBundlePacket(payloads.map(::ClientboundPLPayloadPacket)) as Packet<ClientCommonPacketListener>
-		} else {
-			ClientboundPLPayloadPacket(payloads.first())
-		}
+	fun createPacket(payload: CustomPacketPayload): Packet<ClientCommonPacketListener> {
+		return ClientboundPLPayloadPacket(payload)
 	}
 
 	fun interface PlayPayloadHandler<T : CustomPacketPayload> {

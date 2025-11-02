@@ -14,7 +14,6 @@ package dev.pandasystems.pandalib.mixin.protocols;
 
 import dev.pandasystems.pandalib.networking.packets.ClientboundPLPayloadPacketKt;
 import dev.pandasystems.pandalib.networking.packets.ServerboundPLPayloadPacketKt;
-import dev.pandasystems.pandalib.networking.packets.bundle.*;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -34,14 +33,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class ConfigurationProtocolsMixin {
 	@Inject(method = "method_56512", at = @At("RETURN"))
 	private static void addClientPacket(ProtocolInfoBuilder<ClientGamePacketListener, RegistryFriendlyByteBuf, Unit> protocolInfoBuilder, CallbackInfo ci) {
-		var type = ClientboundPLBundlePacketKt.getClientboundPLBundleType();
-		var bundlerPacket = new ClientboundPLBundleDelimiterPacket();
-
-		StreamCodec<ByteBuf, ClientboundPLBundleDelimiterPacket> streamCodec = StreamCodec.unit(bundlerPacket);
-		PacketType<ClientboundPLBundleDelimiterPacket> packetType = bundlerPacket.type();
-		protocolInfoBuilder.codecs.add(new ProtocolInfoBuilder.CodecEntry<>(packetType, streamCodec, null));
-		protocolInfoBuilder.bundlerInfo = BundlerInfo.createForPacket(type, ClientboundPLBundlePacket::new, bundlerPacket);
-
 		protocolInfoBuilder.addPacket(
 				ClientboundPLPayloadPacketKt.getClientboundPLPayloadPacketType(),
 				ClientboundPLPayloadPacketKt.getClientboundPLPayloadCodec()
@@ -50,14 +41,6 @@ public class ConfigurationProtocolsMixin {
 
 	@Inject(method = "method_56513", at = @At("RETURN"))
 	private static void addServerPacket(ProtocolInfoBuilder<ServerGamePacketListener, RegistryFriendlyByteBuf, Unit> protocolInfoBuilder, CallbackInfo ci) {
-		var type = ServerboundPLBundlePacketKt.getServerboundPLBundleType();
-		var bundlerPacket = new ServerboundPLBundleDelimiterPacket();
-
-		StreamCodec<ByteBuf, ServerboundPLBundleDelimiterPacket> streamCodec = StreamCodec.unit(bundlerPacket);
-		PacketType<ServerboundPLBundleDelimiterPacket> packetType = bundlerPacket.type();
-		protocolInfoBuilder.codecs.add(new ProtocolInfoBuilder.CodecEntry<>(packetType, streamCodec, null));
-		protocolInfoBuilder.bundlerInfo = BundlerInfo.createForPacket(type, ServerboundPLBundlePacket::new, bundlerPacket);
-
 		protocolInfoBuilder.addPacket(
 				ServerboundPLPayloadPacketKt.getServerboundPLPayloadPacketType(),
 				ServerboundPLPayloadPacketKt.getServerboundPLPayloadCodec()

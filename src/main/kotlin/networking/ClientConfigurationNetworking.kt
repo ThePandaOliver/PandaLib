@@ -12,6 +12,7 @@
 
 package dev.pandasystems.pandalib.networking
 
+import dev.pandasystems.pandalib.networking.packets.ServerboundPLPayloadPacket
 import dev.pandasystems.pandalib.utils.gameEnvironment
 import net.minecraft.client.Minecraft
 import net.minecraft.client.multiplayer.ClientConfigurationPacketListenerImpl
@@ -41,10 +42,12 @@ object ClientConfigurationNetworking {
 
 	fun send(payloads: Collection<CustomPacketPayload>) {
 		require(gameEnvironment.isClient) { "Cannot send serverbound payloads from the server" }
-		connection.send(createPacket(*payloads.toTypedArray()))
+		payloads.forEach { connection.send(createPacket(it)) }
 	}
 
-	fun createPacket(vararg payloads: CustomPacketPayload): Packet<*> = ClientPlayNetworking.createPacket(*payloads)
+	fun createPacket(payload: CustomPacketPayload): Packet<*> {
+		return ServerboundPLPayloadPacket(payload)
+	}
 
 	fun interface ConfigurationPacketHandler<T : CustomPacketPayload> {
 		fun receive(payload: T, context: Context)

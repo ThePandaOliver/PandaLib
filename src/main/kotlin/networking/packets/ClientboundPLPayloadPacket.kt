@@ -16,7 +16,6 @@ import dev.pandasystems.pandalib.networking.ClientConfigurationNetworking
 import dev.pandasystems.pandalib.networking.ClientPlayNetworking
 import dev.pandasystems.pandalib.networking.PacketSender
 import dev.pandasystems.pandalib.networking.PayloadCodecRegistry
-import dev.pandasystems.pandalib.networking.packets.bundle.ServerboundPLBundlePacket
 import dev.pandasystems.pandalib.utils.codecs.StreamCodec
 import net.minecraft.client.Minecraft
 import net.minecraft.client.multiplayer.ClientCommonPacketListenerImpl

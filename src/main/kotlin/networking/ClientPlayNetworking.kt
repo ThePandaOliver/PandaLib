@@ -13,7 +13,6 @@
 package dev.pandasystems.pandalib.networking
 
 import dev.pandasystems.pandalib.networking.packets.ServerboundPLPayloadPacket
-import dev.pandasystems.pandalib.networking.packets.bundle.ServerboundPLBundlePacket
 import dev.pandasystems.pandalib.utils.gameEnvironment
 import net.minecraft.client.Minecraft
 import net.minecraft.client.player.LocalPlayer
@@ -43,16 +42,11 @@ object ClientPlayNetworking {
 	fun send(payloads: Collection<CustomPacketPayload>) {
 		require(gameEnvironment.isClient) { "Cannot send serverbound payloads from the server" }
 		val listener = requireNotNull(Minecraft.getInstance().player!!.connection)
-		listener.send(createPacket(*payloads.toTypedArray()))
+		payloads.forEach { listener.send(createPacket(it)) }
 	}
 
-	fun createPacket(vararg payloads: CustomPacketPayload): Packet<*> {
-		require(payloads.isNotEmpty()) { "Requires at least one payload" }
-		return if (payloads.size > 1) {
-			ServerboundPLBundlePacket(payloads.map(::ServerboundPLPayloadPacket))
-		} else {
-			ServerboundPLPayloadPacket(payloads.first())
-		}
+	fun createPacket(payload: CustomPacketPayload): Packet<*> {
+		return ServerboundPLPayloadPacket(payload)
 	}
 
 	fun interface PlayPayloadHandler<T : CustomPacketPayload> {

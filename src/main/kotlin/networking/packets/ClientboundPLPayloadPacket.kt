@@ -17,7 +17,6 @@ import dev.pandasystems.pandalib.networking.ClientConfigurationNetworking
 import dev.pandasystems.pandalib.networking.ClientPlayNetworking
 import dev.pandasystems.pandalib.networking.PacketSender
 import dev.pandasystems.pandalib.networking.PayloadCodecRegistry
-import dev.pandasystems.pandalib.networking.packets.bundle.ServerboundPLBundlePacket
 import io.netty.channel.ChannelFutureListener
 import net.minecraft.client.Minecraft
 import net.minecraft.client.multiplayer.ClientCommonPacketListenerImpl
@@ -42,12 +41,8 @@ data class ClientboundPLPayloadPacket(val payload: CustomPacketPayload) : Packet
 
 	override fun handle(handler: ClientCommonPacketListener) {
 		class Sender(val connection: Connection): PacketSender {
-			override fun createPacket(payloads: Collection<CustomPacketPayload>): Packet<*> {
-				return if (payloads.size > 1) {
-					ServerboundPLBundlePacket(payloads.map { ServerboundPLPayloadPacket(it) })
-				} else {
-					ServerboundPLPayloadPacket(payload)
-				}
+			override fun createPacket(payload: CustomPacketPayload): Packet<*> {
+				return ServerboundPLPayloadPacket(payload)
 			}
 
 			override fun sendPacket(callback: ChannelFutureListener?, packet: Packet<*>) {

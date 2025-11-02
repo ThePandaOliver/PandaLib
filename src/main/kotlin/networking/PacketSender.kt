@@ -18,26 +18,28 @@ import net.minecraft.network.protocol.Packet
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 
 interface PacketSender {
-	fun createPacket(payloads: Collection<CustomPacketPayload>): Packet<*>
-
-	fun createPacket(payload: CustomPacketPayload, vararg payloads: CustomPacketPayload): Packet<*> = createPacket(listOf(payload, *payloads))
-
 	fun sendPacket(packet: Packet<*>) {
 		sendPacket(null, packet)
 	}
 
+	fun createPacket(payload: CustomPacketPayload): Packet<*>
+
 	fun sendPacket(payload: CustomPacketPayload, vararg payloads: CustomPacketPayload) {
-		sendPacket(createPacket(payload, *payloads))
+		sendPacket(listOf(payload, *payloads))
 	}
 
 	fun sendPacket(payloads: Collection<CustomPacketPayload>) {
-		sendPacket(createPacket(payloads))
+		payloads.forEach { sendPacket(it) }
 	}
 
 	fun sendPacket(callback: ChannelFutureListener?, packet: Packet<*>)
 
 	fun sendPacket(callback: ChannelFutureListener?, payload: CustomPacketPayload, vararg payloads: CustomPacketPayload) {
-		sendPacket(callback, createPacket(payload, *payloads))
+		sendPacket(callback, listOf(payload, *payloads))
+	}
+
+	fun sendPacket(callback: ChannelFutureListener?, payloads: Collection<CustomPacketPayload>) {
+		payloads.forEach { sendPacket(callback, it) }
 	}
 
 	fun disconnect(disconnectReason: Component)

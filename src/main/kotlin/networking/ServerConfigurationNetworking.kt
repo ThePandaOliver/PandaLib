@@ -13,7 +13,6 @@
 package dev.pandasystems.pandalib.networking
 
 import dev.pandasystems.pandalib.networking.packets.ClientboundPLPayloadPacket
-import dev.pandasystems.pandalib.networking.packets.bundle.ClientboundPLBundlePacket
 import net.minecraft.network.protocol.Packet
 import net.minecraft.network.protocol.common.ClientCommonPacketListener
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
@@ -39,16 +38,11 @@ object ServerConfigurationNetworking {
 		send(handler, listOf(payload, *payloads))
 
 	fun send(handler: ServerConfigurationPacketListenerImpl, payloads: Collection<CustomPacketPayload>) {
-		handler.send(createPacket(*payloads.toTypedArray()))
+		payloads.forEach { handler.send(createPacket(it)) }
 	}
 
-	fun createPacket(vararg payloads: CustomPacketPayload): Packet<ClientCommonPacketListener> {
-		require(payloads.isNotEmpty()) { "Requires at least one payload" }
-		return if (payloads.size > 1) {
-			ClientboundPLBundlePacket(payloads.map(::ClientboundPLPayloadPacket))
-		} else {
-			ClientboundPLPayloadPacket(payloads.first())
-		}
+	fun createPacket(payload: CustomPacketPayload): Packet<ClientCommonPacketListener> {
+		return ClientboundPLPayloadPacket(payload)
 	}
 
 	fun interface ConfigurationPacketHandler<T : CustomPacketPayload> {

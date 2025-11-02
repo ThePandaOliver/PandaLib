@@ -8,3 +8,6 @@ accessible field net/minecraft/server/network/ServerCommonPacketListenerImpl con
 accessible field net/minecraft/client/multiplayer/ClientCommonPacketListenerImpl minecraft Lnet/minecraft/client/Minecraft;
 accessible field net/minecraft/client/multiplayer/ClientCommonPacketListenerImpl connection Lnet/minecraft/network/Connection;
 
+# ConnectionProtocol Class
+accessible class net/minecraft/network/ConnectionProtocol$ProtocolBuilder
+accessible class net/minecraft/network/ConnectionProtocol$PacketSet

@@ -35,12 +35,8 @@ data class ClientboundPLPayloadPacket(val payload: CustomPacketPayload) : Packet
 
 	override fun handle(handler: ClientCommonPacketListener) {
 		class Sender(val connection: Connection): PacketSender {
-			override fun createPacket(payloads: Collection<CustomPacketPayload>): Packet<*> {
-				return if (payloads.size > 1) {
-					ServerboundPLBundlePacket(payloads.map { ServerboundPLPayloadPacket(it) })
-				} else {
-					ServerboundPLPayloadPacket(payload)
-				}
+			override fun createPacket(payload: CustomPacketPayload): Packet<*> {
+				return ServerboundPLPayloadPacket(payload)
 			}
 
 			override fun sendPacket(callback: PacketSendListener?, packet: Packet<*>) {

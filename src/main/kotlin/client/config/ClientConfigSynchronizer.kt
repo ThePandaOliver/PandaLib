@@ -41,7 +41,6 @@ object ClientConfigSynchronizer {
 				?: PandaLib.logger.error("Received config payload for unknown config object: $resourceLocation")
 		}
 
-
 		// Client Config request
 		ClientPlayNetworking.registerHandler<ClientboundConfigRequestPayload>(ClientboundConfigRequestPayload.RESOURCELOCATION) { payload, _ ->
 			PandaLib.logger.debug("Received config request payload")

@@ -14,9 +14,6 @@ package dev.pandasystems.pandalib.mixin.protocols;
 
 import dev.pandasystems.pandalib.networking.packets.ClientboundPLPayloadPacketKt;
 import dev.pandasystems.pandalib.networking.packets.ServerboundPLPayloadPacketKt;
-import dev.pandasystems.pandalib.networking.packets.bundle.ServerboundPLBundleDelimiterPacket;
-import dev.pandasystems.pandalib.networking.packets.bundle.ServerboundPLBundlePacket;
-import dev.pandasystems.pandalib.networking.packets.bundle.ServerboundPLBundlePacketKt;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -44,14 +41,6 @@ public class GameProtocolsMixin {
 
 	@Inject(method = "method_55959", at = @At("RETURN"))
 	private static void addServerPacket(ProtocolInfoBuilder<ServerGamePacketListener, RegistryFriendlyByteBuf, Unit> protocolInfoBuilder, CallbackInfo ci) {
-		var type = ServerboundPLBundlePacketKt.getServerboundPLBundleType();
-		var bundlerPacket = new ServerboundPLBundleDelimiterPacket();
-
-		StreamCodec<ByteBuf, ServerboundPLBundleDelimiterPacket> streamCodec = StreamCodec.unit(bundlerPacket);
-		PacketType<ServerboundPLBundleDelimiterPacket> packetType = bundlerPacket.type();
-		protocolInfoBuilder.codecs.add(new ProtocolInfoBuilder.CodecEntry<>(packetType, streamCodec, null));
-		protocolInfoBuilder.bundlerInfo = BundlerInfo.createForPacket(type, ServerboundPLBundlePacket::new, bundlerPacket);
-
 		protocolInfoBuilder.addPacket(
 				ServerboundPLPayloadPacketKt.getServerboundPLPayloadPacketType(),
 				ServerboundPLPayloadPacketKt.getServerboundPLPayloadCodec()

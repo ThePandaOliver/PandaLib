@@ -14,7 +14,14 @@ package dev.pandasystems.pandalib.networking
 
 import dev.pandasystems.pandalib.networking.packets.ClientboundPLPayloadPacket
 import dev.pandasystems.pandalib.utils.gameEnvironment
+import io.netty.buffer.Unpooled
+import net.minecraft.client.Minecraft
 import net.minecraft.client.multiplayer.ClientPacketListener
+import net.minecraft.client.player.LocalPlayer
+import net.minecraft.network.Connection
+import net.minecraft.network.FriendlyByteBuf
+import net.minecraft.network.PacketSendListener
+import net.minecraft.network.chat.Component
 import net.minecraft.network.protocol.Packet
 import net.minecraft.network.protocol.game.ClientGamePacketListener
 import net.minecraft.network.protocol.game.ClientboundBundlePacket

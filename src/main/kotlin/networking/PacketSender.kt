@@ -28,7 +28,7 @@ interface PacketSender {
 	}
 
 	fun sendPacket(payloads: Collection<CustomPacketPayload>) {
-		payloads.forEach { sendPacket(it) }
+		payloads.forEach { sendPacket(createPacket(it)) }
 	}
 
 	fun sendPacket(callback: PacketSendListener?, packet: Packet<*>)
@@ -38,7 +38,7 @@ interface PacketSender {
 	}
 
 	fun sendPacket(callback: PacketSendListener?, payloads: Collection<CustomPacketPayload>) {
-		payloads.forEach { sendPacket(callback, it) }
+		payloads.forEach { sendPacket(callback, createPacket(it)) }
 	}
 
 	fun disconnect(disconnectReason: Component)

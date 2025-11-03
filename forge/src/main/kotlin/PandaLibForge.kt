@@ -31,9 +31,9 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext
 
 @OptIn(InternalPandaLibApi::class)
 @Mod(PandaLib.modid)
-class PandaLibForge(context: FMLJavaModLoadingContext) {
+class PandaLibForge() {
 	init {
-		val eventBus = context.modEventBus
+		val eventBus = FMLJavaModLoadingContext.get().modEventBus
 		eventBus.addListener((deferredRegister as DeferredRegisterImpl)::registerEvent)
 
 		MinecraftForge.EVENT_BUS.addListener((resourceLoaderRegistry as ResourceLoaderRegistryImpl)::addServerReloadListenerEvent)

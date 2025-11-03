@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2026 Oliver Froberg (The Panda Oliver)
+ * Copyright (C) 2025-2025 Oliver Froberg (The Panda Oliver)
  *
  * This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU Lesser General Public License as published by
@@ -10,9 +10,9 @@
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.pandasystems.pandalib.fabric.mixin.server.level;
+package dev.pandasystems.pandalib.forge.mixin.events;
 
-import dev.pandasystems.pandalib.mixin.server.level.ServerPlayerGameModeKtImpl;
+import dev.pandasystems.pandalib.event.server.ServerBlockEventsKt;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -25,19 +25,22 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ServerPlayerGameMode.class)
-public class ServerPlayerGameModeMixin {
+public class ServerPlayerGameModeEventMixin {
 	@Shadow protected ServerLevel level;
 
 	@Shadow @Final protected ServerPlayer player;
 
-	@Inject(method = "destroyBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerLevel;removeBlock(Lnet/minecraft/core/BlockPos;Z)Z"), cancellable = true)
-	public void onBlockBreakEventPre(BlockPos pos, CallbackInfoReturnable<Boolean> cir) {
-		ServerPlayerGameModeKtImpl.INSTANCE.onBlockBreakEventPre(this.level, pos, this.player, cir);
+	@Inject(method = "destroyBlock", at = @At(value = "INVOKE", target = "Lnet/minecraftforge/common/ForgeHooks;onBlockBreakEvent(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/level/GameType;Lnet/minecraft/server/level/ServerPlayer;Lnet/minecraft/core/BlockPos;)I"), cancellable = true)
+	public void onBlockBreakEvent(BlockPos pos, CallbackInfoReturnable<Boolean> cir) {
+		var cancelled = !ServerBlockEventsKt.getServerBlockBreakPreEvent().getInvoker().invoke(this.level, pos, this.level.getBlockState(pos), this.player);
+		if (cancelled) {
+			cir.setReturnValue(false);
+		}
 	}
 
 	@Inject(method = "destroyBlock", at = @At("RETURN"))
 	public void onBlockBreakEventPost(BlockPos pos, CallbackInfoReturnable<Boolean> cir) {
 		if (!cir.getReturnValue()) return;
-		ServerPlayerGameModeKtImpl.INSTANCE.onBlockBreakEventPost(this.level, pos, this.player);
+		ServerBlockEventsKt.getServerBlockBreakPostEvent().getInvoker().invoke(this.level, pos, this.level.getBlockState(pos), this.player);
 	}
 }

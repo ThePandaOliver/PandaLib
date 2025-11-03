@@ -33,6 +33,7 @@ val modLicense: String by project
 
 val fabricLoaderVersion: String? by project
 val neoforgeLoaderVersion: String? by project
+val forgeLoaderVersion: String? by project
 
 val parchmentMinecraftVersion: String by project
 val parchmentMappingsVersion: String by project
@@ -65,6 +66,11 @@ allprojects {
 
 			"neoforge" -> {
 				neoForge()
+				platformSetupLoomIde()
+			}
+
+			"forge" -> {
+				forge()
 				platformSetupLoomIde()
 			}
 
@@ -104,6 +110,15 @@ allprojects {
 		}
 
 		runs.configureEach { ideConfigGenerated(false) }
+
+		if (loomPlatform == "forge") {
+			forge {
+				convertAccessWideners.set(true)
+				extraAccessWideners.add(loom.accessWidenerPath.get().asFile.name)
+
+				mixinConfig("$modId.mixins.json")
+			}
+		}
 	}
 
 	val nonModImplementation: Configuration by configurations.creating
@@ -132,6 +147,11 @@ allprojects {
 
 			"neoforge" -> {
 				getByName("developmentNeoForge").extendsFrom(common)
+				getByName("forgeRuntimeLibrary").extendsFrom(nonModImplementation)
+			}
+
+			"forge" -> {
+				getByName("developmentForge").extendsFrom(common)
 				getByName("forgeRuntimeLibrary").extendsFrom(nonModImplementation)
 			}
 		}
@@ -199,6 +219,18 @@ allprojects {
 				shadowBundle(project(":", configuration = "transformProductionNeoForge"))
 			}
 
+			"forge" -> {
+				"forge"("net.minecraftforge:forge:$mcVersion-$forgeLoaderVersion")
+
+				common(project(":", configuration = "namedElements")) { isTransitive = false }
+				shadowBundle(project(":", configuration = "transformProductionForge"))
+
+				compileOnly("io.github.llamalad7:mixinextras-common:0.5.0")
+				annotationProcessor("io.github.llamalad7:mixinextras-common:0.5.0")
+				implementation("io.github.llamalad7:mixinextras-forge:0.5.0")
+				include("io.github.llamalad7:mixinextras-forge:0.5.0")
+			}
+
 			else -> {
 				// We depend on fabric loader here to use the fabric @Environment annotations and get the mixin dependencies
 				// Do NOT use other classes from fabric loader
@@ -234,6 +266,7 @@ allprojects {
 
 			fabricLoaderVersion?.let { props["fabric_loader_version"] = it }
 			neoforgeLoaderVersion?.let { props["neoforge_loader_version"] = it }
+			forgeLoaderVersion?.let { props["forge_loader_version"] = it }
 
 			inputs.properties(props)
 			filesMatching(
@@ -261,7 +294,7 @@ allprojects {
 				injectAccessWidener.set(true)
 				inputFile = getByName<ShadowJar>("shadowJar").archiveFile
 				archiveClassifier.set("")
-				if (loomPlatform == "neoforge")
+				if (loomPlatform == "neoforge" || loomPlatform == "forge")
 					atAccessWideners.add(loom.accessWidenerPath.get().asFile.name)
 			}
 

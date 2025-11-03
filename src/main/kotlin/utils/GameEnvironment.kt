@@ -32,4 +32,8 @@ interface GameEnvironmentPlatform {
 
 	val client: Minecraft get() = Minecraft.getInstance()
 	val server: MinecraftServer?
+
+	val isFabric: Boolean get() = false
+	val isNeoForge: Boolean get() = false
+	val isForge: Boolean get() = false
 }

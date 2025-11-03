@@ -42,14 +42,14 @@ object ClientConfigSynchronizer {
 		}
 
 		// Client Config request
-		ClientPlayNetworking.registerHandler<ClientboundConfigRequestPayload>(ClientboundConfigRequestPayload.RESOURCELOCATION) { payload, _ ->
+		ClientPlayNetworking.registerHandler<ClientboundConfigRequestPayload>(ClientboundConfigRequestPayload.RESOURCELOCATION) { payload, context ->
 			PandaLib.logger.debug("Received config request payload")
 			// Respond with all client configs
 			val payloads = configs.map { (resourceLocation, _) ->
 				val configObject = requireNotNull(ConfigRegistry.get<Any>(resourceLocation))
 				configObject.createConfigPayload(payload.playerId)
 			}
-			ClientPlayNetworking.send(payloads)
+			context.responseSender().sendPacket(payloads)
 			PandaLib.logger.debug("Sent all client configs")
 		}
 

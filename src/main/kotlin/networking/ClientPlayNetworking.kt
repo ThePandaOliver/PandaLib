@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025-2025 Oliver Froberg (The Panda Oliver)
+ * Copyright (C) 2025 Oliver Froberg (The Panda Oliver)
  *
  * This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU Lesser General Public License as published by
@@ -22,12 +22,8 @@ import net.minecraft.network.FriendlyByteBuf
 import net.minecraft.network.PacketSendListener
 import net.minecraft.network.chat.Component
 import net.minecraft.network.protocol.Packet
-import net.minecraft.network.protocol.game.ServerGamePacketListener
 import net.minecraft.network.protocol.game.ServerboundCustomPayloadPacket
 import net.minecraft.resources.ResourceLocation
-import net.minecraft.server.MinecraftServer
-import net.minecraft.server.level.ServerPlayer
-import net.minecraft.server.network.ServerGamePacketListenerImpl
 import org.jetbrains.annotations.ApiStatus
 
 object ClientPlayNetworking {
@@ -66,7 +62,7 @@ object ClientPlayNetworking {
 	fun handlePayload(handler: ClientPacketListener, payload: CustomPacketPayload) {
 		class Sender(val connection: Connection): PacketSender {
 			override fun createPacket(payload: CustomPacketPayload): Packet<*> {
-				return createPacket(payload)
+				return ClientPlayNetworking.createPacket(payload)
 			}
 
 			override fun sendPacket(callback: PacketSendListener?, packet: Packet<*>) {

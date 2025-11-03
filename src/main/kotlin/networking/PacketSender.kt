@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025-2025 Oliver Froberg (The Panda Oliver)
+ * Copyright (C) 2025 Oliver Froberg (The Panda Oliver)
  *
  * This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU Lesser General Public License as published by
@@ -28,7 +28,7 @@ interface PacketSender {
 	}
 
 	fun sendPacket(payloads: Collection<CustomPacketPayload>) {
-		payloads.forEach { sendPacket(it) }
+		payloads.forEach { sendPacket(createPacket(it)) }
 	}
 
 	fun sendPacket(callback: PacketSendListener?, packet: Packet<*>)
@@ -38,7 +38,7 @@ interface PacketSender {
 	}
 
 	fun sendPacket(callback: PacketSendListener?, payloads: Collection<CustomPacketPayload>) {
-		payloads.forEach { sendPacket(callback, it) }
+		payloads.forEach { sendPacket(callback, createPacket(it)) }
 	}
 
 	fun disconnect(disconnectReason: Component)

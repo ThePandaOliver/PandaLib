@@ -14,9 +14,6 @@ package dev.pandasystems.pandalib.networking
 
 import dev.pandasystems.pandalib.utils.gameEnvironment
 import io.netty.buffer.Unpooled
-import net.minecraft.client.Minecraft
-import net.minecraft.client.multiplayer.ClientPacketListener
-import net.minecraft.client.player.LocalPlayer
 import net.minecraft.network.Connection
 import net.minecraft.network.FriendlyByteBuf
 import net.minecraft.network.PacketSendListener
@@ -139,7 +136,7 @@ object ServerPlayNetworking {
 	fun handlePayload(handler: ServerGamePacketListener, payload: CustomPacketPayload) {
 		class Sender(val connection: Connection): PacketSender {
 			override fun createPacket(payload: CustomPacketPayload): Packet<*> {
-				return createPacket(payload)
+				return ServerPlayNetworking.createPacket(payload)
 			}
 
 			override fun sendPacket(callback: PacketSendListener?, packet: Packet<*>) {

@@ -12,12 +12,22 @@
 
 package dev.pandasystems.pandalib.networking
 
-import dev.pandasystems.pandalib.networking.packets.ServerboundPLPayloadPacket
 import dev.pandasystems.pandalib.utils.gameEnvironment
+import io.netty.buffer.Unpooled
 import net.minecraft.client.Minecraft
+import net.minecraft.client.multiplayer.ClientPacketListener
 import net.minecraft.client.player.LocalPlayer
+import net.minecraft.network.Connection
+import net.minecraft.network.FriendlyByteBuf
+import net.minecraft.network.PacketSendListener
+import net.minecraft.network.chat.Component
 import net.minecraft.network.protocol.Packet
+import net.minecraft.network.protocol.game.ServerGamePacketListener
+import net.minecraft.network.protocol.game.ServerboundCustomPayloadPacket
 import net.minecraft.resources.ResourceLocation
+import net.minecraft.server.MinecraftServer
+import net.minecraft.server.level.ServerPlayer
+import net.minecraft.server.network.ServerGamePacketListenerImpl
 import org.jetbrains.annotations.ApiStatus
 
 object ClientPlayNetworking {
@@ -45,7 +55,35 @@ object ClientPlayNetworking {
 	}
 
 	fun createPacket(payload: CustomPacketPayload): Packet<*> {
-		return ServerboundPLPayloadPacket(payload)
+		val friendlyByteBuf = FriendlyByteBuf(Unpooled.buffer())
+		payload.write(friendlyByteBuf)
+		return ServerboundCustomPayloadPacket(payload.id(), friendlyByteBuf)
+	}
+
+
+	// Packet Receiving
+
+	fun handlePayload(handler: ClientPacketListener, payload: CustomPacketPayload) {
+		class Sender(val connection: Connection): PacketSender {
+			override fun createPacket(payload: CustomPacketPayload): Packet<*> {
+				return createPacket(payload)
+			}
+
+			override fun sendPacket(callback: PacketSendListener?, packet: Packet<*>) {
+				connection.send(packet, callback)
+			}
+
+			override fun disconnect(disconnectReason: Component) {
+				connection.disconnect(disconnectReason)
+			}
+		}
+
+		val context = object : Context {
+			override fun client(): Minecraft = handler.minecraft
+			override fun player(): LocalPlayer = requireNotNull(handler.minecraft.player) { "Player is null" }
+			override fun responseSender(): PacketSender = Sender(handler.connection)
+		}
+		packetHandlers[payload.id()]?.receive(payload, context)
 	}
 
 	fun interface PlayPayloadHandler<T : CustomPacketPayload> {

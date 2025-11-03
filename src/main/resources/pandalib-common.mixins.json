@@ -13,7 +13,8 @@
 		"events.ServerPlayerGameModeEventMixin",
 		"events.player.PlayerListEventMixin",
 		"events.player.ServerPlayerEventMixin",
-		"networking.ConnectionProtocolMixin"
+		"networking.ClientboundCustomPayloadPacketMixin",
+		"networking.ServerboundCustomPayloadPacketMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

@@ -18,7 +18,7 @@ plugins {
 	id("com.gradleup.shadow") version "9.0.2" apply false
 	id("org.jetbrains.gradle.plugin.idea-ext") version "1.1.10"
 
-	id("io.github.pacifistmc.forgix") version "2.0.0-SNAPSHOT.5.1-FORK.3"
+	id("io.github.pacifistmc.forgix") version "2.0.0-fork.9"
 	id("me.modmuss50.mod-publish-plugin") version "0.8.4"
 	id("com.google.devtools.ksp") version "2.2.0-2.0.2"
 	`maven-publish`
@@ -59,7 +59,6 @@ allprojects {
 
 	version = modVersion
 		.let { version -> "$version+$mcVersion" }
-		.let { version -> System.getenv("BUILD_NUMBER")?.let { "$version-$it" } ?: version }
 	group = modGroup
 	base { archivesName = modId.let { if (loomPlatform != null) "$it-$loomPlatform" else it } }
 
@@ -283,6 +282,9 @@ allprojects {
 				from(components["java"])
 				artifactId = modId
 					.let { if (loomPlatform != null) "$it-$loomPlatform" else "$it-common" }
+				version = modVersion
+					.let { version -> "$version+$mcVersion" }
+					.let { version -> System.getenv("BUILD_NUMBER")?.let { "$version-$it" } ?: version }
 			}
 		}
 

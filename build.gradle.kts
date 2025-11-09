@@ -18,7 +18,7 @@ plugins {
 	id("com.gradleup.shadow") version "9.0.2" apply false
 	id("org.jetbrains.gradle.plugin.idea-ext") version "1.1.10"
 
-	id("io.github.pacifistmc.forgix") version "2.0.0-SNAPSHOT.5.1-FORK.3"
+	id("io.github.pacifistmc.forgix") version "2.0.0-fork.9"
 	id("me.modmuss50.mod-publish-plugin") version "0.8.4"
 	id("com.google.devtools.ksp") version "2.2.0-2.0.2"
 	`maven-publish`
@@ -39,6 +39,7 @@ val modLicense: String by project
 
 val fabricLoaderVersion: String? by project
 val neoforgeLoaderVersion: String? by project
+val forgeLoaderVersion: String? by project
 
 val parchmentMinecraftVersion: String by project
 val parchmentMappingsVersion: String by project
@@ -47,6 +48,7 @@ val fabricApiVersion: String by project
 
 allprojects {
 	val loomPlatform = project.findProperty("loom.platform") as? String
+	val loaderEnv = loomPlatform ?: "common"
 
 	apply(plugin = "org.jetbrains.kotlin.jvm")
 	apply(plugin = "architectury-plugin")
@@ -59,9 +61,8 @@ allprojects {
 
 	version = modVersion
 		.let { version -> "$version+$mcVersion" }
-		.let { version -> System.getenv("BUILD_NUMBER")?.let { "$version-$it" } ?: version }
 	group = modGroup
-	base { archivesName = modId.let { if (loomPlatform != null) "$it-$loomPlatform" else it } }
+	base { archivesName = "$modId-$loaderEnv" }
 
 	architectury {
 		when (loomPlatform) {
@@ -72,6 +73,11 @@ allprojects {
 
 			"neoforge" -> {
 				neoForge()
+				platformSetupLoomIde()
+			}
+
+			"forge" -> {
+				forge()
 				platformSetupLoomIde()
 			}
 
@@ -97,7 +103,6 @@ allprojects {
 				val path = project.projectDir.toPath().relativize(rootProject.file(".runs").toPath())
 
 				configureEach {
-					ideConfigFolder = loomPlatform
 					ideConfigGenerated(true)
 				}
 
@@ -114,6 +119,15 @@ allprojects {
 				}
 			}
 		} else runs.configureEach { ideConfigGenerated(false) }
+
+		if (loomPlatform == "forge") {
+			forge {
+				convertAccessWideners.set(true)
+				extraAccessWideners.add(loom.accessWidenerPath.get().asFile.name)
+
+				mixinConfig("$modId.mixins.json")
+			}
+		}
 	}
 
 	val nonModImplementation: Configuration by configurations.creating
@@ -141,6 +155,11 @@ allprojects {
 
 			"neoforge" -> {
 				getByName("developmentNeoForge").extendsFrom(common)
+				getByName("forgeRuntimeLibrary").extendsFrom(nonModImplementation)
+			}
+
+			"forge" -> {
+				getByName("developmentForge").extendsFrom(common)
 				getByName("forgeRuntimeLibrary").extendsFrom(nonModImplementation)
 			}
 		}
@@ -205,6 +224,18 @@ allprojects {
 				shadowBundle(project(":", configuration = "transformProductionNeoForge"))
 			}
 
+			"forge" -> {
+				"forge"("net.minecraftforge:forge:$mcVersion-$forgeLoaderVersion")
+
+				common(project(":", configuration = "namedElements")) { isTransitive = false }
+				shadowBundle(project(":", configuration = "transformProductionForge"))
+
+				compileOnly("io.github.llamalad7:mixinextras-common:0.5.0")
+				annotationProcessor("io.github.llamalad7:mixinextras-common:0.5.0")
+				implementation("io.github.llamalad7:mixinextras-forge:0.5.0")
+				include("io.github.llamalad7:mixinextras-forge:0.5.0")
+			}
+
 			else -> {
 				// We depend on fabric loader here to use the fabric @Environment annotations and get the mixin dependencies
 				// Do NOT use other classes from fabric loader
@@ -240,6 +271,7 @@ allprojects {
 
 			fabricLoaderVersion?.let { props["fabric_loader_version"] = it }
 			neoforgeLoaderVersion?.let { props["neoforge_loader_version"] = it }
+			forgeLoaderVersion?.let { props["forge_loader_version"] = it }
 
 			inputs.properties(props)
 			filesMatching(listOf("META-INF/mods.toml", "META-INF/neoforge.mods.toml", "fabric.mod.json", "**.mixins.json", "pack.mcmeta")) {
@@ -258,7 +290,7 @@ allprojects {
 			remapJar {
 				injectAccessWidener.set(true)
 				inputFile = getByName<ShadowJar>("shadowJar").archiveFile
-				if (loomPlatform == "neoforge")
+				if (loomPlatform == "neoforge" || loomPlatform == "forge")
 					atAccessWideners.add(loom.accessWidenerPath.get().asFile.name)
 			}
 		}
@@ -281,8 +313,10 @@ allprojects {
 		publications {
 			create<MavenPublication>("maven") {
 				from(components["java"])
-				artifactId = modId
-					.let { if (loomPlatform != null) "$it-$loomPlatform" else "$it-common" }
+				artifactId = "$modId-$loaderEnv"
+				version = modVersion
+					.let { version -> "$version+$mcVersion" }
+					.let { version -> System.getenv("BUILD_NUMBER")?.let { "$version-$it" } ?: version }
 			}
 		}
 
@@ -295,28 +329,6 @@ allprojects {
 					password = System.getenv("GITHUB_API_TOKEN")
 				}
 			}
-		}
-	}
-}
-
-forgix {
-	archiveClassifier = ""
-
-	findProject(":fabric")?.let {
-		fabric {
-			inputJar = it.tasks.named<RemapJarTask>("remapJar").get().archiveFile
-		}
-	}
-
-	findProject(":neoforge")?.let {
-		neoforge {
-			inputJar = it.tasks.named<RemapJarTask>("remapJar").get().archiveFile
-		}
-	}
-
-	findProject(":forge")?.let {
-		forge {
-			inputJar = it.tasks.named<RemapJarTask>("remapJar").get().archiveFile
 		}
 	}
 }

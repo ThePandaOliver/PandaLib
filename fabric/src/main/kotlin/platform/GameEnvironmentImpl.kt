@@ -19,4 +19,7 @@ class GameEnvironmentImpl : GameEnvironmentPlatform {
 			EnvType.SERVER -> Environment.DEDICATED_SERVER
 		}
 	override var server: MinecraftServer? = null
+
+	override val isFabric: Boolean
+		get() = true
 }

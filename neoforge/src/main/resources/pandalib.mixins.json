@@ -9,7 +9,6 @@
 		"networking.client.ClientConfigurationPacketListenerImplMixin"
 	],
 	"mixins": [
-		"ServerConfigurationPacketListenerMixin",
 		"events.BlockItemEventMixin",
 		"events.MinecraftServerEventMixin",
 		"events.ServerPlayerGameModeEventMixin",

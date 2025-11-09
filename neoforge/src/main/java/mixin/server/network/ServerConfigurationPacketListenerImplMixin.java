@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2026 Oliver Froberg (The Panda Oliver)
  *
- * This program is free software: you can redistribute it and/or modify 
+ * This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU Lesser General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
  *  any later version.
@@ -29,7 +29,7 @@ public abstract class ServerConfigurationPacketListenerImplMixin extends ServerC
 		super(server, connection, cookie);
 	}
 
-	@Inject(method = "runConfiguration", at = @At("HEAD"))
+	@Inject(method = "startConfiguration", at = @At("HEAD"))
 	public void onServerConfigurationConnectionEvent(CallbackInfo ci) {
 		ServerConfigurationPacketListenerImplKtImpl.INSTANCE
 				.onServerConfigurationConnectionEvent((ServerConfigurationPacketListenerImpl) (Object) this);

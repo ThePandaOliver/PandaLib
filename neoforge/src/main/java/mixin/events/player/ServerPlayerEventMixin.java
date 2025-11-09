@@ -10,13 +10,12 @@
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.pandasystems.pandalib.mixin.events.player;
+package dev.pandasystems.pandalib.neoforge.mixin.events.player;
 
 import dev.pandasystems.pandalib.event.server.ServerPlayerEventsKt;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.level.portal.DimensionTransition;
+import net.minecraft.world.level.portal.TeleportTransition;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -32,24 +31,24 @@ public abstract class ServerPlayerEventMixin {
 	public abstract ServerLevel serverLevel();
 
 	@Inject(
-			method = "changeDimension",
+			method = "teleport(Lnet/minecraft/world/level/portal/TeleportTransition;)Lnet/minecraft/server/level/ServerPlayer;",
 			at = @At(
 					value = "FIELD",
 					target = "Lnet/minecraft/server/level/ServerPlayer;isChangingDimension:Z"
 			), cancellable = true
 	)
-	public void beforeDimensionChange(DimensionTransition transition, CallbackInfoReturnable<ServerPlayer> cir) {
+	public void beforeDimensionChange(TeleportTransition teleportTransition, CallbackInfoReturnable<ServerPlayer> cir) {
 		var cancelled = !ServerPlayerEventsKt.getServerPlayerChangeDimensionPreEvent().getInvoker().invoke((ServerPlayer) (Object) this, serverLevel(),
-				transition.newLevel(), transition);
+				teleportTransition.newLevel(), teleportTransition);
 		if (cancelled) {
 			cir.setReturnValue(null);
 		}
 	}
 
-	@Inject(method = "changeDimension", at = @At("RETURN"))
-	public void afterDimensionChange(DimensionTransition transition, CallbackInfoReturnable<Entity> cir) {
+	@Inject(method = "teleport(Lnet/minecraft/world/level/portal/TeleportTransition;)Lnet/minecraft/server/level/ServerPlayer;", at = @At("RETURN"))
+	public void afterDimensionChange(TeleportTransition teleportTransition, CallbackInfoReturnable<ServerPlayer> cir) {
 		if (this.isChangingDimension) {
-			ServerPlayerEventsKt.getServerPlayerChangeDimensionPostEvent().getInvoker().invoke((ServerPlayer) (Object) this, serverLevel(), transition.newLevel(), transition);
+			ServerPlayerEventsKt.getServerPlayerChangeDimensionPostEvent().getInvoker().invoke((ServerPlayer) (Object) this, serverLevel(), teleportTransition.newLevel(), teleportTransition);
 		}
 	}
 }

@@ -10,7 +10,7 @@
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.pandasystems.pandalib.mixin.events;
+package dev.pandasystems.pandalib.neoforge.mixin.events;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import dev.pandasystems.pandalib.event.client.ClientBlockEventsKt;

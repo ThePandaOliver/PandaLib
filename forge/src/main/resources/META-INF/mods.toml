@@ -24,3 +24,10 @@ mandatory = true
 versionRange = "[1.20-2,1.20.4]"
 ordering = "NONE"
 side = "BOTH"
+
+[[dependencies."${mod_id}"]]
+modId = "pandalib"
+mandatory = true
+versionRange = "*"
+ordering = "NONE"
+side = "BOTH"

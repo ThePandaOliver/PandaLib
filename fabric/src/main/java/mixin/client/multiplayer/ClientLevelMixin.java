@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2026 Oliver Froberg (The Panda Oliver)
  *
- * This program is free software: you can redistribute it and/or modify 
+ * This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU Lesser General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
  *  any later version.
@@ -23,7 +23,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(ClientLevel.class)
 public class ClientLevelMixin {
 	@Inject(method = "disconnect", at = @At("HEAD"))
-	public void disconnect(Component reason, CallbackInfo ci) {
-		ClientLevelKtImpl.INSTANCE.onDisconnect(reason);
+	public void disconnect(CallbackInfo ci) {
+		ClientLevelKtImpl.INSTANCE.onDisconnect();
 	}
 }

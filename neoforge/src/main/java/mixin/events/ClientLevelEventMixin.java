@@ -10,7 +10,7 @@
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.pandasystems.pandalib.mixin.events;
+package dev.pandasystems.pandalib.neoforge.mixin.events;
 
 import dev.pandasystems.pandalib.event.client.ClientPlayerEventsKt;
 import net.minecraft.client.Minecraft;
@@ -32,7 +32,7 @@ public class ClientLevelEventMixin {
 	private Minecraft minecraft;
 
 	@Inject(method = "disconnect", at = @At("HEAD"))
-	public void disconnect(CallbackInfo ci) {
-		ClientPlayerEventsKt.getClientPlayerLeaveEvent().getInvoker().invoke(Objects.requireNonNull(this.minecraft.player));
+	public void disconnect(Component reason, CallbackInfo ci) {
+		ClientPlayerEventsKt.getClientPlayerLeaveEvent().getInvoker().invoke(Objects.requireNonNull(this.minecraft.player), reason);
 	}
 }

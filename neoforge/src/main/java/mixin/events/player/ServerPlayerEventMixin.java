@@ -10,7 +10,7 @@
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.pandasystems.pandalib.mixin.events.player;
+package dev.pandasystems.pandalib.neoforge.mixin.events.player;
 
 import dev.pandasystems.pandalib.event.server.ServerPlayerEventsKt;
 import net.minecraft.server.level.ServerLevel;
@@ -25,10 +25,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(ServerPlayer.class)
 public abstract class ServerPlayerEventMixin {
 	@Shadow
-	private boolean isChangingDimension;
+	public abstract ServerLevel level();
 
 	@Shadow
-	public abstract ServerLevel serverLevel();
+	private boolean isChangingDimension;
 
 	@Inject(
 			method = "teleport(Lnet/minecraft/world/level/portal/TeleportTransition;)Lnet/minecraft/server/level/ServerPlayer;",
@@ -38,7 +38,7 @@ public abstract class ServerPlayerEventMixin {
 			), cancellable = true
 	)
 	public void beforeDimensionChange(TeleportTransition teleportTransition, CallbackInfoReturnable<ServerPlayer> cir) {
-		var cancelled = !ServerPlayerEventsKt.getServerPlayerChangeDimensionPreEvent().getInvoker().invoke((ServerPlayer) (Object) this, serverLevel(),
+		var cancelled = !ServerPlayerEventsKt.getServerPlayerChangeDimensionPreEvent().getInvoker().invoke((ServerPlayer) (Object) this, level(),
 				teleportTransition.newLevel(), teleportTransition);
 		if (cancelled) {
 			cir.setReturnValue(null);
@@ -48,7 +48,7 @@ public abstract class ServerPlayerEventMixin {
 	@Inject(method = "teleport(Lnet/minecraft/world/level/portal/TeleportTransition;)Lnet/minecraft/server/level/ServerPlayer;", at = @At("RETURN"))
 	public void afterDimensionChange(TeleportTransition teleportTransition, CallbackInfoReturnable<ServerPlayer> cir) {
 		if (this.isChangingDimension) {
-			ServerPlayerEventsKt.getServerPlayerChangeDimensionPostEvent().getInvoker().invoke((ServerPlayer) (Object) this, serverLevel(), teleportTransition.newLevel(), teleportTransition);
+			ServerPlayerEventsKt.getServerPlayerChangeDimensionPostEvent().getInvoker().invoke((ServerPlayer) (Object) this, level(), teleportTransition.newLevel(), teleportTransition);
 		}
 	}
 }

@@ -47,6 +47,7 @@ val fabricApiVersion: String by project
 
 allprojects {
 	val loomPlatform = project.findProperty("loom.platform") as? String
+	val loaderEnv = loomPlatform ?: "common"
 
 	apply(plugin = "org.jetbrains.kotlin.jvm")
 	apply(plugin = "architectury-plugin")
@@ -60,7 +61,7 @@ allprojects {
 	version = modVersion
 		.let { version -> "$version+$mcVersion" }
 	group = modGroup
-	base { archivesName = modId.let { if (loomPlatform != null) "$it-$loomPlatform" else it } }
+	base { archivesName = "$modId-$loaderEnv" }
 
 	architectury {
 		when (loomPlatform) {
@@ -96,7 +97,7 @@ allprojects {
 				val path = project.projectDir.toPath().relativize(rootProject.file(".runs").toPath())
 
 				configureEach {
-					ideConfigFolder = loomPlatform
+					ideConfigFolder = mcVersion
 					ideConfigGenerated(true)
 				}
 
@@ -280,8 +281,7 @@ allprojects {
 		publications {
 			create<MavenPublication>("maven") {
 				from(components["java"])
-				artifactId = modId
-					.let { if (loomPlatform != null) "$it-$loomPlatform" else "$it-common" }
+				artifactId = "$modId-$loaderEnv"
 				version = modVersion
 					.let { version -> "$version+$mcVersion" }
 					.let { version -> System.getenv("BUILD_NUMBER")?.let { "$version-$it" } ?: version }
@@ -297,28 +297,6 @@ allprojects {
 					password = System.getenv("GITHUB_API_TOKEN")
 				}
 			}
-		}
-	}
-}
-
-forgix {
-	archiveClassifier = ""
-
-	findProject(":fabric")?.let {
-		fabric {
-			inputJar = it.tasks.named<RemapJarTask>("remapJar").get().archiveFile
-		}
-	}
-
-	findProject(":neoforge")?.let {
-		neoforge {
-			inputJar = it.tasks.named<RemapJarTask>("remapJar").get().archiveFile
-		}
-	}
-
-	findProject(":forge")?.let {
-		forge {
-			inputJar = it.tasks.named<RemapJarTask>("remapJar").get().archiveFile
 		}
 	}
 }

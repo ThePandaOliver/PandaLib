@@ -9,7 +9,6 @@
 	],
 	"mixins": [
 		"RegistryManagerMixin",
-		"networking.ServerConfigurationPacketListenerMixin",
 		"events.BlockItemEventMixin",
 		"events.MinecraftServerEventMixin",
 		"events.ServerPlayerGameModeEventMixin",

@@ -12,11 +12,11 @@
 
 package dev.pandasystems.pandalib.forge.client
 
-import dev.pandasystems.pandalib.PandaLib
+import dev.pandasystems.pandalib.client.PandaLibClient
 import net.minecraftforge.eventbus.api.IEventBus
 
 class PandaLibClientForge(eventBus: IEventBus) {
 	init {
-		PandaLib
+		PandaLibClient
 	}
 }

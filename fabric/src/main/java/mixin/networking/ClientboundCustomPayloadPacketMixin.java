@@ -10,7 +10,7 @@
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.pandasystems.pandalib.forge.mixin.networking;
+package dev.pandasystems.pandalib.fabric.mixin.networking;
 
 import dev.pandasystems.pandalib.networking.ClientPlayNetworking;
 import dev.pandasystems.pandalib.networking.CustomPacketPayload;

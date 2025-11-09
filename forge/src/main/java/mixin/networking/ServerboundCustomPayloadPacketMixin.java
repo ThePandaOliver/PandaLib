@@ -10,7 +10,7 @@
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.pandasystems.pandalib.mixin.networking;
+package dev.pandasystems.pandalib.forge.mixin.networking;
 
 import dev.pandasystems.pandalib.networking.CustomPacketPayload;
 import dev.pandasystems.pandalib.networking.PayloadCodecRegistry;
@@ -40,8 +40,8 @@ public class ServerboundCustomPayloadPacketMixin {
 
 	@Inject(method = "handle(Lnet/minecraft/network/protocol/game/ServerGamePacketListener;)V", at = @At("HEAD"), cancellable = true)
 	public void handle(ServerGamePacketListener handler, CallbackInfo ci) {
-		if (ServerPlayNetworking.INSTANCE.getPacketHandlers$pandalib().containsKey(this.identifier)) {
-			StreamCodec<@NotNull FriendlyByteBuf, @NotNull CustomPacketPayload> codec = PayloadCodecRegistry.INSTANCE.getPacketCodecs$pandalib().get(identifier);
+		if (ServerPlayNetworking.INSTANCE.getPacketHandlers$pandalib_common().containsKey(this.identifier)) {
+			StreamCodec<@NotNull FriendlyByteBuf, @NotNull CustomPacketPayload> codec = PayloadCodecRegistry.INSTANCE.getPacketCodecs$pandalib_common().get(identifier);
 			if (codec == null) throw new IllegalStateException("No codec registered for packet " + identifier);
 			ServerPlayNetworking.INSTANCE.handlePayload(handler, codec.decode(this.data));
 			ci.cancel();

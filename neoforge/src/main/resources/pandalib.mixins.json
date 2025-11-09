@@ -14,11 +14,8 @@
 		"events.ServerPlayerGameModeEventMixin",
 		"events.player.PlayerListEventMixin",
 		"events.player.ServerPlayerEventMixin",
-		"networking.ServerConfigurationPacketListenerMixin",
-		"protocols.ConfigurationProtocolsMixin",
-		"protocols.GameProtocolsMixin",
-		"protocols.LoginProtocolsMixin",
-		"protocols.StatusProtocolsMixin"
+		"networking.ConnectionProtocolMixin",
+		"networking.ServerConfigurationPacketListenerMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

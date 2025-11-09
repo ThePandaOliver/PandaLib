@@ -1,13 +1,15 @@
 {
 	"required": true,
-	"package": "dev.pandasystems.pandalib.mixin",
-	"compatibilityLevel": "JAVA_21",
+	"package": "dev.pandasystems.pandalib.forge.mixin",
+	"compatibilityLevel": "JAVA_17",
 	"minVersion": "0.8",
 	"client": [
 		"events.ClientLevelEventMixin",
 		"events.player.ClientPacketListenerEventMixin"
 	],
 	"mixins": [
+		"RegistryManagerMixin",
+		"networking.ServerConfigurationPacketListenerMixin",
 		"events.BlockItemEventMixin",
 		"events.MinecraftServerEventMixin",
 		"events.ServerPlayerGameModeEventMixin",

@@ -9,8 +9,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-
-package dev.pandasystems.pandalib.mixin.events;
+package dev.pandasystems.pandalib.forge.mixin.events;
 
 import dev.pandasystems.pandalib.event.server.ServerLifecycleEventsKt;
 import net.minecraft.server.MinecraftServer;

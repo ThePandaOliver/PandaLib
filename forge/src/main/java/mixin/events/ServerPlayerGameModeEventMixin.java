@@ -10,7 +10,7 @@
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.pandasystems.pandalib.mixin.events;
+package dev.pandasystems.pandalib.forge.mixin.events;
 
 import dev.pandasystems.pandalib.event.server.ServerBlockEventsKt;
 import net.minecraft.core.BlockPos;
@@ -30,7 +30,7 @@ public class ServerPlayerGameModeEventMixin {
 
 	@Shadow @Final protected ServerPlayer player;
 
-	@Inject(method = "destroyBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/Block;playerWillDestroy(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/entity/player/Player;)V"), cancellable = true)
+	@Inject(method = "destroyBlock", at = @At(value = "INVOKE", target = "Lnet/minecraftforge/common/ForgeHooks;onBlockBreakEvent(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/level/GameType;Lnet/minecraft/server/level/ServerPlayer;Lnet/minecraft/core/BlockPos;)I"), cancellable = true)
 	public void onBlockBreakEvent(BlockPos pos, CallbackInfoReturnable<Boolean> cir) {
 		var cancelled = !ServerBlockEventsKt.getServerBlockBreakPreEvent().getInvoker().invoke(this.level, pos, this.level.getBlockState(pos), this.player);
 		if (cancelled) {

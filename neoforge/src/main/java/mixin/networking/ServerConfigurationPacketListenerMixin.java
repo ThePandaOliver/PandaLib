@@ -29,7 +29,7 @@ public abstract class ServerConfigurationPacketListenerMixin extends ServerCommo
 		super(server, connection, cookie);
 	}
 
-	@Inject(method = "runConfiguration", at = @At("HEAD"))
+	@Inject(method = "startConfiguration", at = @At("HEAD"))
 	public void runConfiguration(CallbackInfo ci) {
 		ServerConfigurationConnectionEventsKt.getServerConfigurationConnectionEvent().getInvoker()
 				.invoke((ServerConfigurationPacketListenerImpl) (Object) this, this.server);

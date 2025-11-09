@@ -103,13 +103,13 @@ allprojects {
 
 				named("client") {
 					client()
-					configName = "Client"
+					configName = "$loomPlatform Client $mcVersion"
 					runDir("$path/client")
 					programArg("--username=Dev")
 				}
 				named("server") {
 					server()
-					configName = "Server"
+					configName = "$loomPlatform Server $mcVersion"
 					runDir("$path/server")
 				}
 			}

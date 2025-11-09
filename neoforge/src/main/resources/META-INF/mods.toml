@@ -13,15 +13,15 @@ logoFile = "assets/${mod_id}/icon.png"
 
 [[dependencies."${mod_id}"]]
 modId = "neoforge"
-type = "required"
-versionRange = "*"
+mandatory = true
+versionRange = "[${neoforge_loader_version},)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies."${mod_id}"]]
 modId = "minecraft"
-type = "required"
-versionRange = "[1.20-2,1.20.4]"
+mandatory = true
+versionRange = "${minecraft_version}"
 ordering = "NONE"
 side = "BOTH"
 

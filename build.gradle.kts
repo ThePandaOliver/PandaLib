@@ -97,19 +97,18 @@ allprojects {
 				val path = project.projectDir.toPath().relativize(rootProject.file(".runs").toPath())
 
 				configureEach {
-					ideConfigFolder = mcVersion
 					ideConfigGenerated(true)
 				}
 
 				named("client") {
 					client()
-					configName = "$loomPlatform Client $mcVersion"
+					configName = "Client"
 					runDir("$path/client")
 					programArg("--username=Dev")
 				}
 				named("server") {
 					server()
-					configName = "$loomPlatform Server $mcVersion"
+					configName = "Server"
 					runDir("$path/server")
 				}
 			}

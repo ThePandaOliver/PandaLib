@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2026 Oliver Froberg (The Panda Oliver)
  *
- * This program is free software: you can redistribute it and/or modify 
+ * This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU Lesser General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
  *  any later version.
@@ -27,12 +27,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(GameProtocols.class)
 public class GameProtocolsMixin {
 	@Inject(method = "method_55958", at = @At("RETURN"))
-	private static void addClientPacket(ProtocolInfoBuilder<ClientGamePacketListener, RegistryFriendlyByteBuf, Unit> protocolInfoBuilder, CallbackInfo ci) {
+	private static void addClientPacket(ProtocolInfoBuilder<ClientGamePacketListener, RegistryFriendlyByteBuf> protocolInfoBuilder, CallbackInfo ci) {
 		GameProtocolsKtImpl.INSTANCE.addClientPacket(protocolInfoBuilder);
 	}
 
 	@Inject(method = "method_55959", at = @At("RETURN"))
-	private static void addServerPacket(ProtocolInfoBuilder<ServerGamePacketListener, RegistryFriendlyByteBuf, Unit> protocolInfoBuilder, CallbackInfo ci) {
+	private static void addServerPacket(ProtocolInfoBuilder<ServerGamePacketListener, RegistryFriendlyByteBuf> protocolInfoBuilder, CallbackInfo ci) {
 		GameProtocolsKtImpl.INSTANCE.addServerPacket(protocolInfoBuilder);
 	}
 }

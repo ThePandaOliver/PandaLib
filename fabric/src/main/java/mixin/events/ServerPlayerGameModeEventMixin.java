@@ -10,7 +10,7 @@
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.pandasystems.pandalib.mixin.events;
+package dev.pandasystems.pandalib.fabric.mixin.events;
 
 import dev.pandasystems.pandalib.event.server.ServerBlockEventsKt;
 import net.minecraft.core.BlockPos;

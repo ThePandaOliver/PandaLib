@@ -10,11 +10,7 @@
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-<<<<<<<< HEAD:forge/src/main/java/mixin/events/player/ClientPacketListenerEventMixin.java
 package dev.pandasystems.pandalib.forge.mixin.events.player;
-========
-package dev.pandasystems.pandalib.fabric.mixin.events.player;
->>>>>>>> versions/dev/1.20.3:fabric/src/main/java/mixin/events/player/ClientPacketListenerEventMixin.java
 
 import dev.pandasystems.pandalib.event.client.ClientPlayerEventsKt;
 import net.minecraft.client.Minecraft;

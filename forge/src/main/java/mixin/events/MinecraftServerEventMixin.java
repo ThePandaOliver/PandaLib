@@ -9,12 +9,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-
-<<<<<<<< HEAD:forge/src/main/java/mixin/events/MinecraftServerEventMixin.java
 package dev.pandasystems.pandalib.forge.mixin.events;
-========
-package dev.pandasystems.pandalib.fabric.mixin.events;
->>>>>>>> versions/dev/1.20.3:fabric/src/main/java/mixin/events/MinecraftServerEventMixin.java
 
 import dev.pandasystems.pandalib.event.server.ServerLifecycleEventsKt;
 import net.minecraft.server.MinecraftServer;

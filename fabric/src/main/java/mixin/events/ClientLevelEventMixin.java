@@ -10,22 +10,29 @@
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.pandasystems.pandalib.mixin.networking.client;
+package dev.pandasystems.pandalib.fabric.mixin.events;
 
-import dev.pandasystems.pandalib.networking.ClientConfigurationNetworking;
+import dev.pandasystems.pandalib.event.client.ClientPlayerEventsKt;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientConfigurationPacketListenerImpl;
-import net.minecraft.client.multiplayer.CommonListenerCookie;
-import net.minecraft.network.Connection;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.network.chat.Component;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(ClientConfigurationPacketListenerImpl.class)
-public class ClientConfigurationPacketListenerImplMixin {
-	@Inject(method = "<init>", at = @At("RETURN"))
-	public void onInit(Minecraft minecraft, Connection connection, CommonListenerCookie commonListenerCookie, CallbackInfo ci) {
-		ClientConfigurationNetworking.connection = connection;
+import java.util.Objects;
+
+@Mixin(ClientLevel.class)
+public class ClientLevelEventMixin {
+	@Shadow
+	@Final
+	private Minecraft minecraft;
+
+	@Inject(method = "disconnect", at = @At("HEAD"))
+	public void disconnect(CallbackInfo ci) {
+		ClientPlayerEventsKt.getClientPlayerLeaveEvent().getInvoker().invoke(Objects.requireNonNull(this.minecraft.player));
 	}
 }

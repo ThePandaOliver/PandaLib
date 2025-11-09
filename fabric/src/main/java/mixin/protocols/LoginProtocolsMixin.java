@@ -10,7 +10,7 @@
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.pandasystems.pandalib.mixin.protocols;
+package dev.pandasystems.pandalib.fabric.mixin.protocols;
 
 import dev.pandasystems.pandalib.networking.packets.ClientboundPLPayloadPacketKt;
 import dev.pandasystems.pandalib.networking.packets.ServerboundPLPayloadPacketKt;

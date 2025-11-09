@@ -10,12 +10,13 @@
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.pandasystems.pandalib.mixin.events.player;
+package dev.pandasystems.pandalib.neoforge.mixin.events.player;
 
 import dev.pandasystems.pandalib.event.server.ServerPlayerEventsKt;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+import net.neoforged.neoforge.common.util.ITeleporter;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -32,22 +33,20 @@ public abstract class ServerPlayerEventMixin {
 
 	@Inject(
 			method = "changeDimension",
-			at = @At(
-					value = "FIELD",
-					target = "Lnet/minecraft/server/level/ServerPlayer;isChangingDimension:Z"
-			), cancellable = true
+			at = @At("HEAD"),
+			cancellable = true
 	)
-	public void beforeDimensionChange(ServerLevel destination, CallbackInfoReturnable<Entity> cir) {
-		var cancelled = !ServerPlayerEventsKt.getServerPlayerChangeDimensionPreEvent().getInvoker().invoke((ServerPlayer) (Object) this, serverLevel(), destination);
+	public void beforeDimensionChange(ServerLevel newLevel, ITeleporter teleporter, CallbackInfoReturnable<Entity> cir) {
+		var cancelled = !ServerPlayerEventsKt.getServerPlayerChangeDimensionPreEvent().getInvoker().invoke((ServerPlayer) (Object) this, serverLevel(), newLevel);
 		if (cancelled) {
 			cir.setReturnValue(null);
 		}
 	}
 
 	@Inject(method = "changeDimension", at = @At("RETURN"))
-	public void afterDimensionChange(ServerLevel destination, CallbackInfoReturnable<Entity> cir) {
+	public void afterDimensionChange(ServerLevel newLevel, ITeleporter teleporter, CallbackInfoReturnable<Entity> cir) {
 		if (this.isChangingDimension) {
-			ServerPlayerEventsKt.getServerPlayerChangeDimensionPostEvent().getInvoker().invoke((ServerPlayer) (Object) this, serverLevel(), destination);
+			ServerPlayerEventsKt.getServerPlayerChangeDimensionPostEvent().getInvoker().invoke((ServerPlayer) (Object) this, serverLevel(), newLevel);
 		}
 	}
 }

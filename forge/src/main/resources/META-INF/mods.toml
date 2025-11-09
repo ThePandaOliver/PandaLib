@@ -24,3 +24,10 @@ mandatory = true
 versionRange = "${minecraft_version}"
 ordering = "NONE"
 side = "BOTH"
+
+[[dependencies."${mod_id}"]]
+modId = "pandalib"
+mandatory = true
+versionRange = "*"
+ordering = "NONE"
+side = "BOTH"

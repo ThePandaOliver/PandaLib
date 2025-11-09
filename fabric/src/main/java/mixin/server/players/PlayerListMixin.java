@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2026 Oliver Froberg (The Panda Oliver)
  *
- * This program is free software: you can redistribute it and/or modify 
+ * This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU Lesser General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
  *  any later version.
@@ -37,7 +37,7 @@ public class PlayerListMixin {
 	}
 
 	@Inject(method = "respawn", at = @At("TAIL"))
-	private void onRespawn(ServerPlayer player, boolean keepInventory, Entity.RemovalReason removalReason, CallbackInfoReturnable<ServerPlayer> cir) {
-		PlayerListKtImpl.INSTANCE.onRespawnEvent(player, keepInventory, removalReason, cir);
+	private void onRespawn(ServerPlayer player, boolean keepEverything, CallbackInfoReturnable<ServerPlayer> cir) {
+		PlayerListKtImpl.INSTANCE.onRespawnEvent(player, keepEverything, cir);
 	}
 }

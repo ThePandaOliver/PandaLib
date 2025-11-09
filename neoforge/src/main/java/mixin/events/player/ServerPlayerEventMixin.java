@@ -16,7 +16,7 @@ import dev.pandasystems.pandalib.event.server.ServerPlayerEventsKt;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.level.portal.DimensionTransition;
+import net.neoforged.neoforge.common.util.ITeleporter;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -36,18 +36,17 @@ public abstract class ServerPlayerEventMixin {
 			at = @At("HEAD"),
 			cancellable = true
 	)
-	public void beforeDimensionChange(DimensionTransition transition, CallbackInfoReturnable<Entity> cir) {
-		var cancelled = !ServerPlayerEventsKt.getServerPlayerChangeDimensionPreEvent().getInvoker().invoke((ServerPlayer) (Object) this, serverLevel(),
-				transition.newLevel(), transition);
+	public void beforeDimensionChange(ServerLevel newLevel, ITeleporter teleporter, CallbackInfoReturnable<Entity> cir) {
+		var cancelled = !ServerPlayerEventsKt.getServerPlayerChangeDimensionPreEvent().getInvoker().invoke((ServerPlayer) (Object) this, serverLevel(), newLevel);
 		if (cancelled) {
 			cir.setReturnValue(null);
 		}
 	}
 
 	@Inject(method = "changeDimension", at = @At("RETURN"))
-	public void afterDimensionChange(DimensionTransition transition, CallbackInfoReturnable<Entity> cir) {
+	public void afterDimensionChange(ServerLevel newLevel, ITeleporter teleporter, CallbackInfoReturnable<Entity> cir) {
 		if (this.isChangingDimension) {
-			ServerPlayerEventsKt.getServerPlayerChangeDimensionPostEvent().getInvoker().invoke((ServerPlayer) (Object) this, serverLevel(), transition.newLevel(), transition);
+			ServerPlayerEventsKt.getServerPlayerChangeDimensionPostEvent().getInvoker().invoke((ServerPlayer) (Object) this, serverLevel(), newLevel);
 		}
 	}
 }

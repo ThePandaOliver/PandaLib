@@ -10,7 +10,7 @@
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.pandasystems.pandalib.mixin.events.player;
+package dev.pandasystems.pandalib.neoforge.mixin.events.player;
 
 import dev.pandasystems.pandalib.event.server.ServerPlayerEventsKt;
 import net.minecraft.server.level.ServerLevel;

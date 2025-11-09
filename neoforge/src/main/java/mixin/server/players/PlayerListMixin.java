@@ -15,7 +15,6 @@ package dev.pandasystems.pandalib.neoforge.mixin.server.players;
 import dev.pandasystems.pandalib.mixin.server.players.PlayerListKtImpl;
 import net.minecraft.network.Connection;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.server.network.CommonListenerCookie;
 import net.minecraft.server.players.PlayerList;
 import net.minecraft.world.entity.Entity;
 import org.spongepowered.asm.mixin.Mixin;
@@ -27,7 +26,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(PlayerList.class)
 public class PlayerListMixin {
 	@Inject(method = "placeNewPlayer", at = @At("RETURN"))
-	private void onPlayerJoinEvent(Connection connection, ServerPlayer player, CommonListenerCookie cookie, CallbackInfo ci) {
+	private void onPlayerJoinEvent(Connection netManager, ServerPlayer player, CallbackInfo ci) {
 		PlayerListKtImpl.INSTANCE.onPlayerJoinEvent(player);
 	}
 

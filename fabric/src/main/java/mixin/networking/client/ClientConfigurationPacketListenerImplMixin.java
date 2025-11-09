@@ -10,7 +10,7 @@
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.pandasystems.pandalib.mixin.networking.client;
+package dev.pandasystems.pandalib.fabric.mixin.networking.client;
 
 import dev.pandasystems.pandalib.networking.ClientConfigurationNetworking;
 import net.minecraft.client.Minecraft;

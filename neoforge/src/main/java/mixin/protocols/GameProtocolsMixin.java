@@ -10,24 +10,24 @@
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.pandasystems.pandalib.mixin.protocols;
+package dev.pandasystems.pandalib.neoforge.mixin.protocols;
 
 import dev.pandasystems.pandalib.networking.packets.ClientboundPLPayloadPacketKt;
 import dev.pandasystems.pandalib.networking.packets.ServerboundPLPayloadPacketKt;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.protocol.ProtocolInfoBuilder;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.GameProtocols;
 import net.minecraft.network.protocol.game.ServerGamePacketListener;
-import net.minecraft.network.protocol.login.LoginProtocols;
 import net.minecraft.util.Unit;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(LoginProtocols.class)
-public class LoginProtocolsMixin {
-	@Inject(method = "method_56018", at = @At("RETURN"))
+@Mixin(GameProtocols.class)
+public class GameProtocolsMixin {
+	@Inject(method = "method_55958", at = @At("RETURN"))
 	private static void addClientPacket(ProtocolInfoBuilder<ClientGamePacketListener, RegistryFriendlyByteBuf, Unit> protocolInfoBuilder, CallbackInfo ci) {
 		protocolInfoBuilder.addPacket(
 				ClientboundPLPayloadPacketKt.getClientboundPLPayloadPacketType(),
@@ -35,7 +35,7 @@ public class LoginProtocolsMixin {
 		);
 	}
 
-	@Inject(method = "method_56019", at = @At("RETURN"))
+	@Inject(method = "method_55959", at = @At("RETURN"))
 	private static void addServerPacket(ProtocolInfoBuilder<ServerGamePacketListener, RegistryFriendlyByteBuf, Unit> protocolInfoBuilder, CallbackInfo ci) {
 		protocolInfoBuilder.addPacket(
 				ServerboundPLPayloadPacketKt.getServerboundPLPayloadPacketType(),

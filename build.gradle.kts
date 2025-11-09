@@ -18,7 +18,7 @@ plugins {
 	id("com.gradleup.shadow") version "9.0.2" apply false
 	id("org.jetbrains.gradle.plugin.idea-ext") version "1.1.10"
 
-	id("io.github.pacifistmc.forgix") version "2.0.0-SNAPSHOT.5.1-FORK.3"
+	id("io.github.pacifistmc.forgix") version "2.0.0-fork.9"
 	id("me.modmuss50.mod-publish-plugin") version "0.8.4"
 	id("com.google.devtools.ksp") version "2.2.0-2.0.2"
 	`maven-publish`
@@ -47,6 +47,7 @@ val fabricApiVersion: String by project
 
 allprojects {
 	val loomPlatform = project.findProperty("loom.platform") as? String
+	val loaderEnv = loomPlatform ?: "common"
 
 	apply(plugin = "org.jetbrains.kotlin.jvm")
 	apply(plugin = "architectury-plugin")
@@ -59,9 +60,8 @@ allprojects {
 
 	version = modVersion
 		.let { version -> "$version+$mcVersion" }
-		.let { version -> System.getenv("BUILD_NUMBER")?.let { "$version-$it" } ?: version }
 	group = modGroup
-	base { archivesName = modId.let { if (loomPlatform != null) "$it-$loomPlatform" else it } }
+	base { archivesName = "$modId-$loaderEnv" }
 
 	architectury {
 		when (loomPlatform) {
@@ -97,7 +97,7 @@ allprojects {
 				val path = project.projectDir.toPath().relativize(rootProject.file(".runs").toPath())
 
 				configureEach {
-					ideConfigFolder = loomPlatform
+					ideConfigFolder = mcVersion
 					ideConfigGenerated(true)
 				}
 
@@ -281,8 +281,10 @@ allprojects {
 		publications {
 			create<MavenPublication>("maven") {
 				from(components["java"])
-				artifactId = modId
-					.let { if (loomPlatform != null) "$it-$loomPlatform" else "$it-common" }
+				artifactId = "$modId-$loaderEnv"
+				version = modVersion
+					.let { version -> "$version+$mcVersion" }
+					.let { version -> System.getenv("BUILD_NUMBER")?.let { "$version-$it" } ?: version }
 			}
 		}
 
@@ -295,28 +297,6 @@ allprojects {
 					password = System.getenv("GITHUB_API_TOKEN")
 				}
 			}
-		}
-	}
-}
-
-forgix {
-	archiveClassifier = ""
-
-	findProject(":fabric")?.let {
-		fabric {
-			inputJar = it.tasks.named<RemapJarTask>("remapJar").get().archiveFile
-		}
-	}
-
-	findProject(":neoforge")?.let {
-		neoforge {
-			inputJar = it.tasks.named<RemapJarTask>("remapJar").get().archiveFile
-		}
-	}
-
-	findProject(":forge")?.let {
-		forge {
-			inputJar = it.tasks.named<RemapJarTask>("remapJar").get().archiveFile
 		}
 	}
 }

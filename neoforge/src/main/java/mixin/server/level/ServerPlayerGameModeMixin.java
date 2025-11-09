@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2026 Oliver Froberg (The Panda Oliver)
  *
- * This program is free software: you can redistribute it and/or modify 
+ * This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU Lesser General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
  *  any later version.
@@ -30,7 +30,7 @@ public class ServerPlayerGameModeMixin {
 
 	@Shadow @Final protected ServerPlayer player;
 
-	@Inject(method = "destroyBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/Block;playerWillDestroy(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/entity/player/Player;)Lnet/minecraft/world/level/block/state/BlockState;"), cancellable = true)
+	@Inject(method = "destroyBlock", at = @At(value = "INVOKE", target = "Lnet/neoforged/neoforge/common/CommonHooks;onBlockBreakEvent(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/level/GameType;Lnet/minecraft/server/level/ServerPlayer;Lnet/minecraft/core/BlockPos;)I"), cancellable = true)
 	public void onBlockBreakEventPre(BlockPos pos, CallbackInfoReturnable<Boolean> cir) {
 		ServerPlayerGameModeKtImpl.INSTANCE.onBlockBreakEventPre(this.level, pos, this.player, cir);
 	}

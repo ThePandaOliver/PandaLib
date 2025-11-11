@@ -109,4 +109,4 @@ dependencies {
 
 ## License
 
-The project is licensed under the GNU LGPLv3
+The project is licensed under the GNU LGPLv3.

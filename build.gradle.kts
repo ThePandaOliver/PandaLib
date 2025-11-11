@@ -49,6 +49,7 @@ val fabricApiVersion: String by project
 allprojects {
 	val loomPlatform = project.findProperty("loom.platform") as? String
 	val loaderEnv = loomPlatform ?: "common"
+	val isSlimJar = rootProject.findProperty("slimJar").toString().toBoolean()
 
 	apply(plugin = "org.jetbrains.kotlin.jvm")
 	apply(plugin = "architectury-plugin")
@@ -62,7 +63,9 @@ allprojects {
 	version = modVersion
 		.let { version -> "$version+$mcVersion" }
 	group = modGroup
-	base { archivesName = "$modId-$loaderEnv" }
+	base {
+		archivesName = if (isSlimJar) "$modId-$loaderEnv-slim" else "$modId-$loaderEnv"
+	}
 
 	architectury {
 		when (loomPlatform) {
@@ -146,7 +149,8 @@ allprojects {
 
 	configurations {
 		implementation.get().extendsFrom(nonModImplementation)
-		if (loomPlatform != null) getByName("include").extendsFrom(nonModImplementation)
+		if (loomPlatform != null && isSlimJar)
+			getByName("include").extendsFrom(nonModImplementation)
 
 		when (loomPlatform) {
 			"fabric" -> {
@@ -313,7 +317,6 @@ allprojects {
 		publications {
 			create<MavenPublication>("maven") {
 				from(components["java"])
-				artifactId = "$modId-$loaderEnv"
 				version = modVersion
 					.let { version -> "$version+$mcVersion" }
 					.let { version -> System.getenv("BUILD_NUMBER")?.let { "$version-$it" } ?: version }

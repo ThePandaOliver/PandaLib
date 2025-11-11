@@ -48,7 +48,6 @@ val fabricApiVersion: String by project
 allprojects {
 	val loomPlatform = project.findProperty("loom.platform") as? String
 	val loaderEnv = loomPlatform ?: "common"
-	val isSlimJar = rootProject.findProperty("slimJar").toString().toBoolean()
 
 	apply(plugin = "org.jetbrains.kotlin.jvm")
 	apply(plugin = "architectury-plugin")
@@ -62,9 +61,7 @@ allprojects {
 	version = modVersion
 		.let { version -> "$version+$mcVersion" }
 	group = modGroup
-	base {
-		archivesName = if (isSlimJar) "$modId-$loaderEnv-slim" else "$modId-$loaderEnv"
-	}
+	base { archivesName = "$modId-$loaderEnv" }
 
 	architectury {
 		when (loomPlatform) {
@@ -134,7 +131,7 @@ allprojects {
 
 	configurations {
 		implementation.get().extendsFrom(nonModImplementation)
-		if (loomPlatform != null && isSlimJar)
+		if (loomPlatform != null)
 			getByName("include").extendsFrom(nonModImplementation)
 
 		when (loomPlatform) {
@@ -261,8 +258,24 @@ allprojects {
 			remapJar {
 				injectAccessWidener.set(true)
 				inputFile = getByName<ShadowJar>("shadowJar").archiveFile
+				archiveClassifier.set("")
 				if (loomPlatform == "neoforge")
 					atAccessWideners.add(loom.accessWidenerPath.get().asFile.name)
+			}
+
+
+			val remapSlimJar by registering(RemapJarTask::class) {
+				dependsOn(getByName<ShadowJar>("shadowJar"))
+				injectAccessWidener.set(true)
+				inputFile = getByName<ShadowJar>("shadowJar").archiveFile
+				archiveClassifier.set("slim")
+				addNestedDependencies.set(false)
+				if (loomPlatform == "neoforge")
+					atAccessWideners.add(loom.accessWidenerPath.get().asFile.name)
+			}
+
+			build {
+				dependsOn("remapSlimJar")
 			}
 		}
 	}
@@ -288,6 +301,16 @@ allprojects {
 				version = modVersion
 					.let { version -> "$version+$mcVersion" }
 					.let { version -> System.getenv("BUILD_NUMBER")?.let { "$version-$it" } ?: version }
+
+				if (loomPlatform != null) {
+					artifact(tasks.named("remapSlimJar")) {
+						classifier = "slim"
+					}
+				} else {
+					artifact(tasks.remapJar) {
+						classifier = "slim"
+					}
+				}
 			}
 		}
 

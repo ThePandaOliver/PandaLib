@@ -46,6 +46,3 @@ jobs:
 
       - name: Publish to GitHub Packages
         run: ./gradlew publish
-
-      - name: Publish slim jar to GitHub Packages
-        run: ./gradlew publish -PslimJar=true

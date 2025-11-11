@@ -284,6 +284,9 @@ allprojects {
 		publications {
 			create<MavenPublication>("maven") {
 				from(components["java"])
+				base {
+					archivesName = (if (isSlimJar) "$modId-$loaderEnv-slim" else "$modId-$loaderEnv").lowercase()
+				}
 				version = modVersion
 					.let { version -> "$version+$mcVersion" }
 					.let { version -> System.getenv("BUILD_NUMBER")?.let { "$version-$it" } ?: version }

@@ -11,10 +11,9 @@ import com.google.auto.service.AutoService
 import dev.pandasystems.pandalib.registry.RegistriesPlatform
 import net.minecraft.core.Registry
 import net.minecraft.network.syncher.EntityDataSerializer
-import net.minecraftforge.registries.ForgeRegistries
 
 @AutoService(RegistriesPlatform::class)
 class RegistriesImpl : RegistriesPlatform {
 	override val entityDataSerializers: Registry<EntityDataSerializer<*>>
-		get() = ForgeRegistries.ENTITY_DATA_SERIALIZERS.get() as Registry<EntityDataSerializer<*>>
+		get() = TODO("Not yet implemented")
 }

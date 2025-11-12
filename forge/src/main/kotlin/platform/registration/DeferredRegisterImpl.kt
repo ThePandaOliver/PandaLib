@@ -15,7 +15,6 @@ import net.minecraft.core.Registry
 import net.minecraft.core.WritableRegistry
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.resources.ResourceKey
-import net.minecraftforge.registries.NewRegistryEvent
 import net.minecraftforge.registries.RegisterEvent
 import java.util.function.Consumer
 import java.util.function.Supplier
@@ -24,6 +23,7 @@ import java.util.function.Supplier
 @AutoService(DeferredRegisterPlatform::class)
 class DeferredRegisterImpl : DeferredRegisterPlatform {
 	private val pendingRegistries: MutableMap<ResourceKey<out Registry<*>>, PendingRegistries<*>> = mutableMapOf()
+	private val pendingForgeRegistries: MutableMap<ResourceKey<out Registry<*>>, PendingRegistries<*>> = mutableMapOf()
 	private val pendingRegistryTypes: MutableList<Registry<*>> = mutableListOf()
 
 	override fun <T> registerObject(
@@ -44,6 +44,7 @@ class DeferredRegisterImpl : DeferredRegisterPlatform {
 
 	fun registerEvent(event: RegisterEvent) {
 		pendingRegistries.values.forEach(Consumer { pending: PendingRegistries<*> -> pending.register(event) })
+		pendingForgeRegistries.values.forEach(Consumer { pending: PendingRegistries<*> -> pending.register(event) })
 	}
 
 	fun registerNewRegistries() {

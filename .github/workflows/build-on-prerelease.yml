@@ -1,0 +1,86 @@
+name: Build on Pre-Release
+
+on:
+  release:
+    types:
+      - prereleased
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        branch:
+          - versions/dev/1.21.10
+          - versions/dev/1.21.9
+          - versions/dev/1.21.8
+          - versions/dev/1.21.7
+          - versions/dev/1.21.6
+          - versions/dev/1.21.5
+          - versions/dev/1.21.4
+          - versions/dev/1.21.3
+          - versions/dev/1.21.2
+          - versions/dev/1.21.1
+          - versions/dev/1.21
+          - versions/dev/1.20.6
+          - versions/dev/1.20.5
+          - versions/dev/1.20.4
+          - versions/dev/1.20.3
+          - versions/dev/1.20.2
+          - versions/dev/1.20.1
+          - versions/dev/1.20
+
+    env:
+      GITHUB_USER: ${{ github.actor }}
+      GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - name: Checkout target branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ matrix.branch }}
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Make gradlew executable
+        run: chmod +x gradlew
+
+      - name: Build with Gradle
+        run: ./gradlew build
+
+      # Adjust the path to your build artifacts (e.g. jars)
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-${{ matrix.branch }}
+          path: |
+            /fabric/build/libs/*.jar
+            /neoforge/build/libs/*.jar
+            /forge/build/libs/*.jar
+
+  attach-to-release:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: ./artifacts
+
+      - name: Upload artifacts to release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.event.release.tag_name }}
+          files: ./artifacts/**/*

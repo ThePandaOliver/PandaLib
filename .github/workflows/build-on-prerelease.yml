@@ -66,9 +66,9 @@ jobs:
         with:
           name: build-${{ matrix.branch }}
           path: |
-            /fabric/build/libs/*.jar
-            /neoforge/build/libs/*.jar
-            /forge/build/libs/*.jar
+            fabric/build/libs/*.jar
+            neoforge/build/libs/*.jar
+            forge/build/libs/*.jar
 
   attach-to-release:
     needs: build

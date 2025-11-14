@@ -133,7 +133,7 @@ object ServerPlayNetworking {
 
 	// Packet Receiving
 
-	fun handlePayload(handler: ServerGamePacketListener, payload: CustomPacketPayload) {
+	fun handlePayload(handler: ServerGamePacketListenerImpl, payload: CustomPacketPayload) {
 		class Sender(val connection: Connection): PacketSender {
 			override fun createPacket(payload: CustomPacketPayload): Packet<*> {
 				return ServerPlayNetworking.createPacket(payload)
@@ -148,16 +148,12 @@ object ServerPlayNetworking {
 			}
 		}
 
-		when (handler) {
-			is ServerGamePacketListenerImpl -> {
-				val context = object : Context {
-					override fun server(): MinecraftServer = handler.server
-					override fun player(): ServerPlayer = handler.player
-					override fun responseSender(): PacketSender = Sender(handler.connection)
-				}
-				packetHandlers[payload.id()]?.receive(payload, context)
-			}
+		val context = object : Context {
+			override fun server(): MinecraftServer = handler.server
+			override fun player(): ServerPlayer = handler.player
+			override fun responseSender(): PacketSender = Sender(handler.connection)
 		}
+		packetHandlers[payload.id()]?.receive(payload, context)
 	}
 
 	fun interface PlayPayloadHandler<T : CustomPacketPayload> {

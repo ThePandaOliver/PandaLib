@@ -20,6 +20,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.game.ServerGamePacketListener;
 import net.minecraft.network.protocol.game.ServerboundCustomPayloadPacket;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -43,7 +44,7 @@ public class ServerboundCustomPayloadPacketMixin {
 		if (ServerPlayNetworking.INSTANCE.getPacketHandlers$pandalib_common().containsKey(this.identifier)) {
 			StreamCodec<@NotNull FriendlyByteBuf, @NotNull CustomPacketPayload> codec = PayloadCodecRegistry.INSTANCE.getPacketCodecs$pandalib_common().get(identifier);
 			if (codec == null) throw new IllegalStateException("No codec registered for packet " + identifier);
-			ServerPlayNetworking.INSTANCE.handlePayload(handler, codec.decode(this.data));
+			ServerPlayNetworking.INSTANCE.handlePayload((ServerGamePacketListenerImpl) handler, codec.decode(this.data));
 			ci.cancel();
 		}
 	}

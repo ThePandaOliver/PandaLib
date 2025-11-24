@@ -170,7 +170,7 @@ allprojects {
 		nonModImplementation("org.jetbrains.kotlinx:kotlinx-io-core:0.7.0")
 		nonModImplementation("org.jetbrains.kotlinx:kotlinx-io-bytestring:0.7.0")
 
-		nonModImplementation("dev.pandasystems:universal-serializer:0.1.0-20251124.231100-3") {
+		nonModImplementation("dev.pandasystems:universal-serializer:0.1.0-SNAPSHOT") {
 			isChanging = true
 		}
 

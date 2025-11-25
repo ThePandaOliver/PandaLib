@@ -153,7 +153,12 @@ allprojects {
 		maven("https://maven.minecraftforge.net/")
 		maven("https://maven.neoforged.net/releases/")
 
-		maven("https://repo.pandasystems.dev/repository/maven-snapshots/") { name = "PandasRepository" }
+		maven("https://repo.pandasystems.dev/repository/maven-snapshots/") {
+			name = "PandasRepository"
+			mavenContent {
+				snapshotsOnly()
+			}
+		}
 	}
 
 	dependencies {

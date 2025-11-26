@@ -2,6 +2,23 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/1.20" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/1.20.1" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/1.20.2" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/1.20.3" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/1.20.4" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/1.20.5" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/1.20.6" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/1.21" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/1.21.1" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/1.21.10" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/1.21.2" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/1.21.3" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/1.21.4" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/1.21.5" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/1.21.6" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/1.21.7" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/1.21.8" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/1.21.9" vcs="Git" />
   </component>
 </project>

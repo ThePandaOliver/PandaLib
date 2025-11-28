@@ -17,44 +17,67 @@ The library is written in Kotlin, and some APIs might not be fully supported by 
 
 - Multi-Loader Framework (WIP)
 - Config API
-	- Synchronization API
-	- ~~Custom Serializer API~~ (Uses [Universal Serializer](https://github.com/ThePandaOliver/universal-serializer))
-	- Premade formats: JSON
+  - Synchronization API
+  - Premade formats: JSON
 - Event/Listener API
 - Deferred registration API
 - Networking API
-	- Play phase support
-	- Configuration phase support
-- Embedded Kotlin libraries
-	- Kotlin Standard Library
-	- Reflect
-	- Coroutines
-	- Serialization
-	- IO
-	- DateTime
+  - Play phase support
+  - Configuration phase support
+- Embedded libraries
+  - [Universal Serializer](https://github.com/ThePandaOliver/universal-serializer)
+  - Embedded Kotlin libraries
+    - Kotlin Standard Library
+    - Reflect
+    - Coroutines
+    - Serialization
+    - IO
+    - DateTime
 
 ### Future Features:
 
 | Planned                                          | In development         |
 |--------------------------------------------------|------------------------|
-| Config Serializers (TOML, YAML, XML, Properties) |                        |
-| Config Menu API                                  | Multi-Loader Framework |
+| Config Serializers (TOML, YAML, XML, Properties) | Multi-Loader Framework |
+| Config Menu API                                  |                        |
 | Wiki / Docs                                      |                        |
-| Custom Model Rendering API                       |                        |
 
 ### Supported versions and mod loaders:
 
-| Mod loader | Versions        |
-|------------|-----------------|
-| Fabric     | 1.20 – 1.21.8   |
-| Forge      | 1.20 – 1.20.4   |
-| NeoForge   | 1.20.5 – 1.21.8 |
+| Mod loader | Versions          |
+|------------|-------------------|
+| Fabric     | 1.20 – 1.21.10    |
+| NeoForge   | 1.20.5 – 1.21.10  |
+| Forge      | Support has ended |
 
-Development is targeted 1.21.8
+Development is targeted 1.21.10
 
 ---
 
 ### Development:
+
+#### Looking for a specific version's codebase
+
+- **1.21**
+  - [1.21.10](https://github.com/ThePandaOliver/PandaLib/tree/versions/1.21.10)
+  - [1.21.9](https://github.com/ThePandaOliver/PandaLib/tree/versions/1.21.9)
+  - [1.21.8](https://github.com/ThePandaOliver/PandaLib/tree/versions/1.21.8)
+  - [1.21.7](https://github.com/ThePandaOliver/PandaLib/tree/versions/1.21.7)
+  - [1.21.6](https://github.com/ThePandaOliver/PandaLib/tree/versions/1.21.6)
+  - [1.21.5](https://github.com/ThePandaOliver/PandaLib/tree/versions/1.21.5)
+  - [1.21.4](https://github.com/ThePandaOliver/PandaLib/tree/versions/1.21.4)
+  - [1.21.3](https://github.com/ThePandaOliver/PandaLib/tree/versions/1.21.3)
+  - [1.21.2](https://github.com/ThePandaOliver/PandaLib/tree/versions/1.21.2)
+  - [1.21.1](https://github.com/ThePandaOliver/PandaLib/tree/versions/1.21.1)
+  - [1.21.0](https://github.com/ThePandaOliver/PandaLib/tree/versions/1.21)
+- **1.20**
+  - [1.20.6](https://github.com/ThePandaOliver/PandaLib/tree/versions/1.20.6)
+  - [1.20.5](https://github.com/ThePandaOliver/PandaLib/tree/versions/1.20.5)
+  - [1.20.4](https://github.com/ThePandaOliver/PandaLib/tree/versions/1.20.4)
+  - [1.20.3](https://github.com/ThePandaOliver/PandaLib/tree/versions/1.20.3)
+  - [1.20.2](https://github.com/ThePandaOliver/PandaLib/tree/versions/1.20.2)
+  - [1.20.1](https://github.com/ThePandaOliver/PandaLib/tree/versions/1.20.1)
+  - [1.20.0](https://github.com/ThePandaOliver/PandaLib/tree/versions/1.20)
 
 #### Kotlin DSL
 
@@ -63,23 +86,16 @@ repositories {
 	mavenCentral()
 	maven {
 		name = "Github"
-		url = uri("https://maven.pkg.github.com/ThePandaOliver/PandaLib")
-		credentials {
-			username = System.getenv("GITHUB_ACTER")
-			password = System.getenv("GITHUB_TOKEN")
-		}
+		url = uri("https://repo.pandasystems.dev/repository/maven-public/")
 	}
 }
 
 dependencies {
-	implementation("dev.pandasystems:pandalib-forge:<version>") // Forge
+	modApi("dev.pandasystems:pandalib:<version>") // Common
 	implementation("dev.pandasystems:pandalib-neoforge:<version>") // NeoForge
 	modApi("dev.pandasystems:pandalib-fabric:<version>") // Fabric
 
-	// Only needed if you want to use the embedded Kotlin libraries in Forge-like environments.
-	// "additionalRuntimeClasspath(...)" works for NeoGradle,
-	// but for ForgeGradle, then you need to replace "additionalRuntimeClasspath(...)" with "minecraftLibrary(...)",
-	// for Architectury Loom, then you need to replace "additionalRuntimeClasspath(...)" with "forgeRuntimeLibrary(...)"
+	// Only needed if you want to use the embedded Kotlin libraries in NeoForge environments.
 	additionalRuntimeClasspath(kotlin("stdlib"))
 	additionalRuntimeClasspath(kotlin("stdlib-jdk8"))
 	additionalRuntimeClasspath(kotlin("stdlib-jdk7"))
@@ -99,13 +115,10 @@ dependencies {
 
 ## Advertisement:
 
-> ### Thanks to **Jetbrains** for supporting this project with their open source program.
-> [<img src="https://resources.jetbrains.com/storage/products/company/brand/logos/jetbrains.svg" width=300px>](https://jb.gg/OpenSourceSupport)
-
 > ### Thanks to **Kinetic Hosting** for supporting this project
-> [![Partner Banner](https://github.com/ThePandaOliver/ThePandaOliver/blob/main/assets_for_readme/Support/kinetic_hosting_banner.png?raw=true)](https://t.ly/B1Kui)
+> [![Partner Banner](https://github.com/ThePandaOliver/ThePandaOliver/blob/main/assets_for_readme/Support/kinetic_hosting_banner.png?raw=true)](https://billing.kinetichosting.com/aff.php?aff=476)
 >
-> Every purchased server via my [affiliate link](https://t.ly/B1Kui) will help support me and my work.
+> Every purchased server via my [affiliate link](https://billing.kinetichosting.com/aff.php?aff=476) will help support me and my work.
 
 ## License
 

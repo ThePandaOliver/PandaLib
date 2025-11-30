@@ -16,7 +16,7 @@ pluginManagement {
 	}
 }
 
+rootProject.name = "PandaLib"
+
 include("fabric")
 include("neoforge")
-
-rootProject.name = "PandaLib"

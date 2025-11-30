@@ -58,9 +58,9 @@ allprojects {
 	apply(plugin = "com.google.devtools.ksp")
 	apply(plugin = "maven-publish")
 
-	version = modVersion.let { version -> "$version+$mcVersion-SNAPSHOT" }
+	version = modVersion
 	group = modGroup
-	base { archivesName = "$modId-$loaderEnv" }
+	base { archivesName = "$modId-$loaderEnv-$mcVersion" }
 
 	architectury {
 		when (loomPlatform) {
@@ -275,8 +275,14 @@ allprojects {
 					atAccessWideners.add(loom.accessWidenerPath.get().asFile.name)
 			}
 
+			val copyBuildModFile by registering(Copy::class) {
+				from("build/libs/pandalib-$loomPlatform-$version.jar")
+				into(rootDir.resolve("build/mod-build"))
+			}
+
 			build {
-				dependsOn("remapSlimJar")
+				dependsOn(remapSlimJar)
+				finalizedBy(copyBuildModFile)
 			}
 		}
 	}
@@ -314,20 +320,18 @@ allprojects {
 
 		repositories {
 			maven("https://repo.pandasystems.dev/repository/maven-snapshots/") {
-				name = "PandasSnapshotRepository"
+				name = "Snapshot"
 				credentials {
 					username = System.getenv("NEXUS_USERNAME")
 					password = System.getenv("NEXUS_PASSWORD")
 				}
 			}
 
-			if (!version.toString().endsWith("SNAPSHOT")) {
-				maven("https://repo.pandasystems.dev/repository/maven-releases/") {
-					name = "PandasReleaseRepository"
-					credentials {
-						username = System.getenv("NEXUS_USERNAME")
-						password = System.getenv("NEXUS_PASSWORD")
-					}
+			maven("https://repo.pandasystems.dev/repository/maven-releases/") {
+				name = "Release"
+				credentials {
+					username = System.getenv("NEXUS_USERNAME")
+					password = System.getenv("NEXUS_PASSWORD")
 				}
 			}
 		}

@@ -58,7 +58,7 @@ allprojects {
 	apply(plugin = "com.google.devtools.ksp")
 	apply(plugin = "maven-publish")
 
-	version = modVersion.let { version -> "$version+$mcVersion-SNAPSHOT" }
+	version = modVersion
 	group = modGroup
 	base { archivesName = "$modId-$loaderEnv" }
 
@@ -298,7 +298,7 @@ allprojects {
 		publications {
 			create<MavenPublication>("maven") {
 				from(components["java"])
-				artifactId = base.archivesName.get()
+				artifactId = "${base.archivesName.get()}-$mcVersion"
 
 				if (loomPlatform != null) {
 					artifact(tasks.named("remapSlimJar")) {
@@ -314,7 +314,7 @@ allprojects {
 
 		repositories {
 			maven("https://repo.pandasystems.dev/repository/maven-snapshots/") {
-				name = "PandasSnapshotRepository"
+				name = "Snapshot"
 				credentials {
 					username = System.getenv("NEXUS_USERNAME")
 					password = System.getenv("NEXUS_PASSWORD")
@@ -323,7 +323,7 @@ allprojects {
 
 			if (!version.toString().endsWith("SNAPSHOT")) {
 				maven("https://repo.pandasystems.dev/repository/maven-releases/") {
-					name = "PandasReleaseRepository"
+					name = "Release"
 					credentials {
 						username = System.getenv("NEXUS_USERNAME")
 						password = System.getenv("NEXUS_PASSWORD")

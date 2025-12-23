@@ -22,7 +22,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -33,9 +32,6 @@ public class MultiPlayerGameModeMixin {
     @Final
     private Minecraft minecraft;
     
-    @Unique
-    private MultiPlayerGameModeKtImpl pandaLib$impl = new MultiPlayerGameModeKtImpl(this.minecraft);
-
     @Inject(
             method = "destroyBlock", 
             at = @At(
@@ -43,7 +39,7 @@ public class MultiPlayerGameModeMixin {
                     target = "Lnet/minecraft/world/level/block/Block;destroy(Lnet/minecraft/world/level/LevelAccessor;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;)V"
             )
     )
-    void clientOnBlockDestroyedEvent(BlockPos pos, CallbackInfoReturnable<Boolean> cir, @Local Level level, @Local BlockState state) {
-        pandaLib$impl.clientOnBlockDestroyedEvent(level, pos, state);
+    void clientOnBlockDestroyedEvent(BlockPos pos, CallbackInfoReturnable<Boolean> cir, @Local(name = "level") Level level, @Local(name = "blockState") BlockState state) {
+        MultiPlayerGameModeKtImpl.INSTANCE.clientOnBlockDestroyedEvent(level, pos, state);
     }
 }

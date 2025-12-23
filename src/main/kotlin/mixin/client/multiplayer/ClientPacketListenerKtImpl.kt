@@ -16,22 +16,20 @@ import dev.pandasystems.pandalib.event.client.clientPlayerJoinEvent
 import dev.pandasystems.pandalib.event.client.clientPlayerRespawnEvent
 import net.minecraft.client.Minecraft
 import net.minecraft.client.player.LocalPlayer
-import net.minecraft.network.protocol.game.ClientboundLoginPacket
-import net.minecraft.network.protocol.game.ClientboundRespawnPacket
 
-class ClientPacketListenerKtImpl(val minecraft: Minecraft) {
+object ClientPacketListenerKtImpl {
 	var oldPlayer: LocalPlayer? = null
 	
 	fun onLoginEvent() {
-		clientPlayerJoinEvent.invoker(minecraft.player!!)
+		clientPlayerJoinEvent.invoker(Minecraft.getInstance().player!!)
 	}
 
 	fun onRespawnPreEvent() {
-		oldPlayer = minecraft.player
+		oldPlayer = Minecraft.getInstance().player
 	}
 
 	fun onRespawnPostEvent() {
-		val newPlayer = minecraft.player
+		val newPlayer = Minecraft.getInstance().player
 		clientPlayerRespawnEvent.invoker(oldPlayer!!, newPlayer!!)
 	}
 }

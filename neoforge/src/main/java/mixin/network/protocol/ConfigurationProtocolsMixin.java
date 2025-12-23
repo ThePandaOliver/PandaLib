@@ -22,19 +22,15 @@ import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ServerGamePacketListener;
 import net.minecraft.util.Unit;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ConfigurationProtocols.class)
 public class ConfigurationProtocolsMixin {
-	@Unique
-	private static ConfigurationProtocolsKtImpl pandaLib$impl = new ConfigurationProtocolsKtImpl();
-	
 	@Inject(method = "method_56512", at = @At("RETURN"))
 	private static void addClientPacket(ProtocolInfoBuilder<ClientGamePacketListener, RegistryFriendlyByteBuf, Unit> protocolInfoBuilder, CallbackInfo ci) {
-		pandaLib$impl.addClientPacket(protocolInfoBuilder);
+		ConfigurationProtocolsKtImpl.INSTANCE.addClientPacket(protocolInfoBuilder);
 		protocolInfoBuilder.addPacket(
 				ClientboundPLPayloadPacketKt.getClientboundPLPayloadPacketType(),
 				ClientboundPLPayloadPacketKt.getClientboundPLPayloadCodec()
@@ -43,7 +39,7 @@ public class ConfigurationProtocolsMixin {
 
 	@Inject(method = "method_56513", at = @At("RETURN"))
 	private static void addServerPacket(ProtocolInfoBuilder<ServerGamePacketListener, RegistryFriendlyByteBuf, Unit> protocolInfoBuilder, CallbackInfo ci) {
-		pandaLib$impl.addServerPacket(protocolInfoBuilder);
+		ConfigurationProtocolsKtImpl.INSTANCE.addServerPacket(protocolInfoBuilder);
 		protocolInfoBuilder.addPacket(
 				ServerboundPLPayloadPacketKt.getServerboundPLPayloadPacketType(),
 				ServerboundPLPayloadPacketKt.getServerboundPLPayloadCodec()

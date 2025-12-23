@@ -22,7 +22,7 @@ import net.minecraft.network.protocol.game.ClientGamePacketListener
 import net.minecraft.network.protocol.game.ServerGamePacketListener
 import net.minecraft.util.Unit
 
-class ConfigurationProtocolsKtImpl {
+object ConfigurationProtocolsKtImpl {
 	fun addClientPacket(protocolInfoBuilder: ProtocolInfoBuilder<ClientGamePacketListener, RegistryFriendlyByteBuf, Unit>) {
 		protocolInfoBuilder.addPacket(
 			clientboundPLPayloadPacketType,

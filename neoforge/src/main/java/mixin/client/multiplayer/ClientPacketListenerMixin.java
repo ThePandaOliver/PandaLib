@@ -23,32 +23,28 @@ import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundLoginPacket;
 import net.minecraft.network.protocol.game.ClientboundRespawnPacket;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ClientPacketListener.class)
 public abstract class ClientPacketListenerMixin extends ClientCommonPacketListenerImpl implements ClientGamePacketListener, TickablePacketListener {
-	@Unique
-	private ClientPacketListenerKtImpl pandaLib$impl = new ClientPacketListenerKtImpl(this.minecraft);
-	
 	protected ClientPacketListenerMixin(Minecraft minecraft, Connection connection, CommonListenerCookie commonListenerCookie) {
 		super(minecraft, connection, commonListenerCookie);
 	}
 
 	@Inject(method = "handleLogin", at = @At("TAIL"))
 	public void handleLogin(ClientboundLoginPacket packet, CallbackInfo ci) {
-		pandaLib$impl.onLoginEvent();
+		ClientPacketListenerKtImpl.INSTANCE.onLoginEvent();
 	}
 
 	@Inject(method = "handleRespawn", at = @At("HEAD"))
 	public void handleBeforeRespawn(ClientboundRespawnPacket packet, CallbackInfo ci) {
-		pandaLib$impl.onRespawnPreEvent();
+		ClientPacketListenerKtImpl.INSTANCE.onRespawnPreEvent();
 	}
 
 	@Inject(method = "handleRespawn", at = @At("TAIL"))
 	public void handleRespawn(ClientboundRespawnPacket packet, CallbackInfo ci) {
-		pandaLib$impl.onRespawnPostEvent();
+		ClientPacketListenerKtImpl.INSTANCE.onRespawnPostEvent();
 	}
 }

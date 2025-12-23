@@ -14,7 +14,7 @@ package dev.pandasystems.pandalib.mixin.client.network
 import dev.pandasystems.pandalib.networking.ClientConfigurationNetworking
 import net.minecraft.network.Connection
 
-class ClientConfigurationPacketListenerImplKtImpl {
+object ClientConfigurationPacketListenerImplKtImpl {
 	fun onInit(connection: Connection) {
 		ClientConfigurationNetworking.connection = connection
 	}

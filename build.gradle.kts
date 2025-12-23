@@ -95,10 +95,6 @@ allprojects {
 			runs {
 				val path = project.projectDir.toPath().relativize(rootProject.file(".runs").toPath())
 
-				configureEach {
-					ideConfigGenerated(true)
-				}
-
 				named("client") {
 					client()
 					configName = "Client"

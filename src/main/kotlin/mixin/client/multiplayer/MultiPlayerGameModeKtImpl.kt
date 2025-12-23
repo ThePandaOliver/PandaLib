@@ -18,8 +18,8 @@ import net.minecraft.core.BlockPos
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.state.BlockState
 
-class MultiPlayerGameModeKtImpl(val minecraft: Minecraft) {
+object MultiPlayerGameModeKtImpl {
 	fun clientOnBlockDestroyedEvent(level: Level, pos: BlockPos, state: BlockState) {
-		clientBlockBreakEvent.invoker(level, pos, state, minecraft.player!!)
+		clientBlockBreakEvent.invoker(level, pos, state, Minecraft.getInstance().player!!)
 	}
 }

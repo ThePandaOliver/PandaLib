@@ -4,20 +4,21 @@
 	"compatibilityLevel": "JAVA_21",
 	"minVersion": "0.8",
 	"client": [
-		"events.ClientLevelEventMixin",
-		"events.player.ClientPacketListenerEventMixin",
-		"networking.client.ClientConfigurationPacketListenerImplMixin"
+		"client.multiplayer.MultiPlayerGameModeMixin",
+		"client.network.ClientConfigurationPacketListenerImplMixin",
+		"client.multiplayer.ClientLevelMixin",
+		"client.multiplayer.ClientPacketListenerMixin"
 	],
 	"mixins": [
-		"events.BlockItemEventMixin",
-		"events.MinecraftServerEventMixin",
-		"events.ServerPlayerGameModeEventMixin",
-		"events.player.PlayerListEventMixin",
-		"events.player.ServerPlayerEventMixin",
-		"protocols.ConfigurationProtocolsMixin",
-		"protocols.GameProtocolsMixin",
-		"protocols.LoginProtocolsMixin",
-		"protocols.StatusProtocolsMixin"
+		"server.MinecraftServerMixin",
+		"server.level.ServerPlayerGameModeMixin",
+		"server.players.PlayerListMixin",
+		"server.level.ServerPlayerMixin",
+		"world.item.BlockItemMixin",
+		"network.protocol.ConfigurationProtocolsMixin",
+		"network.protocol.GameProtocolsMixin",
+		"network.protocol.LoginProtocolsMixin",
+		"network.protocol.StatusProtocolsMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

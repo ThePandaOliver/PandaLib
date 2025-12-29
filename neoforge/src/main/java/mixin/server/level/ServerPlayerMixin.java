@@ -14,7 +14,6 @@ package dev.pandasystems.pandalib.neoforge.mixin.server.level;
 
 import dev.pandasystems.pandalib.mixin.server.level.ServerPlayerKtImpl;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.portal.DimensionTransition;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -40,7 +39,7 @@ public abstract class ServerPlayerMixin {
 		pandaLib$impl.onDimensionChangePreEvent(teleportTransition, cir);
 	}
 
-	@Inject(method = "teleport(Lnet/minecraft/world/level/portal/TeleportTransition;)Lnet/minecraft/server/level/ServerPlayer;", at = @At("RETURN"))
+	@Inject(method = "changeDimension", at = @At("RETURN"))
 	public void afterDimensionChange(DimensionTransition teleportTransition, CallbackInfoReturnable<ServerPlayer> cir) {
 		pandaLib$impl.onDimensionChangePostEvent(teleportTransition, cir, this.isChangingDimension);
 	}

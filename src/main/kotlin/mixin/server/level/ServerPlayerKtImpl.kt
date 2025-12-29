@@ -16,21 +16,21 @@ import dev.pandasystems.pandalib.event.server.serverPlayerChangeDimensionPostEve
 import dev.pandasystems.pandalib.event.server.serverPlayerChangeDimensionPreEvent
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.level.ServerPlayer
-import net.minecraft.world.level.portal.TeleportTransition
+import net.minecraft.world.level.portal.DimensionTransition
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable
 
 class ServerPlayerKtImpl(val player: ServerPlayer) {
-	fun onDimensionChangePreEvent(teleportTransition: TeleportTransition, cir: CallbackInfoReturnable<ServerPlayer>) {
+	fun onDimensionChangePreEvent(transition: DimensionTransition, cir: CallbackInfoReturnable<ServerPlayer>) {
 		val cancelled = !serverPlayerChangeDimensionPreEvent.invoker(
 			player, player.level() as ServerLevel,
-			teleportTransition.newLevel(), teleportTransition
+			transition.newLevel(), transition
 		)
 		if (cancelled) cir.returnValue = null
 	}
 
-	fun onDimensionChangePostEvent(teleportTransition: TeleportTransition, cir: CallbackInfoReturnable<ServerPlayer>, isChangingDimension: Boolean) {
+	fun onDimensionChangePostEvent(transition: DimensionTransition, cir: CallbackInfoReturnable<ServerPlayer>, isChangingDimension: Boolean) {
 		if (isChangingDimension && cir.getReturnValue() != null) {
-			serverPlayerChangeDimensionPostEvent.invoker.invoke(player, player.level() as ServerLevel, teleportTransition.newLevel(), teleportTransition)
+			serverPlayerChangeDimensionPostEvent.invoker.invoke(player, player.level() as ServerLevel, transition.newLevel(), transition)
 		}
 	}
 }

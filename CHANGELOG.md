@@ -1,4 +1,4 @@
-# Version 1.0.0
+# Version 1.0.0 | Alpha 1
 
 * Cleaned up Utility classes to fit kotlin practices
 * Fully independent of Architectury API

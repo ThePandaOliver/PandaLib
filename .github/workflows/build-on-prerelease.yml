@@ -7,8 +7,6 @@ on:
 
 jobs:
   build:
-    if: github.event.release.prerelease == true
-
     runs-on: ubuntu-latest
 
     strategy:
@@ -77,15 +75,11 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build
 
-      # Adjust the path to your build artifacts (e.g. jars)
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
           name: build-${{ matrix.label }}
-          path: |
-            fabric/build/libs/*.jar
-            neoforge/build/libs/*.jar
-            forge/build/libs/*.jar
+          path: build/mod-build/*.jar
 
   attach-to-release:
     needs: build

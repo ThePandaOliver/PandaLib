@@ -30,7 +30,7 @@ public class BlockItemMixin {
 	private BlockItemKtImpl pandaLib$impl = new BlockItemKtImpl();
 
 	@Inject(method = "place", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/BlockItem;placeBlock(Lnet/minecraft/world/item/context/BlockPlaceContext;Lnet/minecraft/world/level/block/state/BlockState;)Z"), cancellable = true)
-	void beforeBlockPlace(BlockPlaceContext context, CallbackInfoReturnable<InteractionResult> cir, @Local(ordinal = 1) BlockPlaceContext newContext) {
+	void beforeBlockPlace(BlockPlaceContext context, CallbackInfoReturnable<InteractionResult> cir, @Local(name = "blockplacecontext") BlockPlaceContext newContext) {
 		pandaLib$impl.beforeBlockPlaceEvent(context, newContext, cir);
 	}
 

@@ -27,8 +27,8 @@ class BlockItemKtImpl {
 		val blockState = newContext.level.getBlockState(newContext.clickedPos)
 		if (gameEnvironment.isHost) { // Server-side
 			val player = newContext.player ?: return
-			val cancelled = serverBlockPlacePreEvent.invoker(newContext.level, newContext.clickedPos, blockState, player)
-			if (cancelled) cir.returnValue = InteractionResult.FAIL
+			val cancelled = !serverBlockPlacePreEvent.invoker(newContext.level, newContext.clickedPos, blockState, player)
+			if (cancelled) cir.returnValue = InteractionResult.CONSUME
 		}
 	}
 

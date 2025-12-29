@@ -29,6 +29,7 @@ val mcVersion: String by project
 val buildFor: String by project
 
 val modVersion: String by project
+val devVersionNumber: String by project
 val modGroup: String by project
 val modId: String by project
 
@@ -100,11 +101,13 @@ allprojects {
 					configName = "Client"
 					runDir("$path/client")
 					programArg("--username=Dev")
+					ideConfigGenerated(true)
 				}
 				named("server") {
 					server()
 					configName = "Server"
 					runDir("$path/server")
+					ideConfigGenerated(true)
 				}
 			}
 		} else runs.configureEach { ideConfigGenerated(false) }
@@ -271,8 +274,23 @@ allprojects {
 					atAccessWideners.add(loom.accessWidenerPath.get().asFile.name)
 			}
 
+			val copyBuildModFile by registering(Copy::class) {
+				from("build/libs/pandalib-$loomPlatform-$version.jar")
+				into(rootDir.resolve("build/mod-build"))
+			}
+
 			build {
 				dependsOn("remapSlimJar")
+				finalizedBy(copyBuildModFile)
+			}
+
+			val copyLicense by register("copyLicense",Copy::class) {
+				from(rootDir.resolve("LICENSE.md"))
+				destinationDir = project.layout.buildDirectory.file("resources/main").get().asFile
+			}
+
+			processResources {
+				dependsOn(copyLicense)
 			}
 		}
 	}
@@ -309,15 +327,15 @@ allprojects {
 		}
 
 		repositories {
-			maven("https://repo.pandasystems.dev/repository/maven-snapshots/") {
-				name = "Snapshot"
-				credentials {
-					username = System.getenv("NEXUS_USERNAME")
-					password = System.getenv("NEXUS_PASSWORD")
+			if (version.toString().endsWith("SNAPSHOT")) {
+				maven("https://repo.pandasystems.dev/repository/maven-snapshots/") {
+					name = "Snapshot"
+					credentials {
+						username = System.getenv("NEXUS_USERNAME")
+						password = System.getenv("NEXUS_PASSWORD")
+					}
 				}
-			}
-
-			if (!version.toString().endsWith("SNAPSHOT")) {
+			} else {
 				maven("https://repo.pandasystems.dev/repository/maven-releases/") {
 					name = "Release"
 					credentials {

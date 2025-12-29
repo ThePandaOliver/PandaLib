@@ -10,6 +10,7 @@
 		"client.network.ClientConfigurationPacketListenerImplMixin"
 	],
 	"mixins": [
+		"network.ConnectionProtocolMixin",
 		"server.MinecraftServerMixin",
 		"server.level.ServerPlayerGameModeMixin",
 		"server.level.ServerPlayerMixin",

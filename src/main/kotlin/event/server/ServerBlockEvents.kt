@@ -15,12 +15,14 @@ package dev.pandasystems.pandalib.event.server
 import dev.pandasystems.pandalib.utils.cancelableEvent
 import dev.pandasystems.pandalib.utils.event
 import net.minecraft.core.BlockPos
+import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.entity.Entity
+import net.minecraft.world.entity.player.Player
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.state.BlockState
 
-val serverBlockBreakPreEvent = cancelableEvent<(level: Level, pos: BlockPos, state: BlockState, entity: Entity?) -> Boolean>()
-val serverBlockBreakPostEvent = event<(level: Level, pos: BlockPos, state: BlockState, entity: Entity?) -> Unit>()
+val serverBlockBreakPreEvent = cancelableEvent<(level: Level, pos: BlockPos, state: BlockState, player: ServerPlayer) -> Boolean>()
+val serverBlockBreakPostEvent = event<(level: Level, pos: BlockPos, state: BlockState, player: ServerPlayer) -> Unit>()
 
-val serverBlockPlacePreEvent = cancelableEvent<(level: Level, pos: BlockPos, state: BlockState, entity: Entity?) -> Boolean>()
-val serverBlockPlacePostEvent = event<(level: Level, pos: BlockPos, state: BlockState, entity: Entity?) -> Unit>()
+val serverBlockPlacePreEvent = cancelableEvent<(level: Level, pos: BlockPos, state: BlockState, player: Player) -> Boolean>()
+val serverBlockPlacePostEvent = event<(level: Level, pos: BlockPos, state: BlockState, player: Player) -> Unit>()

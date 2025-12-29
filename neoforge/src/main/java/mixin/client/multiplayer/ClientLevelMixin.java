@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025-2025 Oliver Froberg (The Panda Oliver)
+ * Copyright (C) 2025 Oliver Froberg (The Panda Oliver)
  *
  * This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU Lesser General Public License as published by
@@ -10,9 +10,9 @@
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.pandasystems.pandalib.fabric.mixin.events;
+package dev.pandasystems.pandalib.neoforge.mixin.client.multiplayer;
 
-import dev.pandasystems.pandalib.event.client.ClientPlayerEventsKt;
+import dev.pandasystems.pandalib.mixin.client.multiplayer.ClientLevelKtImpl;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import org.spongepowered.asm.mixin.Final;
@@ -22,16 +22,14 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.Objects;
-
 @Mixin(ClientLevel.class)
-public class ClientLevelEventMixin {
+public class ClientLevelMixin {
 	@Shadow
 	@Final
 	private Minecraft minecraft;
 
 	@Inject(method = "disconnect", at = @At("HEAD"))
 	public void disconnect(CallbackInfo ci) {
-		ClientPlayerEventsKt.getClientPlayerLeaveEvent().getInvoker().invoke(Objects.requireNonNull(this.minecraft.player));
+		ClientLevelKtImpl.INSTANCE.onDisconnect();
 	}
 }

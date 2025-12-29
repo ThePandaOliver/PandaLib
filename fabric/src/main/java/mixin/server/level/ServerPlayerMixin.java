@@ -10,25 +10,26 @@
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.pandasystems.pandalib.fabric.mixin.events.player;
+package dev.pandasystems.pandalib.fabric.mixin.server.level;
 
-import dev.pandasystems.pandalib.event.server.ServerPlayerEventsKt;
+import dev.pandasystems.pandalib.mixin.server.level.ServerPlayerKtImpl;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ServerPlayer.class)
-public abstract class ServerPlayerEventMixin {
+public abstract class ServerPlayerMixin {
 	@Shadow
 	private boolean isChangingDimension;
 
-	@Shadow
-	public abstract ServerLevel serverLevel();
+	@Unique
+	private ServerPlayerKtImpl pandaLib$impl = new ServerPlayerKtImpl((ServerPlayer) (Object) this);
 
 	@Inject(
 			method = "changeDimension",
@@ -38,16 +39,11 @@ public abstract class ServerPlayerEventMixin {
 			), cancellable = true
 	)
 	public void beforeDimensionChange(ServerLevel destination, CallbackInfoReturnable<Entity> cir) {
-		var cancelled = !ServerPlayerEventsKt.getServerPlayerChangeDimensionPreEvent().getInvoker().invoke((ServerPlayer) (Object) this, serverLevel(), destination);
-		if (cancelled) {
-			cir.setReturnValue(null);
-		}
+		pandaLib$impl.onDimensionChangePreEvent(destination, cir);
 	}
 
 	@Inject(method = "changeDimension", at = @At("RETURN"))
 	public void afterDimensionChange(ServerLevel destination, CallbackInfoReturnable<Entity> cir) {
-		if (this.isChangingDimension) {
-			ServerPlayerEventsKt.getServerPlayerChangeDimensionPostEvent().getInvoker().invoke((ServerPlayer) (Object) this, serverLevel(), destination);
-		}
+		pandaLib$impl.onDimensionChangePostEvent(destination, cir, this.isChangingDimension);
 	}
 }

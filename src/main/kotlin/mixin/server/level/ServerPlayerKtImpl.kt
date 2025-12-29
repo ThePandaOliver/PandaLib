@@ -30,8 +30,7 @@ object ServerPlayerKtImpl {
 
 	fun onDimensionChangePostEvent(player: ServerPlayer, teleportTransition: TeleportTransition, cir: CallbackInfoReturnable<ServerPlayer>, isChangingDimension: Boolean) {
 		if (isChangingDimension && cir.getReturnValue() != null) {
-			serverPlayerChangeDimensionPostEvent.invoker.invoke(player,
-				player.level() as ServerLevel,
+			serverPlayerChangeDimensionPostEvent.invoker.invoke(player, player.level() as ServerLevel,
 				teleportTransition.newLevel(), teleportTransition
 			)
 		}

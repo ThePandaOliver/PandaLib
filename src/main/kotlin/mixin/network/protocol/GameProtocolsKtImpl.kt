@@ -20,17 +20,16 @@ import net.minecraft.network.RegistryFriendlyByteBuf
 import net.minecraft.network.protocol.ProtocolInfoBuilder
 import net.minecraft.network.protocol.game.ClientGamePacketListener
 import net.minecraft.network.protocol.game.ServerGamePacketListener
-import net.minecraft.util.Unit
 
 object GameProtocolsKtImpl {
-	fun addClientPacket(protocolInfoBuilder: ProtocolInfoBuilder<ClientGamePacketListener, RegistryFriendlyByteBuf, Unit>) {
+	fun addClientPacket(protocolInfoBuilder: ProtocolInfoBuilder<ClientGamePacketListener, RegistryFriendlyByteBuf>) {
 		protocolInfoBuilder.addPacket(
 			clientboundPLPayloadPacketType,
 			clientboundPLPayloadCodec
 		)
 	}
 	
-	fun addServerPacket(protocolInfoBuilder: ProtocolInfoBuilder<ServerGamePacketListener, RegistryFriendlyByteBuf, Unit>) {
+	fun addServerPacket(protocolInfoBuilder: ProtocolInfoBuilder<ServerGamePacketListener, RegistryFriendlyByteBuf>) {
 		protocolInfoBuilder.addPacket(
 			serverboundPLPayloadPacketType,
 			serverboundPLPayloadCodec

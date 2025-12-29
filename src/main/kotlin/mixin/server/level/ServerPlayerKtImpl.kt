@@ -14,6 +14,7 @@ package dev.pandasystems.pandalib.mixin.server.level
 
 import dev.pandasystems.pandalib.event.server.serverPlayerChangeDimensionPostEvent
 import dev.pandasystems.pandalib.event.server.serverPlayerChangeDimensionPreEvent
+import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.level.portal.TeleportTransition
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable
@@ -21,7 +22,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable
 class ServerPlayerKtImpl(val player: ServerPlayer) {
 	fun onDimensionChangePreEvent(teleportTransition: TeleportTransition, cir: CallbackInfoReturnable<ServerPlayer>) {
 		val cancelled = !serverPlayerChangeDimensionPreEvent.invoker(
-			player, player.level(),
+			player, player.level() as ServerLevel,
 			teleportTransition.newLevel(), teleportTransition
 		)
 		if (cancelled) cir.returnValue = null
@@ -29,7 +30,7 @@ class ServerPlayerKtImpl(val player: ServerPlayer) {
 
 	fun onDimensionChangePostEvent(teleportTransition: TeleportTransition, cir: CallbackInfoReturnable<ServerPlayer>, isChangingDimension: Boolean) {
 		if (isChangingDimension && cir.getReturnValue() != null) {
-			serverPlayerChangeDimensionPostEvent.invoker.invoke(player, player.level(), teleportTransition.newLevel(), teleportTransition)
+			serverPlayerChangeDimensionPostEvent.invoker.invoke(player, player.level() as ServerLevel, teleportTransition.newLevel(), teleportTransition)
 		}
 	}
 }

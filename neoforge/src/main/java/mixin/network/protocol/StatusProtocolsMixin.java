@@ -18,7 +18,6 @@ import net.minecraft.network.protocol.ProtocolInfoBuilder;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ServerGamePacketListener;
 import net.minecraft.network.protocol.status.StatusProtocols;
-import net.minecraft.util.Unit;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -27,12 +26,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(StatusProtocols.class)
 public class StatusProtocolsMixin {
 	@Inject(method = "method_56029", at = @At("RETURN"))
-	private static void addClientPacket(ProtocolInfoBuilder<ClientGamePacketListener, RegistryFriendlyByteBuf, Unit> protocolInfoBuilder, CallbackInfo ci) {
+	private static void addClientPacket(ProtocolInfoBuilder<ClientGamePacketListener, RegistryFriendlyByteBuf> protocolInfoBuilder, CallbackInfo ci) {
 		StatusProtocolsKtImpl.INSTANCE.addClientPacket(protocolInfoBuilder);
 	}
 
 	@Inject(method = "method_56030", at = @At("RETURN"))
-	private static void addServerPacket(ProtocolInfoBuilder<ServerGamePacketListener, RegistryFriendlyByteBuf, Unit> protocolInfoBuilder, CallbackInfo ci) {
+	private static void addServerPacket(ProtocolInfoBuilder<ServerGamePacketListener, RegistryFriendlyByteBuf> protocolInfoBuilder, CallbackInfo ci) {
 		StatusProtocolsKtImpl.INSTANCE.addServerPacket(protocolInfoBuilder);
 	}
 }

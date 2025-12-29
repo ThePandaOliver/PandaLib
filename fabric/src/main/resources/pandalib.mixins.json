@@ -4,18 +4,18 @@
 	"compatibilityLevel": "JAVA_21",
 	"minVersion": "0.8",
 	"client": [
-		"client.multiplayer.MultiPlayerGameModeMixin",
-		"client.network.ClientConfigurationPacketListenerImplMixin",
 		"client.multiplayer.ClientLevelMixin",
-		"client.multiplayer.ClientPacketListenerMixin"
+		"client.multiplayer.ClientPacketListenerMixin",
+		"client.multiplayer.MultiPlayerGameModeMixin",
+		"client.network.ClientConfigurationPacketListenerImplMixin"
 	],
 	"mixins": [
+		"network.ConnectionProtocolMixin",
 		"server.MinecraftServerMixin",
 		"server.level.ServerPlayerGameModeMixin",
-		"server.players.PlayerListMixin",
 		"server.level.ServerPlayerMixin",
-		"world.item.BlockItemMixin",
-		"networking.ConnectionProtocolMixin"
+		"server.players.PlayerListMixin",
+		"world.item.BlockItemMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

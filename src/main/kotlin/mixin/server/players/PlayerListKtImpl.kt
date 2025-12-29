@@ -16,7 +16,6 @@ import dev.pandasystems.pandalib.event.server.serverPlayerJoinEvent
 import dev.pandasystems.pandalib.event.server.serverPlayerLeaveEvent
 import dev.pandasystems.pandalib.event.server.serverPlayerRespawnEvent
 import net.minecraft.server.level.ServerPlayer
-import net.minecraft.world.entity.Entity
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable
 
 class PlayerListKtImpl {
@@ -28,8 +27,8 @@ class PlayerListKtImpl {
 		serverPlayerLeaveEvent.invoker(player)
 	}
 
-	fun onRespawnEvent(player: ServerPlayer, keepInventory: Boolean, removalReason: Entity.RemovalReason, cir: CallbackInfoReturnable<ServerPlayer>) {
+	fun onRespawnEvent(player: ServerPlayer, keepInventory: Boolean, cir: CallbackInfoReturnable<ServerPlayer>) {
 		val newPlayer = cir.getReturnValue()
-		serverPlayerRespawnEvent.invoker(player, newPlayer!!, keepInventory, removalReason)
+		serverPlayerRespawnEvent.invoker(player, newPlayer!!, keepInventory)
 	}
 }

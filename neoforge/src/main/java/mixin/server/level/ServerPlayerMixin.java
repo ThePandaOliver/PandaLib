@@ -13,8 +13,10 @@
 package dev.pandasystems.pandalib.neoforge.mixin.server.level;
 
 import dev.pandasystems.pandalib.mixin.server.level.ServerPlayerKtImpl;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.level.portal.DimensionTransition;
+import net.minecraft.world.entity.Entity;
+import net.neoforged.neoforge.common.util.ITeleporter;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -35,12 +37,12 @@ public abstract class ServerPlayerMixin {
 					opcode = Opcodes.PUTFIELD
 			), cancellable = true
 	)
-	public void beforeDimensionChange(DimensionTransition teleportTransition, CallbackInfoReturnable<ServerPlayer> cir) {
-		ServerPlayerKtImpl.INSTANCE.onDimensionChangePreEvent((ServerPlayer) (Object) this, teleportTransition, cir);
+	public void beforeDimensionChange(ServerLevel destination, ITeleporter teleporter, CallbackInfoReturnable<Entity> cir) {
+		ServerPlayerKtImpl.INSTANCE.onDimensionChangePreEvent(destination, teleportTransition, cir);
 	}
 
 	@Inject(method = "changeDimension", at = @At("RETURN"))
-	public void afterDimensionChange(DimensionTransition teleportTransition, CallbackInfoReturnable<ServerPlayer> cir) {
-		ServerPlayerKtImpl.INSTANCE.onDimensionChangePostEvent((ServerPlayer) (Object) this, teleportTransition, cir, this.isChangingDimension);
+	public void afterDimensionChange(ServerLevel destination, ITeleporter teleporter, CallbackInfoReturnable<Entity> cir) {
+		ServerPlayerKtImpl.INSTANCE.onDimensionChangePostEvent(destination, cir, this.isChangingDimension);
 	}
 }

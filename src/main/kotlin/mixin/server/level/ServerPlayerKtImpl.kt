@@ -27,7 +27,9 @@ class ServerPlayerKtImpl(val player: ServerPlayer) {
 
 	fun onDimensionChangePostEvent(destination: ServerLevel, cir: CallbackInfoReturnable<Entity>, isChangingDimension: Boolean) {
 		if (isChangingDimension && cir.getReturnValue() != null) {
-			serverPlayerChangeDimensionPostEvent.invoker.invoke(player, player.level() as ServerLevel, destination)
+			serverPlayerChangeDimensionPostEvent.invoker.invoke(player,
+				player.level() as ServerLevel, destination
+			)
 		}
 	}
 }

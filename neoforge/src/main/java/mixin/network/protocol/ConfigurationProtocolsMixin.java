@@ -13,8 +13,6 @@
 package dev.pandasystems.pandalib.neoforge.mixin.network.protocol;
 
 import dev.pandasystems.pandalib.mixin.network.protocol.ConfigurationProtocolsKtImpl;
-import dev.pandasystems.pandalib.networking.packets.ClientboundPLPayloadPacketKt;
-import dev.pandasystems.pandalib.networking.packets.ServerboundPLPayloadPacketKt;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.protocol.ProtocolInfoBuilder;
 import net.minecraft.network.protocol.configuration.ConfigurationProtocols;
@@ -31,18 +29,10 @@ public class ConfigurationProtocolsMixin {
 	@Inject(method = "method_56512", at = @At("RETURN"))
 	private static void addClientPacket(ProtocolInfoBuilder<ClientGamePacketListener, RegistryFriendlyByteBuf, Unit> protocolInfoBuilder, CallbackInfo ci) {
 		ConfigurationProtocolsKtImpl.INSTANCE.addClientPacket(protocolInfoBuilder);
-		protocolInfoBuilder.addPacket(
-				ClientboundPLPayloadPacketKt.getClientboundPLPayloadPacketType(),
-				ClientboundPLPayloadPacketKt.getClientboundPLPayloadCodec()
-		);
 	}
 
 	@Inject(method = "method_56513", at = @At("RETURN"))
 	private static void addServerPacket(ProtocolInfoBuilder<ServerGamePacketListener, RegistryFriendlyByteBuf, Unit> protocolInfoBuilder, CallbackInfo ci) {
 		ConfigurationProtocolsKtImpl.INSTANCE.addServerPacket(protocolInfoBuilder);
-		protocolInfoBuilder.addPacket(
-				ServerboundPLPayloadPacketKt.getServerboundPLPayloadPacketType(),
-				ServerboundPLPayloadPacketKt.getServerboundPLPayloadCodec()
-		);
 	}
 }

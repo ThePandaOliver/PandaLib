@@ -14,10 +14,9 @@ package dev.pandasystems.pandalib.mixin.client.multiplayer
 
 import dev.pandasystems.pandalib.event.client.clientPlayerLeaveEvent
 import net.minecraft.client.Minecraft
-import net.minecraft.network.chat.Component
 
 object ClientLevelKtImpl {
-	fun onDisconnect(reason: Component) {
-		clientPlayerLeaveEvent.invoker(Minecraft.getInstance().player!!, reason)
+	fun onDisconnect() {
+		clientPlayerLeaveEvent.invoker(Minecraft.getInstance().player!!)
 	}
 }

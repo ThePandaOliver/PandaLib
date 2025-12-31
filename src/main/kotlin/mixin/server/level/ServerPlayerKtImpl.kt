@@ -19,13 +19,13 @@ import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.entity.Entity
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable
 
-class ServerPlayerKtImpl(val player: ServerPlayer) {
-	fun onDimensionChangePreEvent(destination: ServerLevel, cir: CallbackInfoReturnable<Entity>) {
+object ServerPlayerKtImpl {
+	fun onDimensionChangePreEvent(player: ServerPlayer, destination: ServerLevel, cir: CallbackInfoReturnable<Entity>) {
 		val cancelled = !serverPlayerChangeDimensionPreEvent.invoker(player, player.level() as ServerLevel, destination)
 		if (cancelled) cir.returnValue = null
 	}
 
-	fun onDimensionChangePostEvent(destination: ServerLevel, cir: CallbackInfoReturnable<Entity>, isChangingDimension: Boolean) {
+	fun onDimensionChangePostEvent(player: ServerPlayer, destination: ServerLevel, cir: CallbackInfoReturnable<Entity>, isChangingDimension: Boolean) {
 		if (isChangingDimension && cir.getReturnValue() != null) {
 			serverPlayerChangeDimensionPostEvent.invoker.invoke(player,
 				player.level() as ServerLevel, destination

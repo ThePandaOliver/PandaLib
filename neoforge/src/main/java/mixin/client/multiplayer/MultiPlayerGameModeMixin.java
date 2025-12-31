@@ -32,7 +32,7 @@ public class MultiPlayerGameModeMixin {
                     target = "Lnet/minecraft/world/level/block/Block;destroy(Lnet/minecraft/world/level/LevelAccessor;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;)V"
             )
     )
-    void clientOnBlockDestroyedEvent(BlockPos pos, CallbackInfoReturnable<Boolean> cir, @Local(name = "level") Level level, @Local(name = "blockstate") BlockState state) {
+    void clientOnBlockDestroyedEvent(BlockPos pos, CallbackInfoReturnable<Boolean> cir, @Local(ordinal = 0) Level level, @Local(ordinal = 0) BlockState state) {
         MultiPlayerGameModeKtImpl.INSTANCE.clientOnBlockDestroyedEvent(level, pos, state);
     }
 }

@@ -15,7 +15,7 @@ import org.jetbrains.gradle.ext.settings
 plugins {
 	kotlin("jvm") version "2.2.0"
 	id("architectury-plugin") version "3.4-SNAPSHOT"
-	id("dev.architectury.loom") version "1.11-SNAPSHOT"
+	id("dev.architectury.loom") version "1.13-SNAPSHOT"
 	id("com.gradleup.shadow") version "9.0.2" apply false
 	id("org.jetbrains.gradle.plugin.idea-ext") version "1.1.10"
 
@@ -63,7 +63,7 @@ allprojects {
 
 	version = modVersion
 	group = modGroup
-	base { archivesName = "$modId-$loaderEnv" }
+	base { archivesName = "$modId-$loaderEnv-$mcVersion" }
 
 	architectury {
 		when (loomPlatform) {
@@ -108,16 +108,16 @@ allprojects {
 					configName = "Client"
 					runDir("$path/client")
 					programArg("--username=Dev")
-					ideConfigGenerated(true)
 				}
 				named("server") {
 					server()
 					configName = "Server"
 					runDir("$path/server")
-					ideConfigGenerated(true)
 				}
 			}
-		} else runs.configureEach { ideConfigGenerated(false) }
+		}
+
+		runs.configureEach { ideConfigGenerated(false) }
 
 		if (loomPlatform == "forge") {
 			forge {
@@ -309,7 +309,7 @@ allprojects {
 			}
 
 			val copyBuildModFile by registering(Copy::class) {
-				from("build/libs/pandalib-$loomPlatform-$version.jar")
+				from("build/libs/${base.archivesName.get()}-$version.jar")
 				into(rootDir.resolve("build/mod-build"))
 			}
 
@@ -346,7 +346,7 @@ allprojects {
 		publications {
 			create<MavenPublication>("maven") {
 				from(components["java"])
-				artifactId = "${base.archivesName.get()}-$mcVersion"
+				artifactId = base.archivesName.get()
 
 				if (loomPlatform != null) {
 					artifact(tasks.named("remapSlimJar")) {
@@ -384,7 +384,6 @@ allprojects {
 
 
 publishMods {
-	displayName = "[$mcVersion] ${project.version}"
 	type = ReleaseType.ALPHA
 	changelog = file("CHANGELOG.md").readText()
 
@@ -401,6 +400,7 @@ publishMods {
 	}
 
 	curseforge("curseforgeFabric") {
+		displayName = "[$mcVersion Fabric] ${project.version}"
 		from(cfOptions)
 		file = project(":fabric").tasks.remapJar.get().archiveFile
 		modLoaders.add("fabric")
@@ -408,12 +408,14 @@ publishMods {
 	}
 
 	curseforge("curseforgeNeoForge") {
+		displayName = "[$mcVersion NeoForge] ${project.version}"
 		from(cfOptions)
 		file = project(":neoforge").tasks.remapJar.get().archiveFile
 		modLoaders.add("neoforge")
 	}
 
 	modrinth("modrinthFabric") {
+		displayName = "[$mcVersion Fabric] ${project.version}"
 		from(mrOptions)
 		file = project(":fabric").tasks.remapJar.get().archiveFile
 		modLoaders.add("fabric")
@@ -421,6 +423,7 @@ publishMods {
 	}
 
 	modrinth("modrinthNeoForge") {
+		displayName = "[$mcVersion NeoForge] ${project.version}"
 		from(mrOptions)
 		file = project(":neoforge").tasks.remapJar.get().archiveFile
 		modLoaders.add("neoforge")

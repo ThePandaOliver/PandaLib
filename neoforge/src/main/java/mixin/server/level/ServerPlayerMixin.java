@@ -19,7 +19,6 @@ import net.minecraft.world.entity.Entity;
 import net.neoforged.neoforge.common.util.ITeleporter;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -29,9 +28,6 @@ public abstract class ServerPlayerMixin {
 	@Shadow
 	private boolean isChangingDimension;
 
-	@Unique
-	private ServerPlayerKtImpl pandaLib$impl = new ServerPlayerKtImpl((ServerPlayer) (Object) this);
-
 	@Inject(
 			method = "changeDimension",
 			at = @At(
@@ -40,11 +36,11 @@ public abstract class ServerPlayerMixin {
 			), cancellable = true
 	)
 	public void beforeDimensionChange(ServerLevel destination, ITeleporter teleporter, CallbackInfoReturnable<Entity> cir) {
-		pandaLib$impl.onDimensionChangePreEvent(destination, cir);
+		ServerPlayerKtImpl.INSTANCE.onDimensionChangePreEvent((ServerPlayer) (Object) this, destination, cir);
 	}
 
 	@Inject(method = "changeDimension", at = @At("RETURN"))
 	public void afterDimensionChange(ServerLevel destination, ITeleporter teleporter, CallbackInfoReturnable<Entity> cir) {
-		pandaLib$impl.onDimensionChangePostEvent(destination, cir, this.isChangingDimension);
+		ServerPlayerKtImpl.INSTANCE.onDimensionChangePostEvent((ServerPlayer) (Object) this, destination, cir, this.isChangingDimension);
 	}
 }

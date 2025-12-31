@@ -13,21 +13,14 @@
 package dev.pandasystems.pandalib.fabric.mixin.client.multiplayer;
 
 import dev.pandasystems.pandalib.mixin.client.multiplayer.ClientLevelKtImpl;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ClientLevel.class)
 public class ClientLevelMixin {
-	@Shadow
-	@Final
-	private Minecraft minecraft;
-
 	@Inject(method = "disconnect", at = @At("HEAD"))
 	public void disconnect(CallbackInfo ci) {
 		ClientLevelKtImpl.INSTANCE.onDisconnect();

@@ -16,12 +16,12 @@ import dev.pandasystems.pandalib.event.server.serverStartingEvent
 import dev.pandasystems.pandalib.event.server.serverStoppingEvent
 import net.minecraft.server.MinecraftServer
 
-class MinecraftServerKtImpl(val server: MinecraftServer) {
-	fun beforeServerInitEvent() {
+object MinecraftServerKtImpl {
+	fun beforeServerInitEvent(server: MinecraftServer) {
 		serverStartingEvent.invoker(server)
 	}
 
-	fun beforeServerShutdownEvent() {
+	fun beforeServerShutdownEvent(server: MinecraftServer) {
 		serverStoppingEvent.invoker(server)
 	}
 }

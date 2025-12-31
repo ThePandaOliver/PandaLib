@@ -15,8 +15,8 @@ package dev.pandasystems.pandalib.mixin.server.network
 import dev.pandasystems.pandalib.event.server.serverConfigurationConnectionEvent
 import net.minecraft.server.network.ServerConfigurationPacketListenerImpl
 
-class ServerConfigurationPacketListenerImplKtImpl(val serverConfigurationPacketListener: ServerConfigurationPacketListenerImpl) {
-	fun onServerConfigurationConnectionEvent() {
+object ServerConfigurationPacketListenerImplKtImpl {
+	fun onServerConfigurationConnectionEvent(serverConfigurationPacketListener: ServerConfigurationPacketListenerImpl) {
 		serverConfigurationConnectionEvent.invoker(serverConfigurationPacketListener, serverConfigurationPacketListener.server)
 	}
 }

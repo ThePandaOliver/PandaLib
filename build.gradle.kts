@@ -402,27 +402,27 @@ publishMods {
 
 	curseforge("curseforgeFabric") {
 		from(cfOptions)
-		file(project(":fabric").tasks.remapJar.get().archiveFile)
+		file = project(":fabric").tasks.remapJar.get().archiveFile
 		modLoaders.add("fabric")
 		requires("fabric-api")
 	}
 
 	curseforge("curseforgeNeoForge") {
 		from(cfOptions)
-		file(project(":neoforge").tasks.remapJar.get().archiveFile)
+		file = project(":neoforge").tasks.remapJar.get().archiveFile
 		modLoaders.add("neoforge")
 	}
 
 	modrinth("modrinthFabric") {
 		from(mrOptions)
-		file(project(":fabric").tasks.remapJar.get().archiveFile)
+		file = project(":fabric").tasks.remapJar.get().archiveFile
 		modLoaders.add("fabric")
 		requires("fabric-api")
 	}
 
 	modrinth("modrinthNeoForge") {
 		from(mrOptions)
-		file(project(":neoforge").tasks.remapJar.get().archiveFile)
+		file = project(":neoforge").tasks.remapJar.get().archiveFile
 		modLoaders.add("neoforge")
 	}
 }

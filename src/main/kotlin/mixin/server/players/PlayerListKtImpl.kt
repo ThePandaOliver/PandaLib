@@ -18,7 +18,7 @@ import dev.pandasystems.pandalib.event.server.serverPlayerRespawnEvent
 import net.minecraft.server.level.ServerPlayer
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable
 
-class PlayerListKtImpl {
+object PlayerListKtImpl {
 	fun onPlayerJoinEvent(player: ServerPlayer) {
 		serverPlayerJoinEvent.invoker(player)
 	}

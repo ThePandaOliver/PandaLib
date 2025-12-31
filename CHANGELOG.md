@@ -1,3 +1,15 @@
+# Version 1.0.0 | Alpha 2
+
+- Cleaned up the codebase
+- Updated to Fabric API 0.138.4
+- Updated to Fabric Loader 0.18.4
+- Updated to NeoForge 21.10.64
+
+## Bug fixes
+- Fixed a bug where mixin couldn't find variables properly
+
+---
+
 # Version 1.0.0 | Alpha 1
 
 * Cleaned up Utility classes to fit kotlin practices

@@ -18,7 +18,6 @@ import net.minecraft.world.level.portal.TeleportTransition;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -27,9 +26,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class ServerPlayerMixin {
 	@Shadow
 	private boolean isChangingDimension;
-	
-	@Unique
-	private ServerPlayerKtImpl pandaLib$impl = new ServerPlayerKtImpl((ServerPlayer) (Object) this);
 
 	@Inject(
 			method = "teleport(Lnet/minecraft/world/level/portal/TeleportTransition;)Lnet/minecraft/server/level/ServerPlayer;",
@@ -40,11 +36,11 @@ public abstract class ServerPlayerMixin {
 			), cancellable = true
 	)
 	public void beforeDimensionChange(TeleportTransition teleportTransition, CallbackInfoReturnable<ServerPlayer> cir) {
-		pandaLib$impl.onDimensionChangePreEvent(teleportTransition, cir);
+		ServerPlayerKtImpl.INSTANCE.onDimensionChangePreEvent((ServerPlayer) (Object) this, teleportTransition, cir);
 	}
 
 	@Inject(method = "teleport(Lnet/minecraft/world/level/portal/TeleportTransition;)Lnet/minecraft/server/level/ServerPlayer;", at = @At("RETURN"))
 	public void afterDimensionChange(TeleportTransition teleportTransition, CallbackInfoReturnable<ServerPlayer> cir) {
-		pandaLib$impl.onDimensionChangePostEvent(teleportTransition, cir, this.isChangingDimension);
+		ServerPlayerKtImpl.INSTANCE.onDimensionChangePostEvent((ServerPlayer) (Object) this, teleportTransition, cir, this.isChangingDimension);
 	}
 }

@@ -19,7 +19,7 @@ import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.level.ServerPlayer
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable
 
-class ServerPlayerGameModeKtImpl {
+object ServerPlayerGameModeKtImpl {
 	fun onBlockBreakEventPre(level: ServerLevel, pos: BlockPos, player: ServerPlayer, cir: CallbackInfoReturnable<Boolean>) {
 		val cancelled = !serverBlockBreakPreEvent.invoker(level, pos, level.getBlockState(pos), player)
 		if (cancelled) {

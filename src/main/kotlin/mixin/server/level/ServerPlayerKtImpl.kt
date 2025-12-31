@@ -19,8 +19,8 @@ import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.level.portal.TeleportTransition
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable
 
-class ServerPlayerKtImpl(val player: ServerPlayer) {
-	fun onDimensionChangePreEvent(teleportTransition: TeleportTransition, cir: CallbackInfoReturnable<ServerPlayer>) {
+object ServerPlayerKtImpl {
+	fun onDimensionChangePreEvent(player: ServerPlayer, teleportTransition: TeleportTransition, cir: CallbackInfoReturnable<ServerPlayer>) {
 		val cancelled = !serverPlayerChangeDimensionPreEvent.invoker(
 			player, player.level() as ServerLevel,
 			teleportTransition.newLevel(), teleportTransition
@@ -28,7 +28,7 @@ class ServerPlayerKtImpl(val player: ServerPlayer) {
 		if (cancelled) cir.returnValue = null
 	}
 
-	fun onDimensionChangePostEvent(teleportTransition: TeleportTransition, cir: CallbackInfoReturnable<ServerPlayer>, isChangingDimension: Boolean) {
+	fun onDimensionChangePostEvent(player: ServerPlayer, teleportTransition: TeleportTransition, cir: CallbackInfoReturnable<ServerPlayer>, isChangingDimension: Boolean) {
 		if (isChangingDimension && cir.getReturnValue() != null) {
 			serverPlayerChangeDimensionPostEvent.invoker.invoke(player,
 				player.level() as ServerLevel,

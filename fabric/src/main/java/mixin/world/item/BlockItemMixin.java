@@ -19,23 +19,19 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.state.BlockState;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(BlockItem.class)
 public class BlockItemMixin {
-	@Unique
-    private BlockItemKtImpl pandaLib$impl = new BlockItemKtImpl();
-	
 	@Inject(method = "place", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/BlockItem;placeBlock(Lnet/minecraft/world/item/context/BlockPlaceContext;Lnet/minecraft/world/level/block/state/BlockState;)Z"), cancellable = true)
-	void beforeBlockPlace(BlockPlaceContext context, CallbackInfoReturnable<InteractionResult> cir, @Local(name = "blockPlaceContext") BlockPlaceContext newContext) {
-		pandaLib$impl.beforeBlockPlaceEvent(context, newContext, cir);
+	void beforeBlockPlace(BlockPlaceContext context, CallbackInfoReturnable<InteractionResult> cir, @Local(ordinal = 1) BlockPlaceContext newContext) {
+		BlockItemKtImpl.INSTANCE.beforeBlockPlaceEvent(context, newContext, cir);
 	}
 
 	@Inject(method = "placeBlock", at = @At("TAIL"))
 	void afterBlockPlace(BlockPlaceContext context, BlockState state, CallbackInfoReturnable<Boolean> cir) {
-		pandaLib$impl.afterBlockPlaceEvent(context, state);
+		BlockItemKtImpl.INSTANCE.afterBlockPlaceEvent(context, state);
 	}
 }

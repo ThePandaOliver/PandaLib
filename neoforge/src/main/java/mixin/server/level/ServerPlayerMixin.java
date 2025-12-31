@@ -33,12 +33,12 @@ public abstract class ServerPlayerMixin {
 			at = @At("HEAD"),
 			cancellable = true
 	)
-	public void beforeDimensionChange(ServerLevel destination, ITeleporter teleporter, CallbackInfoReturnable<ServerPlayer> cir) {
+	public void beforeDimensionChange(ServerLevel destination, ITeleporter teleporter, CallbackInfoReturnable<Entity> cir) {
 		ServerPlayerKtImpl.INSTANCE.onDimensionChangePreEvent((ServerPlayer) (Object) this, destination, cir);
 	}
 
 	@Inject(method = "changeDimension", at = @At("RETURN"))
-	public void afterDimensionChange(ServerLevel destination, ITeleporter teleporter, CallbackInfoReturnable<ServerPlayer> cir) {
+	public void afterDimensionChange(ServerLevel destination, ITeleporter teleporter, CallbackInfoReturnable<Entity> cir) {
 		ServerPlayerKtImpl.INSTANCE.onDimensionChangePostEvent((ServerPlayer) (Object) this, destination, cir, this.isChangingDimension);
 	}
 }

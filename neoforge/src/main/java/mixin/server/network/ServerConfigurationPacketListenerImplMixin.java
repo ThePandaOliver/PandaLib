@@ -19,21 +19,19 @@ import net.minecraft.server.network.CommonListenerCookie;
 import net.minecraft.server.network.ServerCommonPacketListenerImpl;
 import net.minecraft.server.network.ServerConfigurationPacketListenerImpl;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ServerConfigurationPacketListenerImpl.class)
 public abstract class ServerConfigurationPacketListenerImplMixin extends ServerCommonPacketListenerImpl {
-	@Unique private ServerConfigurationPacketListenerImplKtImpl pandaLib$impl = new ServerConfigurationPacketListenerImplKtImpl((ServerConfigurationPacketListenerImpl) (Object) this);
-	
 	public ServerConfigurationPacketListenerImplMixin(MinecraftServer server, Connection connection, CommonListenerCookie cookie) {
 		super(server, connection, cookie);
 	}
 
 	@Inject(method = "runConfiguration", at = @At("HEAD"))
 	public void onServerConfigurationConnectionEvent(CallbackInfo ci) {
-		pandaLib$impl.onServerConfigurationConnectionEvent();
+		ServerConfigurationPacketListenerImplKtImpl.INSTANCE
+				.onServerConfigurationConnectionEvent((ServerConfigurationPacketListenerImpl) (Object) this);
 	}
 }

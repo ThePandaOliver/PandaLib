@@ -402,14 +402,14 @@ publishMods {
 
 	curseforge("curseforgeFabric") {
 		from(cfOptions)
-		file(project(":fabric").tasks.remapJar.get().archiveFile)
+		file = project(":fabric").tasks.remapJar.get().archiveFile
 		modLoaders.add("fabric")
 		requires("fabric-api")
 	}
 
 	modrinth("modrinthFabric") {
 		from(mrOptions)
-		file(project(":fabric").tasks.remapJar.get().archiveFile)
+		file = project(":fabric").tasks.remapJar.get().archiveFile
 		modLoaders.add("fabric")
 		requires("fabric-api")
 	}

@@ -22,7 +22,7 @@ import net.minecraft.world.item.context.BlockPlaceContext
 import net.minecraft.world.level.block.state.BlockState
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable
 
-class BlockItemKtImpl {
+object BlockItemKtImpl {
 	fun beforeBlockPlaceEvent(context: BlockPlaceContext, newContext: BlockPlaceContext, cir: CallbackInfoReturnable<InteractionResult>) {
 		val blockState = newContext.level.getBlockState(newContext.clickedPos)
 		if (gameEnvironment.isHost) { // Server-side

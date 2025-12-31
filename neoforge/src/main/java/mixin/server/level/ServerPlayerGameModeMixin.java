@@ -20,7 +20,6 @@ import net.minecraft.server.level.ServerPlayerGameMode;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -30,18 +29,15 @@ public class ServerPlayerGameModeMixin {
 	@Shadow protected ServerLevel level;
 
 	@Shadow @Final protected ServerPlayer player;
-	
-	@Unique
-	private ServerPlayerGameModeKtImpl pandaLib$impl = new ServerPlayerGameModeKtImpl();
 
 	@Inject(method = "destroyBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/Block;playerWillDestroy(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/entity/player/Player;)Lnet/minecraft/world/level/block/state/BlockState;"), cancellable = true)
 	public void onBlockBreakEventPre(BlockPos pos, CallbackInfoReturnable<Boolean> cir) {
-		pandaLib$impl.onBlockBreakEventPre(this.level, pos, this.player, cir);
+		ServerPlayerGameModeKtImpl.INSTANCE.onBlockBreakEventPre(this.level, pos, this.player, cir);
 	}
 
 	@Inject(method = "destroyBlock", at = @At("RETURN"))
 	public void onBlockBreakEventPost(BlockPos pos, CallbackInfoReturnable<Boolean> cir) {
 		if (!cir.getReturnValue()) return;
-		pandaLib$impl.onBlockBreakEventPost(this.level, pos, this.player);
+		ServerPlayerGameModeKtImpl.INSTANCE.onBlockBreakEventPost(this.level, pos, this.player);
 	}
 }

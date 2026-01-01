@@ -84,16 +84,13 @@ Development is targeted 1.21.10
 ```kotlin
 repositories {
 	mavenCentral()
-	maven {
-		name = "Github"
-		url = uri("https://repo.pandasystems.dev/repository/maven-public/")
-	}
+	maven("https://repo.pandasystems.dev/repository/maven-public/")
 }
 
 dependencies {
-	modApi("dev.pandasystems:pandalib:<version>") // Common
-	implementation("dev.pandasystems:pandalib-neoforge:<version>") // NeoForge
-	modApi("dev.pandasystems:pandalib-fabric:<version>") // Fabric
+	modApi("dev.pandasystems:pandalib-common-<game version>:<version>") // Common
+	api("dev.pandasystems:pandalib-neoforge-<game version>:<version>")  // NeoForge
+	modApi("dev.pandasystems:pandalib-fabric-<game version>:<version>") // Fabric
 
 	// Only needed if you want to use the embedded Kotlin libraries in NeoForge environments.
 	additionalRuntimeClasspath(kotlin("stdlib"))

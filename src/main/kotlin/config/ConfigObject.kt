@@ -19,14 +19,14 @@ import dev.pandasystems.pandalib.utils.objects
 import dev.pandasystems.universalserializer.Serializer
 import dev.pandasystems.universalserializer.elements.TreeObject
 import dev.pandasystems.universalserializer.formats.JsonFormat
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.Identifier
 import java.util.function.Supplier
 import kotlin.reflect.KClass
 import kotlin.reflect.full.createType
 import kotlin.reflect.jvm.jvmName
 
 class ConfigObject<T : Any>(
-	val resourceLocation: ResourceLocation,
+	val resourceLocation: Identifier,
 	private var configInstance: T,
 	val serializer: Serializer = Serializer(JsonFormat(prettyPrint = true))
 ) : Supplier<T> {

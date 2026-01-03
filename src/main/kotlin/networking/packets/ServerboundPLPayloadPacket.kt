@@ -79,11 +79,11 @@ data class ServerboundPLPayloadPacket(val payload: CustomPacketPayload) : Packet
 
 val serverboundPLPayloadCodec: StreamCodec<FriendlyByteBuf, ServerboundPLPayloadPacket> = StreamCodec.of(
 	{ byteBuf, packet ->
-		byteBuf.writeResourceLocation(packet.payload.type().id) // Writes the payload type ID
+		byteBuf.writeIdentifier(packet.payload.type().id) // Writes the payload type ID
 		PayloadCodecRegistry.packetCodecs[packet.payload.type().id]!!.codec.encode(byteBuf, packet.payload) // Encodes the payload using the registered codec
 	},
 	{ byteBuf ->
-		val payloadId = byteBuf.readResourceLocation() // Reads the payload type ID
+		val payloadId = byteBuf.readIdentifier() // Reads the payload type ID
 		val payload = PayloadCodecRegistry.packetCodecs[payloadId]!!.codec.decode(byteBuf) // Decodes the payload using the registered codec
 		return@of ServerboundPLPayloadPacket(payload)
 	}

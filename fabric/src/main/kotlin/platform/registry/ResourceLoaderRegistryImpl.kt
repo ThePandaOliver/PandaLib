@@ -10,7 +10,7 @@ package dev.pandasystems.pandalib.fabric.platform.registry
 import com.google.auto.service.AutoService
 import dev.pandasystems.pandalib.registry.ResourceLoaderRegistryPlatform
 import net.fabricmc.fabric.api.resource.v1.ResourceLoader
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.Identifier
 import net.minecraft.server.packs.PackType
 import net.minecraft.server.packs.resources.PreparableReloadListener
 
@@ -19,8 +19,8 @@ class ResourceLoaderRegistryImpl : ResourceLoaderRegistryPlatform {
 	override fun registerReloadListener(
 		packType: PackType,
 		listener: PreparableReloadListener,
-		id: ResourceLocation,
-		dependencies: Collection<ResourceLocation>
+		id: Identifier,
+		dependencies: Collection<Identifier>
 	) {
 		ResourceLoader.get(packType).registerReloader(id, listener)
 		dependencies.forEach {

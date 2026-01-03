@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025 Oliver Froberg (The Panda Oliver)
+ * Copyright (C) 2026 Oliver Froberg (The Panda Oliver)
  *
  * This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU Lesser General Public License as published by
@@ -10,9 +10,8 @@
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.pandasystems.pandalib.utils.extensions
+package dev.pandasystems.pandalib.utils
 
 import net.minecraft.resources.Identifier
 
-@Deprecated("ResourceLocation renamed to Identifier", ReplaceWith("identifier(namespace, path)"))
-fun resourceLocation(namespace: String, path: String): Identifier = Identifier.fromNamespaceAndPath(namespace, path)
+fun identifier(namespace: String, path: String): Identifier = Identifier.fromNamespaceAndPath(namespace, path)

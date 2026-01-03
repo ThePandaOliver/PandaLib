@@ -21,7 +21,7 @@ import dev.pandasystems.pandalib.networking.ServerPlayNetworking
 import dev.pandasystems.pandalib.networking.payloads.config.ClientboundConfigRequestPayload
 import dev.pandasystems.pandalib.networking.payloads.config.CommonConfigPayload
 import dev.pandasystems.universalserializer.elements.TreeObject
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.Identifier
 import net.minecraft.world.entity.player.Player
 import java.util.*
 import kotlin.jvm.optionals.getOrNull
@@ -31,7 +31,7 @@ import kotlin.reflect.KType
 
 object ConfigSynchronizer {
 	// ConfigObjects resourceLocation -> List of SyncableConfigOptions
-	internal val configs = mutableMapOf<ResourceLocation, MutableList<SyncableOption<Any?>>>()
+	internal val configs = mutableMapOf<Identifier, MutableList<SyncableOption<Any?>>>()
 
 	internal fun init() {
 		PandaLib.logger.debug("Config Synchronizer is initializing...")
@@ -99,7 +99,7 @@ object ConfigSynchronizer {
 	 * Should be called on the server when a new client connects to provide the client with all connected client configs.
 	 */
 	fun createConfigPayloadsWithClientConfigs(): Collection<CommonConfigPayload> {
-		val payloadValues = mutableMapOf<UUID, Pair<ResourceLocation, TreeObject>>()
+		val payloadValues = mutableMapOf<UUID, Pair<Identifier, TreeObject>>()
 		configs.forEach { (resourceLocation, options) ->
 			options.forEach { option ->
 				val configObject = option.configObject
@@ -128,7 +128,7 @@ object ConfigSynchronizer {
 		}
 	}
 
-	fun createJsonObject(resourceLocation: ResourceLocation): TreeObject {
+	fun createJsonObject(resourceLocation: Identifier): TreeObject {
 		val options = requireNotNull(configs[resourceLocation]) { "Config $resourceLocation is not registered" }
 		val tree = TreeObject()
 		for (option in options) {

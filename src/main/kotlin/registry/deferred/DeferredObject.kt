@@ -16,7 +16,7 @@ import net.minecraft.core.Holder
 import net.minecraft.core.Registry
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.resources.ResourceKey
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.Identifier
 import java.util.function.Supplier
 
 class DeferredObject<T>(val key: ResourceKey<*>) : Supplier<T> {
@@ -53,8 +53,8 @@ class DeferredObject<T>(val key: ResourceKey<*>) : Supplier<T> {
 	val registry: Registry<*>?
 		get() = BuiltInRegistries.REGISTRY.getValue(this.key.registry())
 
-	val id: ResourceLocation
-		get() = this.key.location()
+	val id: Identifier
+		get() = this.key.identifier()
 
 	val isBound: Boolean
 		get() {

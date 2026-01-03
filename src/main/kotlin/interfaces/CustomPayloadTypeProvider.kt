@@ -14,7 +14,7 @@ package dev.pandasystems.pandalib.interfaces
 
 import net.minecraft.network.FriendlyByteBuf
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.Identifier
 
 /*
  * The following code were copied from the Fabric API project
@@ -35,5 +35,5 @@ import net.minecraft.resources.ResourceLocation
  * Original source: https://github.com/FabricMC/fabric/blob/1.21.6/fabric-networking-api-v1/src/main/java/net/fabricmc/fabric/impl/networking/CustomPayloadTypeProvider.java
  */
 interface CustomPayloadTypeProvider<B : FriendlyByteBuf> {
-	fun get(byteBuf: B, resourceLocation: ResourceLocation): CustomPacketPayload.TypeAndCodec<B, out CustomPacketPayload>?
+	fun get(byteBuf: B, resourceLocation: Identifier): CustomPacketPayload.TypeAndCodec<B, out CustomPacketPayload>?
 }

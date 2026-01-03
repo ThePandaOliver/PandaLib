@@ -25,7 +25,7 @@ import java.util.function.Supplier
 
 @AutoService(DeferredRegisterPlatform::class)
 class DeferredRegisterImpl : DeferredRegisterPlatform {
-	override fun <T> registerObject(
+	override fun <T : Any> registerObject(
 		deferredObject: DeferredObject<out T>,
 		supplier: Supplier<out T>
 	) {
@@ -34,8 +34,8 @@ class DeferredRegisterImpl : DeferredRegisterPlatform {
 		Registry.register(deferredObject.registry as Registry<T>, deferredObject.id, supplier.get())
 	}
 
-	override fun <T> registerNewRegistry(registry: Registry<T>) {
-		val registryName = registry.key().location()
+	override fun <T : Any> registerNewRegistry(registry: Registry<T>) {
+		val registryName = registry.key().identifier()
 		check(!BuiltInRegistries.REGISTRY.containsKey(registryName)) { "Attempted duplicate registration of registry $registryName" }
 
 		@Suppress("UNCHECKED_CAST")

@@ -16,17 +16,17 @@ import dev.pandasystems.pandalib.utils.InternalPandaLibApi
 import dev.pandasystems.pandalib.utils.loadFirstService
 import net.minecraft.core.Registry
 import net.minecraft.resources.ResourceKey
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.Identifier
 import java.util.function.Supplier
 
-class DeferredRegister<T> private constructor(private val namespace: String, private val registryKey: ResourceKey<out Registry<T>>) {
+class DeferredRegister<T : Any> private constructor(private val namespace: String, private val registryKey: ResourceKey<out Registry<T>>) {
 	private val entries = mutableMapOf<DeferredObject<out T>, Supplier<out T>>()
 
 	fun <R : T> register(name: String, registryEntry: (ResourceKey<T>) -> R): DeferredObject<R> {
-		return register(ResourceLocation.fromNamespaceAndPath(namespace, name), registryEntry)
+		return register(Identifier.fromNamespaceAndPath(namespace, name), registryEntry)
 	}
 
-	fun <R : T> register(name: ResourceLocation, registryEntry: (ResourceKey<T>) -> R): DeferredObject<R> {
+	fun <R : T> register(name: Identifier, registryEntry: (ResourceKey<T>) -> R): DeferredObject<R> {
 		val key = ResourceKey.create(registryKey, name)
 		return register(key, registryEntry)
 	}
@@ -43,20 +43,20 @@ class DeferredRegister<T> private constructor(private val namespace: String, pri
 	}
 
 	companion object {
-		fun <T> create(namespace: String, registry: Registry<T>): DeferredRegister<T> {
+		fun <T : Any> create(namespace: String, registry: Registry<T>): DeferredRegister<T> {
 			return create<T>(namespace, registry.key())
 		}
 
-		fun <T> create(namespace: String, registryLocation: ResourceLocation): DeferredRegister<T> {
+		fun <T : Any> create(namespace: String, registryLocation: Identifier): DeferredRegister<T> {
 			return create<T>(namespace, ResourceKey.createRegistryKey<T>(registryLocation))
 		}
 
-		fun <T> create(namespace: String, registryKey: ResourceKey<out Registry<T>>): DeferredRegister<T> {
+		fun <T : Any> create(namespace: String, registryKey: ResourceKey<out Registry<T>>): DeferredRegister<T> {
 			return DeferredRegister(namespace, registryKey)
 		}
 
 		@OptIn(InternalPandaLibApi::class)
-		fun <T, R : Registry<T>> registerNewRegistry(registry: R): R {
+		fun <T : Any, R : Registry<T>> registerNewRegistry(registry: R): R {
 			deferredRegister.registerNewRegistry(registry)
 			return registry
 		}
@@ -67,6 +67,6 @@ class DeferredRegister<T> private constructor(private val namespace: String, pri
 val deferredRegister = loadFirstService<DeferredRegisterPlatform>()
 
 interface DeferredRegisterPlatform {
-	fun <T> registerObject(deferredObject: DeferredObject<out T>, supplier: Supplier<out T>)
-	fun <T> registerNewRegistry(registry: Registry<T>)
+	fun <T : Any> registerObject(deferredObject: DeferredObject<out T>, supplier: Supplier<out T>)
+	fun <T : Any> registerNewRegistry(registry: Registry<T>)
 }

@@ -16,14 +16,14 @@ import com.mojang.logging.LogUtils
 import dev.pandasystems.pandalib.config.ConfigRegistry
 import dev.pandasystems.pandalib.config.ConfigSynchronizer
 import dev.pandasystems.pandalib.config.syncOption
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.Identifier
 import org.slf4j.Logger
 
 object PandaLib {
 	const val modid = "pandalib"
 	val logger: Logger = LogUtils.getLogger()
 
-	val config = ConfigRegistry.create(resourceLocation("pandalib_config"), PandaLibConfig)
+	val config = ConfigRegistry.create(identifier("pandalib_config"), PandaLibConfig)
 
 	init {
 		logger.debug("PandaLib is initializing...")
@@ -38,5 +38,7 @@ object PandaLib {
 		logger.debug("PandaLib initialized successfully.")
 	}
 
-	fun resourceLocation(path: String): ResourceLocation = ResourceLocation.fromNamespaceAndPath(modid, path)
+	@Deprecated("ResourceLocation renamed to Identifier", ReplaceWith("identifier(path)"))
+	fun resourceLocation(path: String): Identifier = Identifier.fromNamespaceAndPath(modid, path)
+	fun identifier(path: String): Identifier = Identifier.fromNamespaceAndPath(modid, path)
 }

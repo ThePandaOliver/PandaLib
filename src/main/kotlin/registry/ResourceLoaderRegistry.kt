@@ -14,7 +14,7 @@ package dev.pandasystems.pandalib.registry
 
 import dev.pandasystems.pandalib.utils.InternalPandaLibApi
 import dev.pandasystems.pandalib.utils.loadFirstService
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.Identifier
 import net.minecraft.server.packs.PackType
 import net.minecraft.server.packs.resources.PreparableReloadListener
 
@@ -22,8 +22,8 @@ import net.minecraft.server.packs.resources.PreparableReloadListener
 fun registerResourceLoader(
 	packType: PackType,
 	listener: PreparableReloadListener,
-	id: ResourceLocation,
-	dependencies: MutableList<ResourceLocation> = mutableListOf()
+	id: Identifier,
+	dependencies: MutableList<Identifier> = mutableListOf()
 ) {
 	resourceLoaderRegistry.registerReloadListener(packType, listener, id, dependencies)
 }
@@ -32,5 +32,5 @@ fun registerResourceLoader(
 val resourceLoaderRegistry = loadFirstService<ResourceLoaderRegistryPlatform>()
 
 interface ResourceLoaderRegistryPlatform {
-	fun registerReloadListener(packType: PackType, listener: PreparableReloadListener, id: ResourceLocation, dependencies: Collection<ResourceLocation>)
+	fun registerReloadListener(packType: PackType, listener: PreparableReloadListener, id: Identifier, dependencies: Collection<Identifier>)
 }

@@ -12,10 +12,10 @@
 
 package dev.pandasystems.pandalib.config
 
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.Identifier
 
 object ConfigRegistry {
-	private val configObjects: MutableMap<ResourceLocation, ConfigObject<*>> = mutableMapOf()
+	private val configObjects: MutableMap<Identifier, ConfigObject<*>> = mutableMapOf()
 
 	fun <T : Any> register(configObject: ConfigObject<T>) {
 		val key = configObject.resourceLocation
@@ -26,7 +26,7 @@ object ConfigRegistry {
 	}
 
 
-	fun <T : Any> create(resourceLocation: ResourceLocation, configInstance: T): ConfigObject<T> {
+	fun <T : Any> create(resourceLocation: Identifier, configInstance: T): ConfigObject<T> {
 		val configObject = ConfigObject(resourceLocation, configInstance)
 		val key = configObject.resourceLocation
 		if (configObjects.containsKey(key)) {
@@ -37,7 +37,7 @@ object ConfigRegistry {
 	}
 
 	@Suppress("UNCHECKED_CAST")
-	fun <T : Any> get(resourceLocation: ResourceLocation): ConfigObject<T>? {
+	fun <T : Any> get(resourceLocation: Identifier): ConfigObject<T>? {
 		return configObjects[resourceLocation] as? ConfigObject<T>
 	}
 }

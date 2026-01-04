@@ -16,7 +16,9 @@ pluginManagement {
 	}
 }
 
-include("fabric")
-include("neoforge")
-
 rootProject.name = "PandaLib"
+
+//include("fabric")
+//include("neoforge")
+
+include("versions:1.21.11-fabric")

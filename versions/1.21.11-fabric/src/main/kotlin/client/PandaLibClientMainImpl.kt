@@ -10,10 +10,15 @@
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.pandasystems.pandalib.event.server
+package dev.pandasystems.pandalib.mc1_21_11.fabric.client
 
-import dev.pandasystems.pandalib.utils.event
-import net.minecraft.server.MinecraftServer
+import com.google.auto.service.AutoService
+import dev.pandasystems.pandalib.PandaLibMain
+import net.fabricmc.api.ClientModInitializer
 
-val serverStartingEvent = event<(server: MinecraftServer) -> Unit>()
-val serverStoppingEvent = event<(server: MinecraftServer) -> Unit>()
+@AutoService(PandaLibMain::class)
+class PandaLibClientMainImpl : PandaLibMain(), ClientModInitializer {
+	override fun onInitializeClient() {
+		init()
+	}
+}

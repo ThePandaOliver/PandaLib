@@ -10,19 +10,14 @@
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.pandasystems.pandalib.registry
+package dev.pandasystems.pandalib.client
 
-import dev.pandasystems.pandalib.utils.InternalPandaLibApi
 import dev.pandasystems.pandalib.utils.loadFirstService
-import net.minecraft.core.Registry
-import net.minecraft.network.syncher.EntityDataSerializer
 
-@OptIn(InternalPandaLibApi::class)
-val ENTITY_DATA_SERIALIZERS_REGISTRY: Registry<EntityDataSerializer<*>> get() = registries.entityDataSerializers
+abstract class PandaLibMain {
+	fun init() {
 
-@InternalPandaLibApi
-val registries = loadFirstService<RegistriesPlatform>()
-
-interface RegistriesPlatform {
-	val entityDataSerializers: Registry<EntityDataSerializer<*>>
+	}
 }
+
+val pandaLibClient by lazy { loadFirstService<PandaLibMain>() }

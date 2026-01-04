@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025-2025 Oliver Froberg (The Panda Oliver)
+ * Copyright (C) 2026 Oliver Froberg (The Panda Oliver)
  *
  * This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU Lesser General Public License as published by
@@ -12,11 +12,12 @@
 
 package dev.pandasystems.pandalib.registry.deferred
 
+import dev.pandasystems.pandalib.registry.deferred.DeferredRegister.Companion.create
 import dev.pandasystems.pandalib.utils.InternalPandaLibApi
 import dev.pandasystems.pandalib.utils.loadFirstService
 import net.minecraft.core.Registry
-import net.minecraft.resources.ResourceKey
 import net.minecraft.resources.Identifier
+import net.minecraft.resources.ResourceKey
 import java.util.function.Supplier
 
 class DeferredRegister<T : Any> private constructor(private val namespace: String, private val registryKey: ResourceKey<out Registry<T>>) {

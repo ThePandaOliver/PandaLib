@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025 Oliver Froberg (The Panda Oliver)
+ * Copyright (C) 2026 Oliver Froberg (The Panda Oliver)
  *
  * This program is free software: you can redistribute it and/or modify 
  *  it under the terms of the GNU Lesser General Public License as published by
@@ -20,7 +20,6 @@ import net.minecraft.network.RegistryFriendlyByteBuf
 import net.minecraft.network.protocol.ProtocolInfoBuilder
 import net.minecraft.network.protocol.game.ClientGamePacketListener
 import net.minecraft.network.protocol.game.ServerGamePacketListener
-import net.minecraft.util.Unit
 
 object StatusProtocolsKtImpl {
 	fun addClientPacket(protocolInfoBuilder: ProtocolInfoBuilder<ClientGamePacketListener, RegistryFriendlyByteBuf, Unit>) {

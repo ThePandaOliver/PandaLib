@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025-2025 Oliver Froberg (The Panda Oliver)
+ * Copyright (C) 2026 Oliver Froberg (The Panda Oliver)
  *
  * This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU Lesser General Public License as published by
@@ -25,7 +25,7 @@ import java.util.function.Supplier
 
 @AutoService(DeferredRegisterPlatform::class)
 class DeferredRegisterImpl : DeferredRegisterPlatform {
-	override fun <T> registerObject(
+	override fun <T : Any> registerObject(
 		deferredObject: DeferredObject<out T>,
 		supplier: Supplier<out T>
 	) {
@@ -34,7 +34,7 @@ class DeferredRegisterImpl : DeferredRegisterPlatform {
 		Registry.register(deferredObject.registry as Registry<T>, deferredObject.id, supplier.get())
 	}
 
-	override fun <T> registerNewRegistry(registry: Registry<T>) {
+	override fun <T : Any> registerNewRegistry(registry: Registry<T>) {
 		val registryName = registry.key().location()
 		check(!BuiltInRegistries.REGISTRY.containsKey(registryName)) { "Attempted duplicate registration of registry $registryName" }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025-2025 Oliver Froberg (The Panda Oliver)
+ * Copyright (C) 2026 Oliver Froberg (The Panda Oliver)
  *
  * This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU Lesser General Public License as published by
@@ -31,7 +31,7 @@ class RegistriesImpl : RegistriesPlatform {
 	companion object Keys {
 		val ENTITY_DATA_SERIALIZERS: ResourceKey<Registry<EntityDataSerializer<*>>> = key("entity_data_serializers")
 
-		private fun <T> key(name: String): ResourceKey<Registry<T>> {
+		private fun <T : Any> key(name: String): ResourceKey<Registry<T>> {
 			return ResourceKey.createRegistryKey<T>(PandaLib.resourceLocation(name))
 		}
 	}

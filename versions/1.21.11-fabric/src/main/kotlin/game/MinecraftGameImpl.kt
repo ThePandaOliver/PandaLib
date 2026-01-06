@@ -19,5 +19,5 @@ import dev.pandasystems.pandalib.utils.Version
 @AutoService(MinecraftGame::class)
 class MinecraftGameImpl : MinecraftGame() {
 	override val compatibleVersion: Version
-		get() = TODO("Not yet implemented")
+		get() = Version.mc1_21_11
 }

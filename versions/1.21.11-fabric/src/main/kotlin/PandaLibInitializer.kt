@@ -12,11 +12,12 @@
 
 package dev.pandasystems.pandalib.mc1_21_11.fabric
 
-import dev.pandasystems.pandalib.pandaLib
+import dev.pandasystems.pandalib.PandaLibMain
+import dev.pandasystems.pandalib.utils.Version
 import net.fabricmc.api.ModInitializer
 
 internal class PandaLibInitializer : ModInitializer {
 	override fun onInitialize() {
-		pandaLib.init()
+		PandaLibMain.init(Version.mc1_21_11)
 	}
 }

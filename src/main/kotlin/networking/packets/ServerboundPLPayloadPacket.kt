@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025 Oliver Froberg (The Panda Oliver)
+ * Copyright (C) 2026 Oliver Froberg (The Panda Oliver)
  *
  * This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU Lesser General Public License as published by
@@ -27,7 +27,6 @@ import net.minecraft.network.protocol.PacketFlow
 import net.minecraft.network.protocol.PacketType
 import net.minecraft.network.protocol.common.ServerCommonPacketListener
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
-import net.minecraft.network.protocol.game.ClientboundBundlePacket
 import net.minecraft.server.MinecraftServer
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.server.network.ServerConfigurationPacketListenerImpl

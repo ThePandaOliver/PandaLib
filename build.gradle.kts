@@ -24,7 +24,6 @@ val mcVersion: String by project
 val buildFor: String by project
 
 val modVersion: String by project
-val devVersionNumber: String by project
 val modGroup: String by project
 val modId: String by project
 
@@ -309,6 +308,8 @@ allprojects {
 			create<MavenPublication>("maven") {
 				from(components["java"])
 				artifactId = base.archivesName.get()
+				if (properties["snapshot"]?.toString()?.toBooleanStrictOrNull() ?: false)
+					version = "${project.version}-SNAPSHOT"
 
 				if (loomPlatform != null) {
 					artifact(tasks.named("remapSlimJar")) {

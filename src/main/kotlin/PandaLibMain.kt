@@ -12,12 +12,12 @@
 
 package dev.pandasystems.pandalib
 
-import dev.pandasystems.pandalib.utils.loadFirstService
+import dev.pandasystems.pandalib.utils.Version
 
-abstract class PandaLibMain {
-	fun init() {
+object PandaLibMain {
+	val modid = "pandalib"
 
+	fun init(minecraftVersion: Version) {
+		Version.minecraft = minecraftVersion
 	}
 }
-
-val pandaLib by lazy { loadFirstService<PandaLibMain>() }

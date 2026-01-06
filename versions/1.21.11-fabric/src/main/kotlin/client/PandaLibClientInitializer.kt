@@ -10,12 +10,13 @@
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.pandasystems.pandalib.mc1_21_11.fabric
+package dev.pandasystems.pandalib.mc1_21_11.fabric.client
 
-import com.google.auto.service.AutoService
-import dev.pandasystems.pandalib.PandaLibMain
+import dev.pandasystems.pandalib.client.PandaLibClientMain
+import net.fabricmc.api.ClientModInitializer
 
-@AutoService(PandaLibMain::class)
-class PandaLibMainImpl : PandaLibMain() {
-
+internal class PandaLibClientInitializer : ClientModInitializer {
+	override fun onInitializeClient() {
+		PandaLibClientMain.init()
+	}
 }

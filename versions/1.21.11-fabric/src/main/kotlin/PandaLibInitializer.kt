@@ -12,10 +12,11 @@
 
 package dev.pandasystems.pandalib.mc1_21_11.fabric
 
-import com.google.auto.service.AutoService
-import dev.pandasystems.pandalib.PandaLibMain
+import dev.pandasystems.pandalib.pandaLib
+import net.fabricmc.api.ModInitializer
 
-@AutoService(PandaLibMain::class)
-class PandaLibMainImpl : PandaLibMain() {
-
+internal class PandaLibInitializer : ModInitializer {
+	override fun onInitialize() {
+		pandaLib.init()
+	}
 }

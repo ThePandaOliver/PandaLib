@@ -10,12 +10,13 @@
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.pandasystems.pandalib.mc1_21_11.fabric
+package dev.pandasystems.pandalib.wrapper
 
-import com.google.auto.service.AutoService
-import dev.pandasystems.pandalib.PandaLibMain
+class Identifier(
+	val namespace: String,
+	val path: String
+) {
+	constructor(string: String) : this(string.substringBefore(':'), string.substringAfter(':'))
 
-@AutoService(PandaLibMain::class)
-class PandaLibMainImpl : PandaLibMain() {
-
+	override fun toString(): String = "$namespace:$path"
 }

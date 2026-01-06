@@ -10,12 +10,12 @@
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.pandasystems.pandalib.mc1_21_11.fabric
+package dev.pandasystems.pandalib.game
 
-import com.google.auto.service.AutoService
-import dev.pandasystems.pandalib.PandaLibMain
+import dev.pandasystems.pandalib.utils.serviceloader.VersionLoaded
+import dev.pandasystems.pandalib.utils.serviceloader.lazyLoadVersionService
 
-@AutoService(PandaLibMain::class)
-class PandaLibMainImpl : PandaLibMain() {
-
+abstract class MinecraftGame : VersionLoaded {
 }
+
+val minecraft by lazyLoadVersionService<MinecraftGame>()

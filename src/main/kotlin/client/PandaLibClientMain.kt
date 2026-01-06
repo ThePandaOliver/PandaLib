@@ -12,12 +12,8 @@
 
 package dev.pandasystems.pandalib.client
 
-import dev.pandasystems.pandalib.utils.loadFirstService
-
-abstract class PandaLibMain {
+object PandaLibClientMain {
 	fun init() {
 
 	}
 }
-
-val pandaLibClient by lazy { loadFirstService<PandaLibMain>() }

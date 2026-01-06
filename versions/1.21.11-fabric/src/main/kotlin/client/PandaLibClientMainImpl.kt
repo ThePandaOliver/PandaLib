@@ -13,12 +13,8 @@
 package dev.pandasystems.pandalib.mc1_21_11.fabric.client
 
 import com.google.auto.service.AutoService
-import dev.pandasystems.pandalib.PandaLibMain
-import net.fabricmc.api.ClientModInitializer
+import dev.pandasystems.pandalib.client.PandaLibClientMain
 
-@AutoService(PandaLibMain::class)
-class PandaLibClientMainImpl : PandaLibMain(), ClientModInitializer {
-	override fun onInitializeClient() {
-		init()
-	}
+@AutoService(PandaLibClientMain::class)
+class PandaLibClientMainImpl : PandaLibClientMain() {
 }

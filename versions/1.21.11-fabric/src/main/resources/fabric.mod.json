@@ -16,10 +16,10 @@
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"dev.pandasystems.pandalib.mc1_21_11.fabric.PandaLibMainImpl"
+			"dev.pandasystems.pandalib.mc1_21_11.fabric.PandaLibInitializer"
 		],
 		"client": [
-			"dev.pandasystems.pandalib.mc1_21_11.fabric.client.PandaLibClientMainImpl"
+			"dev.pandasystems.pandalib.mc1_21_11.fabric.client.PandaLibClientInitializer"
 		]
 	},
 	"mixins": [

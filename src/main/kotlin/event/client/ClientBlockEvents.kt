@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025-2025 Oliver Froberg (The Panda Oliver)
+ * Copyright (C) 2026 Oliver Froberg (The Panda Oliver)
  *
  * This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU Lesser General Public License as published by
@@ -15,7 +15,6 @@ package dev.pandasystems.pandalib.event.client
 import dev.pandasystems.pandalib.utils.event
 import net.minecraft.client.player.LocalPlayer
 import net.minecraft.core.BlockPos
-import net.minecraft.world.entity.Entity
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.state.BlockState
 

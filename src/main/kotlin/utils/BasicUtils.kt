@@ -10,10 +10,8 @@
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.pandasystems.pandalib.event.server
+package dev.pandasystems.pandalib.utils
 
-import dev.pandasystems.pandalib.utils.event
-import net.minecraft.server.MinecraftServer
+import net.minecraft.resources.ResourceLocation
 
-val serverStartingEvent = event<(server: MinecraftServer) -> Unit>()
-val serverStoppingEvent = event<(server: MinecraftServer) -> Unit>()
+fun resourceLocation(namespace: String, path: String): ResourceLocation = ResourceLocation(namespace, path)

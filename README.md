@@ -59,6 +59,7 @@ Development is targeted 1.21.10
 #### Looking for a specific version's codebase
 
 - **1.21**
+  - [1.21.11](https://github.com/ThePandaOliver/PandaLib/tree/versions/1.21.11)
   - [1.21.10](https://github.com/ThePandaOliver/PandaLib/tree/versions/1.21.10)
   - [1.21.9](https://github.com/ThePandaOliver/PandaLib/tree/versions/1.21.9)
   - [1.21.8](https://github.com/ThePandaOliver/PandaLib/tree/versions/1.21.8)

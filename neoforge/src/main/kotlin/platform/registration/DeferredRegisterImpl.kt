@@ -27,7 +27,7 @@ class DeferredRegisterImpl : DeferredRegisterPlatform {
 	private val pendingRegistries: MutableMap<ResourceKey<out Registry<*>>, PendingRegistries<*>> = mutableMapOf()
 	private val pendingRegistryTypes: MutableList<Registry<*>> = mutableListOf()
 
-	override fun <T> registerObject(
+	override fun <T : Any> registerObject(
 		deferredObject: DeferredObject<out T>,
 		supplier: Supplier<out T>
 	) {
@@ -37,7 +37,7 @@ class DeferredRegisterImpl : DeferredRegisterPlatform {
 		pending.add(deferredObject, supplier)
 	}
 
-	override fun <T> registerNewRegistry(registry: Registry<T>) {
+	override fun <T : Any> registerNewRegistry(registry: Registry<T>) {
 		pendingRegistryTypes.add(registry)
 	}
 
@@ -49,7 +49,7 @@ class DeferredRegisterImpl : DeferredRegisterPlatform {
 		pendingRegistryTypes.forEach(Consumer { registry: Registry<*> -> event.register(registry) })
 	}
 
-	private class PendingRegistries<T>(private val registryKey: ResourceKey<out Registry<T>>) {
+	private class PendingRegistries<T : Any>(private val registryKey: ResourceKey<out Registry<T>>) {
 		private val entries: MutableMap<DeferredObject<out T>, Supplier<out T>> = mutableMapOf<DeferredObject<out T>, Supplier<out T>>()
 
 		fun add(deferredObject: DeferredObject<out T>, objectSupplier: Supplier<out T>) {

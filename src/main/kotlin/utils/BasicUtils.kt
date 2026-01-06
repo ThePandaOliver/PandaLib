@@ -12,6 +12,6 @@
 
 package dev.pandasystems.pandalib.utils
 
-import net.minecraft.resources.Identifier
+import net.minecraft.resources.ResourceLocation
 
-fun identifier(namespace: String, path: String): Identifier = Identifier.fromNamespaceAndPath(namespace, path)
+fun resourceLocation(namespace: String, path: String): ResourceLocation = ResourceLocation.fromNamespaceAndPath(namespace, path)

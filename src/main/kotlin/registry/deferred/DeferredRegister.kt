@@ -15,18 +15,18 @@ package dev.pandasystems.pandalib.registry.deferred
 import dev.pandasystems.pandalib.utils.InternalPandaLibApi
 import dev.pandasystems.pandalib.utils.loadFirstService
 import net.minecraft.core.Registry
-import net.minecraft.resources.Identifier
 import net.minecraft.resources.ResourceKey
+import net.minecraft.resources.ResourceLocation
 import java.util.function.Supplier
 
 class DeferredRegister<T : Any> private constructor(private val namespace: String, private val registryKey: ResourceKey<out Registry<T>>) {
 	private val entries = mutableMapOf<DeferredObject<out T>, Supplier<out T>>()
 
 	fun <R : T> register(name: String, registryEntry: (ResourceKey<T>) -> R): DeferredObject<R> {
-		return register(Identifier.fromNamespaceAndPath(namespace, name), registryEntry)
+		return register(ResourceLocation.fromNamespaceAndPath(namespace, name), registryEntry)
 	}
 
-	fun <R : T> register(name: Identifier, registryEntry: (ResourceKey<T>) -> R): DeferredObject<R> {
+	fun <R : T> register(name: ResourceLocation, registryEntry: (ResourceKey<T>) -> R): DeferredObject<R> {
 		val key = ResourceKey.create(registryKey, name)
 		return register(key, registryEntry)
 	}
@@ -47,7 +47,7 @@ class DeferredRegister<T : Any> private constructor(private val namespace: Strin
 			return create<T>(namespace, registry.key())
 		}
 
-		fun <T : Any> create(namespace: String, registryLocation: Identifier): DeferredRegister<T> {
+		fun <T : Any> create(namespace: String, registryLocation: ResourceLocation): DeferredRegister<T> {
 			return create<T>(namespace, ResourceKey.createRegistryKey<T>(registryLocation))
 		}
 

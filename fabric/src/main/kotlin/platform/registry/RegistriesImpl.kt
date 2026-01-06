@@ -32,13 +32,13 @@ class RegistriesImpl : RegistriesPlatform {
 		val ENTITY_DATA_SERIALIZERS: ResourceKey<Registry<EntityDataSerializer<*>>> = key("entity_data_serializers")
 
 		private fun <T : Any> key(name: String): ResourceKey<Registry<T>> {
-			return ResourceKey.createRegistryKey<T>(PandaLib.identifier(name))
+			return ResourceKey.createRegistryKey<T>(PandaLib.resourceLocation(name))
 		}
 	}
 
 	init {
 		entityDataSerializers.event.register { key, value, _ ->
-			FabricTrackedDataRegistry.register(key.identifier(), value)
+			FabricTrackedDataRegistry.register(key.location(), value)
 		}
 	}
 }

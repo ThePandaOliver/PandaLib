@@ -35,7 +35,7 @@ class DeferredRegisterImpl : DeferredRegisterPlatform {
 	}
 
 	override fun <T : Any> registerNewRegistry(registry: Registry<T>) {
-		val registryName = registry.key().identifier()
+		val registryName = registry.key().location()
 		check(!BuiltInRegistries.REGISTRY.containsKey(registryName)) { "Attempted duplicate registration of registry $registryName" }
 
 		@Suppress("UNCHECKED_CAST")

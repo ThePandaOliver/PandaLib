@@ -20,20 +20,20 @@ import net.minecraft.network.FriendlyByteBuf
 import net.minecraft.network.codec.ByteBufCodecs
 import net.minecraft.network.codec.StreamCodec
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
-import net.minecraft.resources.Identifier
+import net.minecraft.resources.ResourceLocation
 import java.util.*
 
 data class CommonConfigPayload(
-	val resourceLocation: Identifier,
+	val resourceLocation: ResourceLocation,
 	val optionObject: TreeObject,
 	val playerId: Optional<UUID>
 ) : CustomPacketPayload {
 	override fun type(): CustomPacketPayload.Type<CommonConfigPayload> = TYPE
 
 	companion object {
-		val TYPE = CustomPacketPayload.Type<CommonConfigPayload>(PandaLib.identifier("config_payload"))
+		val TYPE = CustomPacketPayload.Type<CommonConfigPayload>(PandaLib.resourceLocation("config_payload"))
 		val CODEC: StreamCodec<FriendlyByteBuf, CommonConfigPayload> = StreamCodec.composite(
-			Identifier.STREAM_CODEC, CommonConfigPayload::resourceLocation,
+			ResourceLocation.STREAM_CODEC, CommonConfigPayload::resourceLocation,
 			TreeObjectCodec, CommonConfigPayload::optionObject,
 			ByteBufCodecs.optional(UUIDUtil.STREAM_CODEC), CommonConfigPayload::playerId,
 			::CommonConfigPayload

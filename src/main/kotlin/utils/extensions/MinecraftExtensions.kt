@@ -12,7 +12,7 @@
 
 package dev.pandasystems.pandalib.utils.extensions
 
-import net.minecraft.resources.Identifier
+import net.minecraft.resources.ResourceLocation
 
-@Deprecated("ResourceLocation renamed to Identifier", ReplaceWith("identifier(namespace, path)"))
-fun resourceLocation(namespace: String, path: String): Identifier = Identifier.fromNamespaceAndPath(namespace, path)
+@Deprecated("moved file", ReplaceWith("resourceLocation(namespace, path)"))
+fun resourceLocation(namespace: String, path: String): ResourceLocation = ResourceLocation.fromNamespaceAndPath(namespace, path)

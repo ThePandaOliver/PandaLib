@@ -1,6 +1,6 @@
 name: Publish Snapshot
-#on: push # Disabled temporarily
 on: [workflow_dispatch]
+#on: push # Disabled temporarily
 
 env:
   NEXUS_USERNAME: "${{secrets.NEXUS_USERNAME}}"

@@ -13,7 +13,6 @@ plugins {
 	id("com.gradleup.shadow") version "9.0.2" apply false
 	id("org.jetbrains.gradle.plugin.idea-ext") version "1.1.10"
 
-	id("io.github.pacifistmc.forgix") version "2.0.0-SNAPSHOT-5.1"
 	id("me.modmuss50.mod-publish-plugin") version "1.1.0"
 	id("com.google.devtools.ksp") version "2.2.0-2.0.2"
 	`maven-publish`
@@ -270,7 +269,15 @@ allprojects {
 			forgeLoaderVersion?.let { props["forge_loader_version"] = it }
 
 			inputs.properties(props)
-			filesMatching(listOf("META-INF/mods.toml", "META-INF/neoforge.mods.toml", "fabric.mod.json", "**.mixins.json", "pack.mcmeta")) {
+			filesMatching(
+				listOf(
+					"META-INF/mods.toml",
+					"META-INF/neoforge.mods.toml",
+					"fabric.mod.json",
+					"**.mixins.json",
+					"pack.mcmeta"
+				)
+			) {
 				expand(props)
 			}
 		}
@@ -312,7 +319,7 @@ allprojects {
 				finalizedBy(copyBuildModFile)
 			}
 
-			val copyLicense by register("copyLicense",Copy::class) {
+			val copyLicense by register("copyLicense", Copy::class) {
 				from(rootDir.resolve("LICENSE.md"))
 				destinationDir = project.layout.buildDirectory.file("resources/main").get().asFile
 			}
@@ -357,21 +364,19 @@ allprojects {
 		}
 
 		repositories {
-			if (version.toString().endsWith("SNAPSHOT")) {
-				maven("https://repo.pandasystems.dev/repository/maven-snapshots/") {
-					name = "Snapshot"
-					credentials {
-						username = System.getenv("NEXUS_USERNAME")
-						password = System.getenv("NEXUS_PASSWORD")
-					}
+			maven("https://repo.pandasystems.dev/repository/maven-snapshots/") {
+				name = "Snapshot"
+				credentials {
+					username = System.getenv("NEXUS_USERNAME")
+					password = System.getenv("NEXUS_PASSWORD")
 				}
-			} else {
-				maven("https://repo.pandasystems.dev/repository/maven-releases/") {
-					name = "Release"
-					credentials {
-						username = System.getenv("NEXUS_USERNAME")
-						password = System.getenv("NEXUS_PASSWORD")
-					}
+			}
+
+			maven("https://repo.pandasystems.dev/repository/maven-releases/") {
+				name = "Release"
+				credentials {
+					username = System.getenv("NEXUS_USERNAME")
+					password = System.getenv("NEXUS_PASSWORD")
 				}
 			}
 		}

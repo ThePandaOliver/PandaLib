@@ -237,7 +237,15 @@ allprojects {
 			neoforgeLoaderVersion?.let { props["neoforge_loader_version"] = it }
 
 			inputs.properties(props)
-			filesMatching(listOf("META-INF/mods.toml", "META-INF/neoforge.mods.toml", "fabric.mod.json", "**.mixins.json", "pack.mcmeta")) {
+			filesMatching(
+				listOf(
+					"META-INF/mods.toml",
+					"META-INF/neoforge.mods.toml",
+					"fabric.mod.json",
+					"**.mixins.json",
+					"pack.mcmeta"
+				)
+			) {
 				expand(props)
 			}
 		}
@@ -279,7 +287,7 @@ allprojects {
 				finalizedBy(copyBuildModFile)
 			}
 
-			val copyLicense by register("copyLicense",Copy::class) {
+			val copyLicense by register("copyLicense", Copy::class) {
 				from(rootDir.resolve("LICENSE.md"))
 				destinationDir = project.layout.buildDirectory.file("resources/main").get().asFile
 			}
@@ -324,21 +332,19 @@ allprojects {
 		}
 
 		repositories {
-			if (version.toString().endsWith("SNAPSHOT")) {
-				maven("https://repo.pandasystems.dev/repository/maven-snapshots/") {
-					name = "Snapshot"
-					credentials {
-						username = System.getenv("NEXUS_USERNAME")
-						password = System.getenv("NEXUS_PASSWORD")
-					}
+			maven("https://repo.pandasystems.dev/repository/maven-snapshots/") {
+				name = "Snapshot"
+				credentials {
+					username = System.getenv("NEXUS_USERNAME")
+					password = System.getenv("NEXUS_PASSWORD")
 				}
-			} else {
-				maven("https://repo.pandasystems.dev/repository/maven-releases/") {
-					name = "Release"
-					credentials {
-						username = System.getenv("NEXUS_USERNAME")
-						password = System.getenv("NEXUS_PASSWORD")
-					}
+			}
+
+			maven("https://repo.pandasystems.dev/repository/maven-releases/") {
+				name = "Release"
+				credentials {
+					username = System.getenv("NEXUS_USERNAME")
+					password = System.getenv("NEXUS_PASSWORD")
 				}
 			}
 		}

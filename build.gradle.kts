@@ -315,8 +315,6 @@ allprojects {
 			create<MavenPublication>("maven") {
 				from(components["java"])
 				artifactId = base.archivesName.get()
-				if (properties["snapshot"]?.toString()?.toBooleanStrictOrNull() ?: false)
-					version = "${project.version}-SNAPSHOT"
 
 				if (loomPlatform != null) {
 					artifact(tasks.named("remapSlimJar")) {

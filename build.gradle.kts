@@ -7,7 +7,7 @@ import org.jetbrains.gradle.ext.packagePrefix
 import org.jetbrains.gradle.ext.settings
 
 plugins {
-	kotlin("jvm") version "2.2.0"
+	kotlin("jvm") version "2.3.0"
 	id("architectury-plugin") version "3.4-SNAPSHOT"
 	id("dev.architectury.loom") version "1.13-SNAPSHOT"
 	id("com.gradleup.shadow") version "9.0.2" apply false
@@ -158,19 +158,17 @@ allprojects {
 		nonModImplementation(kotlin("stdlib"))
 		nonModImplementation(kotlin("stdlib-jdk8"))
 		nonModImplementation(kotlin("stdlib-jdk7"))
-		nonModImplementation(kotlin("reflect", version = "2.2.0"))
+		nonModImplementation(kotlin("reflect"))
 		nonModImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
 		nonModImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.10.2")
-		nonModImplementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.8.1")
-		nonModImplementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.1")
-		nonModImplementation("org.jetbrains.kotlinx:kotlinx-serialization-cbor:1.8.1")
-		nonModImplementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.2")
-		nonModImplementation("org.jetbrains.kotlinx:kotlinx-io-core:0.7.0")
-		nonModImplementation("org.jetbrains.kotlinx:kotlinx-io-bytestring:0.7.0")
+		nonModImplementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.9.0")
+		nonModImplementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
+		nonModImplementation("org.jetbrains.kotlinx:kotlinx-serialization-cbor:1.9.0")
+		nonModImplementation("org.jetbrains.kotlinx:kotlinx-datetime:0.7.1")
+		nonModImplementation("org.jetbrains.kotlinx:kotlinx-io-core:0.8.2")
+		nonModImplementation("org.jetbrains.kotlinx:kotlinx-io-bytestring:0.8.2")
 
-		nonModImplementation("dev.pandasystems:universal-serializer:0.1.0-SNAPSHOT") {
-			isChanging = true
-		}
+		nonModImplementation("dev.pandasystems:universal-serializer:0.1.0-SNAPSHOT") { isChanging = true }
 
 		runtimeOnly("com.google.auto.service:auto-service-annotations:1.1.1")
 		compileOnly("com.google.auto.service:auto-service-annotations:1.1.1")
@@ -208,11 +206,13 @@ allprojects {
 	}
 
 	java {
+		sourceCompatibility = JavaVersion.toVersion(javaVersion)
+		targetCompatibility = JavaVersion.toVersion(javaVersion)
 		withSourcesJar()
 	}
 
 	kotlin {
-		jvmToolchain(21)
+		jvmToolchain(javaVersion.toInt())
 	}
 
 	tasks {

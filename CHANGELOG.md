@@ -1,3 +1,14 @@
+# Version 1.0.0 | Alpha 3
+
+- Updated Kotlin to 2.3.0
+- Updated Kotlin STDLib to 2.3.0
+- Updated Kotlin Reflect to 2.3.0
+- Updated Kotlinx Serialization to 1.9.0
+- Updated Kotlinx DateTime to 0.7.1
+- Updated Kotlinx IO to 0.8.2
+
+---
+
 # Version 1.0.0 | Alpha 2
 
 - Cleaned up the codebase

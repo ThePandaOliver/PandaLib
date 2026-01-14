@@ -14,7 +14,7 @@ plugins {
 	id("org.jetbrains.gradle.plugin.idea-ext") version "1.1.10"
 
 	id("me.modmuss50.mod-publish-plugin") version "1.1.0"
-	id("com.google.devtools.ksp") version "2.2.0-2.0.2"
+	id("com.google.devtools.ksp") version "2.3.0"
 	`maven-publish`
 }
 
@@ -106,8 +106,6 @@ allprojects {
 		runs.configureEach { ideConfigGenerated(false) }
 	}
 
-	val nonModImplementation: Configuration by configurations.creating
-
 	val common: Configuration by configurations.creating {
 		isCanBeResolved = true
 		isCanBeConsumed = false
@@ -121,10 +119,6 @@ allprojects {
 	}
 
 	configurations {
-		implementation.get().extendsFrom(nonModImplementation)
-		if (loomPlatform != null)
-			getByName("include").extendsFrom(nonModImplementation)
-
 		when (loomPlatform) {
 			"fabric" -> {
 				getByName("developmentFabric").extendsFrom(common)
@@ -132,7 +126,6 @@ allprojects {
 
 			"neoforge" -> {
 				getByName("developmentNeoForge").extendsFrom(common)
-				getByName("forgeRuntimeLibrary").extendsFrom(nonModImplementation)
 			}
 		}
 	}
@@ -146,29 +139,32 @@ allprojects {
 		maven("https://maven.minecraftforge.net/")
 		maven("https://maven.neoforged.net/releases/")
 
-		maven("https://repo.pandasystems.dev/repository/maven-snapshots/") {
-			name = "PandasRepository"
-			mavenContent {
-				snapshotsOnly()
-			}
-		}
+		maven("https://repo.pandasystems.dev/repository/maven-public/")
 	}
 
 	dependencies {
-		nonModImplementation(kotlin("stdlib"))
-		nonModImplementation(kotlin("stdlib-jdk8"))
-		nonModImplementation(kotlin("stdlib-jdk7"))
-		nonModImplementation(kotlin("reflect"))
-		nonModImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
-		nonModImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.10.2")
-		nonModImplementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.9.0")
-		nonModImplementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
-		nonModImplementation("org.jetbrains.kotlinx:kotlinx-serialization-cbor:1.9.0")
-		nonModImplementation("org.jetbrains.kotlinx:kotlinx-datetime:0.7.1")
-		nonModImplementation("org.jetbrains.kotlinx:kotlinx-io-core:0.8.2")
-		nonModImplementation("org.jetbrains.kotlinx:kotlinx-io-bytestring:0.8.2")
+		fun addNonMod(dependencyNotation: Any?) {
+			if (dependencyNotation == null) return
+			implementation(dependencyNotation)
+			if (loomPlatform == "neoforge") {
+				"forgeRuntimeLibrary"(dependencyNotation)
+			}
+		}
 
-		nonModImplementation("dev.pandasystems:universal-serializer:0.1.0-SNAPSHOT") { isChanging = true }
+		addNonMod(include(kotlin("stdlib")))
+		addNonMod(include(kotlin("stdlib-jdk8")))
+		addNonMod(include(kotlin("stdlib-jdk7")))
+		addNonMod(include(kotlin("reflect")))
+		addNonMod(include("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2"))
+		addNonMod(include("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.10.2"))
+		addNonMod(include("org.jetbrains.kotlinx:kotlinx-serialization-core:1.9.0"))
+		addNonMod(include("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0"))
+		addNonMod(include("org.jetbrains.kotlinx:kotlinx-serialization-cbor:1.9.0"))
+		addNonMod(include("org.jetbrains.kotlinx:kotlinx-datetime:0.7.1"))
+		addNonMod(include("org.jetbrains.kotlinx:kotlinx-io-core:0.8.2"))
+		addNonMod(include("org.jetbrains.kotlinx:kotlinx-io-bytestring:0.8.2"))
+
+		addNonMod(include("dev.pandasystems:universal-serializer:0.1.0-SNAPSHOT"))
 
 		runtimeOnly("com.google.auto.service:auto-service-annotations:1.1.1")
 		compileOnly("com.google.auto.service:auto-service-annotations:1.1.1")

@@ -32,7 +32,7 @@ import net.minecraft.network.protocol.PacketType
 import net.minecraft.network.protocol.common.ClientCommonPacketListener
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 
-val clientboundPLPayloadPacketType = PacketType<ClientboundPLPayloadPacket>(PacketFlow.CLIENTBOUND, PandaLib.resourceLocation("pandalib_custom_payload"))
+val clientboundPLPayloadPacketType = PacketType<ClientboundPLPayloadPacket>(PacketFlow.CLIENTBOUND, PandaLib.identifier("pandalib_custom_payload"))
 
 data class ClientboundPLPayloadPacket(val payload: CustomPacketPayload) : Packet<ClientCommonPacketListener> {
 	override fun type(): PacketType<out Packet<ClientCommonPacketListener>> {

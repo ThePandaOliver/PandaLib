@@ -1,3 +1,8 @@
+# Version 1.0.0 | Alpha 2.2
+
+## Bug fixes
+- Fixed the Java version was set to 21 instead of 17 in the mixin config.
+
 # Version 1.0.0 | Alpha 2
 
 - Cleaned up the codebase

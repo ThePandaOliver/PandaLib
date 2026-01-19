@@ -143,28 +143,33 @@ allprojects {
 	}
 
 	dependencies {
-		fun addNonMod(dependencyNotation: Any?) {
-			if (dependencyNotation == null) return
+		fun dependNoneMod(dependencyNotation: Any?): Any? {
+			if (dependencyNotation == null) return null
 			implementation(dependencyNotation)
-			if (loomPlatform == "neoforge") {
-				"forgeRuntimeLibrary"(dependencyNotation)
-			}
+			if (loomPlatform == "neoforge") "forgeRuntimeLibrary"(dependencyNotation)
+			return dependencyNotation
 		}
 
-		addNonMod(include(kotlin("stdlib")))
-		addNonMod(include(kotlin("stdlib-jdk8")))
-		addNonMod(include(kotlin("stdlib-jdk7")))
-		addNonMod(include(kotlin("reflect")))
-		addNonMod(include("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2"))
-		addNonMod(include("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.10.2"))
-		addNonMod(include("org.jetbrains.kotlinx:kotlinx-serialization-core:1.9.0"))
-		addNonMod(include("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0"))
-		addNonMod(include("org.jetbrains.kotlinx:kotlinx-serialization-cbor:1.9.0"))
-		addNonMod(include("org.jetbrains.kotlinx:kotlinx-datetime:0.7.1"))
-		addNonMod(include("org.jetbrains.kotlinx:kotlinx-io-core:0.8.2"))
-		addNonMod(include("org.jetbrains.kotlinx:kotlinx-io-bytestring:0.8.2"))
+		fun nestNoneMod(dependencyNotation: Any?): Any? {
+			if (dependencyNotation == null) return null
+			if (loomPlatform != null) include(dependencyNotation)
+			return dependencyNotation
+		}
 
-		addNonMod(include("dev.pandasystems:universal-serializer:0.1.0-SNAPSHOT"))
+		dependNoneMod(nestNoneMod(kotlin("stdlib")))
+		dependNoneMod(nestNoneMod(kotlin("stdlib-jdk8")))
+		dependNoneMod(nestNoneMod(kotlin("stdlib-jdk7")))
+		dependNoneMod(nestNoneMod(kotlin("reflect")))
+		dependNoneMod(nestNoneMod("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2"))
+		dependNoneMod(nestNoneMod("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.10.2"))
+		dependNoneMod(nestNoneMod("org.jetbrains.kotlinx:kotlinx-serialization-core:1.9.0"))
+		dependNoneMod(nestNoneMod("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0"))
+		dependNoneMod(nestNoneMod("org.jetbrains.kotlinx:kotlinx-serialization-cbor:1.9.0"))
+		dependNoneMod(nestNoneMod("org.jetbrains.kotlinx:kotlinx-datetime:0.7.1"))
+		dependNoneMod(nestNoneMod("org.jetbrains.kotlinx:kotlinx-io-core:0.8.2"))
+		dependNoneMod(nestNoneMod("org.jetbrains.kotlinx:kotlinx-io-bytestring:0.8.2"))
+
+		dependNoneMod(nestNoneMod("dev.pandasystems:universal-serializer:0.1.0-SNAPSHOT"))
 
 		runtimeOnly("com.google.auto.service:auto-service-annotations:1.1.1")
 		compileOnly("com.google.auto.service:auto-service-annotations:1.1.1")

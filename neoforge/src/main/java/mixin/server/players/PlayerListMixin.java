@@ -37,7 +37,7 @@ public class PlayerListMixin {
 	}
 
 	@Inject(method = "respawn", at = @At("TAIL"))
-	private void onRespawn(ServerPlayer player, boolean keepInventory, CallbackInfoReturnable<ServerPlayer> cir) {
-		PlayerListKtImpl.INSTANCE.onRespawnEvent(player, keepInventory, cir);
+	private void onRespawn(ServerPlayer player, boolean keepEverything, CallbackInfoReturnable<ServerPlayer> cir) {
+		PlayerListKtImpl.INSTANCE.onRespawnEvent(player, keepEverything, cir);
 	}
 }

@@ -21,15 +21,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable
 
 object ServerPlayerKtImpl {
 	fun onDimensionChangePreEvent(player: ServerPlayer, destination: ServerLevel, cir: CallbackInfoReturnable<Entity>) {
-		val cancelled = !serverPlayerChangeDimensionPreEvent.invoker(player, player.level() as ServerLevel, destination)
+		val cancelled = !serverPlayerChangeDimensionPreEvent.invoker(
+			player, player.level() as ServerLevel, destination)
 		if (cancelled) cir.returnValue = null
 	}
 
 	fun onDimensionChangePostEvent(player: ServerPlayer, destination: ServerLevel, cir: CallbackInfoReturnable<Entity>, isChangingDimension: Boolean) {
 		if (isChangingDimension && cir.getReturnValue() != null) {
-			serverPlayerChangeDimensionPostEvent.invoker.invoke(player,
-				player.level() as ServerLevel, destination
-			)
+			serverPlayerChangeDimensionPostEvent.invoker.invoke(player, player.level() as ServerLevel, destination)
 		}
 	}
 }

@@ -22,6 +22,7 @@ import net.minecraft.server.packs.resources.ReloadableResourceManager
 import net.neoforged.neoforge.event.AddReloadListenerEvent
 import java.util.function.Consumer
 
+
 @AutoService(ResourceLoaderRegistryPlatform::class)
 class ResourceLoaderRegistryImpl : ResourceLoaderRegistryPlatform {
 	private val serverDataReloadListeners = mutableListOf<Pair<ResourceLocation, PreparableReloadListener>>()

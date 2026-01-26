@@ -1,3 +1,10 @@
+# Version 1.0.0 | Alpha 4
+
+## Bug fixes
+- Fixed client side code on NeoForge not being initialized
+
+---
+
 # Version 1.0.0 | Alpha 2
 
 - Cleaned up the codebase

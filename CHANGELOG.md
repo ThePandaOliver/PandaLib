@@ -1,7 +1,9 @@
-# Version 1.0.0 | Alpha 2.2
+# Version 1.0.0 | Alpha 4
 
 ## Bug fixes
-- Fixed the Java version was set to 21 instead of 17 in the mixin config.
+- Fixed client side code on NeoForge not being initialized
+
+---
 
 # Version 1.0.0 | Alpha 2
 

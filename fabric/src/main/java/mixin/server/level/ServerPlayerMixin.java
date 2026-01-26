@@ -24,8 +24,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ServerPlayer.class)
 public abstract class ServerPlayerMixin {
-	@Shadow
-	private boolean isChangingDimension;
+	@Shadow private boolean isChangingDimension;
 
 	@Inject(
 			method = "changeDimension",

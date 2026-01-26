@@ -12,11 +12,11 @@
 
 package dev.pandasystems.pandalib.neoforge.client
 
-import dev.pandasystems.pandalib.PandaLib
+import dev.pandasystems.pandalib.client.PandaLibClient
 import net.neoforged.bus.api.IEventBus
 
 class PandaLibClientNeoForge(eventBus: IEventBus) {
 	init {
-		PandaLib
+		PandaLibClient
 	}
 }

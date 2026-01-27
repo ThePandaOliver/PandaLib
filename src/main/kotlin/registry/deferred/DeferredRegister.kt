@@ -23,7 +23,7 @@ class DeferredRegister<T : Any> private constructor(private val namespace: Strin
 	private val entries = mutableMapOf<DeferredObject<out T>, Supplier<out T>>()
 
 	fun <R : T> register(name: String, registryEntry: (ResourceKey<T>) -> R): DeferredObject<R> {
-		return register(ResourceLocation.fromNamespaceAndPath(namespace, name), registryEntry)
+		return register(ResourceLocation(namespace, name), registryEntry)
 	}
 
 	fun <R : T> register(name: ResourceLocation, registryEntry: (ResourceKey<T>) -> R): DeferredObject<R> {

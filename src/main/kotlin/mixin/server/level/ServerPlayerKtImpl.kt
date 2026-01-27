@@ -23,7 +23,7 @@ object ServerPlayerKtImpl {
 	fun onDimensionChangePreEvent(player: ServerPlayer, teleportTransition: DimensionTransition, cir: CallbackInfoReturnable<ServerPlayer>) {
 		val cancelled = !serverPlayerChangeDimensionPreEvent.invoker(
 			player, player.level() as ServerLevel,
-			transition.newLevel(), transition
+			teleportTransition.newLevel(), teleportTransition
 		)
 		if (cancelled) cir.returnValue = null
 	}
@@ -31,7 +31,7 @@ object ServerPlayerKtImpl {
 	fun onDimensionChangePostEvent(player: ServerPlayer, teleportTransition: DimensionTransition, cir: CallbackInfoReturnable<ServerPlayer>, isChangingDimension: Boolean) {
 		if (isChangingDimension && cir.getReturnValue() != null) {
 			serverPlayerChangeDimensionPostEvent.invoker.invoke(player, player.level() as ServerLevel,
-				transition.newLevel(), transition
+				teleportTransition.newLevel(), teleportTransition
 			)
 		}
 	}

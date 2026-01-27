@@ -15,6 +15,7 @@ package dev.pandasystems.pandalib.fabric.mixin.server.level;
 import dev.pandasystems.pandalib.mixin.server.level.ServerPlayerKtImpl;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.portal.DimensionTransition;
+import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -29,7 +30,8 @@ public abstract class ServerPlayerMixin {
 			method = "changeDimension",
 			at = @At(
 					value = "FIELD",
-					target = "Lnet/minecraft/server/level/ServerPlayer;isChangingDimension:Z"
+					target = "Lnet/minecraft/server/level/ServerPlayer;isChangingDimension:Z",
+					opcode = Opcodes.PUTFIELD
 			), cancellable = true
 	)
 	public void beforeDimensionChange(DimensionTransition teleportTransition, CallbackInfoReturnable<ServerPlayer> cir) {

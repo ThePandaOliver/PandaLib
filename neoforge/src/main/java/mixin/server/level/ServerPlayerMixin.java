@@ -29,8 +29,11 @@ public abstract class ServerPlayerMixin {
 
 	@Inject(
 			method = "changeDimension",
-			at = @At("HEAD"),
-			cancellable = true
+			at = @At(
+					value = "FIELD",
+					target = "Lnet/minecraft/server/level/ServerPlayer;isChangingDimension:Z",
+					opcode = Opcodes.PUTFIELD
+			), cancellable = true
 	)
 	public void beforeDimensionChange(DimensionTransition teleportTransition, CallbackInfoReturnable<ServerPlayer> cir) {
 		ServerPlayerKtImpl.INSTANCE.onDimensionChangePreEvent((ServerPlayer) (Object) this, teleportTransition, cir);

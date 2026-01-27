@@ -10,13 +10,12 @@
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.pandasystems.pandalib.neoforge.mixin.server.players;
+package dev.pandasystems.pandalib.fabric.mixin.server.players;
 
 import dev.pandasystems.pandalib.mixin.server.players.PlayerListKtImpl;
 import net.minecraft.network.Connection;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.PlayerList;
-import net.minecraft.world.entity.Entity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -26,7 +25,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(PlayerList.class)
 public class PlayerListMixin {
 	@Inject(method = "placeNewPlayer", at = @At("RETURN"))
-	private void onPlayerJoinEvent(Connection netManager, ServerPlayer player, CallbackInfo ci) {
+	private void onPlayerJoinEvent(Connection connection, ServerPlayer player, CallbackInfo ci) {
 		PlayerListKtImpl.INSTANCE.onPlayerJoinEvent(player);
 	}
 

@@ -12,7 +12,6 @@
 
 package dev.pandasystems.pandalib.networking
 
-import dev.pandasystems.pandalib.networking.packets.ClientboundPLPayloadPacket
 import dev.pandasystems.pandalib.utils.gameEnvironment
 import io.netty.buffer.Unpooled
 import net.minecraft.client.Minecraft
@@ -23,13 +22,14 @@ import net.minecraft.network.FriendlyByteBuf
 import net.minecraft.network.PacketSendListener
 import net.minecraft.network.chat.Component
 import net.minecraft.network.protocol.Packet
-import net.minecraft.network.protocol.game.ClientGamePacketListener
-import net.minecraft.network.protocol.game.ClientboundBundlePacket
+import net.minecraft.network.protocol.game.ClientboundCustomPayloadPacket
+import net.minecraft.network.protocol.game.ServerGamePacketListener
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.MinecraftServer
 import net.minecraft.server.level.ServerChunkCache
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.level.ServerPlayer
+import net.minecraft.server.network.ServerGamePacketListenerImpl
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.level.ChunkPos
 
@@ -127,8 +127,36 @@ object ServerPlayNetworking {
 		}
 	}
 
-	fun createPacket(payload: CustomPacketPayload): Packet<ClientCommonPacketListener> {
-		return ClientboundPLPayloadPacket(payload)
+	fun createPacket(payload: CustomPacketPayload): Packet<*> {
+		val friendlyByteBuf = FriendlyByteBuf(Unpooled.buffer())
+		payload.write(friendlyByteBuf)
+		return ClientboundCustomPayloadPacket(payload.id(), friendlyByteBuf)
+	}
+
+
+	// Packet Receiving
+
+	fun handlePayload(handler: ServerGamePacketListenerImpl, payload: CustomPacketPayload) {
+		class Sender(val connection: Connection): PacketSender {
+			override fun createPacket(payload: CustomPacketPayload): Packet<*> {
+				return ServerPlayNetworking.createPacket(payload)
+			}
+
+			override fun sendPacket(callback: PacketSendListener?, packet: Packet<*>) {
+				connection.send(packet, callback)
+			}
+
+			override fun disconnect(disconnectReason: Component) {
+				connection.disconnect(disconnectReason)
+			}
+		}
+
+		val context = object : Context {
+			override fun server(): MinecraftServer = handler.server
+			override fun player(): ServerPlayer = handler.player
+			override fun responseSender(): PacketSender = Sender(handler.connection)
+		}
+		packetHandlers[payload.id()]?.receive(payload, context)
 	}
 
 	fun interface PlayPayloadHandler<T : CustomPacketPayload> {

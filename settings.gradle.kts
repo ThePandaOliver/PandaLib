@@ -10,6 +10,5 @@ pluginManagement {
 }
 
 include("fabric")
-include("forge")
 
 rootProject.name = "PandaLib"

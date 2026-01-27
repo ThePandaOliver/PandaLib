@@ -13,7 +13,7 @@
 package dev.pandasystems.pandalib.networking.payloads.config
 
 import dev.pandasystems.pandalib.PandaLib
-import dev.pandasystems.pandalib.utils.codecs.TreeObjectCodec
+import dev.pandasystems.pandalib.utils.codecs.*
 import dev.pandasystems.universalserializer.elements.TreeObject
 import net.minecraft.network.FriendlyByteBuf
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
@@ -27,7 +27,7 @@ data class CommonConfigPayload(
 ) : CustomPacketPayload {
 	override fun write(buffer: FriendlyByteBuf) {
 		ResourceLocationCodec.encode(buffer, resourceLocation)
-		JsonObjectCodec.encode(buffer, optionObject)
+		TreeElementCodec.encode(buffer, optionObject)
 		OptionalCodec(UUIDCodec).encode(buffer, playerId)
 	}
 

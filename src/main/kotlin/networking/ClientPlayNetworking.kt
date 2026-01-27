@@ -27,6 +27,7 @@ object ClientPlayNetworking {
 
 	// Packet Registration
 
+	@JvmStatic
 	fun <T : CustomPacketPayload> registerHandler(resourceLocation: ResourceLocation, handler: PlayPayloadHandler<T>) {
 		require(!packetHandlers.containsKey(resourceLocation)) { "Packet type $resourceLocation already has a handler" }
 		@Suppress("UNCHECKED_CAST")

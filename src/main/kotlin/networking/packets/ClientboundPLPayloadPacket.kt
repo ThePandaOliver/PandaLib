@@ -12,7 +12,6 @@
 
 package dev.pandasystems.pandalib.networking.packets
 
-import dev.pandasystems.pandalib.PandaLib
 import dev.pandasystems.pandalib.networking.ClientConfigurationNetworking
 import dev.pandasystems.pandalib.networking.ClientPlayNetworking
 import dev.pandasystems.pandalib.networking.PacketSender

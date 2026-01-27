@@ -20,6 +20,7 @@ import net.minecraft.resources.ResourceLocation
 object PayloadCodecRegistry {
 	internal val packetCodecs = mutableMapOf<ResourceLocation, StreamCodec<FriendlyByteBuf, CustomPacketPayload>>()
 
+	@JvmStatic
 	fun <T : CustomPacketPayload> register(resourceLocation: ResourceLocation, codec: StreamCodec<FriendlyByteBuf, T>) {
 		require(!packetCodecs.containsKey(resourceLocation)) { "Packet type $resourceLocation already has a codec" }
 		@Suppress("UNCHECKED_CAST")

@@ -19,6 +19,7 @@ import net.minecraft.client.multiplayer.ClientConfigurationPacketListenerImpl
 import net.minecraft.network.Connection
 import net.minecraft.network.protocol.Packet
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
+import net.minecraft.resources.ResourceLocation
 
 object ClientConfigurationNetworking {
 	internal lateinit var connection: Connection

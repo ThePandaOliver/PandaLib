@@ -12,6 +12,7 @@
 
 package dev.pandasystems.pandalib.networking
 
+import dev.pandasystems.pandalib.networking.packets.ClientboundPLPayloadPacket
 import net.minecraft.network.protocol.Packet
 import net.minecraft.network.protocol.common.ClientCommonPacketListener
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload

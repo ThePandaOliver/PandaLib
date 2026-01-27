@@ -13,11 +13,9 @@
 package dev.pandasystems.pandalib.neoforge
 
 import dev.pandasystems.pandalib.PandaLib
-import dev.pandasystems.pandalib.initializePandaLib
 import dev.pandasystems.pandalib.neoforge.platform.registration.DeferredRegisterImpl
 import dev.pandasystems.pandalib.neoforge.platform.registration.RendererRegistryImpl
 import dev.pandasystems.pandalib.neoforge.platform.registration.ResourceLoaderRegistryImpl
-import dev.pandasystems.pandalib.pandalibModid
 import dev.pandasystems.pandalib.registry.deferred.deferredRegister
 import dev.pandasystems.pandalib.registry.rendererRegistry
 import dev.pandasystems.pandalib.registry.resourceLoaderRegistry

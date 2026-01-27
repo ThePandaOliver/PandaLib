@@ -30,7 +30,7 @@ public class ServerPlayerGameModeMixin {
 
 	@Shadow @Final protected ServerPlayer player;
 
-	@Inject(method = "destroyBlock", at = @At(value = "INVOKE", target = "Lnet/neoforged/neoforge/common/CommonHooks;onBlockBreakEvent(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/level/GameType;Lnet/minecraft/server/level/ServerPlayer;Lnet/minecraft/core/BlockPos;)I"), cancellable = true)
+	@Inject(method = "destroyBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerLevel;removeBlock(Lnet/minecraft/core/BlockPos;Z)Z"), cancellable = true)
 	public void onBlockBreakEventPre(BlockPos pos, CallbackInfoReturnable<Boolean> cir) {
 		ServerPlayerGameModeKtImpl.INSTANCE.onBlockBreakEventPre(this.level, pos, this.player, cir);
 	}

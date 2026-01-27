@@ -18,9 +18,10 @@ import dev.pandasystems.pandalib.PandaLib
 import dev.pandasystems.pandalib.registry.RegistriesPlatform
 import dev.pandasystems.pandalib.registry.deferred.DeferredRegister
 import dev.pandasystems.pandalib.registry.deferred.PandaLibRegistry
-import net.fabricmc.fabric.api.`object`.builder.v1.entity.FabricTrackedDataRegistry
+import dev.pandasystems.pandalib.utils.extensions.resourceLocation
 import net.minecraft.core.Registry
 import net.minecraft.network.syncher.EntityDataSerializer
+import net.minecraft.network.syncher.EntityDataSerializers
 import net.minecraft.resources.ResourceKey
 
 @AutoService(RegistriesPlatform::class)
@@ -38,7 +39,7 @@ class RegistriesImpl : RegistriesPlatform {
 
 	init {
 		entityDataSerializers.event.register { key, value, _ ->
-			FabricTrackedDataRegistry.register(key.location(), value)
+			EntityDataSerializers.registerSerializer(value)
 		}
 	}
 }

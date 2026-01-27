@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025-2025 Oliver Froberg (The Panda Oliver)
+ * Copyright (C) 2026 Oliver Froberg (The Panda Oliver)
  *
  * This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU Lesser General Public License as published by
@@ -10,8 +10,9 @@
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.pandasystems.pandalib.fabric.mixin.networking.client;
+package dev.pandasystems.pandalib.fabric.mixin.client.network;
 
+import dev.pandasystems.pandalib.mixin.client.network.ClientConfigurationPacketListenerImplKtImpl;
 import dev.pandasystems.pandalib.networking.ClientConfigurationNetworking;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientConfigurationPacketListenerImpl;
@@ -26,6 +27,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class ClientConfigurationPacketListenerImplMixin {
 	@Inject(method = "<init>", at = @At("RETURN"))
 	public void onInit(Minecraft minecraft, Connection connection, CommonListenerCookie commonListenerCookie, CallbackInfo ci) {
-		ClientConfigurationNetworking.connection = connection;
+		ClientConfigurationPacketListenerImplKtImpl.INSTANCE.onInit(connection);
 	}
 }

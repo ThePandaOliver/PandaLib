@@ -14,7 +14,6 @@ package dev.pandasystems.pandalib.neoforge.mixin.client.multiplayer;
 
 import dev.pandasystems.pandalib.mixin.client.multiplayer.ClientLevelKtImpl;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.network.chat.Component;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;

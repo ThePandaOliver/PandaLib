@@ -10,17 +10,12 @@
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.pandasystems.pandalib.fabric.mixin.networking;
+package dev.pandasystems.pandalib.fabric.mixin.network;
 
-import dev.pandasystems.pandalib.networking.packets.ClientboundPLPayloadPacket;
-import dev.pandasystems.pandalib.networking.packets.ClientboundPLPayloadPacketKt;
-import dev.pandasystems.pandalib.networking.packets.ServerboundPLPayloadPacket;
-import dev.pandasystems.pandalib.networking.packets.ServerboundPLPayloadPacketKt;
+import dev.pandasystems.pandalib.mixin.network.ConnectionProtocolKtImpl;
 import net.minecraft.network.ConnectionProtocol;
 import net.minecraft.network.PacketListener;
 import net.minecraft.network.protocol.PacketFlow;
-import net.minecraft.network.protocol.common.ClientCommonPacketListener;
-import net.minecraft.network.protocol.common.ServerCommonPacketListener;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -30,12 +25,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class ConnectionProtocolMixin {
 	@Inject(method = "addFlow", at = @At("HEAD"))
 	public <T extends PacketListener> void addFlow(PacketFlow packetFlow, ConnectionProtocol.PacketSet<T> packetSet, CallbackInfoReturnable<ConnectionProtocol.ProtocolBuilder> cir) {
-		if (packetFlow == PacketFlow.CLIENTBOUND) {
-			((ConnectionProtocol.PacketSet<ClientCommonPacketListener>) packetSet)
-					.addPacket(ClientboundPLPayloadPacket.class, ClientboundPLPayloadPacketKt.getClientboundPLPayloadCodec()::decode);
-		} else if (packetFlow == PacketFlow.SERVERBOUND) {
-			((ConnectionProtocol.PacketSet<ServerCommonPacketListener>) packetSet)
-					.addPacket(ServerboundPLPayloadPacket.class, ServerboundPLPayloadPacketKt.getServerboundPLPayloadCodec()::decode);
-		}
+		ConnectionProtocolKtImpl.INSTANCE.addFlow(packetFlow, packetSet);
 	}
 }

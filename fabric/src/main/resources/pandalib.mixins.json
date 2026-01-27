@@ -4,17 +4,12 @@
 	"compatibilityLevel": "JAVA_17",
 	"minVersion": "0.8",
 	"client": [
-		"client.multiplayer.ClientLevelMixin",
 		"client.multiplayer.ClientPacketListenerMixin",
 		"client.multiplayer.MultiPlayerGameModeMixin",
 		"client.network.ClientConfigurationPacketListenerImplMixin"
 	],
 	"mixins": [
 		"network.ConnectionProtocolMixin",
-		"server.MinecraftServerMixin",
-		"server.level.ServerPlayerGameModeMixin",
-		"server.level.ServerPlayerMixin",
-		"server.players.PlayerListMixin",
 		"world.item.BlockItemMixin"
 	],
 	"injectors": {

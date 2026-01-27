@@ -5,7 +5,6 @@
 	"minVersion": "0.8",
 	"client": [
 		"client.multiplayer.ClientLevelMixin",
-		"client.multiplayer.ClientPacketListenerMixin",
 		"client.multiplayer.MultiPlayerGameModeMixin",
 		"client.network.ClientConfigurationPacketListenerImplMixin"
 	],
@@ -16,13 +15,7 @@
 		"server.level.ServerPlayerMixin",
 		"server.network.ServerConfigurationPacketListenerImplMixin",
 		"server.players.PlayerListMixin",
-		"world.item.BlockItemMixin",
-		"events.BlockItemEventMixin",
-		"events.MinecraftServerEventMixin",
-		"events.ServerPlayerGameModeEventMixin",
-		"events.player.PlayerListEventMixin",
-		"events.player.ServerPlayerEventMixin",
-		"networking.ConnectionProtocolMixin"
+		"world.item.BlockItemMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

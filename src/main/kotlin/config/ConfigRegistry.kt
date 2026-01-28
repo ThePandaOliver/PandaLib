@@ -12,6 +12,7 @@
 
 package dev.pandasystems.pandalib.config
 
+import dev.pandasystems.pandalib.config.exceptions.ConfigNotRegisteredException
 import net.minecraft.resources.Identifier
 
 object ConfigRegistry {
@@ -37,7 +38,7 @@ object ConfigRegistry {
 	}
 
 	@Suppress("UNCHECKED_CAST")
-	fun <T : Any> get(resourceLocation: Identifier): ConfigObject<T>? {
-		return configObjects[resourceLocation] as? ConfigObject<T>
+	fun <T : Any> get(resourceLocation: Identifier): ConfigObject<T> {
+		return configObjects[resourceLocation] as? ConfigObject<T> ?: throw ConfigNotRegisteredException(resourceLocation)
 	}
 }

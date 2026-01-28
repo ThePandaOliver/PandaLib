@@ -7,6 +7,8 @@
 - Updated Kotlinx DateTime to 0.7.1
 - Updated Kotlinx IO to 0.8.2
 
+- Made config logging more informative
+
 ## Bug fixes
 - Fixed client side code on NeoForge not being initialized
 

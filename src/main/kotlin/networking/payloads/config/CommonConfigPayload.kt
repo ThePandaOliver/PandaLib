@@ -26,6 +26,10 @@ import java.util.*
 data class CommonConfigPayload(
 	val resourceLocation: Identifier,
 	val optionObject: TreeObject,
+	/**
+	 * If the payload is for a specific player, the player's UUID is stored here.
+	 * If the payload is for the server, the UUID is Optional.empty().
+	 */
 	val playerId: Optional<UUID>
 ) : CustomPacketPayload {
 	override fun type(): CustomPacketPayload.Type<CommonConfigPayload> = TYPE

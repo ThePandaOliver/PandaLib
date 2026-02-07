@@ -164,7 +164,7 @@ object ConfigSynchronizer {
 		val resourceLocation = payload.resourceLocation
 		val jsonObject = payload.optionObject
 		val playerId = payload.playerId
-		PandaLib.logger.debug("Received config {} from {}", resourceLocation, playerId)
+		PandaLib.logger.debug("Received config {} from {}", resourceLocation, playerId.getOrNull() ?: "server")
 		PandaLib.logger.debug(" - {}", jsonObject)
 		try {
 			val configObject = ConfigRegistry.get<Any>(resourceLocation)

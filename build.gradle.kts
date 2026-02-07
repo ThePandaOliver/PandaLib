@@ -204,6 +204,9 @@ allprojects {
 				modImplementation("net.fabricmc:fabric-loader:$fabricLoaderVersion")
 			}
 		}
+		
+		// Debugging
+		modRuntimeOnly("dev.pandasystems:fallingtrees-$loaderEnv-$mcVersion:0.14.0-APLHA.2.1")
 	}
 
 	java {

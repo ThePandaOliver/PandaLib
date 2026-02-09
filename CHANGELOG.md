@@ -9,6 +9,8 @@
 
 - Made config logging more informative
 
+- Made client block place event invoke on host client.
+
 ## Bug fixes
 - Fixed client side code on NeoForge not being initialized
 

@@ -206,7 +206,7 @@ allprojects {
 		}
 		
 		// Debugging
-		modRuntimeOnly("dev.pandasystems:fallingtrees-$loaderEnv-$mcVersion:0.14.0-APLHA.2.1")
+//		modRuntimeOnly("dev.pandasystems:fallingtrees-$loaderEnv-$mcVersion:0.14.0-APLHA.2.1")
 	}
 
 	java {

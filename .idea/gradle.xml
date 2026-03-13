@@ -8,8 +8,14 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/fabric" />
-            <option value="$PROJECT_DIR$/neoforge" />
+            <option value="$PROJECT_DIR$/config" />
+            <option value="$PROJECT_DIR$/impl" />
+            <option value="$PROJECT_DIR$/impl/21_11" />
+            <option value="$PROJECT_DIR$/impl/21_11/fabric" />
+            <option value="$PROJECT_DIR$/mod" />
+            <option value="$PROJECT_DIR$/mod/fabric" />
+            <option value="$PROJECT_DIR$/mod/neoforge" />
+            <option value="$PROJECT_DIR$/wrappers" />
           </set>
         </option>
         <option name="resolveExternalAnnotations" value="true" />

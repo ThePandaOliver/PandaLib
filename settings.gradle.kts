@@ -1,15 +1,19 @@
 pluginManagement {
-	repositories {
-		mavenLocal()
-		maven("https://maven.architectury.dev/") { name = "Architectury" }
-		maven("https://maven.fabricmc.net/") { name = "Fabric" }
-		maven("https://maven.minecraftforge.net/") { name = "Forge" }
-		maven("https://maven.neoforged.net/releases/") { name = "NeoForge" }
-		gradlePluginPortal()
-	}
+    repositories {
+        maven("https://maven.architectury.dev/") { name = "Architectury" }
+        maven("https://maven.fabricmc.net/") { name = "Fabric" }
+        maven("https://maven.neoforged.net/releases/") { name = "NeoForge" }
+        gradlePluginPortal()
+    }
 }
 
-include("fabric")
-include("neoforge")
-
 rootProject.name = "PandaLib"
+
+include("config")
+include("wrappers")
+
+include("impl:21_11:fabric")
+
+include("mod")
+include("mod:fabric")
+include("mod:neoforge")

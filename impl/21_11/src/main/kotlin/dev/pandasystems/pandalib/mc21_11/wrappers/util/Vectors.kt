@@ -10,13 +10,20 @@
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.pandasystems.pandalib.wrappers.level
+package dev.pandasystems.pandalib.mc21_11.wrappers.util
 
-import dev.pandasystems.pandalib.wrappers.blocks.BlockState
+import net.minecraft.core.BlockPos
+import net.minecraft.core.Vec3i
+import net.minecraft.world.phys.Vec3
+import org.joml.Vector3d
+import org.joml.Vector3dc
+import org.joml.Vector3i
 import org.joml.Vector3ic
 
-interface Level {
-    val isClientSide: Boolean
-    
-    fun getBlockState(blockPos: Vector3ic): BlockState
-}
+fun Vec3.toPl(): Vector3dc = Vector3d(x, y, z)
+fun Vector3dc.toMc(): Vec3 = Vec3(x(), y(), z())
+
+fun Vec3i.toPl() = Vector3i(x, y, z)
+fun Vector3ic.toMc() = Vec3i(x(), y(), z())
+
+fun Vector3ic.toBlockPos() = BlockPos(x(), y(), z())

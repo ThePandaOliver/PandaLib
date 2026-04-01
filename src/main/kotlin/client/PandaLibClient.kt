@@ -14,14 +14,16 @@ package dev.pandasystems.pandalib.client
 
 import dev.pandasystems.pandalib.PandaLib
 import dev.pandasystems.pandalib.client.config.ClientConfigSynchronizer
+import dev.pandasystems.pandalib.utils.InternalPandaLibApi
 
 
 object PandaLibClient {
-	init {
+	@InternalPandaLibApi
+	fun init() {
 		PandaLib.logger.debug("PandaLib Client is initializing...")
 
 		ClientConfigSynchronizer.init()
 
-		PandaLib.logger.debug("PandaLib initialized successfully.")
+		PandaLib.logger.debug("PandaLib Client finished initializing!")
 	}
 }

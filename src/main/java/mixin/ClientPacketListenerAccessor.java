@@ -13,14 +13,13 @@
 package dev.pandasystems.pandalib.mixin;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientCommonPacketListenerImpl;
+import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.network.Connection;
-import net.minecraft.server.network.ServerCommonPacketListenerImpl;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-@Mixin(ClientCommonPacketListenerImpl.class)
-public interface ClientCommonPacketListenerImplAccessor {
+@Mixin(ClientPacketListener.class)
+public interface ClientPacketListenerAccessor {
     @Accessor("minecraft")
     Minecraft pandalib$getMinecraft();
     @Accessor("connection")

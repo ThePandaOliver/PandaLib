@@ -12,6 +12,7 @@
 
 package dev.pandasystems.pandalib.networking
 
+import dev.pandasystems.pandalib.mixin.ClientPacketListenerAccessor
 import dev.pandasystems.pandalib.utils.gameEnvironment
 import io.netty.buffer.Unpooled
 import net.minecraft.client.Minecraft
@@ -74,9 +75,10 @@ object ClientPlayNetworking {
 			}
 		}
 
+		val handlerAccessor = handler as ClientPacketListenerAccessor
 		val context = object : Context {
-			override fun client(): Minecraft = handler.minecraft
-			override fun player(): LocalPlayer = requireNotNull(handler.minecraft.player) { "Player is null" }
+			override fun client(): Minecraft = handlerAccessor.`pandalib$getMinecraft`()
+			override fun player(): LocalPlayer = requireNotNull(handlerAccessor.`pandalib$getMinecraft`().player) { "Player is null" }
 			override fun responseSender(): PacketSender = Sender(handler.connection)
 		}
 		packetHandlers[payload.id()]?.receive(payload, context)

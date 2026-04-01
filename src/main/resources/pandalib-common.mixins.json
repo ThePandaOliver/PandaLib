@@ -6,8 +6,8 @@
 	"client": [
 	],
 	"mixins": [
-		"ClientCommonPacketListenerImplAccessor",
-		"ServerCommonPacketListenerImplAccessor"
+      "ClientPacketListenerAccessor",
+		"ServerGamePacketListenerImplAccessor"
 	],
 	"injectors": {
 		"defaultRequire": 1

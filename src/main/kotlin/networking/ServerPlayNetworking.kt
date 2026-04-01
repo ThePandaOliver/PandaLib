@@ -12,6 +12,7 @@
 
 package dev.pandasystems.pandalib.networking
 
+import dev.pandasystems.pandalib.mixin.ServerGamePacketListenerImplAccessor
 import dev.pandasystems.pandalib.utils.gameEnvironment
 import io.netty.buffer.Unpooled
 import net.minecraft.client.Minecraft
@@ -151,10 +152,11 @@ object ServerPlayNetworking {
 			}
 		}
 
+		val handlerAccessor = handler as ServerGamePacketListenerImplAccessor
 		val context = object : Context {
-			override fun server(): MinecraftServer = handler.server
+			override fun server(): MinecraftServer = handlerAccessor.`pandalib$getServer`()
 			override fun player(): ServerPlayer = handler.player
-			override fun responseSender(): PacketSender = Sender(handler.connection)
+			override fun responseSender(): PacketSender = Sender(handlerAccessor.`pandalib$getConnection`())
 		}
 		packetHandlers[payload.id()]?.receive(payload, context)
 	}

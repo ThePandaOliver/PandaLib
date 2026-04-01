@@ -12,6 +12,7 @@
 
 package dev.pandasystems.pandalib.networking.packets
 
+import dev.pandasystems.pandalib.mixin.ClientCommonPacketListenerImplAccessor
 import dev.pandasystems.pandalib.networking.ClientConfigurationNetworking
 import dev.pandasystems.pandalib.networking.ClientPlayNetworking
 import dev.pandasystems.pandalib.networking.PacketSender
@@ -47,21 +48,22 @@ data class ClientboundPLPayloadPacket(val payload: CustomPacketPayload) : Packet
 			}
 		}
 
+		val handlerAccessor = handler as ClientCommonPacketListenerImplAccessor
 		when (handler) {
 			is ClientConfigurationPacketListenerImpl -> {
 				val context = object : ClientConfigurationNetworking.Context {
-					override fun client(): Minecraft = handler.minecraft
+					override fun client(): Minecraft = handlerAccessor.`pandalib$getMinecraft`()
 					override fun networkHandler(): ClientConfigurationPacketListenerImpl = handler
-					override fun responseSender(): PacketSender = Sender(handler.connection)
+					override fun responseSender(): PacketSender = Sender(handlerAccessor.`pandalib$getConnection`())
 				}
 				ClientConfigurationNetworking.packetHandlers[payload.id()]?.receive(payload, context)
 			}
 
 			is ClientCommonPacketListenerImpl -> {
 				val context = object : ClientPlayNetworking.Context {
-					override fun client(): Minecraft = handler.minecraft
-					override fun player(): LocalPlayer = requireNotNull(handler.minecraft.player) { "Player is null" }
-					override fun responseSender(): PacketSender = Sender(handler.connection)
+					override fun client(): Minecraft = handlerAccessor.`pandalib$getMinecraft`()
+					override fun player(): LocalPlayer = requireNotNull(handlerAccessor.`pandalib$getMinecraft`().player) { "Player is null" }
+					override fun responseSender(): PacketSender = Sender(handlerAccessor.`pandalib$getConnection`())
 				}
 				ClientPlayNetworking.packetHandlers[payload.id()]?.receive(payload, context)
 			}

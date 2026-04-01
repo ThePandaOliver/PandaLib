@@ -16,7 +16,7 @@ import dev.pandasystems.universalserializer.elements.*
 import net.minecraft.network.FriendlyByteBuf
 
 object TreeElementCodec : StreamCodec<FriendlyByteBuf, TreeElement> {
-	// Type identifiers for efficient encoding
+	// Type identifiers
 	private const val TYPE_NULL = 0.toByte()
 	private const val TYPE_PRIMITIVE = 1.toByte()
 	private const val TYPE_OBJECT = 2.toByte()

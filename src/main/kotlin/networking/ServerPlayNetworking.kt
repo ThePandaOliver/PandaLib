@@ -61,7 +61,7 @@ object ServerPlayNetworking {
 	fun sendInDimension(level: ServerLevel, payloads: Collection<CustomPacketPayload>) {
 		payloads.forEach {
 			val packet = createPacket(it)
-			level.server.playerList.broadcastAll(packet, level.dimension())
+			level.server?.playerList?.broadcastAll(packet, level.dimension())
 		}
 	}
 
@@ -76,7 +76,7 @@ object ServerPlayNetworking {
 	) {
 		payloads.forEach {
 			val packet = createPacket(it)
-			level.server.playerList.broadcast(excluded, x, y, z, radius, level.dimension(), packet)
+			level.server?.playerList?.broadcast(excluded, x, y, z, radius, level.dimension(), packet)
 		}
 	}
 

@@ -33,13 +33,13 @@ object BlockItemKtImpl {
 	}
 
 	fun afterBlockPlaceEvent(context: BlockPlaceContext, state: BlockState) {
-		if (!gameEnvironment.isHost) { // Client-side
-			val player = Minecraft.getInstance().player ?: return
-			clientBlockPlaceEvent.invoker(context.level, context.clickedPos, state, player)
-		}
 		if (gameEnvironment.isHost) { // Server-side
 			val player = context.player ?: return
 			serverBlockPlacePostEvent.invoker(context.level, context.clickedPos, state, player)
+		}
+		if (gameEnvironment.isClient) { // Client-side
+			val player = Minecraft.getInstance()?.player ?: return
+			clientBlockPlaceEvent.invoker(context.level, context.clickedPos, state, player)
 		}
 	}
 }

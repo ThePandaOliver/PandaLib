@@ -30,6 +30,6 @@ class PandaLibFabric : ModInitializer {
 			serverConfigurationConnectionEvent.invoker(handler, server)
 		}
 
-		PandaLib
+		PandaLib.init()
 	}
 }

@@ -7,14 +7,14 @@ import org.jetbrains.gradle.ext.packagePrefix
 import org.jetbrains.gradle.ext.settings
 
 plugins {
-	kotlin("jvm") version "2.2.0"
+	kotlin("jvm") version "2.3.0"
 	id("architectury-plugin") version "3.4-SNAPSHOT"
 	id("dev.architectury.loom") version "1.13-SNAPSHOT"
 	id("com.gradleup.shadow") version "9.0.2" apply false
 	id("org.jetbrains.gradle.plugin.idea-ext") version "1.1.10"
 
 	id("me.modmuss50.mod-publish-plugin") version "1.1.0"
-	id("com.google.devtools.ksp") version "2.2.0-2.0.2"
+	id("com.google.devtools.ksp") version "2.3.0"
 	`maven-publish`
 }
 
@@ -106,8 +106,6 @@ allprojects {
 		runs.configureEach { ideConfigGenerated(false) }
 	}
 
-	val nonModImplementation: Configuration by configurations.creating
-
 	val common: Configuration by configurations.creating {
 		isCanBeResolved = true
 		isCanBeConsumed = false
@@ -121,10 +119,6 @@ allprojects {
 	}
 
 	configurations {
-		implementation.get().extendsFrom(nonModImplementation)
-		if (loomPlatform != null)
-			getByName("include").extendsFrom(nonModImplementation)
-
 		when (loomPlatform) {
 			"fabric" -> {
 				getByName("developmentFabric").extendsFrom(common)
@@ -132,7 +126,6 @@ allprojects {
 
 			"neoforge" -> {
 				getByName("developmentNeoForge").extendsFrom(common)
-				getByName("forgeRuntimeLibrary").extendsFrom(nonModImplementation)
 			}
 		}
 	}
@@ -146,31 +139,37 @@ allprojects {
 		maven("https://maven.minecraftforge.net/")
 		maven("https://maven.neoforged.net/releases/")
 
-		maven("https://repo.pandasystems.dev/repository/maven-snapshots/") {
-			name = "PandasRepository"
-			mavenContent {
-				snapshotsOnly()
-			}
-		}
+		maven("https://repo.pandasystems.dev/repository/maven-public/")
 	}
 
 	dependencies {
-		nonModImplementation(kotlin("stdlib"))
-		nonModImplementation(kotlin("stdlib-jdk8"))
-		nonModImplementation(kotlin("stdlib-jdk7"))
-		nonModImplementation(kotlin("reflect", version = "2.2.0"))
-		nonModImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
-		nonModImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.10.2")
-		nonModImplementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.8.1")
-		nonModImplementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.1")
-		nonModImplementation("org.jetbrains.kotlinx:kotlinx-serialization-cbor:1.8.1")
-		nonModImplementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.2")
-		nonModImplementation("org.jetbrains.kotlinx:kotlinx-io-core:0.7.0")
-		nonModImplementation("org.jetbrains.kotlinx:kotlinx-io-bytestring:0.7.0")
-
-		nonModImplementation("dev.pandasystems:universal-serializer:0.1.0-SNAPSHOT") {
-			isChanging = true
+		fun dependNoneMod(dependencyNotation: Any?): Any? {
+			if (dependencyNotation == null) return null
+			implementation(dependencyNotation)
+			if (loomPlatform == "neoforge") "forgeRuntimeLibrary"(dependencyNotation)
+			return dependencyNotation
 		}
+
+		fun nestNoneMod(dependencyNotation: Any?): Any? {
+			if (dependencyNotation == null) return null
+			if (loomPlatform != null) include(dependencyNotation)
+			return dependencyNotation
+		}
+
+		dependNoneMod(nestNoneMod(kotlin("stdlib")))
+		dependNoneMod(nestNoneMod(kotlin("stdlib-jdk8")))
+		dependNoneMod(nestNoneMod(kotlin("stdlib-jdk7")))
+		dependNoneMod(nestNoneMod(kotlin("reflect")))
+		dependNoneMod(nestNoneMod("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2"))
+		dependNoneMod(nestNoneMod("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.10.2"))
+		dependNoneMod(nestNoneMod("org.jetbrains.kotlinx:kotlinx-serialization-core:1.9.0"))
+		dependNoneMod(nestNoneMod("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0"))
+		dependNoneMod(nestNoneMod("org.jetbrains.kotlinx:kotlinx-serialization-cbor:1.9.0"))
+		dependNoneMod(nestNoneMod("org.jetbrains.kotlinx:kotlinx-datetime:0.7.1"))
+		dependNoneMod(nestNoneMod("org.jetbrains.kotlinx:kotlinx-io-core:0.8.2"))
+		dependNoneMod(nestNoneMod("org.jetbrains.kotlinx:kotlinx-io-bytestring:0.8.2"))
+
+		dependNoneMod(nestNoneMod("dev.pandasystems:universal-serializer:0.1.0-SNAPSHOT"))
 
 		runtimeOnly("com.google.auto.service:auto-service-annotations:1.1.1")
 		compileOnly("com.google.auto.service:auto-service-annotations:1.1.1")
@@ -205,14 +204,19 @@ allprojects {
 				modImplementation("net.fabricmc:fabric-loader:$fabricLoaderVersion")
 			}
 		}
+		
+		// Debugging
+//		modRuntimeOnly("dev.pandasystems:fallingtrees-$loaderEnv-$mcVersion:0.14.0-APLHA.2.1")
 	}
 
 	java {
+		sourceCompatibility = JavaVersion.toVersion(javaVersion)
+		targetCompatibility = JavaVersion.toVersion(javaVersion)
 		withSourcesJar()
 	}
 
 	kotlin {
-		jvmToolchain(21)
+		jvmToolchain(javaVersion.toInt())
 	}
 
 	tasks {
@@ -315,8 +319,6 @@ allprojects {
 			create<MavenPublication>("maven") {
 				from(components["java"])
 				artifactId = base.archivesName.get()
-				if (properties["snapshot"]?.toString()?.toBooleanStrictOrNull() ?: false)
-					version = "${project.version}-SNAPSHOT"
 
 				if (loomPlatform != null) {
 					artifact(tasks.named("remapSlimJar")) {
@@ -331,16 +333,13 @@ allprojects {
 		}
 
 		repositories {
-			maven("https://repo.pandasystems.dev/repository/maven-snapshots/") {
-				name = "Snapshot"
-				credentials {
-					username = System.getenv("NEXUS_USERNAME")
-					password = System.getenv("NEXUS_PASSWORD")
-				}
-			}
-
-			maven("https://repo.pandasystems.dev/repository/maven-releases/") {
-				name = "Release"
+			maven(
+				if (version.toString().endsWith("-SNAPSHOT"))
+					"https://repo.pandasystems.dev/repository/maven-snapshots/"
+				else
+					"https://repo.pandasystems.dev/repository/maven-releases/"
+			) {
+				name = "pandasystems"
 				credentials {
 					username = System.getenv("NEXUS_USERNAME")
 					password = System.getenv("NEXUS_PASSWORD")

@@ -23,6 +23,10 @@ import java.util.*
 data class CommonConfigPayload(
 	val resourceLocation: ResourceLocation,
 	val optionObject: TreeObject,
+	/**
+	 * If the payload is for a specific player, the player's UUID is stored here.
+	 * If the payload is for the server, the UUID is Optional.empty().
+	 */
 	val playerId: Optional<UUID>
 ) : CustomPacketPayload {
 	override fun write(buffer: FriendlyByteBuf) {

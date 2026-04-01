@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025-2025 Oliver Froberg (The Panda Oliver)
+ * Copyright (C) 2026 Oliver Froberg (The Panda Oliver)
  *
  * This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU Lesser General Public License as published by
@@ -9,9 +9,10 @@
  * You should have received a copy of the GNU Lesser General Public License
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-package dev.pandasystems.pandalib.forge.mixin.events;
 
-import dev.pandasystems.pandalib.event.server.ServerLifecycleEventsKt;
+package dev.pandasystems.pandalib.fabric.mixin.server;
+
+import dev.pandasystems.pandalib.mixin.server.MinecraftServerKtImpl;
 import net.minecraft.server.MinecraftServer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -19,16 +20,14 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(MinecraftServer.class)
-public class MinecraftServerEventMixin {
+public class MinecraftServerMixin {
 	@Inject(method = "runServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;initServer()Z"))
 	public void beforeServerInit(CallbackInfo ci) {
-		var server = (MinecraftServer) (Object) this;
-		ServerLifecycleEventsKt.getServerStartingEvent().getInvoker().invoke(server);
+		MinecraftServerKtImpl.INSTANCE.beforeServerInitEvent((MinecraftServer) (Object) this);
 	}
 
 	@Inject(method = "stopServer", at = @At("HEAD"))
 	public void beforeServerShutdown(CallbackInfo ci) {
-		var server = (MinecraftServer) (Object) this;
-		ServerLifecycleEventsKt.getServerStoppingEvent().getInvoker().invoke(server);
+		MinecraftServerKtImpl.INSTANCE.beforeServerShutdownEvent((MinecraftServer) (Object) this);
 	}
 }

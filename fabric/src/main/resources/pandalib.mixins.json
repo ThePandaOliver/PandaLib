@@ -4,9 +4,11 @@
 	"compatibilityLevel": "JAVA_17",
 	"minVersion": "0.8",
 	"client": [
+		"client.multiplayer.ClientPacketListenerMixin",
 		"client.multiplayer.MultiPlayerGameModeMixin"
 	],
 	"mixins": [
+		"server.MinecraftServerMixin",
 		"server.level.ServerPlayerGameModeMixin",
 		"server.level.ServerPlayerMixin",
 		"server.players.PlayerListMixin",

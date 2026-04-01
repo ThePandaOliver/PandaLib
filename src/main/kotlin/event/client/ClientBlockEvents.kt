@@ -15,8 +15,9 @@ package dev.pandasystems.pandalib.event.client
 import dev.pandasystems.pandalib.utils.event
 import net.minecraft.client.player.LocalPlayer
 import net.minecraft.core.BlockPos
+import net.minecraft.world.entity.player.Player
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.state.BlockState
 
-val clientBlockBreakEvent = event<(level: Level, pos: BlockPos, state: BlockState, player: LocalPlayer) -> Unit>()
-val clientBlockPlaceEvent = event<(level: Level, pos: BlockPos, state: BlockState, player: LocalPlayer) -> Unit>()
+val clientBlockBreakEvent = event<(level: Level, pos: BlockPos, state: BlockState, player: Player) -> Unit>()
+val clientBlockPlaceEvent = event<(level: Level, pos: BlockPos, state: BlockState, player: Player) -> Unit>()

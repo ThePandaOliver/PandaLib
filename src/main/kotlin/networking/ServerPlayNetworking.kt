@@ -14,6 +14,9 @@ package dev.pandasystems.pandalib.networking
 
 import dev.pandasystems.pandalib.utils.gameEnvironment
 import io.netty.buffer.Unpooled
+import net.minecraft.client.Minecraft
+import net.minecraft.client.multiplayer.ClientPacketListener
+import net.minecraft.client.player.LocalPlayer
 import net.minecraft.network.Connection
 import net.minecraft.network.FriendlyByteBuf
 import net.minecraft.network.PacketSendListener
@@ -66,7 +69,7 @@ object ServerPlayNetworking {
 	fun sendInDimension(level: ServerLevel, payloads: Collection<CustomPacketPayload>) {
 		payloads.forEach {
 			val packet = createPacket(it)
-			level.server.playerList.broadcastAll(packet, level.dimension())
+			level.server?.playerList?.broadcastAll(packet, level.dimension())
 		}
 	}
 
@@ -81,7 +84,7 @@ object ServerPlayNetworking {
 	) {
 		payloads.forEach {
 			val packet = createPacket(it)
-			level.server.playerList.broadcast(excluded, x, y, z, radius, level.dimension(), packet)
+			level.server?.playerList?.broadcast(excluded, x, y, z, radius, level.dimension(), packet)
 		}
 	}
 

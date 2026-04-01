@@ -1,16 +1,5 @@
 accessWidener v2 named
 
-# ServerGamePacketListenerImpl Class
-accessible field net/minecraft/server/network/ServerGamePacketListenerImpl server Lnet/minecraft/server/MinecraftServer;
-accessible field net/minecraft/server/network/ServerGamePacketListenerImpl connection Lnet/minecraft/network/Connection;
-
-# ClientPacketListener Class
-accessible field net/minecraft/client/multiplayer/ClientPacketListener minecraft Lnet/minecraft/client/Minecraft;
-accessible field net/minecraft/client/multiplayer/ClientPacketListener connection Lnet/minecraft/network/Connection;
-
 # ConnectionProtocol Class
 accessible class net/minecraft/network/ConnectionProtocol$ProtocolBuilder
 accessible class net/minecraft/network/ConnectionProtocol$PacketSet
-accessible field net/minecraft/network/ConnectionProtocol$ProtocolBuilder flows Ljava/util/Map;
-accessible field net/minecraft/network/ConnectionProtocol flows Ljava/util/Map;
-accessible field net/minecraft/network/ConnectionProtocol PROTOCOL_BY_PACKET Ljava/util/Map;

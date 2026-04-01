@@ -58,7 +58,7 @@ object ConfigSynchronizer {
 				PandaLib.logger.debug(
 					"Sending all server config settings to {} ({})",
 					player.name,
-					handler.owner.id
+					player.uuid
 				)
 				val serverConfigPayloads = configs.mapNotNull { (resourceLocation, _) ->
 					PandaLib.logger.debug("Attempting to create config payload for: {}", resourceLocation)
@@ -77,23 +77,23 @@ object ConfigSynchronizer {
 				ServerPlayNetworking.send(player, serverConfigPayloads)
 				PandaLib.logger.debug(
 					"Sent all successfully created config payloads to {} ({})",
-					handler.owner.name,
-					handler.owner.id
+					player.name,
+					player.uuid
 				)
 
 
 				// Send all previous client config settings to the new client
 				PandaLib.logger.debug(
 					"Sending all previous client config settings to {} ({})",
-					handler.owner.name,
-					handler.owner.id
+					player.name,
+					player.uuid
 				)
 				val clientConfigPayloads = createConfigPayloadsWithClientConfigs()
-				ServerConfigurationNetworking.send(handler, clientConfigPayloads)
+				ServerPlayNetworking.send(player, clientConfigPayloads)
 
 
 				// Send request for all client's config settings
-				PandaLib.logger.debug("Sending config request to {} ({})", player.name, handler.owner.id)
+				PandaLib.logger.debug("Sending config request to {} ({})", player.name, player.uuid)
 				ServerPlayNetworking.send(player, ClientboundConfigRequestPayload(player.uuid))
 			}
 		}

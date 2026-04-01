@@ -21,6 +21,6 @@ import net.neoforged.fml.common.Mod
 @Mod(value = PandaLib.modid, dist = [Dist.CLIENT])
 class PandaLibClientNeoForge(eventBus: IEventBus) {
 	init {
-		PandaLibClient
+		PandaLibClient.init()
 	}
 }

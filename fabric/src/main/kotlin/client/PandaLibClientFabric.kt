@@ -19,6 +19,6 @@ import net.fabricmc.api.ClientModInitializer
 @OptIn(InternalPandaLibApi::class)
 class PandaLibClientFabric : ClientModInitializer {
 	override fun onInitializeClient() {
-		PandaLibClient
+		PandaLibClient.init()
 	}
 }

@@ -36,7 +36,7 @@ class DeferredObject<T>(val key: ResourceKey<*>) : Supplier<T> {
 		return this.holder!!.value() as T
 	}
 
-	fun <R> bind(throwOnMissingRegistry: Boolean) {
+	fun <R: Any> bind(throwOnMissingRegistry: Boolean) {
 		if (this.holder != null) return
 
 		@Suppress("UNCHECKED_CAST")

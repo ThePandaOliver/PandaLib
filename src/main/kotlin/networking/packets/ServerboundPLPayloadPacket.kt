@@ -12,6 +12,7 @@
 
 package dev.pandasystems.pandalib.networking.packets
 
+import dev.pandasystems.pandalib.mixin.ServerCommonPacketListenerImplAccessor
 import dev.pandasystems.pandalib.networking.PacketSender
 import dev.pandasystems.pandalib.networking.PayloadCodecRegistry
 import dev.pandasystems.pandalib.networking.ServerConfigurationNetworking
@@ -49,21 +50,22 @@ data class ServerboundPLPayloadPacket(val payload: CustomPacketPayload) : Packet
 			}
 		}
 
+		val handlerAccessor = handler as ServerCommonPacketListenerImplAccessor
 		when (handler) {
 			is ServerConfigurationPacketListenerImpl -> {
 				val context = object : ServerConfigurationNetworking.Context {
-					override fun server(): MinecraftServer = handler.server
+					override fun server(): MinecraftServer = handlerAccessor.`pandalib$getServer`()
 					override fun networkHandler(): ServerConfigurationPacketListenerImpl = handler
-					override fun responseSender(): PacketSender = Sender(handler.connection)
+					override fun responseSender(): PacketSender = Sender(handlerAccessor.`pandalib$getConnection`())
 				}
 				ServerConfigurationNetworking.packetHandlers[payload.id()]?.receive(payload, context)
 			}
 
 			is ServerGamePacketListenerImpl -> {
 				val context = object : ServerPlayNetworking.Context {
-					override fun server(): MinecraftServer = handler.server
+					override fun server(): MinecraftServer = handlerAccessor.`pandalib$getServer`()
 					override fun player(): ServerPlayer = handler.player
-					override fun responseSender(): PacketSender = Sender(handler.connection)
+					override fun responseSender(): PacketSender = Sender(handlerAccessor.`pandalib$getConnection`())
 				}
 				ServerPlayNetworking.packetHandlers[payload.id()]?.receive(payload, context)
 			}

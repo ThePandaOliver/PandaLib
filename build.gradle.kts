@@ -137,6 +137,7 @@ allprojects {
 		maven("https://maven.parchmentmc.org/")
 		maven("https://maven.fabricmc.net/")
 		maven("https://maven.minecraftforge.net/")
+		maven("https://maven.creeperhost.net") // TEMP alternative to neoforge maven
 		maven("https://maven.neoforged.net/releases/")
 
 		maven("https://repo.pandasystems.dev/repository/maven-public/")
@@ -351,7 +352,7 @@ allprojects {
 
 
 publishMods {
-	type = ReleaseType.ALPHA
+	type = ReleaseType.BETA
 	changelog = file("CHANGELOG.md").readText()
 
 	val cfOptions = curseforgeOptions {

@@ -23,7 +23,7 @@ class ClientboundConfigRequestPayload(val playerId: UUID) : CustomPacketPayload 
 	override fun type(): CustomPacketPayload.Type<ClientboundConfigRequestPayload> = TYPE
 
 	companion object {
-		val TYPE = CustomPacketPayload.Type<ClientboundConfigRequestPayload>(PandaLib.identifier("config_request_payload"))
+		val TYPE = CustomPacketPayload.Type<ClientboundConfigRequestPayload>(PandaLib.resourceLocation("config_request_payload"))
 		val CODEC: StreamCodec<FriendlyByteBuf, ClientboundConfigRequestPayload> = StreamCodec.composite(
 			UUIDUtil.STREAM_CODEC, ClientboundConfigRequestPayload::playerId,
 			::ClientboundConfigRequestPayload

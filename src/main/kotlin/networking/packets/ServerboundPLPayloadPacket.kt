@@ -32,7 +32,7 @@ import net.minecraft.server.level.ServerPlayer
 import net.minecraft.server.network.ServerConfigurationPacketListenerImpl
 import net.minecraft.server.network.ServerGamePacketListenerImpl
 
-val serverboundPLPayloadPacketType = PacketType<ServerboundPLPayloadPacket>(PacketFlow.SERVERBOUND, PandaLib.resourceLocation("pandalib_custom_payload"))
+val serverboundPLPayloadPacketType = PacketType<ServerboundPLPayloadPacket>(PacketFlow.SERVERBOUND, PandaLib.identifier("pandalib_custom_payload"))
 
 data class ServerboundPLPayloadPacket(val payload: CustomPacketPayload) : Packet<ServerCommonPacketListener> {
 	override fun type(): PacketType<out Packet<ServerCommonPacketListener>> {

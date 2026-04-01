@@ -1,4 +1,15 @@
-# Version 1.0.0 | Alpha 4
+# Version 1.0.0 | Alpha 3
+
+- Updated Kotlin to 2.3.0
+- Updated Kotlin STDLib to 2.3.0
+- Updated Kotlin Reflect to 2.3.0
+- Updated Kotlinx Serialization to 1.9.0
+- Updated Kotlinx DateTime to 0.7.1
+- Updated Kotlinx IO to 0.8.2
+
+- Made config logging more informative
+
+- Made client block place event invoke on host client.
 
 ## Bug fixes
 - Fixed client side code on NeoForge not being initialized

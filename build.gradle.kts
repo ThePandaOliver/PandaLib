@@ -145,7 +145,6 @@ allprojects {
 
 			"forge" -> {
 				getByName("developmentForge").extendsFrom(common)
-				getByName("forgeRuntimeLibrary").extendsFrom(nonModImplementation)
 			}
 		}
 	}

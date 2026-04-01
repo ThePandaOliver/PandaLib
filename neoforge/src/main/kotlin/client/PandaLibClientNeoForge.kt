@@ -17,6 +17,6 @@ import net.neoforged.bus.api.IEventBus
 
 class PandaLibClientNeoForge(eventBus: IEventBus) {
 	init {
-		PandaLibClient
+		PandaLibClient.init()
 	}
 }

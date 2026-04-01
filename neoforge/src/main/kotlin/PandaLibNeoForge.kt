@@ -36,6 +36,6 @@ class PandaLibNeoForge(val eventBus: IEventBus) {
 
 		eventBus.addListener((rendererRegistry as RendererRegistryImpl)::onEntityRendererRegistryEvent)
 
-		PandaLib
+		PandaLib.init()
 	}
 }

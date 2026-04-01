@@ -16,6 +16,8 @@ import com.mojang.logging.LogUtils
 import dev.pandasystems.pandalib.config.ConfigRegistry
 import dev.pandasystems.pandalib.config.ConfigSynchronizer
 import dev.pandasystems.pandalib.config.syncOption
+import dev.pandasystems.pandalib.utils.InternalPandaLibApi
+import dev.pandasystems.pandalib.utils.gameEnvironment
 import net.minecraft.resources.ResourceLocation
 import org.slf4j.Logger
 
@@ -25,17 +27,21 @@ object PandaLib {
 
 	val config = ConfigRegistry.create(resourceLocation("pandalib_config"), PandaLibConfig)
 
-	init {
+	@InternalPandaLibApi
+	fun init() {
 		logger.debug("PandaLib is initializing...")
 
-		config.load()
-		config.syncOption(PandaLibConfig::debugging)
-		config.syncOption(PandaLibConfig.HotReloadConfig::configHotReloadDelay)
-		config.syncOption(PandaLibConfig.HotReloadConfig::enableConfigHotReload)
+		// TODO: Make config usable and remove if statement
+		if (gameEnvironment.isDevelopment) {
+			config.load()
+			config.syncOption(PandaLibConfig::debugging)
+			config.syncOption(PandaLibConfig.HotReloadConfig::configHotReloadDelay)
+			config.syncOption(PandaLibConfig.HotReloadConfig::enableConfigHotReload)
+		}
 
 		ConfigSynchronizer.init()
 
-		logger.debug("PandaLib initialized successfully.")
+		logger.debug("PandaLib finished initializing!")
 	}
 
 	fun resourceLocation(path: String): ResourceLocation = ResourceLocation.fromNamespaceAndPath(modid, path)

@@ -24,6 +24,6 @@ class PandaLibFabric : ModInitializer {
 		serverStartingEvent.register { (gameEnvironment as GameEnvironmentImpl).server = it }
 		serverStoppingEvent.register { (gameEnvironment as GameEnvironmentImpl).server = null }
 
-		PandaLib
+		PandaLib.init()
 	}
 }

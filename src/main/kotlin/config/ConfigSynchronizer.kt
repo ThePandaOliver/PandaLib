@@ -14,11 +14,13 @@ package dev.pandasystems.pandalib.config
 
 import dev.pandasystems.pandalib.PandaLib
 import dev.pandasystems.pandalib.config.ConfigSynchronizer.configs
+import dev.pandasystems.pandalib.config.exceptions.ConfigNotRegisteredException
 import dev.pandasystems.pandalib.event.server.serverPlayerJoinEvent
 import dev.pandasystems.pandalib.networking.PayloadCodecRegistry
 import dev.pandasystems.pandalib.networking.ServerPlayNetworking
 import dev.pandasystems.pandalib.networking.payloads.config.ClientboundConfigRequestPayload
 import dev.pandasystems.pandalib.networking.payloads.config.CommonConfigPayload
+import dev.pandasystems.pandalib.utils.gameEnvironment
 import dev.pandasystems.universalserializer.elements.TreeObject
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.entity.player.Player
@@ -40,19 +42,11 @@ object ConfigSynchronizer {
 
 		// Config receiving
 		ServerPlayNetworking.registerHandler<CommonConfigPayload>(CommonConfigPayload.RESOURCELOCATION) { payload, _ ->
-			val resourceLocation = payload.resourceLocation
-			val jsonObject = payload.optionObject
-			val playerId = payload.playerId
-			PandaLib.logger.debug("Received config payload for {}: {}", resourceLocation, jsonObject)
-			val configObject = ConfigRegistry.get<Any>(resourceLocation)
-			configObject?.applyConfigPayload(jsonObject, playerId.getOrNull())
-				?: PandaLib.logger.error("Received config payload for unknown config object: $resourceLocation")
+			handleConfigPayload(payload)
 
-			// Provide the new player config to all already connected clients
-			playerId.ifPresent {
-				PandaLib.logger.debug("Sending config payload to player {}", it)
-				ServerPlayNetworking.sendToAll(payload)
-			}
+			// Provide the new players config to all connected clients
+			PandaLib.logger.debug("Sending config payload to all players")
+			ServerPlayNetworking.sendToAll(payload)
 		}
 
 
@@ -60,27 +54,51 @@ object ConfigSynchronizer {
 
 		if (configs.isNotEmpty()) {
 			serverPlayerJoinEvent += { player ->
-				// Send all server configs
-				PandaLib.logger.debug("Sending all server configs to {}", player.name)
-				val payloads = configs.map { (resourceLocation, _) ->
-					val configObject = requireNotNull(ConfigRegistry.get<Any>(resourceLocation))
-					configObject.createConfigPayload()
+				// Send all server config settings
+				PandaLib.logger.debug(
+					"Sending all server config settings to {} ({})",
+					player.name,
+					handler.owner.id
+				)
+				val serverConfigPayloads = configs.mapNotNull { (resourceLocation, _) ->
+					PandaLib.logger.debug("Attempting to create config payload for: {}", resourceLocation)
+					try {
+						val configObject = ConfigRegistry.get<Any>(resourceLocation)
+						val payload = configObject.createConfigPayload()
+						PandaLib.logger.debug("Successfully created config payload for: {}", resourceLocation)
+						return@mapNotNull payload
+					} catch (e: ConfigNotRegisteredException) {
+						PandaLib.logger.error(
+							"Failed to create config payload for unknown config: $resourceLocation", e
+						)
+						return@mapNotNull null
+					}
 				}
-				ServerPlayNetworking.send(player, payloads)
+				ServerPlayNetworking.send(player, serverConfigPayloads)
+				PandaLib.logger.debug(
+					"Sent all successfully created config payloads to {} ({})",
+					handler.owner.name,
+					handler.owner.id
+				)
 
-				// Send all previous client configs to the new client
-				PandaLib.logger.debug("Sending previous client configs to {}", player.name)
-				createConfigPayloadsWithClientConfigs()
-					.takeIf { it.isNotEmpty() }
-					?.let { ServerPlayNetworking.send(player, it) }
 
-				// Send request for all client's configs
-				PandaLib.logger.debug("Sending config request to {}", player.name)
+				// Send all previous client config settings to the new client
+				PandaLib.logger.debug(
+					"Sending all previous client config settings to {} ({})",
+					handler.owner.name,
+					handler.owner.id
+				)
+				val clientConfigPayloads = createConfigPayloadsWithClientConfigs()
+				ServerConfigurationNetworking.send(handler, clientConfigPayloads)
+
+
+				// Send request for all client's config settings
+				PandaLib.logger.debug("Sending config request to {} ({})", player.name, handler.owner.id)
 				ServerPlayNetworking.send(player, ClientboundConfigRequestPayload(player.uuid))
 			}
 		}
 
-		PandaLib.logger.debug("Config Synchronizer initialized successfully.")
+		PandaLib.logger.debug("Config Synchronizer finished initializing!")
 	}
 
 	/**
@@ -89,7 +107,11 @@ object ConfigSynchronizer {
 	 * If the player UUID is null, the payload will be created for the server.
 	 */
 	fun ConfigObject<*>.createConfigPayload(playerUuid: UUID? = null): CommonConfigPayload {
-		return CommonConfigPayload(resourceLocation, createJsonObject(resourceLocation), Optional.ofNullable(playerUuid))
+		return CommonConfigPayload(
+			resourceLocation,
+			createJsonObject(resourceLocation),
+			Optional.ofNullable(playerUuid)
+		)
 	}
 
 	/**
@@ -97,7 +119,7 @@ object ConfigSynchronizer {
 	 *
 	 * Should be called on the server when a new client connects to provide the client with all connected client configs.
 	 */
-	fun createConfigPayloadsWithClientConfigs(): Collection<CommonConfigPayload> {
+	private fun createConfigPayloadsWithClientConfigs(): Collection<CommonConfigPayload> {
 		val payloadValues = mutableMapOf<UUID, Pair<ResourceLocation, TreeObject>>()
 		configs.forEach { (resourceLocation, options) ->
 			options.forEach { option ->
@@ -137,8 +159,23 @@ object ConfigSynchronizer {
 		return tree
 	}
 
+	internal fun handleConfigPayload(payload: CommonConfigPayload) {
+		val resourceLocation = payload.resourceLocation
+		val jsonObject = payload.optionObject
+		val playerId = payload.playerId
+		PandaLib.logger.debug("Received config {} from {}", resourceLocation, playerId.getOrNull() ?: "server")
+		PandaLib.logger.debug(" - {}", jsonObject)
+		try {
+			val configObject = ConfigRegistry.get<Any>(resourceLocation)
+			configObject.applyConfigPayload(jsonObject, playerId.getOrNull())
+		} catch (e: ConfigNotRegisteredException) {
+			PandaLib.logger.error("Received config payload for unknown config: $resourceLocation", e)
+		}
+	}
+
 	class SyncableOption<T : Any?>(val configObject: ConfigObject<*>, val property: KProperty0<T>) {
-		val id: String = "${configObject.resourceLocation}#${property.name}.${configs[configObject.resourceLocation]!!.size}"
+		val id: String =
+			"${configObject.resourceLocation}#${property.name}.${configs[configObject.resourceLocation]!!.size}"
 		val valueType: KType = property.returnType
 		val initialValue: T get() = property.get()
 

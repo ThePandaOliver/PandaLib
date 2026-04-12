@@ -53,8 +53,7 @@ object ConfigSynchronizer {
 
 		// Config sending
 
-		if (configs.isNotEmpty()) {
-			serverConfigurationConnectionEvent.register { handler, _ ->
+		serverConfigurationConnectionEvent.register { handler, _ ->
 				// Send all server config settings
 				PandaLib.logger.debug(
 					"Sending all server config settings to {} ({})",
@@ -97,7 +96,6 @@ object ConfigSynchronizer {
 				PandaLib.logger.debug("Sending config request to {} ({})", handler.owner.name, handler.owner.id)
 				ServerConfigurationNetworking.send(handler, ClientboundConfigRequestPayload(handler.owner.id))
 			}
-		}
 
 		PandaLib.logger.debug("Config Synchronizer finished initializing!")
 	}

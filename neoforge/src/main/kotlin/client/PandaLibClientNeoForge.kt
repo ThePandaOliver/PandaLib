@@ -14,10 +14,12 @@ package dev.pandasystems.pandalib.neoforge.client
 
 import dev.pandasystems.pandalib.PandaLib
 import dev.pandasystems.pandalib.client.PandaLibClient
+import dev.pandasystems.pandalib.utils.InternalPandaLibApi
 import net.neoforged.api.distmarker.Dist
 import net.neoforged.bus.api.IEventBus
 import net.neoforged.fml.common.Mod
 
+@OptIn(InternalPandaLibApi::class)
 @Mod(value = PandaLib.modid, dist = [Dist.CLIENT])
 class PandaLibClientNeoForge(eventBus: IEventBus) {
 	init {

@@ -3,15 +3,12 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import me.modmuss50.mpp.ReleaseType
 import net.fabricmc.loom.task.RemapJarTask
-import org.jetbrains.gradle.ext.packagePrefix
-import org.jetbrains.gradle.ext.settings
 
 plugins {
 	kotlin("jvm") version "2.3.0"
 	id("architectury-plugin") version "3.4-SNAPSHOT"
 	id("dev.architectury.loom") version "1.13-SNAPSHOT"
 	id("com.gradleup.shadow") version "9.0.2" apply false
-	id("org.jetbrains.gradle.plugin.idea-ext") version "1.1.10"
 
 	id("me.modmuss50.mod-publish-plugin") version "1.1.0"
 	id("com.google.devtools.ksp") version "2.3.0"
@@ -298,19 +295,6 @@ allprojects {
 
 			processResources {
 				dependsOn(copyLicense)
-			}
-		}
-	}
-
-	idea {
-		module {
-			settings {
-				val packagePrefixStr = "$modGroup.$modId".let {
-					if (loomPlatform != null) "$it.$loomPlatform"
-					else it
-				}
-				packagePrefix["src/main/kotlin"] = packagePrefixStr
-				packagePrefix["src/main/java"] = packagePrefixStr
 			}
 		}
 	}

@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2026 Oliver Froberg (The Panda Oliver)
  *
- * This program is free software: you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify 
  *  it under the terms of the GNU Lesser General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
  *  any later version.
@@ -10,7 +10,7 @@
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.pandasystems.pandalib.utils
+package dev.pandasystems.pandalib.event
 
 import com.google.common.reflect.AbstractInvocationHandler
 import java.lang.invoke.MethodHandles
@@ -22,18 +22,17 @@ fun <T : Function<R>, R> event(
 	classType: Class<T>,
 	combiner: (List<R>) -> R,
 	shouldContinue: (R) -> Boolean = { true }
-): Event<T> {
-	fun <T, R> invokeMethod(listener: T, method: Method, args: Array<*>): R {
-		return MethodHandles.lookup().unreflect(method)
-			.bindTo(listener).invokeWithArguments(*args) as R
-	}
-
-	return Event { listeners ->
-		Proxy.newProxyInstance(classType.classLoader ?: Thread.currentThread().contextClassLoader, arrayOf(classType), object : AbstractInvocationHandler() {
+): Event<T> = Event { listeners ->
+	Proxy.newProxyInstance(
+		classType.classLoader ?: Thread.currentThread().contextClassLoader,
+		arrayOf(classType),
+		object : AbstractInvocationHandler() {
 			override fun handleInvocation(proxy: Any, method: Method, args: Array<*>): Any? {
 				val returnList = mutableListOf<R>()
 				for (listener in listeners) {
-					val returnValue = invokeMethod<T, R>(listener, method, args)
+					val returnValue = MethodHandles.lookup().unreflect(method)
+						.bindTo(listener).invokeWithArguments(*args) as R
+					
 					returnList += returnValue
 					if (!shouldContinue(returnValue)) {
 						break
@@ -41,8 +40,8 @@ fun <T : Function<R>, R> event(
 				}
 				return combiner(returnList)
 			}
-		}) as T
-	}
+		}
+	) as T
 }
 
 inline fun <reified T : Function<R>, R> event(
@@ -57,9 +56,9 @@ inline fun <reified T : Function<R>, R> eventLastResult(defaultValue: R): Event<
 inline fun <reified T : Function<Boolean>> cancelableEvent(shouldCancelRemaining: Boolean = true): Event<T> =
 	event({ if (shouldCancelRemaining) it else true }, { results -> results.all { it } })
 
-class Event<T : Function<*>>(private val function: (MutableList<T>) -> T) {
+class Event<T : Function<*>>(private val invokerFunction: (List<T>) -> T) {
 	private var _invoker: T? = null
-	private val listeners = mutableListOf<Pair<Int, T>>()
+	private val listeners = mutableListOf<T>()
 
 	val invoker: T
 		get() {
@@ -68,27 +67,25 @@ class Event<T : Function<*>>(private val function: (MutableList<T>) -> T) {
 			}
 			return _invoker as T
 		}
-
-	fun register(priority: Int = 0, handler: T) {
-		listeners.add(priority to handler)
-		listeners.sortByDescending { it.first }
+	
+	fun subscribe(listener: T) {
+		listeners += listener
+		_invoker = null
+	}
+	
+	fun unsubscribe(listener: T) {
+		listeners -= listener
 		_invoker = null
 	}
 
-	fun unregister(handler: T) {
-		listeners.removeAll { it.second == handler }
-		_invoker = null
-	}
-
-	operator fun plusAssign(handler: T) = register(handler = handler)
-	operator fun plusAssign(pair: Pair<Int, T>) = register(priority = pair.first, handler = pair.second)
-	operator fun minusAssign(handler: T) = unregister(handler = handler)
+	operator fun plusAssign(listener: T) = subscribe(listener)
+	operator fun minusAssign(listener: T) = unsubscribe(listener)
 
 	private fun update() {
 		_invoker = if (listeners.size == 1) {
-			listeners[0].second
+			listeners[0]
 		} else {
-			function(listeners.map { it.second }.toMutableList())
+			invokerFunction(listeners)
 		}
 	}
 }

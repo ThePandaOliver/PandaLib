@@ -12,7 +12,7 @@
 
 package dev.pandasystems.pandalib.event.server
 
-import dev.pandasystems.pandalib.utils.event
+import dev.pandasystems.pandalib.event.event
 import net.minecraft.server.MinecraftServer
 
 val serverStartingEvent = event<(server: MinecraftServer) -> Unit>()

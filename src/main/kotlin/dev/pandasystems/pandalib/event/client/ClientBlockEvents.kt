@@ -12,7 +12,7 @@
 
 package dev.pandasystems.pandalib.event.client
 
-import dev.pandasystems.pandalib.utils.event
+import dev.pandasystems.pandalib.event.event
 import net.minecraft.client.player.LocalPlayer
 import net.minecraft.core.BlockPos
 import net.minecraft.world.level.Level

@@ -12,8 +12,8 @@
 
 package dev.pandasystems.pandalib.event.server
 
-import dev.pandasystems.pandalib.utils.cancelableEvent
-import dev.pandasystems.pandalib.utils.event
+import dev.pandasystems.pandalib.event.cancelableEvent
+import dev.pandasystems.pandalib.event.event
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.entity.Entity

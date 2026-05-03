@@ -13,7 +13,7 @@
 package dev.pandasystems.pandalib.config
 
 import dev.pandasystems.pandalib.PandaLib
-import dev.pandasystems.pandalib.utils.event
+import dev.pandasystems.pandalib.event.event
 import dev.pandasystems.pandalib.utils.gamePaths
 import dev.pandasystems.pandalib.utils.objects
 import dev.pandasystems.universalserializer.Serializer

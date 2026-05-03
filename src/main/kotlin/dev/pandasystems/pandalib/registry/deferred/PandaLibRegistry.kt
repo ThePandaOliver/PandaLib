@@ -13,8 +13,8 @@
 package dev.pandasystems.pandalib.registry.deferred
 
 import com.mojang.serialization.Lifecycle
-import dev.pandasystems.pandalib.utils.Event
-import dev.pandasystems.pandalib.utils.event
+import dev.pandasystems.pandalib.event.Event
+import dev.pandasystems.pandalib.event.event
 import net.minecraft.core.Holder
 import net.minecraft.core.MappedRegistry
 import net.minecraft.core.RegistrationInfo

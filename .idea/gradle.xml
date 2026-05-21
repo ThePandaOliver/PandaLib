@@ -8,8 +8,9 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/fabric" />
-            <option value="$PROJECT_DIR$/neoforge" />
+            <option value="$PROJECT_DIR$/pandalib-config" />
+            <option value="$PROJECT_DIR$/pandalib-config/fabric" />
+            <option value="$PROJECT_DIR$/pandalib-config/neoforge" />
           </set>
         </option>
         <option name="resolveExternalAnnotations" value="true" />

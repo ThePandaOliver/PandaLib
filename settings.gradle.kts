@@ -3,13 +3,12 @@ pluginManagement {
 		mavenLocal()
 		maven("https://maven.architectury.dev/") { name = "Architectury" }
 		maven("https://maven.fabricmc.net/") { name = "Fabric" }
-		maven("https://maven.minecraftforge.net/") { name = "Forge" }
 		maven("https://maven.neoforged.net/releases/") { name = "NeoForge" }
 		gradlePluginPortal()
 	}
 }
 
-include("fabric")
-include("neoforge")
-
 rootProject.name = "PandaLib"
+
+fun includeMod(name: String) = include(name, "$name:fabric", "$name:neoforge")
+includeMod("pandalib-config")

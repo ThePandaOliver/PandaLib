@@ -50,3 +50,37 @@ java {
 kotlin {
 	jvmToolchain(21)
 }
+
+val mcVersion: String by project
+val modVersion: String by project
+val modGroup: String by project
+val modName: String by project
+val modDescription: String by project
+val modLicense: String by project
+val modAuthors: String by project
+
+tasks.processResources {
+	val props = mutableMapOf(
+		"minecraft_version" to mcVersion,
+
+		"mod_version" to modVersion,
+		"mod_group" to modGroup,
+		"mod_id" to "pandalib-config",
+
+		"mod_name" to modName,
+		"mod_description" to modDescription,
+		"mod_license" to modLicense,
+		"mod_authors" to modAuthors,
+	)
+
+	inputs.properties(props)
+	filesMatching(
+		listOf(
+			"META-INF/neoforge.mods.toml",
+			"**.mixins.json",
+			"pack.mcmeta"
+		)
+	) {
+		expand(props)
+	}
+}

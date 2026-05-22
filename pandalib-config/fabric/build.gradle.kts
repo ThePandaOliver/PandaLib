@@ -36,6 +36,8 @@ dependencies {
 	api(project(":pandalib-config"))
 	modImplementation(libs.fabric.loader)
 	modApi(libs.fabric.api)
+
+	api(project(":pandalib-kotlin:fabric"))
 	
 	ksp(libs.autoService.ksp)
 	runtimeOnly(libs.autoService.annotations)

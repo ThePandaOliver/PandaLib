@@ -37,6 +37,8 @@ dependencies {
 	modImplementation(libs.fabric.loader)
 	modApi(libs.fabric.api)
 	
+	api(project(":pandalib-kotlin:fabric"))
+	
 	ksp(libs.autoService.ksp)
 	runtimeOnly(libs.autoService.annotations)
 	compileOnly(libs.autoService.annotations)
@@ -66,7 +68,7 @@ tasks.processResources {
 
 		"mod_version" to modVersion,
 		"mod_group" to modGroup,
-		"mod_id" to "pandalib-config",
+		"mod_id" to "pandalib-base",
 
 		"mod_name" to modName,
 		"mod_description" to modDescription,

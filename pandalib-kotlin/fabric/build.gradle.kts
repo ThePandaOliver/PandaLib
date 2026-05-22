@@ -21,7 +21,7 @@ repositories {
 	mavenLocal()
 	mavenCentral()
 	maven("https://maven.parchmentmc.org/")
-	maven("https://maven.neoforged.net/releases/")
+	maven("https://maven.fabricmc.net/")
 
 	maven("https://repo.pandasystems.dev/repository/maven-public/")
 }
@@ -33,11 +33,10 @@ dependencies {
 		officialMojangMappings()
 		parchment("org.parchmentmc.data:parchment-1.21.10:2025.10.12@zip")
 	})
-	api(project(":pandalib-base"))
-	neoForge(libs.neoforge)
-
-	api(project(":pandalib-kotlin:neoforge"))
-
+	api(project(":pandalib-kotlin"))
+	modImplementation(libs.fabric.loader)
+	modApi(libs.fabric.api)
+	
 	ksp(libs.autoService.ksp)
 	runtimeOnly(libs.autoService.annotations)
 	compileOnly(libs.autoService.annotations)
@@ -67,18 +66,18 @@ tasks.processResources {
 
 		"mod_version" to modVersion,
 		"mod_group" to modGroup,
-		"mod_id" to "pandalib-base",
+		"mod_id" to "pandalib-kotlin",
 
 		"mod_name" to modName,
 		"mod_description" to modDescription,
 		"mod_license" to modLicense,
-		"mod_authors" to modAuthors,
+		"mod_authors" to modAuthors.split(",").joinToString(", ") { "\"$it\"" },
 	)
 
 	inputs.properties(props)
 	filesMatching(
 		listOf(
-			"META-INF/neoforge.mods.toml",
+			"fabric.mod.json",
 			"**.mixins.json",
 			"pack.mcmeta"
 		)

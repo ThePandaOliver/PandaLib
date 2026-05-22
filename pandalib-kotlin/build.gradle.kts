@@ -35,8 +35,15 @@ dependencies {
 	})
 	modCompileOnly(libs.fabric.loader)
 	
-	api(project(":pandalib-kotlin"))
-	
+	api(libs.kotlin.reflect)
+	api(libs.kotlinx.coroutines)
+	api(libs.kotlinx.serialization)
+	api(libs.kotlinx.serialization.json)
+	api(libs.kotlinx.serialization.cbor)
+	api(libs.kotlinx.datetime)
+	api(libs.kotlinx.io)
+	api(libs.kotlinx.io.bytestring)
+
 	api(libs.universalSerializer)
 }
 

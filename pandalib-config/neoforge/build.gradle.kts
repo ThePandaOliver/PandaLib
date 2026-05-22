@@ -33,8 +33,10 @@ dependencies {
 		officialMojangMappings()
 		parchment("org.parchmentmc.data:parchment-1.21.10:2025.10.12@zip")
 	})
-	neoForge(libs.neoforge)
 	api(project(":pandalib-config"))
+	neoForge(libs.neoforge)
+
+	api(project(":pandalib-kotlin:neoforge"))
 
 	ksp(libs.autoService.ksp)
 	runtimeOnly(libs.autoService.annotations)

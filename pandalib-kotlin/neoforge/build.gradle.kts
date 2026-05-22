@@ -33,10 +33,8 @@ dependencies {
 		officialMojangMappings()
 		parchment("org.parchmentmc.data:parchment-1.21.10:2025.10.12@zip")
 	})
-	api(project(":pandalib-base"))
+	api(project(":pandalib-kotlin"))
 	neoForge(libs.neoforge)
-
-	api(project(":pandalib-kotlin:neoforge"))
 
 	ksp(libs.autoService.ksp)
 	runtimeOnly(libs.autoService.annotations)
@@ -67,7 +65,7 @@ tasks.processResources {
 
 		"mod_version" to modVersion,
 		"mod_group" to modGroup,
-		"mod_id" to "pandalib-base",
+		"mod_id" to "pandalib-kotlin",
 
 		"mod_name" to modName,
 		"mod_description" to modDescription,

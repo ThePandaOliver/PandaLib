@@ -34,17 +34,8 @@ dependencies {
 		parchment("org.parchmentmc.data:parchment-1.21.10:2025.10.12@zip")
 	})
 	modCompileOnly(libs.fabric.loader)
-	
-	api(libs.kotlin.reflect)
-	api(libs.kotlinx.coroutines)
-	api(libs.kotlinx.serialization)
-	api(libs.kotlinx.serialization.json)
-	api(libs.kotlinx.serialization.cbor)
-	api(libs.kotlinx.datetime)
-	api(libs.kotlinx.io)
-	api(libs.kotlinx.io.bytestring)
 
-	api(libs.universalSerializer)
+	api(project(":pandalib-kotlin"))
 }
 
 java {

@@ -43,8 +43,6 @@ dependencies {
 	api(libs.kotlinx.datetime)
 	api(libs.kotlinx.io)
 	api(libs.kotlinx.io.bytestring)
-
-	api(libs.universalSerializer)
 }
 
 java {

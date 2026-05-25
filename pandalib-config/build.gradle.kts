@@ -38,6 +38,8 @@ dependencies {
 	api(project(":pandalib-kotlin"))
 	
 	api(libs.universalSerializer)
+
+	testImplementation(libs.kotlin.test)
 }
 
 java {

@@ -17,6 +17,7 @@
             <option value="$PROJECT_DIR$/pandalib-kotlin" />
             <option value="$PROJECT_DIR$/pandalib-kotlin/fabric" />
             <option value="$PROJECT_DIR$/pandalib-kotlin/neoforge" />
+            <option value="$PROJECT_DIR$/pandalib-serializer" />
           </set>
         </option>
         <option name="resolveExternalAnnotations" value="true" />

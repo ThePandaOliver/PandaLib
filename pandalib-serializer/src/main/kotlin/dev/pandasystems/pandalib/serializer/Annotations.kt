@@ -12,4 +12,6 @@
 
 package dev.pandasystems.pandalib.serializer
 
-annotation class NotSerializable()
+@Target(AnnotationTarget.FIELD, AnnotationTarget.PROPERTY)
+@Retention(AnnotationRetention.RUNTIME)
+annotation class NotSerializable

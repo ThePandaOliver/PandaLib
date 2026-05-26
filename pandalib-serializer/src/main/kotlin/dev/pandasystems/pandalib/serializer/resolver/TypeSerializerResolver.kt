@@ -10,11 +10,11 @@
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.pandasystems.pandalib.serializer.typeserializers
+package dev.pandasystems.pandalib.serializer.resolver
 
-import dev.pandasystems.pandalib.serializer.JsonElement
+import dev.pandasystems.pandalib.serializer.TypeSerializerContext
+import dev.pandasystems.pandalib.serializer.typeserializers.TypeSerializer
 
-interface TypeSerializer<Type : Any> {
-	fun serialize(value: Type): JsonElement
-	fun deserialize(json: JsonElement): Type
+interface TypeSerializerResolver {
+    fun resolve(context: TypeSerializerContext): TypeSerializer<*>?
 }

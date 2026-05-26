@@ -12,9 +12,10 @@
 
 package dev.pandasystems.pandalib.serializer.typeserializers
 
-import dev.pandasystems.pandalib.serializer.JsonElement
+import dev.pandasystems.pandalib.serializer.TypeSerializerContext
+import dev.pandasystems.pandalib.serializer.resolver.TypeSerializerResolver
 
-interface TypeSerializer<Type : Any> {
-	fun serialize(value: Type): JsonElement
-	fun deserialize(json: JsonElement): Type
+interface TypeSerializerFactory {
+	fun canHandle(context: TypeSerializerContext): Boolean
+	fun create(context: TypeSerializerContext, resolver: TypeSerializerResolver): TypeSerializer<*>
 }

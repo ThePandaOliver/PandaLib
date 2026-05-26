@@ -15,7 +15,7 @@ package dev.pandasystems.pandalib.serializer.serializers
 import dev.pandasystems.pandalib.serializer.JsonElement
 import java.io.File
 
-interface LiteralSerializer : Serializer<String> {
+abstract class LiteralSerializer : Serializer<String>() {
 	fun decodeFile(file: File): JsonElement = decode(file.readText())
 	fun <Obj : Any> decodeFileToObject(file: File, dist: Obj): Obj = decodeToObject(file.readText(), dist)
 	fun encodeToFile(json: JsonElement, file: File) = file.writeText(encode(json))

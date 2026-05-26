@@ -12,6 +12,12 @@
 
 package dev.pandasystems.pandalib.serializer
 
-class CodecSettings(
-	var prettyPrint: Boolean = false,
+import java.lang.reflect.Type
+import kotlin.reflect.KType
+
+data class TypeSerializerContext(
+    val rawType: Class<*>,
+    val annotations: List<Annotation> = emptyList(),
+    val kotlinType: KType? = null,
+    val javaType: Type? = null
 )

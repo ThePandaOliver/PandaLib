@@ -36,7 +36,7 @@ import kotlinx.serialization.json.JsonPrimitive as KJsonPrimitive
 
 class Json(
 	val prettyPrint: Boolean = true,
-) : LiteralSerializer {
+) : LiteralSerializer() {
 	val json = KJson {
 		encodeDefaults = true
 		ignoreUnknownKeys = true

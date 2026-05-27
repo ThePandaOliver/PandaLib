@@ -1,4 +1,4 @@
-package java;
+package javatest;
 
 import dev.pandasystems.pandalib.serializer.PropertySerializerRegistry;
 import dev.pandasystems.pandalib.serializer.SerializationOverrides;

@@ -23,7 +23,7 @@ class TypeSerializerProviderImpl : TypeSerializerProvider {
 		type: Class<out Type>,
 		serializerFactory: () -> TypeSerializer<out Type>
 	) {
-		typeSerializers[type] = serializerFactory
+		typeSerializers[normalizeType(type)] = serializerFactory
 	}
 
 	override fun register(factory: TypeSerializerFactory) {

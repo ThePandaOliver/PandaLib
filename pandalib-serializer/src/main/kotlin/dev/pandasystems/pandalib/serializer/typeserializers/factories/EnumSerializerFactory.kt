@@ -15,7 +15,7 @@ import dev.pandasystems.pandalib.serializer.TypeSerializerContext
 import dev.pandasystems.pandalib.serializer.resolver.TypeSerializerResolver
 import dev.pandasystems.pandalib.serializer.typeserializers.TypeSerializer
 import dev.pandasystems.pandalib.serializer.typeserializers.TypeSerializerFactory
-import dev.pandasystems.pandalib.serializer.typeserializers.types.EnumSerializer
+import dev.pandasystems.pandalib.serializer.typeserializers.types.primetives.EnumSerializer
 
 class EnumSerializerFactory : TypeSerializerFactory {
     override fun canHandle(context: TypeSerializerContext): Boolean {

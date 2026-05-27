@@ -17,16 +17,7 @@ import dev.pandasystems.pandalib.serializer.JsonElement
 import dev.pandasystems.pandalib.serializer.JsonNull
 import dev.pandasystems.pandalib.serializer.JsonObject
 import dev.pandasystems.pandalib.serializer.JsonPrimitive
-import kotlinx.serialization.json.boolean
-import kotlinx.serialization.json.booleanOrNull
-import kotlinx.serialization.json.double
-import kotlinx.serialization.json.doubleOrNull
-import kotlinx.serialization.json.float
-import kotlinx.serialization.json.floatOrNull
-import kotlinx.serialization.json.int
-import kotlinx.serialization.json.intOrNull
-import kotlinx.serialization.json.long
-import kotlinx.serialization.json.longOrNull
+import kotlinx.serialization.json.*
 import kotlinx.serialization.json.Json as KJson
 import kotlinx.serialization.json.JsonArray as KJsonArray
 import kotlinx.serialization.json.JsonElement as KJsonElement
@@ -73,7 +64,7 @@ class Json(
 			is JsonObject -> KJsonObject(mapValues { it.value.toKotlinJsonElement() })
 			is JsonArray -> KJsonArray(map { it.toKotlinJsonElement() })
 			is JsonPrimitive -> when {
-				isString != null -> KJsonPrimitive(content)
+				isString -> KJsonPrimitive(content)
 				booleanOrNull != null -> KJsonPrimitive(booleanOrNull)
 				intOrNull != null -> KJsonPrimitive(intOrNull)
 				floatOrNull != null -> KJsonPrimitive(floatOrNull)

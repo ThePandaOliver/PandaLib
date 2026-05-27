@@ -14,12 +14,15 @@ package dev.pandasystems.pandalib.serializer.providers
 
 import dev.pandasystems.pandalib.serializer.typeserializers.TypeSerializer
 import dev.pandasystems.pandalib.serializer.typeserializers.TypeSerializerFactory
-import kotlin.reflect.KProperty
 
 interface TypeSerializerProvider {
 	val factories: List<TypeSerializerFactory>
 	val typeSerializers: Map<Class<*>, () -> TypeSerializer<*>>
 	
 	fun <Type : Any> register(type: Class<out Type>, serializerFactory: () -> TypeSerializer<out Type>)
+	fun <Type : Any> register(type: Class<out Type>, serializer: TypeSerializer<out Type>) {
+		register(type) { serializer }
+	}
+	
 	fun register(factory: TypeSerializerFactory)
 }

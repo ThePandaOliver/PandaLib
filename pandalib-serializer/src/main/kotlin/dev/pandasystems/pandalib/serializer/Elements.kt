@@ -24,11 +24,11 @@ object JsonNull : JsonElement {
 }
 
 class JsonObject(
-	private val content: Map<String, JsonElement> = emptyMap(),
+	content: Map<String, JsonElement> = emptyMap(),
 ) : JsonElement, MutableMap<String, JsonElement> by content.toMutableMap()
 
 class JsonArray(
-	private val content: List<JsonElement> = emptyList(),
+	content: List<JsonElement> = emptyList(),
 ) : JsonElement, MutableList<JsonElement> by content.toMutableList()
 
 class JsonPrimitive private constructor(

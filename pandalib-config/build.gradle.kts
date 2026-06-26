@@ -1,29 +1,11 @@
 plugins {
 	alias(libs.plugins.kotlin.jvm)
-	alias(libs.plugins.architectury.loom)
-	alias(libs.plugins.shadow)
-
-	alias(libs.plugins.publish.mod)
 	alias(libs.plugins.ksp)
-}
-
-loom {
-	silentMojangMappingsLicense()
-
-	decompilers {
-		get("vineflower").apply { // Adds names to lambdas - useful for mixins
-			options.put("mark-corresponding-synthetics", "1")
-		}
-	}
 }
 
 repositories {
 	mavenLocal()
 	mavenCentral()
-	maven("https://maven.parchmentmc.org/")
-	maven("https://maven.fabricmc.net/")
-
-	maven("https://repo.pandasystems.dev/repository/maven-public/")
 }
 
 dependencies {

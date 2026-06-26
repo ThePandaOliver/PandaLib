@@ -1,6 +1,5 @@
 package dev.pandasystems.pandalib.config
 
-import dev.pandasystems.universalserializer.Serializer
 import java.io.File
 
 class Config {

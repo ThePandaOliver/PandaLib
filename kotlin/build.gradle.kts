@@ -22,8 +22,6 @@ repositories {
 	mavenCentral()
 	maven("https://maven.parchmentmc.org/")
 	maven("https://maven.fabricmc.net/")
-
-	maven("https://repo.pandasystems.dev/repository/maven-public/")
 }
 
 dependencies {
@@ -34,8 +32,15 @@ dependencies {
 		parchment("org.parchmentmc.data:parchment-1.21.10:2025.10.12@zip")
 	})
 	modCompileOnly(libs.fabric.loader)
-
-	api(project(":pandalib-kotlin"))
+	
+	implementation(libs.kotlin.reflect)
+	implementation(libs.kotlinx.coroutines)
+	implementation(libs.kotlinx.serialization)
+	implementation(libs.kotlinx.serialization.json)
+	implementation(libs.kotlinx.serialization.cbor)
+	implementation(libs.kotlinx.datetime)
+	implementation(libs.kotlinx.io)
+	implementation(libs.kotlinx.io.bytestring)
 }
 
 java {

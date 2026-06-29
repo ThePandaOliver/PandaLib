@@ -33,22 +33,16 @@ dependencies {
 		officialMojangMappings()
 		parchment("org.parchmentmc.data:parchment-1.21.10:2025.10.12@zip")
 	})
-	api(project(":pandalib-base"))
+	api(project(":base"))
 	modImplementation(libs.fabric.loader)
 	modApi(libs.fabric.api)
-	
-	api(project(":pandalib-kotlin:fabric"))
 	
 	ksp(libs.autoService.ksp)
 	runtimeOnly(libs.autoService.annotations)
 	compileOnly(libs.autoService.annotations)
 }
 
-java {
-	toolchain {
-		languageVersion = JavaLanguageVersion.of(21)
-	}
-}
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 
 kotlin {
 	jvmToolchain(21)

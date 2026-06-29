@@ -8,16 +8,7 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/pandalib-base" />
-            <option value="$PROJECT_DIR$/pandalib-base/fabric" />
-            <option value="$PROJECT_DIR$/pandalib-base/neoforge" />
-            <option value="$PROJECT_DIR$/pandalib-config" />
-            <option value="$PROJECT_DIR$/pandalib-config/fabric" />
-            <option value="$PROJECT_DIR$/pandalib-config/neoforge" />
-            <option value="$PROJECT_DIR$/pandalib-kotlin" />
-            <option value="$PROJECT_DIR$/pandalib-kotlin/fabric" />
-            <option value="$PROJECT_DIR$/pandalib-kotlin/neoforge" />
-            <option value="$PROJECT_DIR$/pandalib-serializer" />
+            <option value="$PROJECT_DIR$/core" />
           </set>
         </option>
         <option name="resolveExternalAnnotations" value="true" />

@@ -1,5 +1,6 @@
 plugins {
 	alias(libs.plugins.kotlin.jvm)
+	alias(libs.plugins.ksp)
 }
 
 repositories {
@@ -8,16 +9,12 @@ repositories {
 }
 
 dependencies {
-	api(project(":pandalib-kotlin"))
+	implementation(project(":core"))
 
 	testImplementation(libs.kotlin.test)
 }
 
-java {
-	toolchain {
-		languageVersion = JavaLanguageVersion.of(21)
-	}
-}
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 
 kotlin {
 	jvmToolchain(21)

@@ -1,9 +1,7 @@
 plugins {
 	alias(libs.plugins.kotlin.jvm)
 	alias(libs.plugins.architectury.loom)
-	alias(libs.plugins.shadow)
 
-	alias(libs.plugins.publish.mod)
 	alias(libs.plugins.ksp)
 }
 
@@ -22,8 +20,6 @@ repositories {
 	mavenCentral()
 	maven("https://maven.parchmentmc.org/")
 	maven("https://maven.fabricmc.net/")
-
-	maven("https://repo.pandasystems.dev/repository/maven-public/")
 }
 
 dependencies {
@@ -34,22 +30,11 @@ dependencies {
 		parchment("org.parchmentmc.data:parchment-1.21.10:2025.10.12@zip")
 	})
 	modCompileOnly(libs.fabric.loader)
-	
-	api(libs.kotlin.reflect)
-	api(libs.kotlinx.coroutines)
-	api(libs.kotlinx.serialization)
-	api(libs.kotlinx.serialization.json)
-	api(libs.kotlinx.serialization.cbor)
-	api(libs.kotlinx.datetime)
-	api(libs.kotlinx.io)
-	api(libs.kotlinx.io.bytestring)
+
+	api(project(":pandalib-kotlin"))
 }
 
-java {
-	toolchain {
-		languageVersion = JavaLanguageVersion.of(21)
-	}
-}
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 
 kotlin {
 	jvmToolchain(21)

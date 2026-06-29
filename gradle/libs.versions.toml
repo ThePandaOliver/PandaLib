@@ -21,8 +21,6 @@ kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.
 kotlinx-io = { module = "org.jetbrains.kotlinx:kotlinx-io-core", version.ref = "kotlinx-io" }
 kotlinx-io-bytestring = { module = "org.jetbrains.kotlinx:kotlinx-io-bytestring", version.ref = "kotlinx-io" }
 
-universalSerializer = { module = "dev.pandasystems:universal-serializer", version = "0.1.0-SNAPSHOT" }
-
 autoService-ksp = { module = "dev.zacsweers.autoservice:auto-service-ksp", version.ref = "autoService-ksp" }
 autoService-annotations = { module = "com.google.auto.service:auto-service-annotations", version.ref = "autoService-annotations" }
 
@@ -39,3 +37,4 @@ architectury-loom = { id = "dev.architectury.loom", version = "1.13-SNAPSHOT" }
 shadow = { id = "com.gradleup.shadow", version = "9.0.2" }
 publish-mod = { id = "me.modmuss50.mod-publish-plugin", version = "1.1.0" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "kotlin" }
+modstich = { id = "dev.isxander.modstitch.base", version = "0.8.5" }

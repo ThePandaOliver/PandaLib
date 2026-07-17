@@ -1,6 +1,7 @@
 pluginManagement {
 	repositories {
 		mavenLocal()
+		maven("D:\\Maven Repo")
 		maven("https://maven.architectury.dev/") { name = "Architectury" }
 		maven("https://maven.fabricmc.net/") { name = "Fabric" }
 		maven("https://maven.neoforged.net/releases/") { name = "NeoForge" }

@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "metadata": {
+    "id": "Pandalib Core",
+    "version": "1.0",
+    "name": "PandaLib Core",
+    "description": "The core library for PandaLib",
+    "license": "GNU LGPLv3",
+    "authors": [
+      "The Panda Oliver"
+    ]
+  }
+}

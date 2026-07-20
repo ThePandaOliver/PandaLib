@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "metadata": {
+    "id": "pandalib-config",
+    "version": "1.0",
+    "name": "PandaLib Config",
+    "description": "The config library for PandaLib",
+    "license": "GNU LGPLv3",
+    "authors": [
+      "The Panda Oliver"
+    ]
+  },
+  "dependencies": [
+    { "modId": "pandalib-core", "versionRange": ">=1.0" }
+  ]
+}

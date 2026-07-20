@@ -32,4 +32,8 @@ easyModding {
     fabric()
     neoForge()
     forge()
+
+    dependencies {
+
+    }
 }

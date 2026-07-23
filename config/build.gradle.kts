@@ -11,7 +11,7 @@ repositories {
 }
 
 dependencies {
-	implementation(project(":core"))
+	api(project(":core"))
 
 	testImplementation(libs.kotlin.test)
 }

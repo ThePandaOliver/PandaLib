@@ -40,8 +40,7 @@ class ConfigManagerFileIntegrationTest {
 
     @Test
     fun `loading without a prior save writes the default value to disk`() {
-        val path = tempDir.resolve("config.json")
-        val store = FileConfigStore(path)
+        val store = FileConfigStore(tempDir.resolve("config.json"))
 
         val handle = ConfigManager.load(store, default = { IntegrationConfig() })
 

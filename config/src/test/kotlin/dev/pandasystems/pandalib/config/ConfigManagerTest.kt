@@ -1,6 +1,7 @@
 package dev.pandasystems.pandalib.config
 
 import dev.pandasystems.pandalib.config.codecs.JsonConfigCodec
+import dev.pandasystems.pandalib.config.store.InMemoryConfigStore
 import kotlinx.serialization.Serializable
 import kotlin.test.Test
 import kotlin.test.assertEquals

@@ -1,4 +1,6 @@
-package dev.pandasystems.pandalib.config
+package dev.pandasystems.pandalib.config.store
+
+import dev.pandasystems.pandalib.config.ConfigStore
 
 class InMemoryConfigStore(initialContent: ByteArray? = null) : ConfigStore {
     private var content: ByteArray? = initialContent

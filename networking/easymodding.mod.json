@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "metadata": {
+    "id": "pandalib-networking",
+    "version": "1.0",
+    "name": "PandaLib Networking",
+    "description": "The networking library for PandaLib",
+    "license": "GNU LGPLv3",
+    "authors": [
+      "The Panda Oliver"
+    ]
+  }
+}

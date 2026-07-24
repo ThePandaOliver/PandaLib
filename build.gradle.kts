@@ -2,7 +2,6 @@
 
 plugins {
 	alias(libs.plugins.kotlin.jvm) apply false
-	alias(libs.plugins.architectury.loom) apply false
 	alias(libs.plugins.shadow) apply false
 	alias(libs.plugins.easymodding) apply false
 

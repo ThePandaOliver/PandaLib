@@ -14,5 +14,6 @@ rootProject.name = "PandaLib"
 fun includeMod(name: String) = include(name, "$name:fabric", "$name:neoforge")
 include("core")
 include("config")
+include("networking")
 //includeMod("base")
 //includeMod("pandalib-kotlin")

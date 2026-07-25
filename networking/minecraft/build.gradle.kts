@@ -10,9 +10,7 @@ repositories {
 }
 
 dependencies {
-    api(project(":core"))
-
-    testImplementation(libs.kotlin.test)
+    api(project(":networking"))
 }
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(21)
@@ -22,11 +20,6 @@ kotlin {
 }
 
 easyModding {
-    fabric()
-    neoForge()
-    forge()
-
-    dependencies {
-
-    }
+    configPath = project(":networking").file("easymodding.mod.json")
+    minecraftVersion = "26.2"
 }

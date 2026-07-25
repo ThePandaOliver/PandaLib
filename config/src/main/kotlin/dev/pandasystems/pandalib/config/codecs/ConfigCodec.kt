@@ -1,4 +1,4 @@
-package dev.pandasystems.pandalib.config
+package dev.pandasystems.pandalib.config.codecs
 
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.SerializationStrategy
@@ -12,10 +12,4 @@ interface ConfigCodec {
         deserializer: DeserializationStrategy<T>,
         bytes: ByteArray,
     ): T
-}
-
-interface ConfigStore {
-    fun exists(): Boolean
-    fun read(): ByteArray
-    fun writeAtomically(content: ByteArray)
 }

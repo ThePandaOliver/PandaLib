@@ -11,6 +11,9 @@ repositories {
 
 dependencies {
     api(project(":networking:minecraft"))
+
+    implementation("net.fabricmc:fabric-loader:0.19.3")
+    implementation("net.fabricmc.fabric-api:fabric-api:0.155.2+26.2")
 }
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(21)

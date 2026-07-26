@@ -1,47 +1,126 @@
 package dev.pandasystems.pandalib.networking.minecraft.fabric
 
+import dev.pandasystems.pandalib.networking.NetworkPeer
 import dev.pandasystems.pandalib.networking.NetworkRegistrar
+import dev.pandasystems.pandalib.networking.PacketDirection
 import dev.pandasystems.pandalib.networking.PacketHandler
 import dev.pandasystems.pandalib.networking.PacketId
 import dev.pandasystems.pandalib.networking.PacketType
 import dev.pandasystems.pandalib.networking.minecraft.MinecraftNetworkPeer
 import dev.pandasystems.pandalib.networking.minecraft.MinecraftPacketContext
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload
+import net.fabricmc.api.EnvType
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
+import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.resources.Identifier
+import net.minecraft.server.MinecraftServer
+import net.minecraft.server.level.ServerPlayer
 
+/** Fabric implementation for Minecraft play-phase packets. */
 class FabricNetworkRegistrar : NetworkRegistrar {
     private val packetTypes = mutableMapOf<PacketId, PacketType<*>>()
 
-    override fun <T> register(
-        type: PacketType<T>,
-        handler: PacketHandler<T>
-    ) {
-        packetTypes[type.id] = type
-        ClientPlayNetworking.registerGlobalReceiver(type.id.toPayloadId(), PacketHandlerFabric(handler))
+    @Volatile
+    private var server: MinecraftServer? = null
+
+    init {
+        ServerLifecycleEvents.SERVER_STARTED.register { server = it }
+        ServerLifecycleEvents.SERVER_STOPPED.register { stoppedServer ->
+            if (server === stoppedServer) server = null
+        }
     }
 
-    private fun PacketId.toPayloadId() = CustomPacketPayload.Type<FabricPacketPayload>(Identifier.fromNamespaceAndPath("pandalib", this.value))
-
-    inner class PacketHandlerFabric<T>(
-        val handler: PacketHandler<T>
-    ) : ClientPlayNetworking.PlayPayloadHandler<FabricPacketPayload> {
-        override fun receive(
-            payload: FabricPacketPayload,
-            context: ClientPlayNetworking.Context
-        ) {
-            val id = payload.id
-            @Suppress("UNCHECKED_CAST")
-            val type = packetTypes.getValue(PacketId(id.path)) as PacketType<out T>
-            val codec = type.codec
-            val packet = codec.decode(payload.data)
-
-            val newContext = MinecraftPacketContext(
-                peer = MinecraftNetworkPeer(context.player()),
-                executor = { task -> context.client().execute(task) },
-                sender = FabricPacketSender(context.responseSender()),
-            )
-            handler.handle(newContext, packet)
+    override fun <T> register(type: PacketType<T>, handler: PacketHandler<T>) {
+        require(type.id !in packetTypes) {
+            "A packet is already registered with id '${type.id}'."
         }
+
+        val payloadType = FabricPacketPayload.type(type.id.toIdentifier())
+        val payloadCodec = FabricPacketPayload.codec(payloadType)
+        when (type.direction) {
+            PacketDirection.CLIENT_TO_SERVER -> {
+                PayloadTypeRegistry.serverboundPlay().register(payloadType, payloadCodec)
+                check(ServerPlayNetworking.registerGlobalReceiver(payloadType) { payload, context ->
+                    handler.handle(
+                        MinecraftPacketContext(
+                            peer = MinecraftNetworkPeer(context.player()),
+                            executor = { task -> context.server().execute(task) },
+                            sender = this,
+                            replyToServer = false,
+                        ),
+                        type.codec.decode(payload.data),
+                    )
+                }) {
+                    "Fabric already has a serverbound receiver for packet '${type.id}'."
+                }
+            }
+
+            PacketDirection.SERVER_TO_CLIENT -> {
+                PayloadTypeRegistry.clientboundPlay().register(payloadType, payloadCodec)
+                if (FabricLoader.getInstance().environmentType == EnvType.CLIENT) {
+                    check(FabricClientNetworking.registerReceiver(payloadType, type, handler, this)) {
+                        "Fabric already has a clientbound receiver for packet '${type.id}'."
+                    }
+                }
+            }
+        }
+        packetTypes[type.id] = type
+    }
+
+    override fun <T> sendToServer(type: PacketType<T>, value: T) {
+        checkRegistered(type, PacketDirection.CLIENT_TO_SERVER)
+        check(FabricLoader.getInstance().environmentType == EnvType.CLIENT) {
+            "sendToServer can only be called on a Fabric client."
+        }
+        FabricClientNetworking.sendToServer(payload(type, value))
+    }
+
+    override fun <T> sendToPeer(peer: NetworkPeer, type: PacketType<T>, value: T) {
+        checkRegistered(type, PacketDirection.SERVER_TO_CLIENT)
+        val player = (peer as? MinecraftNetworkPeer)?.player as? ServerPlayer
+            ?: throw IllegalArgumentException("sendToPeer requires a server-side MinecraftNetworkPeer.")
+        ServerPlayNetworking.send(player, payload(type, value))
+    }
+
+    override fun <T> broadcast(
+        type: PacketType<T>,
+        value: T,
+        filter: (NetworkPeer) -> Boolean,
+    ) {
+        checkRegistered(type, PacketDirection.SERVER_TO_CLIENT)
+        val currentServer = checkNotNull(server) {
+            "broadcast can only be called while a Minecraft server is running."
+        }
+        currentServer.playerList.players.forEach { player ->
+            val peer = MinecraftNetworkPeer(player)
+            if (filter(peer)) ServerPlayNetworking.send(player, payload(type, value))
+        }
+    }
+
+    private fun <T> checkRegistered(type: PacketType<T>, expectedDirection: PacketDirection) {
+        require(type.direction == expectedDirection) {
+            "Packet '${type.id}' has direction ${type.direction}; expected $expectedDirection."
+        }
+        check(packetTypes[type.id] === type) {
+            "Packet '${type.id}' must be registered with this FabricNetworkRegistrar before it can be sent."
+        }
+    }
+
+    private fun <T> payload(type: PacketType<T>, value: T): FabricPacketPayload =
+        FabricPacketPayload(FabricPacketPayload.type(type.id.toIdentifier()), type.codec.encode(value))
+}
+
+internal fun PacketId.toIdentifier(): Identifier {
+    require(':' in value) {
+        "Packet id '$value' must be namespaced, for example 'examplemod:sync'."
+    }
+    return try {
+        Identifier.parse(value)
+    } catch (exception: IllegalArgumentException) {
+        throw IllegalArgumentException(
+            "Packet id '$value' is not a valid Minecraft identifier. Use a namespaced id such as 'examplemod:sync'.",
+            exception,
+        )
     }
 }

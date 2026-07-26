@@ -11,6 +11,8 @@ repositories {
 
 dependencies {
     api(project(":core"))
+    api(libs.kotlinx.serialization)
+    api(libs.kotlinx.serialization.cbor)
 
     testImplementation(libs.kotlin.test)
 }

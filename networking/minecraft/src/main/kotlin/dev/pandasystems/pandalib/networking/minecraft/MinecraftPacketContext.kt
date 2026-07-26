@@ -9,9 +9,11 @@ import dev.pandasystems.pandalib.networking.PacketType
 class MinecraftPacketContext(
     override val peer: NetworkPeer,
     override val executor: NetworkExecutor,
-    private val sender: PacketSender
+    private val sender: PacketSender,
+    private val replyToServer: Boolean,
 ) : PacketContext {
     override fun <T> reply(packet: PacketType<T>, value: T) {
-        sender.sendToPeer(peer, packet, value)
+        if (replyToServer) sender.sendToServer(packet, value)
+        else sender.sendToPeer(peer, packet, value)
     }
 }

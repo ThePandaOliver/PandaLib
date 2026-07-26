@@ -1,6 +1,5 @@
 package dev.pandasystems.pandalib.networking.codecs
 
-import dev.pandasystems.pandalib.networking.PacketCodec
 import kotlinx.serialization.BinaryFormat
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer

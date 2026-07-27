@@ -1,6 +1,7 @@
 package dev.pandasystems.pandalib.networking.minecraft.fabric
 
 import dev.pandasystems.pandalib.networking.PacketHandler
+import dev.pandasystems.pandalib.networking.PacketSender
 import dev.pandasystems.pandalib.networking.PacketType
 import dev.pandasystems.pandalib.networking.minecraft.MinecraftNetworkPeer
 import dev.pandasystems.pandalib.networking.minecraft.MinecraftPacketContext
@@ -16,7 +17,7 @@ internal object FabricClientNetworking {
         payloadType: CustomPacketPayload.Type<FabricPacketPayload>,
         type: PacketType<T>,
         handler: PacketHandler<T>,
-        sender: FabricNetworkRegistrar,
+        sender: PacketSender,
     ): Boolean =
         ClientPlayNetworking.registerGlobalReceiver(payloadType) { payload, context ->
             handler.handle(

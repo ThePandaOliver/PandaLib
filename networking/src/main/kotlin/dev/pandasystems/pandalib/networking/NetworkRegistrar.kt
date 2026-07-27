@@ -1,7 +1,6 @@
 package dev.pandasystems.pandalib.networking
 
-/** Registers packet handlers and sends registered packets. */
-interface NetworkRegistrar : PacketSender {
+interface NetworkRegistrar {
     fun <T> register(
         type: PacketType<T>,
         handler: PacketHandler<T>,

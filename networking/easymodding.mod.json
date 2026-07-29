@@ -9,5 +9,12 @@
     "authors": [
       "The Panda Oliver"
     ]
+  },
+  "fabric": {
+    "entrypoints": {
+      "main": [
+        "dev.pandasystems.pandalib.networking.minecraft.fabric.FabricInit"
+      ]
+    }
   }
 }

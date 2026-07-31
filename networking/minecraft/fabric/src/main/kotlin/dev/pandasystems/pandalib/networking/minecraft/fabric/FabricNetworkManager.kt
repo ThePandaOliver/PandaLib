@@ -17,6 +17,8 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
 import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.resources.Identifier
 import net.minecraft.server.MinecraftServer
+import net.minecraft.server.level.ServerPlayer
+import java.util.UUID
 import kotlin.collections.set
 
 class FabricNetworkManager : NetworkSource {
@@ -40,24 +42,47 @@ class FabricNetworkManager : NetworkSource {
     }
 
     override fun <T> sendToServer(type: PacketType<T>, value: T) {
-        TODO("Not yet implemented")
+        checkRegistered(type, PacketDirection.CLIENT_TO_SERVER)
+        check(FabricLoader.getInstance().environmentType == EnvType.CLIENT) {
+            "sendToServer can only be called on a Fabric client."
+        }
+        ClientPlayNetworking.send(payload(type, value))
     }
 
-    override fun <T> sendToPeer(
-        peer: NetworkPeer,
-        type: PacketType<T>,
-        value: T
-    ) {
-        TODO("Not yet implemented")
+    override fun <T> sendToPeer(peer: NetworkPeer, type: PacketType<T>, value: T) {
+        checkRegistered(type, PacketDirection.SERVER_TO_CLIENT)
+
+        val player = server?.playerList?.playersByUUID?.get(UUID.fromString(peer.id))
+            ?: throw IllegalArgumentException("sendToPeer requires a server-side MinecraftNetworkPeer.")
+        ServerPlayNetworking.send(player, payload(type, value))
     }
 
     override fun <T> broadcast(
         type: PacketType<T>,
         value: T,
-        filter: (NetworkPeer) -> Boolean
+        filter: (NetworkPeer) -> Boolean,
     ) {
-        TODO("Not yet implemented")
+        checkRegistered(type, PacketDirection.SERVER_TO_CLIENT)
+        val currentServer = checkNotNull(server) {
+            "broadcast can only be called while a Minecraft server is running."
+        }
+        currentServer.playerList.players.forEach { player ->
+            val peer = MinecraftNetworkPeer(player)
+            if (filter(peer)) ServerPlayNetworking.send(player, payload(type, value))
+        }
     }
+
+    private fun <T> checkRegistered(type: PacketType<T>, expectedDirection: PacketDirection) {
+        require(type.direction == expectedDirection) {
+            "Packet '${type.id}' has direction ${type.direction}; expected $expectedDirection."
+        }
+        check(packetTypes[type.id] === type) {
+            "Packet '${type.id}' must be registered with this FabricNetworkRegistrar before it can be sent."
+        }
+    }
+
+    private fun <T> payload(type: PacketType<T>, value: T): FabricPacketPayload =
+        FabricPacketPayload(FabricPacketPayload.type(type.id.toIdentifier()), type.codec.encode(value))
 
     override fun <T> register(
         type: PacketType<T>,

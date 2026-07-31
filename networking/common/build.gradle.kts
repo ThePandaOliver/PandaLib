@@ -10,10 +10,9 @@ repositories {
 }
 
 dependencies {
-    api(project(":networking:minecraft"))
-
-    implementation("net.fabricmc:fabric-loader:0.19.3")
-    implementation("net.fabricmc.fabric-api:fabric-api:0.155.2+26.2")
+    api(project(":core"))
+    api(libs.kotlinx.serialization)
+    api(libs.kotlinx.serialization.cbor)
 }
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(21)
@@ -25,11 +24,4 @@ kotlin {
 easyModding {
     configPath = project(":networking").file("easymodding.mod.json")
     minecraftVersion = "26.2"
-
-    fabric()
-
-    modDependencies {
-        modImplementation("net.fabricmc:fabric-loader:0.19.3")
-        modImplementation("net.fabricmc.fabric-api:fabric-api:0.155.2+26.2")
-    }
 }

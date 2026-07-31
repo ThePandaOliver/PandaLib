@@ -6,7 +6,7 @@ import dev.pandasystems.pandalib.networking.PacketDirection
 import dev.pandasystems.pandalib.networking.PacketHandler
 import dev.pandasystems.pandalib.networking.PacketId
 import dev.pandasystems.pandalib.networking.PacketType
-import dev.pandasystems.pandalib.networking.minecraft.MinecraftNetworkPeer
+import dev.pandasystems.pandalib.networking.PlayerNetworkPeer
 import dev.pandasystems.pandalib.networking.minecraft.MinecraftPacketContext
 import net.fabricmc.api.EnvType
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
@@ -17,7 +17,6 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
 import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.resources.Identifier
 import net.minecraft.server.MinecraftServer
-import net.minecraft.server.level.ServerPlayer
 import java.util.UUID
 import kotlin.collections.set
 
@@ -31,8 +30,8 @@ class FabricNetworkManager : NetworkSource {
 
     init {
         // Create and Delete the network peer representing the player
-        ServerPlayerEvents.JOIN.register { peers.add(MinecraftNetworkPeer(it)) }
-        ServerPlayerEvents.LEAVE.register { player -> peers.removeIf { player.stringUUID == it.id } }
+        ServerPlayerEvents.JOIN.register { peers.add(PlayerNetworkPeer(it)) }
+        ServerPlayerEvents.LEAVE.register { player -> peers.removeIf { player.uuid == it.id } }
 
         // Get and lose the server reference
         ServerLifecycleEvents.SERVER_STARTED.register { server = it }
@@ -52,7 +51,7 @@ class FabricNetworkManager : NetworkSource {
     override fun <T> sendToPeer(peer: NetworkPeer, type: PacketType<T>, value: T) {
         checkRegistered(type, PacketDirection.SERVER_TO_CLIENT)
 
-        val player = server?.playerList?.playersByUUID?.get(UUID.fromString(peer.id))
+        val player = server?.playerList?.playersByUUID?.get(peer.id)
             ?: throw IllegalArgumentException("sendToPeer requires a server-side MinecraftNetworkPeer.")
         ServerPlayNetworking.send(player, payload(type, value))
     }
@@ -67,7 +66,7 @@ class FabricNetworkManager : NetworkSource {
             "broadcast can only be called while a Minecraft server is running."
         }
         currentServer.playerList.players.forEach { player ->
-            val peer = MinecraftNetworkPeer(player)
+            val peer = PlayerNetworkPeer(player)
             if (filter(peer)) ServerPlayNetworking.send(player, payload(type, value))
         }
     }
@@ -100,7 +99,7 @@ class FabricNetworkManager : NetworkSource {
                 check(ServerPlayNetworking.registerGlobalReceiver(payloadType) { payload, context ->
                     handler.handle(
                         MinecraftPacketContext(
-                            peer = MinecraftNetworkPeer(context.player()),
+                            peer = PlayerNetworkPeer(context.player()),
                             executor = { task -> context.server().execute(task) },
                             sender = this,
                             replyToServer = false,
@@ -118,7 +117,7 @@ class FabricNetworkManager : NetworkSource {
                     check(ClientPlayNetworking.registerGlobalReceiver(payloadType) { payload, context ->
                         handler.handle(
                             MinecraftPacketContext(
-                                peer = MinecraftNetworkPeer(context.player()),
+                                peer = PlayerNetworkPeer(context.player()),
                                 executor = { task -> context.client().execute(task) },
                                 sender = this,
                                 replyToServer = true,

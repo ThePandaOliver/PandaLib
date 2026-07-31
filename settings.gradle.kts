@@ -11,9 +11,9 @@ pluginManagement {
 
 rootProject.name = "PandaLib"
 
-fun includeMod(name: String) = include(name, "$name:fabric", "$name:neoforge")
+fun includeMod(name: String) = include("$name:common", "$name:fabric")
 include("core")
 include("config")
-include("networking", "networking:minecraft", "networking:minecraft:fabric")
+includeMod("networking")
 //includeMod("base")
 //includeMod("pandalib-kotlin")

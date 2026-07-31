@@ -11,8 +11,8 @@
             <option value="$PROJECT_DIR$/config" />
             <option value="$PROJECT_DIR$/core" />
             <option value="$PROJECT_DIR$/networking" />
-            <option value="$PROJECT_DIR$/networking/minecraft" />
-            <option value="$PROJECT_DIR$/networking/minecraft/fabric" />
+            <option value="$PROJECT_DIR$/networking/common" />
+            <option value="$PROJECT_DIR$/networking/fabric" />
           </set>
         </option>
         <option name="resolveExternalAnnotations" value="true" />

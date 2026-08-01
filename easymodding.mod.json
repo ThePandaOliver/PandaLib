@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "metadata": {
+    "id": "pandalib",
+    "version": "1.0",
+    "name": "PandaLib",
+    "license": "GNU LGPLv3",
+    "authors": [
+      "The Panda Oliver"
+    ]
+  }
+}

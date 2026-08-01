@@ -11,9 +11,5 @@ pluginManagement {
 
 rootProject.name = "PandaLib"
 
-fun includeMod(name: String) = include("$name:common", "$name:fabric")
-include("core")
-include("config")
-includeMod("networking")
-//includeMod("base")
-//includeMod("pandalib-kotlin")
+include("common")
+include("fabric")

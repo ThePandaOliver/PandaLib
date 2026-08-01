@@ -8,11 +8,8 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/config" />
-            <option value="$PROJECT_DIR$/core" />
-            <option value="$PROJECT_DIR$/networking" />
-            <option value="$PROJECT_DIR$/networking/common" />
-            <option value="$PROJECT_DIR$/networking/fabric" />
+            <option value="$PROJECT_DIR$/common" />
+            <option value="$PROJECT_DIR$/fabric" />
           </set>
         </option>
         <option name="resolveExternalAnnotations" value="true" />

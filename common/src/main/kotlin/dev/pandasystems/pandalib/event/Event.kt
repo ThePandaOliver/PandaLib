@@ -1,11 +1,10 @@
 package dev.pandasystems.pandalib.event
 
-import java.lang.reflect.Proxy
 import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.atomic.AtomicBoolean
 
 interface Event<T> {
-	val invoker: T
+	val invoke: T
 
 	fun subscribe(listener: T): Subscription
 }
@@ -26,7 +25,7 @@ fun <T> event(
 	val listeners = CopyOnWriteArrayList<T>()
 
 	return object : Event<T> {
-		override val invoker: T = createInvoker(listeners)
+		override val invoke: T = createInvoker(listeners)
 
 		override fun subscribe(listener: T): Subscription {
 			listeners += listener

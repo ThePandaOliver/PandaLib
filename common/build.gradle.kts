@@ -30,10 +30,6 @@ kotlin {
 }
 
 easyModding {
-    fabric()
-    neoForge()
-    forge()
-
     configPath = rootProject.file("easymodding.mod.json")
     minecraftVersion = "26.2"
 }

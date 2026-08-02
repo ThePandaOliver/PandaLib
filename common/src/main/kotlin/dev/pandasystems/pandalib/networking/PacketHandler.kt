@@ -12,6 +12,19 @@ interface PacketContext {
     fun <T> reply(packet: PacketType<T>, value: T)
 }
 
+class PacketContextImpl(
+    override val peer: NetworkPeer,
+    override val executor: NetworkExecutor,
+    private val sender: PacketSender,
+    private val replyToServer: Boolean,
+) : PacketContext {
+    override fun <T> reply(packet: PacketType<T>, value: T) {
+        if (replyToServer) sender.sendToServer(packet, value)
+        else sender.sendToPeer(peer, packet, value)
+    }
+}
+
+
 fun interface PacketHandler<T> {
     fun handle(context: PacketContext, packet: T)
 }

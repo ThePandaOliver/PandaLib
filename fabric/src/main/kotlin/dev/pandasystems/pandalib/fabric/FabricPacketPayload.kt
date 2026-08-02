@@ -1,4 +1,4 @@
-package dev.pandasystems.pandalib.networking.minecraft.fabric
+package dev.pandasystems.pandalib.fabric
 
 import net.minecraft.network.RegistryFriendlyByteBuf
 import net.minecraft.network.codec.StreamCodec

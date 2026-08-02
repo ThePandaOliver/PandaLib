@@ -1,11 +1,11 @@
-package dev.pandasystems.pandalib.networking.minecraft.fabric
+package dev.pandasystems.pandalib.fabric
 
-import dev.pandasystems.pandalib.networking.minecraft.PandaLibNetworkMain
+import dev.pandasystems.pandalib.core.PandaLibMain
 import net.fabricmc.api.ModInitializer
 
 private class FabricInit : ModInitializer {
     override fun onInitialize() {
-        PandaLibNetworkMain(
+        PandaLibMain(
             FabricNetworkManager()
         )
     }

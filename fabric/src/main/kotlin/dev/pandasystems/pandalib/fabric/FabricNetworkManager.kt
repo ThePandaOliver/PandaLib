@@ -1,13 +1,6 @@
-package dev.pandasystems.pandalib.networking.minecraft.fabric
+package dev.pandasystems.pandalib.fabric
 
-import dev.pandasystems.pandalib.networking.NetworkPeer
-import dev.pandasystems.pandalib.networking.NetworkSource
-import dev.pandasystems.pandalib.networking.PacketDirection
-import dev.pandasystems.pandalib.networking.PacketHandler
-import dev.pandasystems.pandalib.networking.PacketId
-import dev.pandasystems.pandalib.networking.PacketType
-import dev.pandasystems.pandalib.networking.PlayerNetworkPeer
-import dev.pandasystems.pandalib.networking.minecraft.MinecraftPacketContext
+import dev.pandasystems.pandalib.networking.*
 import net.fabricmc.api.EnvType
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents
@@ -17,7 +10,6 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
 import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.resources.Identifier
 import net.minecraft.server.MinecraftServer
-import kotlin.collections.set
 
 class FabricNetworkManager : NetworkSource {
     val peers = mutableSetOf<NetworkPeer>()
@@ -97,7 +89,7 @@ class FabricNetworkManager : NetworkSource {
                 PayloadTypeRegistry.serverboundPlay().register(payloadType, payloadCodec)
                 check(ServerPlayNetworking.registerGlobalReceiver(payloadType) { payload, context ->
                     handler.handle(
-                        MinecraftPacketContext(
+                        PacketContextImpl(
                             peer = PlayerNetworkPeer(context.player()),
                             executor = { task -> context.server().execute(task) },
                             sender = this,
@@ -115,7 +107,7 @@ class FabricNetworkManager : NetworkSource {
                 if (FabricLoader.getInstance().environmentType == EnvType.CLIENT) {
                     check(ClientPlayNetworking.registerGlobalReceiver(payloadType) { payload, context ->
                         handler.handle(
-                            MinecraftPacketContext(
+                            PacketContextImpl(
                                 peer = PlayerNetworkPeer(context.player()),
                                 executor = { task -> context.client().execute(task) },
                                 sender = this,

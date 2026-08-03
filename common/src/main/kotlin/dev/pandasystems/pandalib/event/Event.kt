@@ -41,121 +41,49 @@ fun <T> event(
 }
 
 fun event0() = event { listeners ->
-	{
-		for (listener in listeners) {
-			listener()
-		}
-	}
+	{ listeners.forEach { it() } }
 }
 
 fun <A> event1() = event<(A) -> Unit> { listeners ->
-	{ value ->
-		for (listener in listeners) {
-			listener(value)
-		}
-	}
+	{ a -> listeners.forEach { it(a) } }
 }
 
 fun <A, B> event2() = event<(A, B) -> Unit> { listeners ->
-	{ first, second ->
-		for (listener in listeners) {
-			listener(first, second)
-		}
-	}
+	{ a, b -> listeners.forEach { it(a, b) } }
 }
 
 fun <A, B, C> event3() = event<(A, B, C) -> Unit> { listeners ->
-	{ first, second, third ->
-		for (listener in listeners) {
-			listener(first, second, third)
-		}
-	}
+	{ a, b, c -> listeners.forEach { it(a, b, c) } }
 }
 
 fun <A, B, C, D> event4() = event<(A, B, C, D) -> Unit> { listeners ->
-	{ first, second, third, fourth ->
-		for (listener in listeners) {
-			listener(first, second, third, fourth)
-		}
-	}
+	{ a, b, c, d -> listeners.forEach { it(a, b, c, d) } }
 }
 
 fun <A, B, C, D, E> event5() = event<(A, B, C, D, E) -> Unit> { listeners ->
-	{ first, second, third, fourth, fifth ->
-		for (listener in listeners) {
-			listener(first, second, third, fourth, fifth)
-		}
-	}
+	{ a, b, c, d, e -> listeners.forEach { it(a, b, c, d, e) } }
 }
 
-fun eventCancelable0() = event<() -> Boolean> { listeners ->
-	{
-		for (listener in listeners) {
-			if (!listener()) {
-				return@event false
-			}
-		}
-
-		return@event true
-	}
+fun eventCancelable0() = event { listeners ->
+	{ listeners.map { it() }.all { it } }
 }
 
 fun <A> eventCancelable1() = event<(A) -> Boolean> { listeners ->
-	{ value ->
-		for (listener in listeners) {
-			if (!listener(value)) {
-				return@event false
-			}
-		}
-
-		return@event true
-	}
+	{ a -> listeners.map { it(a) }.all { it } }
 }
 
 fun <A, B> eventCancelable2() = event<(A, B) -> Boolean> { listeners ->
-	{ first, second ->
-		for (listener in listeners) {
-			if (!listener(first, second)) {
-				return@event false
-			}
-		}
-
-		return@event true
-	}
+	{ a, b -> listeners.map { it(a, b) }.all { it } }
 }
 
 fun <A, B, C> eventCancelable3() = event<(A, B, C) -> Boolean> { listeners ->
-	{ first, second, third ->
-		for (listener in listeners) {
-			if (!listener(first, second, third)) {
-				return@event false
-			}
-		}
-
-		return@event true
-	}
+	{ a, b, c -> listeners.map { it(a, b, c) }.all { it } }
 }
 
 fun <A, B, C, D> eventCancelable4() = event<(A, B, C, D) -> Boolean> { listeners ->
-	{ first, second, third, fourth ->
-		for (listener in listeners) {
-			if (!listener(first, second, third, fourth)) {
-				return@event false
-			}
-		}
-
-		return@event true
-	}
+	{ a, b, c, d -> listeners.map { it(a, b, c, d) }.all { it } }
 }
 
 fun <A, B, C, D, E> eventCancelable5() = event<(A, B, C, D, E) -> Boolean> { listeners ->
-	{ first, second, third, fourth, fifth ->
-		for (listener in listeners) {
-			if (!listener(first, second, third, fourth, fifth)) {
-				return@event false
-			}
-		}
-
-		return@event true
-	}
+	{ a, b, c, d, e -> listeners.map { it(a, b, c, d, e) }.all { it } }
 }

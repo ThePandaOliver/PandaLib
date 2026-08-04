@@ -1,6 +1,8 @@
 package dev.pandasystems.pandalib.core.player
 
 import dev.pandasystems.pandalib.core.GameLifecycle
+import net.minecraft.client.player.LocalPlayer
+import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.entity.player.Player
 import java.util.UUID
 
@@ -23,6 +25,9 @@ class ServerPlayerHandle(
     }
 )
 
+val ServerPlayer.handle: ServerPlayerHandle
+    get() = ServerPlayerHandle(uuid)
+
 class ClientPlayerHandle(
     uuid: UUID,
 ) : PlayerHandle(
@@ -32,3 +37,6 @@ class ClientPlayerHandle(
         level.getPlayerByUUID(uuid) ?: throw IllegalStateException("Player not found")
     }
 )
+
+val LocalPlayer.handle: ClientPlayerHandle
+    get() = ClientPlayerHandle(uuid)

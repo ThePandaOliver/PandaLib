@@ -3,9 +3,14 @@ package dev.pandasystems.pandalib.fabric
 import dev.pandasystems.pandalib.core.PandaLibMain
 import dev.pandasystems.pandalib.core.player.PlayerHandle
 import dev.pandasystems.pandalib.core.player.ServerPlayerHandle
+import dev.pandasystems.pandalib.core.player.handle
+import dev.pandasystems.pandalib.event.events.playerServerAfterRespawn
+import dev.pandasystems.pandalib.event.events.playerServerCopyFrom
 import dev.pandasystems.pandalib.event.events.serverStarted
 import dev.pandasystems.pandalib.event.events.playerServerJoin
 import dev.pandasystems.pandalib.event.events.playerServerLeave
+import dev.pandasystems.pandalib.event.events.serverAfterSave
+import dev.pandasystems.pandalib.event.events.serverBeforeSave
 import dev.pandasystems.pandalib.event.events.serverStarting
 import dev.pandasystems.pandalib.event.events.serverStopping
 import dev.pandasystems.pandalib.event.events.serverStopped
@@ -28,8 +33,12 @@ private class FabricInit : ModInitializer {
         ServerLifecycleEvents.SERVER_STARTED.register { server -> serverStarted.invoke(server) }
         ServerLifecycleEvents.SERVER_STOPPING.register { server -> serverStopping.invoke(server) }
         ServerLifecycleEvents.SERVER_STOPPED.register { server -> serverStopped.invoke(server) }
+        ServerLifecycleEvents.BEFORE_SAVE.register { server, flush, force -> serverBeforeSave.invoke(server, flush, force) }
+        ServerLifecycleEvents.AFTER_SAVE.register { server, flush, force -> serverAfterSave.invoke(server, flush, force) }
 
-        ServerPlayerEvents.JOIN.register { player -> playerServerJoin.invoke(ServerPlayerHandle(player.uuid)) }
-        ServerPlayerEvents.LEAVE.register { player -> playerServerLeave.invoke(ServerPlayerHandle(player.uuid)) }
+        ServerPlayerEvents.JOIN.register { player -> playerServerJoin.invoke(player.handle) }
+        ServerPlayerEvents.LEAVE.register { player -> playerServerLeave.invoke(player.handle) }
+        ServerPlayerEvents.AFTER_RESPAWN.register { oldPlayer, newPlayer, alive -> playerServerAfterRespawn.invoke(oldPlayer.handle, newPlayer.handle, alive) }
+        ServerPlayerEvents.COPY_FROM.register { oldPlayer, newPlayer, alive -> playerServerCopyFrom.invoke(oldPlayer.handle, newPlayer.handle, alive) }
     }
 }

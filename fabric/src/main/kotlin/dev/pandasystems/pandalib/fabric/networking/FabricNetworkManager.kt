@@ -1,5 +1,6 @@
-package dev.pandasystems.pandalib.fabric
+package dev.pandasystems.pandalib.fabric.networking
 
+import dev.pandasystems.pandalib.core.GameLifecycle
 import dev.pandasystems.pandalib.networking.*
 import net.fabricmc.api.EnvType
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
@@ -16,19 +17,12 @@ class FabricNetworkManager : NetworkSource {
 
     private val packetTypes = mutableMapOf<PacketId, PacketType<*>>()
 
-    @Volatile
-    private var server: MinecraftServer? = null
+    private val server: MinecraftServer? get() = GameLifecycle.serverInstance
 
     init {
         // Create and Delete the network peer representing the player
         ServerPlayerEvents.JOIN.register { peers.add(PlayerNetworkPeer(it)) }
         ServerPlayerEvents.LEAVE.register { player -> peers.removeIf { player.uuid == it.id } }
-
-        // Get and lose the server reference
-        ServerLifecycleEvents.SERVER_STARTED.register { server = it }
-        ServerLifecycleEvents.SERVER_STOPPED.register { stoppedServer ->
-            if (server === stoppedServer) server = null
-        }
     }
 
     override fun <T> sendToServer(type: PacketType<T>, value: T) {

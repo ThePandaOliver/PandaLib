@@ -1,8 +1,6 @@
 package dev.pandasystems.pandalib.fabric
 
 import dev.pandasystems.pandalib.core.PandaLibMain
-import dev.pandasystems.pandalib.core.player.PlayerHandle
-import dev.pandasystems.pandalib.core.player.ServerPlayerHandle
 import dev.pandasystems.pandalib.core.player.handle
 import dev.pandasystems.pandalib.event.events.playerServerAfterRespawn
 import dev.pandasystems.pandalib.event.events.playerServerCopyFrom
@@ -14,6 +12,7 @@ import dev.pandasystems.pandalib.event.events.serverBeforeSave
 import dev.pandasystems.pandalib.event.events.serverStarting
 import dev.pandasystems.pandalib.event.events.serverStopping
 import dev.pandasystems.pandalib.event.events.serverStopped
+import dev.pandasystems.pandalib.fabric.networking.FabricNetworkManager
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
@@ -21,7 +20,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
 private class FabricInit : ModInitializer {
     override fun onInitialize() {
         PandaLibMain(
-            FabricNetworkManager()
+	        FabricNetworkManager()
         )
 
         setupEvents()

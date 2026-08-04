@@ -15,24 +15,21 @@ The library is written in Kotlin, and some APIs might not be fully supported by 
 
 ### Current Features:
 
-- Multi-Loader Framework (WIP)
 - Config API
-	- Synchronization API
 	- Premade formats: JSON
-- Event/Listener API
-- Deferred registration API
 - Networking API
 	- Play phase support
-	- Configuration phase support
 - Embedded libraries
-	- [Universal Serializer](https://github.com/ThePandaOliver/universal-serializer)
 	- Embedded Kotlin libraries
-		- Kotlin Standard Library
-		- Reflect
-		- Coroutines
-		- Serialization
-		- IO
-		- DateTime
+		- Kotlin Standard Library v2.3.0
+		- Reflect v2.3.0
+		- Coroutines v1.10.2
+		- Serialization v1.9.0
+          - Json
+          - Cbor
+		- IO v0.8.2
+          - Bytestring
+		- DateTime v0.7.1
 
 ### Future Features:
 
@@ -41,6 +38,23 @@ The library is written in Kotlin, and some APIs might not be fully supported by 
 | Config Serializers (TOML, YAML, XML, Properties) | Multi-Loader Framework |
 | Config Menu API                                  |                        |
 | Wiki / Docs                                      |                        |
+
+---
+
+### Supported Versions
+
+| Support tier     | Game version | Updates                           | Release policy                                                                                                |
+|------------------|-------------:|-----------------------------------|---------------------------------------------------------------------------------------------------------------|
+| **Current**      |         26.2 | New features and bug fixes        | Updated whenever releases are ready. Builds may contain issues, which will be addressed in later updates.     |
+| **Stable (LTS)** |       1.21.1 | Bug fixes and stabilised features | Bug fixes are prioritised. New features are added only after they have been tested and stabilised in Current. |
+| **Maintenance**  |       1.20.1 | Bug fixes only                    | No new features. Updates are limited to important bug fixes and compatibility fixes.                          |
+
+Support moves from **Current** → **Stable** → **Maintenance** as newer game versions become established.
+
+- **Current** targets the latest Minecraft version.
+- **Stable** targets the most widely adopted older Minecraft version.
+- **Maintenance** targets the previously widely adopted Minecraft version.
+- Support is not tied to a fixed release schedule; updates are published when they are ready.
 
 ---
 

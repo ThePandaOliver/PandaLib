@@ -33,15 +33,16 @@ The library is written in Kotlin, and some APIs might not be fully supported by 
 
 ### Future Features:
 
-| Planned                                          | In development         |
-|--------------------------------------------------|------------------------|
-| Config Serializers (TOML, YAML, XML, Properties) | Multi-Loader Framework |
-| Config Menu API                                  |                        |
-| Wiki / Docs                                      |                        |
+- Config Serializers (TOML, YAML, XML, Properties)
+- Config Menu API
+- Class Handles and Wrappers (In development)
+- Networking Configuration phase support
+- Common Config Synchronization
+- Wiki / Docs
 
 ---
 
-### Supported Versions
+## Supported Versions
 
 | Support tier     | Game version | Updates                           | Release policy                                                                                                |
 |------------------|-------------:|-----------------------------------|---------------------------------------------------------------------------------------------------------------|

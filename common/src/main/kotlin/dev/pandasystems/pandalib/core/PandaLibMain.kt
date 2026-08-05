@@ -1,14 +1,18 @@
 package dev.pandasystems.pandalib.core
 
-import dev.pandasystems.pandalib.networking.NetworkSource
+import dev.pandasystems.pandalib.core.lifecycles.ClientLifecycle
+import dev.pandasystems.pandalib.core.lifecycles.ServerLifecycle
+import dev.pandasystems.pandalib.networking.NetworkManager
 
 
 class PandaLibMain(
-	val networkSource: NetworkSource,
+	val networkManager: NetworkManager,
 	val minecraftRuntime: MinecraftRuntime
 ) {
 	init {
 		install(this)
+		ClientLifecycle.initialize()
+		ServerLifecycle.initialize()
 	}
 
 	companion object {

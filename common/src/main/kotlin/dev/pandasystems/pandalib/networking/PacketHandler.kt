@@ -1,11 +1,13 @@
 package dev.pandasystems.pandalib.networking
 
+import dev.pandasystems.pandalib.core.handles.player.PlayerHandle
+
 interface PacketContext {
     /**
      * If server side: Represents the sender of the packet
      * If client side: Represents the receiver of the packet
      */
-    val peer: NetworkPeer
+    val peer: PlayerHandle
 
     val executor: NetworkExecutor
 
@@ -13,7 +15,7 @@ interface PacketContext {
 }
 
 class PacketContextImpl(
-    override val peer: NetworkPeer,
+    override val peer: PlayerHandle,
     override val executor: NetworkExecutor,
     private val sender: PacketSender,
     private val replyToServer: Boolean,

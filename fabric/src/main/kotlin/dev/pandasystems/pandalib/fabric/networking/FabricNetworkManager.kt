@@ -1,29 +1,22 @@
 package dev.pandasystems.pandalib.fabric.networking
 
-import dev.pandasystems.pandalib.core.GameLifecycle
+import dev.pandasystems.pandalib.core.handles.player.PlayerHandle
+import dev.pandasystems.pandalib.core.handles.player.handle
+import dev.pandasystems.pandalib.core.lifecycles.ServerLifecycle
 import dev.pandasystems.pandalib.networking.*
 import net.fabricmc.api.EnvType
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
-import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
 import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.resources.Identifier
 import net.minecraft.server.MinecraftServer
+import net.minecraft.server.level.ServerPlayer
 
-class FabricNetworkManager : NetworkSource {
-    val peers = mutableSetOf<NetworkPeer>()
-
+class FabricNetworkManager : NetworkManager {
     private val packetTypes = mutableMapOf<PacketId, PacketType<*>>()
 
-    private val server: MinecraftServer? get() = GameLifecycle.serverInstance
-
-    init {
-        // Create and Delete the network peer representing the player
-        ServerPlayerEvents.JOIN.register { peers.add(PlayerNetworkPeer(it)) }
-        ServerPlayerEvents.LEAVE.register { player -> peers.removeIf { player.uuid == it.id } }
-    }
+    private val server: MinecraftServer? get() = ServerLifecycle.serverInstance
 
     override fun <T> sendToServer(type: PacketType<T>, value: T) {
         checkRegistered(type, PacketDirection.CLIENT_TO_SERVER)
@@ -33,25 +26,22 @@ class FabricNetworkManager : NetworkSource {
         ClientPlayNetworking.send(payload(type, value))
     }
 
-    override fun <T> sendToPeer(peer: NetworkPeer, type: PacketType<T>, value: T) {
+    override fun <T> sendToPeer(peer: PlayerHandle, type: PacketType<T>, value: T) {
         checkRegistered(type, PacketDirection.SERVER_TO_CLIENT)
-
-        val player = server?.playerList?.playersByUUID?.get(peer.id)
-            ?: throw IllegalArgumentException("sendToPeer requires a server-side MinecraftNetworkPeer.")
-        ServerPlayNetworking.send(player, payload(type, value))
+        ServerPlayNetworking.send(peer.resolve as ServerPlayer, payload(type, value))
     }
 
     override fun <T> broadcast(
         type: PacketType<T>,
         value: T,
-        filter: (NetworkPeer) -> Boolean,
+        filter: (PlayerHandle) -> Boolean,
     ) {
         checkRegistered(type, PacketDirection.SERVER_TO_CLIENT)
         val currentServer = checkNotNull(server) {
             "broadcast can only be called while a Minecraft server is running."
         }
         currentServer.playerList.players.forEach { player ->
-            val peer = PlayerNetworkPeer(player)
+            val peer = player.handle()
             if (filter(peer)) ServerPlayNetworking.send(player, payload(type, value))
         }
     }
@@ -84,7 +74,7 @@ class FabricNetworkManager : NetworkSource {
                 check(ServerPlayNetworking.registerGlobalReceiver(payloadType) { payload, context ->
                     handler.handle(
                         PacketContextImpl(
-                            peer = PlayerNetworkPeer(context.player()),
+                            peer = context.player().handle(),
                             executor = { task -> context.server().execute(task) },
                             sender = this,
                             replyToServer = false,
@@ -102,7 +92,7 @@ class FabricNetworkManager : NetworkSource {
                     check(ClientPlayNetworking.registerGlobalReceiver(payloadType) { payload, context ->
                         handler.handle(
                             PacketContextImpl(
-                                peer = PlayerNetworkPeer(context.player()),
+                                peer = context.player().handle(),
                                 executor = { task -> context.client().execute(task) },
                                 sender = this,
                                 replyToServer = true,

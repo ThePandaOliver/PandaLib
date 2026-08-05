@@ -8,6 +8,8 @@ object ServerLifecycle {
 	var serverInstance: MinecraftServer? = null
 		internal set
 
+	fun initialize() = Unit
+
 	init {
 		serverStarted.subscribe { startedServer ->
 			serverInstance = startedServer

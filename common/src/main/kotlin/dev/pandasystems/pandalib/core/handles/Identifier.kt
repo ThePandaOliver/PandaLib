@@ -1,4 +1,4 @@
-package dev.pandasystems.pandalib.core.utilities
+package dev.pandasystems.pandalib.core.handles
 
 import net.minecraft.resources.Identifier as MCIdentifier
 

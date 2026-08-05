@@ -14,7 +14,7 @@ class PlayerHandle(
 	val uuid: UUID
 ) {
 	val isTracked: Boolean
-		get() = resolve(uuid) != null
+		get() = resolve() != null
 
 	val isOnline: Boolean
 		get() = if (minecraftRuntime.environment == MinecraftRuntimeEnvironment.SERVER) {
@@ -23,7 +23,7 @@ class PlayerHandle(
 			ClientLifecycle.clientInstance.connection?.getPlayerInfo(uuid) != null
 		}
 
-	fun resolve(uuid: UUID): Player? = if (minecraftRuntime.environment == MinecraftRuntimeEnvironment.SERVER) {
+	fun resolve(): Player? = if (minecraftRuntime.environment == MinecraftRuntimeEnvironment.SERVER) {
 		val server = ServerLifecycle.serverInstance
 		server?.playerList?.getPlayer(uuid)
 	} else {

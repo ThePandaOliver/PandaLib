@@ -28,7 +28,7 @@ class FabricNetworkManager : NetworkManager {
 
     override fun <T> sendToPeer(peer: PlayerHandle, type: PacketType<T>, value: T) {
         checkRegistered(type, PacketDirection.SERVER_TO_CLIENT)
-        ServerPlayNetworking.send(peer.resolve as ServerPlayer, payload(type, value))
+        ServerPlayNetworking.send(peer.resolve() as ServerPlayer, payload(type, value))
     }
 
     override fun <T> broadcast(

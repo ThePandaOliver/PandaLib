@@ -1,7 +1,7 @@
 package dev.pandasystems.pandalib.fabric
 
 import dev.pandasystems.pandalib.core.PandaLibMain
-import dev.pandasystems.pandalib.core.player.handle
+import dev.pandasystems.pandalib.core.handles.player.handle
 import dev.pandasystems.pandalib.event.events.playerServerAfterRespawn
 import dev.pandasystems.pandalib.event.events.playerServerCopyFrom
 import dev.pandasystems.pandalib.event.events.serverStarted
@@ -20,7 +20,8 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
 private class FabricInit : ModInitializer {
     override fun onInitialize() {
         PandaLibMain(
-	        FabricNetworkManager()
+	        FabricNetworkManager(),
+            FabricRuntime()
         )
 
         setupEvents()
@@ -35,9 +36,9 @@ private class FabricInit : ModInitializer {
         ServerLifecycleEvents.BEFORE_SAVE.register { server, flush, force -> serverBeforeSave.invoke(server, flush, force) }
         ServerLifecycleEvents.AFTER_SAVE.register { server, flush, force -> serverAfterSave.invoke(server, flush, force) }
 
-        ServerPlayerEvents.JOIN.register { player -> playerServerJoin.invoke(player.handle) }
-        ServerPlayerEvents.LEAVE.register { player -> playerServerLeave.invoke(player.handle) }
-        ServerPlayerEvents.AFTER_RESPAWN.register { oldPlayer, newPlayer, alive -> playerServerAfterRespawn.invoke(oldPlayer.handle, newPlayer.handle, alive) }
-        ServerPlayerEvents.COPY_FROM.register { oldPlayer, newPlayer, alive -> playerServerCopyFrom.invoke(oldPlayer.handle, newPlayer.handle, alive) }
+        ServerPlayerEvents.JOIN.register { player -> playerServerJoin.invoke(player.handle()) }
+        ServerPlayerEvents.LEAVE.register { player -> playerServerLeave.invoke(player.handle()) }
+        ServerPlayerEvents.AFTER_RESPAWN.register { oldPlayer, newPlayer, alive -> playerServerAfterRespawn.invoke(oldPlayer.handle(), newPlayer.handle(), alive) }
+        ServerPlayerEvents.COPY_FROM.register { oldPlayer, newPlayer, alive -> playerServerCopyFrom.invoke(oldPlayer.handle(), newPlayer.handle(), alive) }
     }
 }

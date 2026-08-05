@@ -2,8 +2,10 @@ package dev.pandasystems.pandalib.core
 
 import dev.pandasystems.pandalib.networking.NetworkSource
 
+
 class PandaLibMain(
-	val networkManager: NetworkSource
+	val networkSource: NetworkSource,
+	val minecraftRuntime: MinecraftRuntime
 ) {
 	init {
 		install(this)

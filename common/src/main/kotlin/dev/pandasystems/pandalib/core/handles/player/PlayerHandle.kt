@@ -11,26 +11,25 @@ import java.util.UUID
  * Represents a reference to a player.
  */
 class PlayerHandle(
-    val uuid: UUID,
-    val resolve: (uuid: UUID) -> Player? = {
-        if (minecraftRuntime.environment == MinecraftRuntimeEnvironment.SERVER) {
-            val server = ServerLifecycle.serverInstance
-            server?.playerList?.getPlayer(uuid)
-        } else {
-            val level = ClientLifecycle.clientInstance.level
-            level?.getPlayerByUUID(uuid)
-        }
-    }
+	val uuid: UUID
 ) {
-    val isTracked: Boolean
-        get() = resolve(uuid) != null
+	val isTracked: Boolean
+		get() = resolve(uuid) != null
 
-    val isOnline: Boolean
-        get() = if (minecraftRuntime.environment == MinecraftRuntimeEnvironment.SERVER) {
-            ServerLifecycle.serverInstance?.playerList?.getPlayer(uuid) != null
-        } else {
-            ClientLifecycle.clientInstance.connection?.getPlayerInfo(uuid) != null
-        }
+	val isOnline: Boolean
+		get() = if (minecraftRuntime.environment == MinecraftRuntimeEnvironment.SERVER) {
+			ServerLifecycle.serverInstance?.playerList?.getPlayer(uuid) != null
+		} else {
+			ClientLifecycle.clientInstance.connection?.getPlayerInfo(uuid) != null
+		}
+
+	fun resolve(uuid: UUID): Player? = if (minecraftRuntime.environment == MinecraftRuntimeEnvironment.SERVER) {
+		val server = ServerLifecycle.serverInstance
+		server?.playerList?.getPlayer(uuid)
+	} else {
+		val level = ClientLifecycle.clientInstance.level
+		level?.getPlayerByUUID(uuid)
+	}
 }
 
 fun Player.handle(): PlayerHandle = PlayerHandle(uuid)

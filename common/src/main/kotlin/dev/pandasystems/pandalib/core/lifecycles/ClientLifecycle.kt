@@ -5,5 +5,5 @@ import net.minecraft.client.Minecraft as MinecraftClient
 object ClientLifecycle {
 	val clientInstance: MinecraftClient get() = MinecraftClient.getInstance()
 
-	fun initialize() = Unit
+	internal fun initialize() = Unit
 }

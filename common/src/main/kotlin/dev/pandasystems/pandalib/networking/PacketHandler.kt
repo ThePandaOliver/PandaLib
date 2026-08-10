@@ -5,6 +5,7 @@ import dev.pandasystems.pandalib.core.handles.player.PlayerHandle
 interface PacketContext {
     /**
      * If server side: Represents the sender of the packet
+     *
      * If client side: Represents the receiver of the packet
      */
     val peer: PlayerHandle
@@ -25,7 +26,6 @@ class PacketContextImpl(
         else sender.sendToPeer(peer, packet, value)
     }
 }
-
 
 fun interface PacketHandler<T> {
     fun handle(context: PacketContext, packet: T)

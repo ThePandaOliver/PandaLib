@@ -2,20 +2,12 @@ package dev.pandasystems.pandalib.fabric
 
 import dev.pandasystems.pandalib.core.PandaLibMain
 import dev.pandasystems.pandalib.core.handles.player.handle
-import dev.pandasystems.pandalib.event.events.playerServerAfterRespawn
-import dev.pandasystems.pandalib.event.events.playerServerCopyFrom
-import dev.pandasystems.pandalib.event.events.serverStarted
-import dev.pandasystems.pandalib.event.events.playerServerJoin
-import dev.pandasystems.pandalib.event.events.playerServerLeave
-import dev.pandasystems.pandalib.event.events.serverAfterSave
-import dev.pandasystems.pandalib.event.events.serverBeforeSave
-import dev.pandasystems.pandalib.event.events.serverStarting
-import dev.pandasystems.pandalib.event.events.serverStopping
-import dev.pandasystems.pandalib.event.events.serverStopped
+import dev.pandasystems.pandalib.event.events.*
 import dev.pandasystems.pandalib.fabric.networking.FabricNetworkManager
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
+import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents
 
 private class FabricInit : ModInitializer {
     override fun onInitialize() {
@@ -40,5 +32,9 @@ private class FabricInit : ModInitializer {
         ServerPlayerEvents.LEAVE.register { player -> playerServerLeave.invoke(player.handle()) }
         ServerPlayerEvents.AFTER_RESPAWN.register { oldPlayer, newPlayer, alive -> playerServerAfterRespawn.invoke(oldPlayer.handle(), newPlayer.handle(), alive) }
         ServerPlayerEvents.COPY_FROM.register { oldPlayer, newPlayer, alive -> playerServerCopyFrom.invoke(oldPlayer.handle(), newPlayer.handle(), alive) }
+
+        PlayerBlockBreakEvents.BEFORE.register { level, player, pos, state, _ -> playerBlockBreakBefore.invoke(level, player.handle(), pos, state) }
+        PlayerBlockBreakEvents.AFTER.register { level, player, pos, state, _ -> playerBlockBreakAfter.invoke(level, player.handle(), pos, state) }
+        PlayerBlockBreakEvents.CANCELED.register { level, player, pos, state, _ -> playerBlockBreakCanceled.invoke(level, player.handle(), pos, state) }
     }
 }

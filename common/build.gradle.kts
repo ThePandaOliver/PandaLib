@@ -3,6 +3,11 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.easymodding)
     alias(libs.plugins.kotlin.serialization)
+    `maven-publish`
+}
+
+base {
+    archivesName.set("pandalib")
 }
 
 repositories {
@@ -32,4 +37,20 @@ kotlin {
 easyModding {
     configPath = rootProject.file("easymodding.mod.json")
     minecraftVersion = "26.2"
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            from(components["java"])
+            artifactId = "pandalib-common"
+        }
+    }
+
+    repositories {
+        maven {
+            name = "LocalRepo"
+            url = uri(providers.gradleProperty("LocalRepo"))
+        }
+    }
 }

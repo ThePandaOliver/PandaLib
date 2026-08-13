@@ -1,0 +1,15 @@
+{
+	"required": true,
+	"package": "dev.pandasystems.pandalib.mixin",
+	"compatibilityLevel": "JAVA_25",
+	"minVersion": "0.8",
+	"client": [
+	],
+	"mixins": [
+		"dev.pandasystems.pandalib.mixin.MinecraftServerMixin",
+		"dev.pandasystems.pandalib.mixin.PlayerListMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}

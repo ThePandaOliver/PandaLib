@@ -3,11 +3,13 @@ package dev.pandasystems.pandalib.core
 import dev.pandasystems.pandalib.core.lifecycles.ClientLifecycle
 import dev.pandasystems.pandalib.core.lifecycles.ServerLifecycle
 import dev.pandasystems.pandalib.networking.NetworkManager
+import dev.pandasystems.pandalib.registry.IRegistries
 
 
 class PandaLibMain(
 	val networkManager: NetworkManager,
-	val minecraftRuntime: MinecraftRuntime
+	val minecraftRuntime: MinecraftRuntime,
+	val registries: IRegistries
 ) {
 	init {
 		install(this)

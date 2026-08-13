@@ -9,6 +9,9 @@
       "The Panda Oliver"
     ]
   },
+  "mixins": [
+    "pandalib.mixins.json"
+  ],
   "fabric": {
     "entrypoints": {
       "main": [

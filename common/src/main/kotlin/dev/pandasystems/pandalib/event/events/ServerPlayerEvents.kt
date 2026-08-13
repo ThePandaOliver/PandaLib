@@ -12,7 +12,6 @@ import net.minecraft.world.level.block.state.BlockState
 val playerServerJoin = event1<PlayerHandle>()
 val playerServerLeave = event1<PlayerHandle>()
 val playerServerAfterRespawn = event3<PlayerHandle, PlayerHandle, Boolean>()
-val playerServerCopyFrom = event3<PlayerHandle, PlayerHandle, Boolean>()
 
 val playerBlockBreakBefore = eventCancelable4<Level, PlayerHandle, BlockPos, BlockState>()
 val playerBlockBreakAfter = event4<Level, PlayerHandle, BlockPos, BlockState>()

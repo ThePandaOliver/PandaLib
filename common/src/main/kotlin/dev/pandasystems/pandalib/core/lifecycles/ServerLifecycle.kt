@@ -1,7 +1,7 @@
 package dev.pandasystems.pandalib.core.lifecycles
 
-import dev.pandasystems.pandalib.event.events.serverStarted
-import dev.pandasystems.pandalib.event.events.serverStopped
+import dev.pandasystems.pandalib.event.events.server.serverStarted
+import dev.pandasystems.pandalib.event.events.server.serverStopped
 import net.minecraft.server.MinecraftServer
 
 object ServerLifecycle {

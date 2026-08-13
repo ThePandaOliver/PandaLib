@@ -8,7 +8,8 @@ interface MinecraftRuntime {
 }
 
 enum class MinecraftRuntimeType {
-	FABRIC
+	FABRIC,
+	NEO_FORGE
 }
 
 enum class MinecraftRuntimeEnvironment {

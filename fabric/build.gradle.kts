@@ -16,15 +16,12 @@ repositories {
 
 dependencies {
     api(project(":common"))
-
-    implementation("net.fabricmc:fabric-loader:0.19.3")
-    implementation("net.fabricmc.fabric-api:fabric-api:0.155.2+26.2")
 }
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+java.toolchain.languageVersion = JavaLanguageVersion.of(25)
 
 kotlin {
-    jvmToolchain(21)
+    jvmToolchain(25)
 }
 
 easyModding {

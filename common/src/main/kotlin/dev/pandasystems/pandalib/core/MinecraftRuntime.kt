@@ -1,18 +1,18 @@
 package dev.pandasystems.pandalib.core
 
-val minecraftRuntime: MinecraftRuntime get() = PandaLibMain.instance.minecraftRuntime
-
-interface MinecraftRuntime {
-	val type: MinecraftRuntimeType
-	val environment: MinecraftRuntimeEnvironment
+interface IMinecraftRuntime {
+	val type: RuntimeType
+	val environment: RuntimeEnvironment
 }
 
-enum class MinecraftRuntimeType {
+object MinecraftRuntime : IMinecraftRuntime by PandaLibMain.instance.minecraftRuntime
+
+enum class RuntimeType {
 	FABRIC,
 	NEO_FORGE
 }
 
-enum class MinecraftRuntimeEnvironment {
+enum class RuntimeEnvironment {
 	CLIENT,
 	SERVER,
 }

@@ -7,7 +7,8 @@
 	],
 	"mixins": [
 		"dev.pandasystems.pandalib.mixin.MinecraftServerMixin",
-		"dev.pandasystems.pandalib.mixin.PlayerListMixin"
+		"dev.pandasystems.pandalib.mixin.PlayerListMixin",
+		"dev.pandasystems.pandalib.mixin.ServerPlayerGameModeMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

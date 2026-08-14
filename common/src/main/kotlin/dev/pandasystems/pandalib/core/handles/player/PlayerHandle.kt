@@ -1,11 +1,11 @@
 package dev.pandasystems.pandalib.core.handles.player
 
-import dev.pandasystems.pandalib.core.MinecraftRuntimeEnvironment
+import dev.pandasystems.pandalib.core.MinecraftRuntime
+import dev.pandasystems.pandalib.core.RuntimeEnvironment
 import dev.pandasystems.pandalib.core.lifecycles.ClientLifecycle
 import dev.pandasystems.pandalib.core.lifecycles.ServerLifecycle
-import dev.pandasystems.pandalib.core.minecraftRuntime
 import net.minecraft.world.entity.player.Player
-import java.util.UUID
+import java.util.*
 
 /**
  * Represents a reference to a player.
@@ -17,13 +17,13 @@ class PlayerHandle(
 		get() = resolve() != null
 
 	val isOnline: Boolean
-		get() = if (minecraftRuntime.environment == MinecraftRuntimeEnvironment.SERVER) {
+		get() = if (MinecraftRuntime.environment == RuntimeEnvironment.SERVER) {
 			ServerLifecycle.serverInstance?.playerList?.getPlayer(uuid) != null
 		} else {
 			ClientLifecycle.clientInstance.connection?.getPlayerInfo(uuid) != null
 		}
 
-	fun resolve(): Player? = if (minecraftRuntime.environment == MinecraftRuntimeEnvironment.SERVER) {
+	fun resolve(): Player? = if (MinecraftRuntime.environment == RuntimeEnvironment.SERVER) {
 		val server = ServerLifecycle.serverInstance
 		server?.playerList?.getPlayer(uuid)
 	} else {

@@ -19,10 +19,6 @@ abstract class PlayerListMixin {
 	private void afterRespawn(ServerPlayer oldPlayer, boolean alive, Entity.RemovalReason removalReason, CallbackInfoReturnable<ServerPlayer> cir) {
 		ServerPlayer newPlayer = cir.getReturnValue();
 		ServerPlayerEventsKt.getPlayerServerAfterRespawn().getInvoke().invoke(PlayerHandleKt.handle(oldPlayer), PlayerHandleKt.handle(newPlayer), alive);
-
-		if (oldPlayer.level() != newPlayer.level()) {
-			ServerEntityLevelChangeEvents.AFTER_PLAYER_CHANGE_LEVEL.invoker().afterChangeLevel(newPlayer, oldPlayer.level(), newPlayer.level());
-		}
 	}
 
 	@Inject(method = "placeNewPlayer", at = @At("RETURN"))

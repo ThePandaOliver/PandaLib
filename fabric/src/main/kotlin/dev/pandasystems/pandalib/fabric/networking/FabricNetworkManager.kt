@@ -1,5 +1,7 @@
 package dev.pandasystems.pandalib.fabric.networking
 
+import dev.pandasystems.pandalib.core.MinecraftRuntime
+import dev.pandasystems.pandalib.core.RuntimeEnvironment
 import dev.pandasystems.pandalib.core.handles.player.PlayerHandle
 import dev.pandasystems.pandalib.core.handles.player.handle
 import dev.pandasystems.pandalib.core.lifecycles.ServerLifecycle
@@ -20,8 +22,8 @@ class FabricNetworkManager : NetworkManager {
 
     override fun <T> sendToServer(type: PacketType<T>, value: T) {
         checkRegistered(type, PacketDirection.CLIENT_TO_SERVER)
-        check(FabricLoader.getInstance().environmentType == EnvType.CLIENT) {
-            "sendToServer can only be called on a Fabric client."
+        check(MinecraftRuntime.environment == RuntimeEnvironment.CLIENT) {
+            "sendToServer can only be called on a client."
         }
         ClientPlayNetworking.send(payload(type, value))
     }
@@ -51,7 +53,7 @@ class FabricNetworkManager : NetworkManager {
             "Packet '${type.id}' has direction ${type.direction}; expected $expectedDirection."
         }
         check(packetTypes[type.id] === type) {
-            "Packet '${type.id}' must be registered with this FabricNetworkRegistrar before it can be sent."
+            "Packet '${type.id}' must be registered before it can be sent."
         }
     }
 

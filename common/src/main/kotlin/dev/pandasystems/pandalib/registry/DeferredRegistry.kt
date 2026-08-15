@@ -1,17 +1,17 @@
 package dev.pandasystems.pandalib.registry
 
 /**
- * A Minecraft-independent registry for values that must be declared early, but can only be
- * really registered later (e.g. during a mod loader's registration event).
+ * A registry for values that must be declared early, but can only be
+ * really registered later (e.g. during a registration event).
  *
  * Typical usage:
  * ```
  * val ITEMS = DeferredRegistry<Identifier, Item>()
  *
- * // Early, e.g. during mod construction:
+ * // Early, e.g. during construction:
  * val sword: RegistryEntry<Item> = ITEMS.register(identifier("mymod", "sword")) { Item(...) }
  *
- * // Later, e.g. during the loader's registration event:
+ * // Later, e.g. during the registration event:
  * ITEMS.registerAll { id, factory -> platformRegistry.register(id, factory()) }
  *
  * // From that point onward:
@@ -54,7 +54,7 @@ class DeferredRegistry<K : Any, T> {
 	 * @throws IllegalArgumentException if [key] is already registered.
 	 * @throws IllegalStateException if this registry has already been finalized via [registerAll].
 	 */
-	fun register(key: K, factory: () -> T): RegistryEntry<T> = synchronized(lock) {
+	fun register(key: K, factory: () -> T): RegistryEntry<K, T> = synchronized(lock) {
 		check(!isFinalized) {
 			"Cannot register '$key': this registry has already been finalized."
 		}
@@ -90,7 +90,7 @@ class DeferredRegistry<K : Any, T> {
 	/**
 	 * Returns the entry registered under [key], or `null` if no such entry exists.
 	 */
-	fun getEntry(key: K): RegistryEntry<T>? = synchronized(lock) { entries[key] }
+	fun getEntry(key: K): RegistryEntry<K, T>? = synchronized(lock) { entries[key] }
 
 	/**
 	 * Returns `true` if a value is registered under [key], regardless of whether it has been
@@ -101,12 +101,12 @@ class DeferredRegistry<K : Any, T> {
 	/**
 	 * Returns a snapshot of all entries registered so far, in registration order.
 	 */
-	fun entries(): List<RegistryEntry<T>> = synchronized(lock) { entries.values.toList() }
+	fun entries(): List<RegistryEntry<K, T>> = synchronized(lock) { entries.values.toList() }
 
 	/**
 	 * Runs [action] for every entry registered so far, in registration order.
 	 */
-	fun forEach(action: (key: K, entry: RegistryEntry<T>) -> Unit) {
+	fun forEach(action: (key: K, entry: RegistryEntry<K, T>) -> Unit) {
 		val snapshot = synchronized(lock) { entries.toList() }
 		snapshot.forEach { (key, entry) -> action(key, entry) }
 	}
@@ -114,7 +114,7 @@ class DeferredRegistry<K : Any, T> {
 	private inner class Entry(
 		override val key: K,
 		val factory: () -> T,
-	) : RegistryEntry<T> {
+	) : RegistryEntry<K, T> {
 		private var value: Any? = UNBOUND
 		private var bindListeners: MutableList<(T) -> Unit>? = null
 

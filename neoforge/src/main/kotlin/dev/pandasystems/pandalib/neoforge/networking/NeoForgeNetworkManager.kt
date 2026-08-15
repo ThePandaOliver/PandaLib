@@ -74,44 +74,7 @@ object NeoForgeNetworkManager : NetworkManager {
             "A packet is already registered with id '${type.id}'."
         }
 
-        val payloadType = NeoForgePacketPayload.type(type.id.toIdentifier())
-        val payloadCodec = NeoForgePacketPayload.codec(payloadType)
         deferredPacketTypes.register(type) { handler }
-//        when (type.direction) {
-//            PacketDirection.CLIENT_TO_SERVER -> {
-//	            check(ServerPlayNetworking.registerGlobalReceiver(payloadType) { payload, context ->
-//                    handler.handle(
-//                        PacketContextImpl(
-//                            peer = context.player().handle(),
-//                            executor = { task -> context.server().execute(task) },
-//                            sender = this,
-//                            replyToServer = false,
-//                        ),
-//                        type.codec.decode(payload.data),
-//                    )
-//                }) {
-//                    "Fabric already has a serverbound receiver for packet '${type.id}'."
-//                }
-//            }
-//
-//            PacketDirection.SERVER_TO_CLIENT -> {
-//                if (FabricLoader.getInstance().environmentType == EnvType.CLIENT) {
-//                    check(ClientPlayNetworking.registerGlobalReceiver(payloadType) { payload, context ->
-//                        handler.handle(
-//                            PacketContextImpl(
-//                                peer = context.player().handle(),
-//                                executor = { task -> context.client().execute(task) },
-//                                sender = this,
-//                                replyToServer = true,
-//                            ),
-//                            type.codec.decode(payload.data),
-//                        )
-//                    }) {
-//                        "Fabric already has a clientbound receiver for packet '${type.id}'."
-//                    }
-//                }
-//            }
-//        }
         packetTypes[type.id] = type
     }
 

@@ -8,11 +8,11 @@ package dev.pandasystems.pandalib.registry
  * real value exists. They are safe to store in `val` fields, pass around, and capture in
  * closures right away; only calling [get] before the entry is bound will fail.
  */
-interface RegistryEntry<T> {
+interface RegistryEntry<K, T> {
 	/**
 	 * The key this entry was registered with.
 	 */
-	val key: Any?
+	val key: K
 
 	/**
 	 * Whether the real registration has already happened and [get] can be called safely.

@@ -37,6 +37,11 @@ kotlin {
 easyModding {
     configPath = rootProject.file("easymodding.mod.json")
     minecraftVersion = "26.2"
+    modId = "pandalib"
+
+    modDependencies {
+        modCompileOnly("net.fabricmc:fabric-loader:0.19.3")
+    }
 }
 
 publishing {

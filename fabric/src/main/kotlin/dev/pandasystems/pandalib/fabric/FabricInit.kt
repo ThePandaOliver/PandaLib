@@ -13,7 +13,7 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents
 
-private class FabricInit : ModInitializer {
+internal class FabricInit : ModInitializer {
     override fun onInitialize() {
         PandaLibMain(
 	        FabricNetworkManager(),

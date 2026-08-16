@@ -7,7 +7,7 @@ import net.neoforged.bus.api.IEventBus
 import net.neoforged.fml.common.Mod
 
 @Mod(modId)
-private class NeoForgeInit(
+internal class NeoForgeInit(
     eventBus: IEventBus
 ) {
     init {

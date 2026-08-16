@@ -21,9 +21,6 @@ import java.util.function.BooleanSupplier;
 
 @Mixin(MinecraftServer.class)
 public abstract class MinecraftServerMixin {
-	@Shadow
-	private MinecraftServer.ReloadableResources resources;
-
 	@Unique
 	protected final AtomicBoolean startupReady = new AtomicBoolean(false);
 

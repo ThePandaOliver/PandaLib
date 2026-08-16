@@ -27,12 +27,27 @@ kotlin {
 easyModding {
     configPath = rootProject.file("easymodding.mod.json")
     minecraftVersion = "26.2"
+    modId = "pandalib"
 
     fabric()
 
     modDependencies {
         modImplementation("net.fabricmc:fabric-loader:0.19.3")
         modImplementation("net.fabricmc.fabric-api:fabric-api:0.155.2+26.2")
+    }
+
+    runs {
+        configureEach {
+            workingDirectory = rootProject.file(".run")
+        }
+
+        create("client") {
+            client()
+        }
+
+        create("server") {
+            server()
+        }
     }
 }
 

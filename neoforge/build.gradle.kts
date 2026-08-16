@@ -1,6 +1,9 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar.Companion.shadowJar
+
 plugins {
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.shadow)
     alias(libs.plugins.easymodding)
     `maven-publish`
 }
@@ -15,7 +18,7 @@ repositories {
 }
 
 dependencies {
-    api(project(":common"))
+    compileOnlyApi(project(":common"))
 }
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(25)
@@ -27,9 +30,24 @@ kotlin {
 easyModding {
     configPath = rootProject.file("easymodding.mod.json")
     minecraftVersion = "26.2"
+    modId = "pandalib"
 
     neoForge {
         neoForgeVersion = "26.2.0.59"
+    }
+
+    runs {
+        configureEach {
+            workingDirectory = rootProject.file(".run")
+        }
+
+        create("client") {
+            client()
+        }
+
+        create("server") {
+            server()
+        }
     }
 }
 
@@ -47,4 +65,17 @@ publishing {
             url = uri(providers.gradleProperty("LocalRepo"))
         }
     }
+}
+
+tasks.compileJava {
+    source(project(":common").sourceSets.main.get().allSource)
+}
+
+
+tasks.compileKotlin {
+    source(project(":common").sourceSets.main.get().allSource)
+}
+
+tasks.named<ProcessResources>("processResources") {
+    from(project(":common").sourceSets.main.get().resources)
 }

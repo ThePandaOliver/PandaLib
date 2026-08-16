@@ -37,16 +37,16 @@ easyModding {
     }
 
     runs {
-        configureEach {
-            workingDirectory = rootProject.file(".run")
-        }
-
         create("client") {
             client()
         }
 
         create("server") {
             server()
+        }
+
+        configureEach {
+            workingDirectory = rootProject.file(".run")
         }
     }
 }

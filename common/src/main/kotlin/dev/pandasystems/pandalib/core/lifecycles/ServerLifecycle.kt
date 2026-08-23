@@ -11,11 +11,11 @@ object ServerLifecycle {
 	internal fun initialize() = Unit
 
 	init {
-		serverStarted.subscribe { startedServer ->
-			serverInstance = startedServer
+		serverStarted.subscribe { context ->
+			serverInstance = context.server
 		}
-		serverStopped.subscribe { stoppedServer ->
-			if (serverInstance === stoppedServer)
+		serverStopped.subscribe { context ->
+			if (serverInstance === context.server)
 				serverInstance = null
 		}
 	}

@@ -2,6 +2,7 @@ package dev.pandasystems.pandalib.mixin;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import dev.pandasystems.pandalib.core.handles.player.PlayerHandleKt;
+import dev.pandasystems.pandalib.event.events.ServerPlayerBlockBreakEventContext;
 import dev.pandasystems.pandalib.event.events.ServerPlayerEventsKt;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -28,10 +29,10 @@ public class ServerPlayerGameModeMixin {
 
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/Block;playerWillDestroy(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/entity/player/Player;)Lnet/minecraft/world/level/block/state/BlockState;"), method = "destroyBlock", cancellable = true)
 	private void breakBlock(BlockPos pos, CallbackInfoReturnable<Boolean> cir, @Local BlockEntity blockEntity, @Local(ordinal = 0) BlockState state) {
-		boolean result = ServerPlayerEventsKt.getPlayerBlockBreakBefore().getInvoke().invoke(this.level, PlayerHandleKt.handle(this.player), pos, state, blockEntity);
+		boolean result = ServerPlayerEventsKt.getPlayerBlockBreakBefore().invoke(new ServerPlayerBlockBreakEventContext(this.level, PlayerHandleKt.handle(this.player), pos, state, blockEntity));
 
 		if (!result) {
-			ServerPlayerEventsKt.getPlayerBlockBreakCanceled().getInvoke().invoke(this.level, PlayerHandleKt.handle(this.player), pos, state, blockEntity);
+			ServerPlayerEventsKt.getPlayerBlockBreakCanceled().invoke(new ServerPlayerBlockBreakEventContext(this.level, PlayerHandleKt.handle(this.player), pos, state, blockEntity));
 
 			cir.setReturnValue(false);
 		}
@@ -41,6 +42,6 @@ public class ServerPlayerGameModeMixin {
 	private void onBlockBroken(BlockPos pos, CallbackInfoReturnable<Boolean> cir, @Local BlockEntity blockEntity, @Local(ordinal = 0) BlockState state) {
 		if (!cir.getReturnValue()) return;
 
-		ServerPlayerEventsKt.getPlayerBlockBreakAfter().getInvoke().invoke(this.level, PlayerHandleKt.handle(this.player), pos, state, blockEntity);
+		ServerPlayerEventsKt.getPlayerBlockBreakAfter().invoke(new ServerPlayerBlockBreakEventContext(this.level, PlayerHandleKt.handle(this.player), pos, state, blockEntity));
 	}
 }

@@ -1,7 +1,9 @@
 package dev.pandasystems.pandalib.event.events.server
 
-import dev.pandasystems.pandalib.event.event1
+import dev.pandasystems.pandalib.event.event
 import net.minecraft.server.MinecraftServer
 
-val startServerTick = event1<MinecraftServer>()
-val endServerTick = event1<MinecraftServer>()
+data class ServerTickEventContext(val server: MinecraftServer)
+
+val startServerTick by event<ServerTickEventContext>()
+val endServerTick by event<ServerTickEventContext>()

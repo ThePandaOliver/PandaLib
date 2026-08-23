@@ -3,8 +3,11 @@ package dev.pandasystems.pandalib.mixin;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
+import dev.pandasystems.pandalib.event.events.server.ServerLevelEventContext;
 import dev.pandasystems.pandalib.event.events.server.ServerLevelEventsKt;
+import dev.pandasystems.pandalib.event.events.server.ServerLifecycleEventContext;
 import dev.pandasystems.pandalib.event.events.server.ServerLifecycleEventsKt;
+import dev.pandasystems.pandalib.event.events.server.ServerTickEventContext;
 import dev.pandasystems.pandalib.event.events.server.ServerTickEventsKt;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -26,46 +29,46 @@ public abstract class MinecraftServerMixin {
 
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;initServer()Z"), method = "runServer")
 	private void beforeSetupServer(CallbackInfo info) {
-		ServerLifecycleEventsKt.getServerStarting().getInvoke().invoke((MinecraftServer) (Object) this);
+		ServerLifecycleEventsKt.getServerStarting().invoke(new ServerLifecycleEventContext((MinecraftServer) (Object) this));
 	}
 
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;buildServerStatus()Lnet/minecraft/network/protocol/status/ServerStatus;", ordinal = 0), method = "runServer")
 	private void afterSetupServer(CallbackInfo info) {
-		ServerLifecycleEventsKt.getServerStarted().getInvoke().invoke((MinecraftServer) (Object) this);
+		ServerLifecycleEventsKt.getServerStarted().invoke(new ServerLifecycleEventContext((MinecraftServer) (Object) this));
 		afterServerStartedEvent();
 	}
 
 	@Inject(at = @At("HEAD"), method = "stopServer")
 	private void beforeShutdownServer(CallbackInfo info) {
-		ServerLifecycleEventsKt.getServerStopping().getInvoke().invoke((MinecraftServer) (Object) this);
+		ServerLifecycleEventsKt.getServerStopping().invoke(new ServerLifecycleEventContext((MinecraftServer) (Object) this));
 	}
 
 	@Inject(at = @At("TAIL"), method = "stopServer")
 	private void afterShutdownServer(CallbackInfo info) {
-		ServerLifecycleEventsKt.getServerStopped().getInvoke().invoke((MinecraftServer) (Object) this);
+		ServerLifecycleEventsKt.getServerStopped().invoke(new ServerLifecycleEventContext((MinecraftServer) (Object) this));
 	}
 
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;tickChildren(Ljava/util/function/BooleanSupplier;)V"), method = "tickServer")
 	private void onStartTick(BooleanSupplier shouldKeepTicking, CallbackInfo ci) {
-		ServerTickEventsKt.getStartServerTick().getInvoke().invoke((MinecraftServer) (Object) this);
+		ServerTickEventsKt.getStartServerTick().invoke(new ServerTickEventContext((MinecraftServer) (Object) this));
 	}
 
 	@Inject(at = @At("TAIL"), method = "tickServer")
 	private void onEndTick(BooleanSupplier shouldKeepTicking, CallbackInfo info) {
-		ServerTickEventsKt.getEndServerTick().getInvoke().invoke((MinecraftServer) (Object) this);
+		ServerTickEventsKt.getEndServerTick().invoke(new ServerTickEventContext((MinecraftServer) (Object) this));
 	}
 
 	@WrapOperation(method = "createLevels", at = @At(value = "INVOKE", target = "Ljava/util/Map;put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;"))
 	private <K, V> V onLoadWorld(Map<K, V> levels, K dimension, V level, Operation<V> original) {
 		final V result = original.call(levels, dimension, level);
-		ServerLevelEventsKt.getServerLevelLoad().getInvoke().invoke((MinecraftServer) (Object) this, (ServerLevel) level);
+		ServerLevelEventsKt.getServerLevelLoad().invoke(new ServerLevelEventContext((MinecraftServer) (Object) this, (ServerLevel) level));
 
 		return result;
 	}
 
 	@Inject(method = "stopServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerLevel;close()V"))
 	private void onUnloadWorldAtShutdown(CallbackInfo ci, @Local(name = "level") ServerLevel level) {
-		ServerLevelEventsKt.getServerLevelUnLoad().getInvoke().invoke((MinecraftServer) (Object) this, level);
+		ServerLevelEventsKt.getServerLevelUnLoad().invoke(new ServerLevelEventContext((MinecraftServer) (Object) this, level));
 	}
 
 	@Unique

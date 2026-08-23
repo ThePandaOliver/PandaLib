@@ -1,89 +1,77 @@
 package dev.pandasystems.pandalib.event
 
+import dev.pandasystems.pandalib.core.logger
 import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.atomic.AtomicBoolean
+import kotlin.properties.PropertyDelegateProvider
+import kotlin.properties.ReadOnlyProperty
+import kotlin.reflect.KProperty
 
-interface Event<T> {
-	val invoke: T
+interface Event<T, R> : ReadOnlyProperty<Any?, Event<T, R>> {
+	val name: String
 
-	fun subscribe(listener: T): Subscription
+	fun subscribe(listener: (context: T) -> R): Subscription
+	operator fun invoke(context: T): R
+
+	override fun getValue(thisRef: Any?, property: KProperty<*>): Event<T, R> = this
 }
 
 fun interface Subscription {
 	fun unsubscribe()
 }
 
-/**
- * Creates an event from a type-safe invoker implementation.
- *
- * The invoker is created once and invokes listeners directly, without
- * reflection or dynamic proxies.
- */
-fun <T> event(
-	createInvoker: (listeners: List<T>) -> T,
-): Event<T> {
-	val listeners = CopyOnWriteArrayList<T>()
+fun interface EventProvider<T, R> : PropertyDelegateProvider<Any?, Event<T, R>> {
+	override fun provideDelegate(thisRef: Any?, property: KProperty<*>): Event<T, R>
+}
 
-	return object : Event<T> {
-		override val invoke: T = createInvoker(listeners)
+fun <T, R> event(
+	name: String,
+	createInvoker: (listeners: List<(context: T) -> R>, context: T) -> R,
+): Event<T, R> {
+	logger.info("Created new event named $name")
+	val listeners = CopyOnWriteArrayList<(context: T) -> R>()
 
-		override fun subscribe(listener: T): Subscription {
+	return object : Event<T, R> {
+		override val name: String = name
+
+		override fun subscribe(listener: (context: T) -> R): Subscription {
 			listeners += listener
+			logger.info("Listener subscribed to event $name")
 
 			val subscribed = AtomicBoolean(true)
 			return Subscription {
 				if (subscribed.compareAndSet(true, false)) {
 					listeners -= listener
+					logger.info("Listener unsubscribed from event $name")
 				}
 			}
+		}
+
+		override fun invoke(context: T): R {
+			logger.info("Invoking event $name with context: $context")
+			return createInvoker(listeners, context)
 		}
 	}
 }
 
-fun event0() = event { listeners ->
-	{ listeners.forEach { it() } }
+fun <T, R> event(
+	createInvoker: (listeners: List<(context: T) -> R>, context: T) -> R,
+): EventProvider<T, R> = EventProvider { _, property ->
+	event(property.name, createInvoker)
 }
 
-fun <A> event1() = event<(A) -> Unit> { listeners ->
-	{ a -> listeners.forEach { it(a) } }
+inline fun <reified T> event(name: String): Event<T, Unit> = event(name) { listeners, context ->
+	listeners.forEach { it(context) }
 }
 
-fun <A, B> event2() = event<(A, B) -> Unit> { listeners ->
-	{ a, b -> listeners.forEach { it(a, b) } }
+inline fun <reified T> event(): EventProvider<T, Unit> = EventProvider { _, property ->
+	event<T>(property.name)
 }
 
-fun <A, B, C> event3() = event<(A, B, C) -> Unit> { listeners ->
-	{ a, b, c -> listeners.forEach { it(a, b, c) } }
+inline fun <reified T> eventCancelable(name: String): Event<T, Boolean> = event(name) { listeners, context ->
+	listeners.map { it(context) }.all { it }
 }
 
-fun <A, B, C, D> event4() = event<(A, B, C, D) -> Unit> { listeners ->
-	{ a, b, c, d -> listeners.forEach { it(a, b, c, d) } }
-}
-
-fun <A, B, C, D, E> event5() = event<(A, B, C, D, E) -> Unit> { listeners ->
-	{ a, b, c, d, e -> listeners.forEach { it(a, b, c, d, e) } }
-}
-
-fun eventCancelable0() = event { listeners ->
-	{ listeners.map { it() }.all { it } }
-}
-
-fun <A> eventCancelable1() = event<(A) -> Boolean> { listeners ->
-	{ a -> listeners.map { it(a) }.all { it } }
-}
-
-fun <A, B> eventCancelable2() = event<(A, B) -> Boolean> { listeners ->
-	{ a, b -> listeners.map { it(a, b) }.all { it } }
-}
-
-fun <A, B, C> eventCancelable3() = event<(A, B, C) -> Boolean> { listeners ->
-	{ a, b, c -> listeners.map { it(a, b, c) }.all { it } }
-}
-
-fun <A, B, C, D> eventCancelable4() = event<(A, B, C, D) -> Boolean> { listeners ->
-	{ a, b, c, d -> listeners.map { it(a, b, c, d) }.all { it } }
-}
-
-fun <A, B, C, D, E> eventCancelable5() = event<(A, B, C, D, E) -> Boolean> { listeners ->
-	{ a, b, c, d, e -> listeners.map { it(a, b, c, d, e) }.all { it } }
+inline fun <reified T> eventCancelable(): EventProvider<T, Boolean> = EventProvider { _, property ->
+	eventCancelable<T>(property.name)
 }

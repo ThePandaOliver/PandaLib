@@ -1,8 +1,10 @@
 package dev.pandasystems.pandalib.event.events.server
 
-import dev.pandasystems.pandalib.event.event2
+import dev.pandasystems.pandalib.event.event
 import net.minecraft.server.MinecraftServer
 import net.minecraft.server.level.ServerLevel
 
-val serverLevelLoad = event2<MinecraftServer, ServerLevel>()
-val serverLevelUnLoad = event2<MinecraftServer, ServerLevel>()
+data class ServerLevelEventContext(val server: MinecraftServer, val level: ServerLevel)
+
+val serverLevelLoad by event<ServerLevelEventContext>()
+val serverLevelUnLoad by event<ServerLevelEventContext>()

@@ -25,4 +25,10 @@ object PayloadCodecRegistry {
 		@Suppress("UNCHECKED_CAST")
 		packetCodecs[resourceLocation] = codec as StreamCodec<FriendlyByteBuf, CustomPacketPayload>
 	}
+
+	@JvmStatic
+	fun decode(id: ResourceLocation, buf: FriendlyByteBuf): CustomPacketPayload? {
+		val codec = packetCodecs[id] ?: return null
+		return codec.decode(buf)
+	}
 }

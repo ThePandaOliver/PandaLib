@@ -12,7 +12,7 @@
 
 package dev.pandasystems.pandalib.networking
 
-import dev.pandasystems.pandalib.mixin.ServerGamePacketListenerImplAccessor
+import dev.pandasystems.pandalib.mixinjava.ServerGamePacketListenerImplAccessor
 import dev.pandasystems.pandalib.utils.gameEnvironment
 import io.netty.buffer.Unpooled
 import net.minecraft.client.Minecraft

@@ -11,6 +11,7 @@
 		"server.MinecraftServerMixin",
 		"server.level.ServerPlayerGameModeMixin",
 		"server.level.ServerPlayerMixin",
+		"server.network.ServerGamePacketListenerImplMixin",
 		"server.players.PlayerListMixin",
 		"world.item.BlockItemMixin"
 	],

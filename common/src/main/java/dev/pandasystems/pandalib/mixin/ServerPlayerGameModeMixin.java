@@ -27,7 +27,7 @@ public class ServerPlayerGameModeMixin {
 	protected ServerLevel level;
 
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/Block;playerWillDestroy(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/entity/player/Player;)Lnet/minecraft/world/level/block/state/BlockState;"), method = "destroyBlock", cancellable = true)
-	private void breakBlock(BlockPos pos, CallbackInfoReturnable<Boolean> cir, @Local(name = "blockEntity") BlockEntity blockEntity, @Local(name = "state") BlockState state) {
+	private void breakBlock(BlockPos pos, CallbackInfoReturnable<Boolean> cir, @Local BlockEntity blockEntity, @Local(ordinal = 0) BlockState state) {
 		boolean result = ServerPlayerEventsKt.getPlayerBlockBreakBefore().getInvoke().invoke(this.level, PlayerHandleKt.handle(this.player), pos, state, blockEntity);
 
 		if (!result) {
@@ -37,8 +37,10 @@ public class ServerPlayerGameModeMixin {
 		}
 	}
 
-	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/Block;destroy(Lnet/minecraft/world/level/LevelAccessor;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;)V"), method = "destroyBlock")
-	private void onBlockBroken(BlockPos pos, CallbackInfoReturnable<Boolean> cir, @Local(name = "blockEntity") BlockEntity blockEntity, @Local(name = "adjustedState") BlockState adjustedState) {
-		ServerPlayerEventsKt.getPlayerBlockBreakAfter().getInvoke().invoke(this.level, PlayerHandleKt.handle(this.player), pos, adjustedState, blockEntity);
+	@Inject(at = @At("RETURN"), method = "destroyBlock")
+	private void onBlockBroken(BlockPos pos, CallbackInfoReturnable<Boolean> cir, @Local BlockEntity blockEntity, @Local(ordinal = 0) BlockState state) {
+		if (!cir.getReturnValue()) return;
+
+		ServerPlayerEventsKt.getPlayerBlockBreakAfter().getInvoke().invoke(this.level, PlayerHandleKt.handle(this.player), pos, state, blockEntity);
 	}
 }

@@ -1,10 +1,8 @@
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar.Companion.shadowJar
-
 plugins {
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.ksp)
     alias(libs.plugins.shadow)
-    alias(libs.plugins.easymodding)
+    alias(libs.plugins.easymodding.moddev)
     `maven-publish`
 }
 
@@ -19,6 +17,15 @@ repositories {
 
 dependencies {
     compileOnlyApi(project(":common"))
+
+    api(libs.kotlin.reflect)
+    api(libs.kotlinx.coroutines)
+    api(libs.kotlinx.serialization)
+    api(libs.kotlinx.serialization.json)
+    api(libs.kotlinx.serialization.cbor)
+    api(libs.kotlinx.io)
+    api(libs.kotlinx.io.bytestring)
+    api(libs.kotlinx.datetime)
 }
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(25)
@@ -30,7 +37,6 @@ kotlin {
 easyModding {
     configPath = rootProject.file("easymodding.mod.json")
     minecraftVersion = "26.2"
-    modId = "pandalib"
 
     neoForge {
         neoForgeVersion = "26.2.0.59"

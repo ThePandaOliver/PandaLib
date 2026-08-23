@@ -1,7 +1,7 @@
 plugins {
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.ksp)
-    alias(libs.plugins.easymodding)
+    alias(libs.plugins.easymodding.loom)
     `maven-publish`
 }
 
@@ -27,7 +27,6 @@ kotlin {
 easyModding {
     configPath = rootProject.file("easymodding.mod.json")
     minecraftVersion = "26.2"
-    modId = "pandalib"
 
     fabric()
 

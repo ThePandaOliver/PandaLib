@@ -3,7 +3,8 @@
 plugins {
 	alias(libs.plugins.kotlin.jvm) apply false
 	alias(libs.plugins.shadow) apply false
-	alias(libs.plugins.easymodding) apply false
+	alias(libs.plugins.easymodding.loom) apply false
+	alias(libs.plugins.easymodding.moddev) apply false
 
 	alias(libs.plugins.publish.mod) apply false
 	alias(libs.plugins.ksp) apply false

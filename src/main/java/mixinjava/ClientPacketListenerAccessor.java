@@ -10,7 +10,7 @@
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.pandasystems.pandalib.mixin;
+package dev.pandasystems.pandalib.mixinjava;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;

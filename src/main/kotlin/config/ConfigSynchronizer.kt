@@ -16,6 +16,7 @@ import dev.pandasystems.pandalib.PandaLib
 import dev.pandasystems.pandalib.config.ConfigSynchronizer.configs
 import dev.pandasystems.pandalib.config.exceptions.ConfigNotRegisteredException
 import dev.pandasystems.pandalib.event.server.serverPlayerJoinEvent
+import dev.pandasystems.pandalib.event.server.serverPlayerLeaveEvent
 import dev.pandasystems.pandalib.networking.PayloadCodecRegistry
 import dev.pandasystems.pandalib.networking.ServerPlayNetworking
 import dev.pandasystems.pandalib.networking.payloads.config.ClientboundConfigRequestPayload
@@ -51,51 +52,56 @@ object ConfigSynchronizer {
 
 
 		// Config sending
+		serverPlayerJoinEvent += { player ->
+			seedPlayerValues(player.uuid)
 
-		if (configs.isNotEmpty()) {
-			serverPlayerJoinEvent += { player ->
-				// Send all server config settings
-				PandaLib.logger.debug(
-					"Sending all server config settings to {} ({})",
-					player.name,
-					player.uuid
-				)
-				val serverConfigPayloads = configs.mapNotNull { (resourceLocation, _) ->
-					PandaLib.logger.debug("Attempting to create config payload for: {}", resourceLocation)
-					try {
-						val configObject = ConfigRegistry.get<Any>(resourceLocation)
-						val payload = configObject.createConfigPayload()
-						PandaLib.logger.debug("Successfully created config payload for: {}", resourceLocation)
-						return@mapNotNull payload
-					} catch (e: ConfigNotRegisteredException) {
-						PandaLib.logger.error(
-							"Failed to create config payload for unknown config: $resourceLocation", e
-						)
-						return@mapNotNull null
-					}
+			// Send all server config settings
+			PandaLib.logger.debug(
+				"Sending all server config settings to {} ({})",
+				player.name,
+				player.uuid
+			)
+			val serverConfigPayloads = configs.mapNotNull { (resourceLocation, _) ->
+				PandaLib.logger.debug("Attempting to create config payload for: {}", resourceLocation)
+				try {
+					val configObject = ConfigRegistry.get<Any>(resourceLocation)
+					val payload = configObject.createConfigPayload()
+					PandaLib.logger.debug("Successfully created config payload for: {}", resourceLocation)
+					return@mapNotNull payload
+				} catch (e: ConfigNotRegisteredException) {
+					PandaLib.logger.error(
+						"Failed to create config payload for unknown config: $resourceLocation", e
+					)
+					return@mapNotNull null
 				}
+			}
+			if (serverConfigPayloads.isNotEmpty()) {
 				ServerPlayNetworking.send(player, serverConfigPayloads)
 				PandaLib.logger.debug(
 					"Sent all successfully created config payloads to {} ({})",
 					player.name,
 					player.uuid
 				)
-
-
-				// Send all previous client config settings to the new client
-				PandaLib.logger.debug(
-					"Sending all previous client config settings to {} ({})",
-					player.name,
-					player.uuid
-				)
-				val clientConfigPayloads = createConfigPayloadsWithClientConfigs()
-				ServerPlayNetworking.send(player, clientConfigPayloads)
-
-
-				// Send request for all client's config settings
-				PandaLib.logger.debug("Sending config request to {} ({})", player.name, player.uuid)
-				ServerPlayNetworking.send(player, ClientboundConfigRequestPayload(player.uuid))
 			}
+
+			// Send all previous client config settings to the new client
+			PandaLib.logger.debug(
+				"Sending all previous client config settings to {} ({})",
+				player.name,
+				player.uuid
+			)
+			val clientConfigPayloads = createConfigPayloadsWithClientConfigs()
+			if (clientConfigPayloads.isNotEmpty()) {
+				ServerPlayNetworking.send(player, clientConfigPayloads)
+			}
+
+			// Send request for all client's config settings
+			PandaLib.logger.debug("Sending config request to {} ({})", player.name, player.uuid)
+			ServerPlayNetworking.send(player, ClientboundConfigRequestPayload(player.uuid))
+		}
+
+		serverPlayerLeaveEvent += { player ->
+			clearPlayerValues(player.uuid)
 		}
 
 		PandaLib.logger.debug("Config Synchronizer finished initializing!")
@@ -137,14 +143,14 @@ object ConfigSynchronizer {
 	 * Applies the given values to the given config object.
 	 */
 	fun ConfigObject<*>.applyConfigPayload(tree: TreeObject, playerUuid: UUID?) {
-		println(tree)
 		val options = requireNotNull(configs[resourceLocation]) { "Config $resourceLocation is not registered" }
 		for (option in options) {
-			val deserialized = serializer.fromTree(tree[option.id]!!, option.valueType)
+			val element = tree[option.id] ?: continue
+			val deserialized = serializer.fromTree(element, option.valueType)
 			requireNotNull(deserialized) { "Failed to deserialize value for option ${option.property.name}" }
-			if (playerUuid != null) // Set synced value for the player
+			if (playerUuid != null)
 				option.playerValues[playerUuid] = deserialized
-			else // Set synced value for the server
+			else
 				option.serverValue = deserialized
 		}
 	}
@@ -157,6 +163,18 @@ object ConfigSynchronizer {
 			tree[option.id] = configObject.serializer.toTree(option.initialValue, option.valueType)
 		}
 		return tree
+	}
+
+	private fun seedPlayerValues(playerUuid: UUID) {
+		configs.forEach { (_, options) ->
+			options.forEach { option -> option.seedIfAbsent(playerUuid) }
+		}
+	}
+
+	private fun clearPlayerValues(playerUuid: UUID) {
+		configs.forEach { (_, options) ->
+			options.forEach { option -> option.clearPlayer(playerUuid) }
+		}
 	}
 
 	internal fun handleConfigPayload(payload: CommonConfigPayload) {
@@ -180,17 +198,31 @@ object ConfigSynchronizer {
 		val initialValue: T get() = property.get()
 
 		internal val playerValues = mutableMapOf<UUID, T>()
+		private val missingLogged = mutableSetOf<UUID>()
 		var serverValue: T? = null
 			get() = field ?: initialValue
 
 		operator fun get(player: UUID): T {
 			val playerValue = playerValues[player]
 			if (playerValue != null) return playerValue
-			PandaLib.logger.warn("No synced value for player $player in config option ${property.name}")
+			if (missingLogged.add(player)) {
+				PandaLib.logger.warn("No synced value for player $player in config option ${property.name}")
+			}
 			return initialValue
 		}
 
 		operator fun get(player: Player): T = this[player.uuid]
+
+		internal fun seedIfAbsent(playerUuid: UUID) {
+			if (playerUuid !in playerValues) {
+				playerValues[playerUuid] = initialValue
+			}
+		}
+
+		internal fun clearPlayer(playerUuid: UUID) {
+			playerValues.remove(playerUuid)
+			missingLogged.remove(playerUuid)
+		}
 	}
 }
 

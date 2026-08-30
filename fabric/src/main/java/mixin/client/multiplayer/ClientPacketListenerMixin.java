@@ -13,9 +13,11 @@
 package dev.pandasystems.pandalib.fabric.mixin.client.multiplayer;
 
 import dev.pandasystems.pandalib.mixin.client.multiplayer.ClientPacketListenerKtImpl;
+import dev.pandasystems.pandalib.mixin.network.CustomPayloadKtImpl;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.network.TickablePacketListener;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundCustomPayloadPacket;
 import net.minecraft.network.protocol.game.ClientboundLoginPacket;
 import net.minecraft.network.protocol.game.ClientboundRespawnPacket;
 import org.spongepowered.asm.mixin.Mixin;
@@ -25,6 +27,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ClientPacketListener.class)
 public abstract class ClientPacketListenerMixin implements ClientGamePacketListener, TickablePacketListener {
+	@Inject(method = "handleCustomPayload", at = @At("HEAD"), cancellable = true)
+	private void pandalib$handleCustomPayload(ClientboundCustomPayloadPacket packet, CallbackInfo ci) {
+		if (CustomPayloadKtImpl.handleClient((ClientPacketListener) (Object) this, packet)) {
+			ci.cancel();
+		}
+	}
+
 	@Inject(method = "handleLogin", at = @At("TAIL"))
 	public void handleLogin(ClientboundLoginPacket packet, CallbackInfo ci) {
 		ClientPacketListenerKtImpl.INSTANCE.onLoginEvent();

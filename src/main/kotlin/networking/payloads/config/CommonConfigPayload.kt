@@ -41,7 +41,8 @@ data class CommonConfigPayload(
 		val RESOURCELOCATION = PandaLib.resourceLocation("config_payload")
 		val CODEC: StreamCodec<FriendlyByteBuf, CommonConfigPayload> = StreamCodec.composite(
 			ResourceLocationCodec, CommonConfigPayload::resourceLocation,
-			TreeObjectCodec, CommonConfigPayload::optionObject,
+			// write() uses TreeElementCodec, which prefixes a type byte. Decode must too.
+			TreeElementCodec.map({ it.asObject }, { it }), CommonConfigPayload::optionObject,
 			OptionalCodec(UUIDCodec), CommonConfigPayload::playerId,
 			::CommonConfigPayload
 		)

@@ -16,6 +16,8 @@ import dev.pandasystems.pandalib.PandaLib
 import dev.pandasystems.pandalib.config.ConfigSynchronizer.configs
 import dev.pandasystems.pandalib.config.exceptions.ConfigNotRegisteredException
 import dev.pandasystems.pandalib.event.server.serverConfigurationConnectionEvent
+import dev.pandasystems.pandalib.event.server.serverPlayerJoinEvent
+import dev.pandasystems.pandalib.event.server.serverPlayerLeaveEvent
 import dev.pandasystems.pandalib.networking.PayloadCodecRegistry
 import dev.pandasystems.pandalib.networking.ServerConfigurationNetworking
 import dev.pandasystems.pandalib.networking.ServerPlayNetworking
@@ -97,6 +99,14 @@ object ConfigSynchronizer {
 				ServerConfigurationNetworking.send(handler, ClientboundConfigRequestPayload(handler.owner.id))
 			}
 
+		serverPlayerJoinEvent.register { player ->
+			seedPlayerValues(player.uuid)
+		}
+
+		serverPlayerLeaveEvent.register { player ->
+			clearPlayerValues(player.uuid)
+		}
+
 		PandaLib.logger.debug("Config Synchronizer finished initializing!")
 	}
 
@@ -136,10 +146,10 @@ object ConfigSynchronizer {
 	 * Applies the given values to the given config object.
 	 */
 	fun ConfigObject<*>.applyConfigPayload(tree: TreeObject, playerUuid: UUID?) {
-		println(tree)
 		val options = requireNotNull(configs[resourceLocation]) { "Config $resourceLocation is not registered" }
 		for (option in options) {
-			val deserialized = serializer.fromTree(tree[option.id]!!, option.valueType)
+			val element = tree[option.id] ?: continue
+			val deserialized = serializer.fromTree(element, option.valueType)
 			requireNotNull(deserialized) { "Failed to deserialize value for option ${option.property.name}" }
 			if (playerUuid != null) // Set synced value for the player
 				option.playerValues[playerUuid] = deserialized
@@ -156,6 +166,18 @@ object ConfigSynchronizer {
 			tree[option.id] = configObject.serializer.toTree(option.initialValue, option.valueType)
 		}
 		return tree
+	}
+
+	private fun seedPlayerValues(playerUuid: UUID) {
+		configs.forEach { (_, options) ->
+			options.forEach { option -> option.seedIfAbsent(playerUuid) }
+		}
+	}
+
+	private fun clearPlayerValues(playerUuid: UUID) {
+		configs.forEach { (_, options) ->
+			options.forEach { option -> option.clearPlayer(playerUuid) }
+		}
 	}
 
 	internal fun handleConfigPayload(payload: CommonConfigPayload) {
@@ -179,17 +201,31 @@ object ConfigSynchronizer {
 		val initialValue: T get() = property.get()
 
 		internal val playerValues = mutableMapOf<UUID, T>()
+		private val missingLogged = mutableSetOf<UUID>()
 		var serverValue: T? = null
 			get() = field ?: initialValue
 
 		operator fun get(player: UUID): T {
 			val playerValue = playerValues[player]
 			if (playerValue != null) return playerValue
-			PandaLib.logger.warn("No synced value for player $player in config option ${property.name}")
+			if (missingLogged.add(player)) {
+				PandaLib.logger.warn("No synced value for player $player in config option ${property.name}")
+			}
 			return initialValue
 		}
 
 		operator fun get(player: Player): T = this[player.uuid]
+
+		internal fun seedIfAbsent(playerUuid: UUID) {
+			if (playerUuid !in playerValues) {
+				playerValues[playerUuid] = initialValue
+			}
+		}
+
+		internal fun clearPlayer(playerUuid: UUID) {
+			playerValues.remove(playerUuid)
+			missingLogged.remove(playerUuid)
+		}
 	}
 }
 

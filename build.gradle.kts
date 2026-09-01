@@ -157,9 +157,6 @@ allprojects {
 		maven("https://maven.fabricmc.net/")
 		maven("https://maven.minecraftforge.net/")
 		maven("https://maven.creeperhost.net") // TEMP alternative to neoforge maven
-		maven("https://maven.neoforged.net/releases/")
-
-		maven("https://repo.pandasystems.dev/repository/maven-public/")
 	}
 
 	dependencies {

@@ -90,7 +90,7 @@ tasks.processResources {
         "neoforge_version" to project.property("neoforge_version")
     )
     inputs.properties(replaceProperties)
-    filesMatching(listOf("META-INF/neoforge.mods.toml", "pack.mcmeta")) {
+    filesMatching(listOf("META-INF/neoforge.mods.toml", "pack.mcmeta", "pandalib-neoforge.mixins.json")) {
         expand(replaceProperties)
     }
 }

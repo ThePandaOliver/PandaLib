@@ -1,4 +1,4 @@
-package dev.pandasystems.pandalib.mixin;
+package dev.pandasystems.pandalib.neoforge.mixin.events;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import dev.pandasystems.pandalib.core.handles.player.PlayerHandleKt;
@@ -19,7 +19,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
 @Mixin(ServerPlayerGameMode.class)
-public class ServerPlayerGameModeMixin {
+public class BlockBreakEventMixin {
 	@Final
 	@Shadow
 	protected ServerPlayer player;
@@ -30,12 +30,7 @@ public class ServerPlayerGameModeMixin {
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/Block;playerWillDestroy(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/entity/player/Player;)Lnet/minecraft/world/level/block/state/BlockState;"), method = "destroyBlock", cancellable = true)
 	private void breakBlock(BlockPos pos, CallbackInfoReturnable<Boolean> cir, @Local BlockEntity blockEntity, @Local(ordinal = 0) BlockState state) {
 		boolean result = ServerPlayerEventsKt.getPlayerBlockBreakBefore().invoke(new ServerPlayerBlockBreakEventContext(this.level, PlayerHandleKt.handle(this.player), pos, state, blockEntity));
-
-		if (!result) {
-			ServerPlayerEventsKt.getPlayerBlockBreakCanceled().invoke(new ServerPlayerBlockBreakEventContext(this.level, PlayerHandleKt.handle(this.player), pos, state, blockEntity));
-
-			cir.setReturnValue(false);
-		}
+		if (!result) cir.setReturnValue(false);
 	}
 
 	@Inject(at = @At("RETURN"), method = "destroyBlock")
@@ -43,5 +38,12 @@ public class ServerPlayerGameModeMixin {
 		if (!cir.getReturnValue()) return;
 
 		ServerPlayerEventsKt.getPlayerBlockBreakAfter().invoke(new ServerPlayerBlockBreakEventContext(this.level, PlayerHandleKt.handle(this.player), pos, state, blockEntity));
+	}
+
+	@Inject(at = @At("RETURN"), method = "destroyBlock")
+	private void onBlockBreakCancel(BlockPos pos, CallbackInfoReturnable<Boolean> cir, @Local BlockEntity blockEntity, @Local(ordinal = 0) BlockState state) {
+		if (cir.getReturnValue()) return;
+
+		ServerPlayerEventsKt.getPlayerBlockBreakCanceled().invoke(new ServerPlayerBlockBreakEventContext(this.level, PlayerHandleKt.handle(this.player), pos, state, blockEntity));
 	}
 }

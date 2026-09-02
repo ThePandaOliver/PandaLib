@@ -1,11 +1,12 @@
 {
   "required": true,
-  "package": "dev.pandasystems.pandalib.mixin",
+  "package": "dev.pandasystems.pandalib.neoforge.mixin",
   "compatibilityLevel": "JAVA_25",
   "minVersion": "0.8",
   "client": [
   ],
   "mixins": [
+    "events.BlockBreakEventMixin"
   ],
   "injectors": {
     "defaultRequire": 1

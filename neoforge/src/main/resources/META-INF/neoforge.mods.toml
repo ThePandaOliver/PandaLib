@@ -27,3 +27,6 @@ side = "BOTH"
 
 [[mixins]]
 config = "pandalib.mixins.json"
+
+[[mixins]]
+config = "pandalib-neoforge.mixins.json"

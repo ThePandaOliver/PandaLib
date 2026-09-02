@@ -24,6 +24,7 @@ import net.minecraft.world.entity.EntityEvent
 import net.minecraft.world.entity.LivingEntity
 import net.neoforged.bus.api.IEventBus
 import net.neoforged.bus.api.SubscribeEvent
+import net.neoforged.neoforge.common.NeoForge
 import net.neoforged.neoforge.event.entity.player.PlayerEvent
 import net.neoforged.neoforge.event.level.BlockEvent
 import net.neoforged.neoforge.event.level.LevelEvent
@@ -36,60 +37,59 @@ import net.neoforged.neoforge.event.tick.ServerTickEvent
 
 object EventHandler {
 	fun init(eventBus: IEventBus) {
-		eventBus.register(this)
+		NeoForge.EVENT_BUS.addListener(this::onLevelLoad)
+		NeoForge.EVENT_BUS.addListener(this::onLevelUnload)
+		NeoForge.EVENT_BUS.addListener(this::onServerStarting)
+		NeoForge.EVENT_BUS.addListener(this::onServerStarted)
+		NeoForge.EVENT_BUS.addListener(this::onServerStopping)
+		NeoForge.EVENT_BUS.addListener(this::onServerStopped)
+		NeoForge.EVENT_BUS.addListener(this::onPreServerTick)
+		NeoForge.EVENT_BUS.addListener(this::onPostServerTick)
+		NeoForge.EVENT_BUS.addListener(this::onPlayerJoin)
+		NeoForge.EVENT_BUS.addListener(this::onPlayerLeave)
+		NeoForge.EVENT_BUS.addListener(this::onPlayerRespawn)
 	}
 
-	@SubscribeEvent
 	fun onLevelLoad(event: LevelEvent.Load) {
 		serverLevelLoad(ServerLevelEventContext(event.level))
 	}
 
-	@SubscribeEvent
 	fun onLevelUnload(event: LevelEvent.Unload) {
 		serverLevelUnLoad(ServerLevelEventContext(event.level))
 	}
 
-	@SubscribeEvent
 	fun onServerStarting(event: ServerStartingEvent) {
 		serverStarting(ServerLifecycleEventContext(event.server))
 	}
 
-	@SubscribeEvent
 	fun onServerStarted(event: ServerStartedEvent) {
 		serverStarted(ServerLifecycleEventContext(event.server))
 	}
 
-	@SubscribeEvent
 	fun onServerStopping(event: ServerStoppingEvent) {
 		serverStopping(ServerLifecycleEventContext(event.server))
 	}
 
-	@SubscribeEvent
 	fun onServerStopped(event: ServerStoppedEvent) {
 		serverStopped(ServerLifecycleEventContext(event.server))
 	}
 
-	@SubscribeEvent
 	fun onPreServerTick(event: ServerTickEvent.Pre) {
 		preServerTick(ServerTickEventContext(event.server))
 	}
 
-	@SubscribeEvent
 	fun onPostServerTick(event: ServerTickEvent.Post) {
 		postServerTick(ServerTickEventContext(event.server))
 	}
 
-	@SubscribeEvent
 	fun onPlayerJoin(event: PlayerEvent.PlayerLoggedInEvent) {
 		playerServerJoin(ServerPlayerConnectionEventContext(event.entity.handle()))
 	}
 
-	@SubscribeEvent
 	fun onPlayerLeave(event: PlayerEvent.PlayerLoggedOutEvent) {
 		playerServerLeave(ServerPlayerConnectionEventContext(event.entity.handle()))
 	}
 
-	@SubscribeEvent
 	fun onPlayerRespawn(event: PlayerEvent.PlayerRespawnEvent) {
 		playerServerAfterRespawn(ServerPlayerRespawnEventContextForge(event.entity.handle()))
 	}

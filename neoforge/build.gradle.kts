@@ -9,6 +9,8 @@ plugins {
     `maven-publish`
 }
 
+evaluationDependsOn(":common")
+
 base {
     archivesName.set("pandalib-neoforge")
 }
@@ -35,6 +37,7 @@ neoForge {
     mods {
         create("pandalib") {
             sourceSet(sourceSets.main.get())
+            sourceSet(project(":common").extensions.getByType<SourceSetContainer>().named("main").get())
         }
     }
 }

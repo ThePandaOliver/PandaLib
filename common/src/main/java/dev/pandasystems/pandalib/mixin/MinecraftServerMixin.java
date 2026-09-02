@@ -12,7 +12,6 @@ import dev.pandasystems.pandalib.event.events.server.ServerTickEventsKt;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -50,12 +49,12 @@ public abstract class MinecraftServerMixin {
 
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;tickChildren(Ljava/util/function/BooleanSupplier;)V"), method = "tickServer")
 	private void onStartTick(BooleanSupplier shouldKeepTicking, CallbackInfo ci) {
-		ServerTickEventsKt.getStartServerTick().invoke(new ServerTickEventContext((MinecraftServer) (Object) this));
+		ServerTickEventsKt.getPreServerTick().invoke(new ServerTickEventContext((MinecraftServer) (Object) this));
 	}
 
 	@Inject(at = @At("TAIL"), method = "tickServer")
 	private void onEndTick(BooleanSupplier shouldKeepTicking, CallbackInfo info) {
-		ServerTickEventsKt.getEndServerTick().invoke(new ServerTickEventContext((MinecraftServer) (Object) this));
+		ServerTickEventsKt.getPostServerTick().invoke(new ServerTickEventContext((MinecraftServer) (Object) this));
 	}
 
 	@WrapOperation(method = "createLevels", at = @At(value = "INVOKE", target = "Ljava/util/Map;put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;"))

@@ -5,5 +5,5 @@ import net.minecraft.server.MinecraftServer
 
 data class ServerTickEventContext(val server: MinecraftServer)
 
-val startServerTick by event<ServerTickEventContext>()
-val endServerTick by event<ServerTickEventContext>()
+val preServerTick by event<ServerTickEventContext>()
+val postServerTick by event<ServerTickEventContext>()

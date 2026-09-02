@@ -16,6 +16,7 @@ internal class NeoForgeInit(
             NeoForgeRuntime
         )
 
+        EventHandler.init(eventBus)
         eventBus.addListener(NeoForgeNetworkManager::registrationEvent)
     }
 }

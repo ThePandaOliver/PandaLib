@@ -1,16 +1,17 @@
 {
-	"required": true,
-	"package": "dev.pandasystems.pandalib.mixin",
-	"compatibilityLevel": "JAVA_25",
-	"minVersion": "0.8",
-	"client": [
-	],
-	"mixins": [
-		"MinecraftServerMixin",
-		"PlayerListMixin",
-		"ServerPlayerGameModeMixin"
-	],
-	"injectors": {
-		"defaultRequire": 1
+  "required": true,
+  "package": "dev.pandasystems.pandalib.mixin",
+  "compatibilityLevel": "JAVA_25",
+  "minVersion": "0.8",
+  "client": [
+    "ClientConfigurationPacketListenerImplMixin"
+  ],
+  "mixins": [
+    "MinecraftServerMixin",
+    "PlayerListMixin",
+    "ServerPlayerGameModeMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
 	}
 }

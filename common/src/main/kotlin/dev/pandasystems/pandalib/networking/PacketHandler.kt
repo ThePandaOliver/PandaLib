@@ -1,6 +1,6 @@
 package dev.pandasystems.pandalib.networking
 
-import dev.pandasystems.pandalib.core.handles.player.PlayerHandle
+import net.minecraft.world.entity.player.Player
 
 interface PacketContext {
     /**
@@ -8,7 +8,7 @@ interface PacketContext {
      *
      * If client side: Represents the receiver of the packet
      */
-    val peer: PlayerHandle
+    val peer: Player
 
     val executor: NetworkExecutor
 
@@ -16,7 +16,7 @@ interface PacketContext {
 }
 
 class PacketContextImpl(
-    override val peer: PlayerHandle,
+    override val peer: Player,
     override val executor: NetworkExecutor,
     private val sender: PacketSender,
     private val replyToServer: Boolean,

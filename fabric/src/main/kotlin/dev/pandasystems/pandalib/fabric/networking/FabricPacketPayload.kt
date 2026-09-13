@@ -1,6 +1,6 @@
 package dev.pandasystems.pandalib.fabric.networking
 
-import net.minecraft.network.RegistryFriendlyByteBuf
+import net.minecraft.network.FriendlyByteBuf
 import net.minecraft.network.codec.StreamCodec
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 import net.minecraft.resources.Identifier
@@ -25,7 +25,7 @@ internal class FabricPacketPayload(
 
         fun codec(
             payloadType: CustomPacketPayload.Type<FabricPacketPayload>,
-        ): StreamCodec<RegistryFriendlyByteBuf, FabricPacketPayload> = StreamCodec.of(
+        ): StreamCodec<FriendlyByteBuf, FabricPacketPayload> = StreamCodec.of(
             { buffer, payload -> buffer.writeByteArray(payload.data) },
             { buffer -> FabricPacketPayload(payloadType, buffer.readByteArray(MAX_DATA_SIZE)) },
         )

@@ -1,7 +1,6 @@
 package dev.pandasystems.pandalib.neoforge.mixin.events;
 
 import com.llamalad7.mixinextras.sugar.Local;
-import dev.pandasystems.pandalib.core.handles.player.PlayerHandleKt;
 import dev.pandasystems.pandalib.event.events.server.ServerPlayerBlockBreakEventContext;
 import dev.pandasystems.pandalib.event.events.server.ServerPlayerEvents;
 import org.spongepowered.asm.mixin.Final;
@@ -29,7 +28,7 @@ public class BlockBreakEventMixin {
 
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/Block;playerWillDestroy(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/entity/player/Player;)Lnet/minecraft/world/level/block/state/BlockState;"), method = "destroyBlock", cancellable = true)
 	private void breakBlock(BlockPos pos, CallbackInfoReturnable<Boolean> cir, @Local BlockEntity blockEntity, @Local(ordinal = 0) BlockState state) {
-		ServerPlayerBlockBreakEventContext result = ServerPlayerEvents.Companion.getPlayerBlockBreakBefore().invoke(new ServerPlayerBlockBreakEventContext(this.level, PlayerHandleKt.handle(this.player), pos, state, blockEntity, false));
+		ServerPlayerBlockBreakEventContext result = ServerPlayerEvents.Companion.getPlayerBlockBreakBefore().invoke(new ServerPlayerBlockBreakEventContext(this.level, this.player, pos, state, blockEntity, false));
 		if (result.isCanceled()) cir.setReturnValue(false);
 	}
 
@@ -37,13 +36,13 @@ public class BlockBreakEventMixin {
 	private void onBlockBroken(BlockPos pos, CallbackInfoReturnable<Boolean> cir, @Local BlockEntity blockEntity, @Local(ordinal = 0) BlockState state) {
 		if (!cir.getReturnValue()) return;
 
-		ServerPlayerEvents.Companion.getPlayerBlockBreakAfter().invoke(new ServerPlayerBlockBreakEventContext(this.level, PlayerHandleKt.handle(this.player), pos, state, blockEntity, false));
+		ServerPlayerEvents.Companion.getPlayerBlockBreakAfter().invoke(new ServerPlayerBlockBreakEventContext(this.level, this.player, pos, state, blockEntity, false));
 	}
 
 	@Inject(at = @At("RETURN"), method = "destroyBlock")
 	private void onBlockBreakCancel(BlockPos pos, CallbackInfoReturnable<Boolean> cir, @Local BlockEntity blockEntity, @Local(ordinal = 0) BlockState state) {
 		if (cir.getReturnValue()) return;
 
-		ServerPlayerEvents.Companion.getPlayerBlockBreakCanceled().invoke(new ServerPlayerBlockBreakEventContext(this.level, PlayerHandleKt.handle(this.player), pos, state, blockEntity, false));
+		ServerPlayerEvents.Companion.getPlayerBlockBreakCanceled().invoke(new ServerPlayerBlockBreakEventContext(this.level, this.player, pos, state, blockEntity, false));
 	}
 }

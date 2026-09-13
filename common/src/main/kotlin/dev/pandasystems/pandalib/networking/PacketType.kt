@@ -5,7 +5,8 @@ import dev.pandasystems.pandalib.networking.codecs.PacketCodec
 class PacketType<T>(
     val id: PacketId,
     val direction: PacketDirection,
-    val codec: PacketCodec<T>
+    val codec: PacketCodec<T>,
+    val phase: NetworkPhase = NetworkPhase.PLAY,
 )
 
 enum class PacketDirection {

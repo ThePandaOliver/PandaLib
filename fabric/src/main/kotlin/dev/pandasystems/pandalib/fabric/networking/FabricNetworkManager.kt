@@ -53,6 +53,9 @@ class FabricNetworkManager : NetworkManager {
         require(type.direction == expectedDirection) {
             "Packet '${type.id}' has direction ${type.direction}; expected $expectedDirection."
         }
+        require(type.phase == NetworkPhase.PLAY) {
+            "Packet '${type.id}' has phase ${type.phase}; expected ${NetworkPhase.PLAY}."
+        }
         check(packetTypes[type.id] === type) {
             "Packet '${type.id}' must be registered before it can be sent."
         }
@@ -67,6 +70,9 @@ class FabricNetworkManager : NetworkManager {
     ) {
         require(type.id !in packetTypes) {
             "A packet is already registered with id '${type.id}'."
+        }
+        require(type.phase == NetworkPhase.PLAY) {
+            "Packet '${type.id}' has phase ${type.phase}; expected ${NetworkPhase.PLAY}."
         }
 
         val payloadType = FabricPacketPayload.type(type.id.toIdentifier())

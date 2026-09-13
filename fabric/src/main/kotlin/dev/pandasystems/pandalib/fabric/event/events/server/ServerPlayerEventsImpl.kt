@@ -1,7 +1,6 @@
 package dev.pandasystems.pandalib.fabric.event.events.server
 
 import com.google.auto.service.AutoService
-import dev.pandasystems.pandalib.core.handles.player.handle
 import dev.pandasystems.pandalib.event.Event
 import dev.pandasystems.pandalib.event.events.server.ServerPlayerBlockBreakEventContext
 import dev.pandasystems.pandalib.event.events.server.ServerPlayerConnectionEventContext
@@ -12,6 +11,7 @@ import dev.pandasystems.pandalib.fabric.event.bindEvent
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents as FabricServerPlayerEvents
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents as FabricPlayerBlockBreakEvents
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents as FabricConnectionEvents
+import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.level.Level
 
 @AutoService(ServerPlayerEvents::class)
@@ -19,7 +19,7 @@ class ServerPlayerEventsImpl : ServerPlayerEvents {
 	override val playerServerJoin: Event<ServerPlayerConnectionEventContext> = FabricConnectionEvents.JOIN.bindEvent(
 		createListener = { subInvoker ->
 			FabricConnectionEvents.Join { handler, _, _ ->
-				subInvoker(ServerPlayerConnectionEventContext(handler.player.handle()))
+				subInvoker(ServerPlayerConnectionEventContext(handler.player))
 			}
 		},
 		onInvoke = { ctx, _ ->
@@ -30,7 +30,7 @@ class ServerPlayerEventsImpl : ServerPlayerEvents {
 	override val playerServerLeave: Event<ServerPlayerConnectionEventContext> = FabricConnectionEvents.DISCONNECT.bindEvent(
 		createListener = { subInvoker ->
 			FabricConnectionEvents.Disconnect { handler, _ ->
-				subInvoker(ServerPlayerConnectionEventContext(handler.player.handle()))
+				subInvoker(ServerPlayerConnectionEventContext(handler.player))
 			}
 		},
 		onInvoke = { ctx, _ ->
@@ -43,8 +43,8 @@ class ServerPlayerEventsImpl : ServerPlayerEvents {
 			FabricServerPlayerEvents.AfterRespawn { oldPlayer, newPlayer, alive ->
 				subInvoker(
 					ServerPlayerRespawnEventContextFabric(
-						player = newPlayer.handle(),
-						oldPlayer = oldPlayer.handle(),
+						player = newPlayer,
+						oldPlayer = oldPlayer,
 						alive = alive
 					)
 				)
@@ -52,8 +52,8 @@ class ServerPlayerEventsImpl : ServerPlayerEvents {
 		},
 		onInvoke = { ctx, eventInvoker ->
 			val fabricCtx = ctx.fabric
-			val newPlayer = ctx.player.resolve() as? net.minecraft.server.level.ServerPlayer
-			val oldPlayer = fabricCtx?.oldPlayer?.resolve() as? net.minecraft.server.level.ServerPlayer
+			val newPlayer = ctx.player as? ServerPlayer
+			val oldPlayer = fabricCtx?.oldPlayer as? ServerPlayer
 			if (newPlayer != null && oldPlayer != null && fabricCtx != null) {
 				eventInvoker.afterRespawn(oldPlayer, newPlayer, fabricCtx.alive)
 			}
@@ -63,14 +63,14 @@ class ServerPlayerEventsImpl : ServerPlayerEvents {
 	override val playerBlockBreakBefore: Event<ServerPlayerBlockBreakEventContext> = FabricPlayerBlockBreakEvents.BEFORE.bindEvent(
 		createListener = { subInvoker ->
 			FabricPlayerBlockBreakEvents.Before { level, player, pos, state, entity ->
-				val ctx = ServerPlayerBlockBreakEventContext(level, player.handle(), pos, state, entity)
+				val ctx = ServerPlayerBlockBreakEventContext(level, player, pos, state, entity)
 				subInvoker(ctx)
 				!ctx.isCanceled
 			}
 		},
 		onInvoke = { ctx, eventInvoker ->
-			val player = ctx.player.resolve()
-			if (player != null && ctx.level is Level) {
+			val player = ctx.player
+			if (ctx.level is Level) {
 				val allowed = eventInvoker.beforeBlockBreak(ctx.level as Level, player, ctx.pos, ctx.blockState, ctx.blockEntity)
 				ctx.isCanceled = !allowed
 			}
@@ -80,12 +80,12 @@ class ServerPlayerEventsImpl : ServerPlayerEvents {
 	override val playerBlockBreakAfter: Event<ServerPlayerBlockBreakEventContext> = FabricPlayerBlockBreakEvents.AFTER.bindEvent(
 		createListener = { subInvoker ->
 			FabricPlayerBlockBreakEvents.After { level, player, pos, state, entity ->
-				subInvoker(ServerPlayerBlockBreakEventContext(level, player.handle(), pos, state, entity))
+				subInvoker(ServerPlayerBlockBreakEventContext(level, player, pos, state, entity))
 			}
 		},
 		onInvoke = { ctx, eventInvoker ->
-			val player = ctx.player.resolve()
-			if (player != null && ctx.level is Level) {
+			val player = ctx.player
+			if (ctx.level is Level) {
 				eventInvoker.afterBlockBreak(ctx.level as Level, player, ctx.pos, ctx.blockState, ctx.blockEntity)
 			}
 		}
@@ -94,12 +94,12 @@ class ServerPlayerEventsImpl : ServerPlayerEvents {
 	override val playerBlockBreakCanceled: Event<ServerPlayerBlockBreakEventContext> = FabricPlayerBlockBreakEvents.CANCELED.bindEvent(
 		createListener = { subInvoker ->
 			FabricPlayerBlockBreakEvents.Canceled { level, player, pos, state, entity ->
-				subInvoker(ServerPlayerBlockBreakEventContext(level, player.handle(), pos, state, entity))
+				subInvoker(ServerPlayerBlockBreakEventContext(level, player, pos, state, entity))
 			}
 		},
 		onInvoke = { ctx, eventInvoker ->
-			val player = ctx.player.resolve()
-			if (player != null && ctx.level is Level) {
+			val player = ctx.player
+			if (ctx.level is Level) {
 				eventInvoker.onBlockBreakCanceled(ctx.level as Level, player, ctx.pos, ctx.blockState, ctx.blockEntity)
 			}
 		}

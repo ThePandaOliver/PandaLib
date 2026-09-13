@@ -1,17 +1,17 @@
 package dev.pandasystems.pandalib.event.events.server
 
-import dev.pandasystems.pandalib.core.handles.player.PlayerHandle
 import dev.pandasystems.pandalib.core.utils.loadService
 import dev.pandasystems.pandalib.event.Event
 import net.minecraft.core.BlockPos
+import net.minecraft.world.entity.player.Player
 import net.minecraft.world.level.LevelAccessor
 import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.state.BlockState
 
-data class ServerPlayerConnectionEventContext(val player: PlayerHandle)
+data class ServerPlayerConnectionEventContext(val player: Player)
 
 sealed interface ServerPlayerRespawnEventContext {
-    val player: PlayerHandle
+    val player: Player
 
     val fabric: ServerPlayerRespawnEventContextFabric?
         get() = this as? ServerPlayerRespawnEventContextFabric
@@ -20,22 +20,22 @@ sealed interface ServerPlayerRespawnEventContext {
 }
 
 data class ServerPlayerRespawnEventContextFabric(
-    override val player: PlayerHandle,
-    val oldPlayer: PlayerHandle,
+    override val player: Player,
+    val oldPlayer: Player,
     val alive: Boolean
 ) : ServerPlayerRespawnEventContext
 
 data class ServerPlayerRespawnEventContextForge(
-    override val player: PlayerHandle
+    override val player: Player
 ) : ServerPlayerRespawnEventContext
 
 data class ServerPlayerBlockBreakEventContext(
     val level: LevelAccessor,
-    val player: PlayerHandle,
+    val player: Player,
     val pos: BlockPos,
     val blockState: BlockState,
     val blockEntity: BlockEntity?,
-    var isCanceled: Boolean = false // Replaces old eventCancelable
+    var isCanceled: Boolean = false
 )
 
 interface ServerPlayerEvents {

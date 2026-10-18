@@ -1,74 +1,90 @@
 plugins {
-    alias(libs.plugins.kotlin.jvm)
-    alias(libs.plugins.kotlin.serialization)
-    alias(libs.plugins.ksp)
-    alias(libs.plugins.fabric.loom)
-    `maven-publish`
+	alias(libs.plugins.kotlin.jvm)
+	alias(libs.plugins.kotlin.serialization)
+	alias(libs.plugins.ksp)
+	alias(libs.plugins.fabric.loom)
+	`maven-publish`
 }
 
 base {
-    archivesName.set("pandalib-common")
+	archivesName.set("pandalib-common")
 }
 
 repositories {
-    mavenLocal()
-    mavenCentral()
+	mavenLocal()
+	mavenCentral()
+}
+
+val testmod = sourceSets.create("testmod") {
+	compileClasspath += sourceSets["main"].output
+	runtimeClasspath += sourceSets["main"].output
+}
+
+configurations {
+	named("testmodCompileClasspath") {
+		extendsFrom(configurations["compileClasspath"])
+	}
+	named("testmodRuntimeClasspath") {
+		extendsFrom(configurations["runtimeClasspath"])
+	}
 }
 
 dependencies {
-    minecraft("com.mojang:minecraft:${project.property("minecraft_version")}")
-    compileOnly("net.fabricmc:fabric-loader:${project.property("fabric_loader_version")}")
+	minecraft("com.mojang:minecraft:${project.property("minecraft_version")}")
+	compileOnly("net.fabricmc:fabric-loader:${project.property("fabric_loader_version")}")
 
-    api(libs.kotlin.reflect)
-    api(libs.kotlinx.coroutines)
-    api(libs.kotlinx.serialization)
-    api(libs.kotlinx.serialization.json)
-    api(libs.kotlinx.serialization.cbor)
-    api(libs.kotlinx.io)
-    api(libs.kotlinx.io.bytestring)
-    api(libs.kotlinx.datetime)
+	api(libs.kotlin.reflect)
+	api(libs.kotlinx.coroutines)
+	api(libs.kotlinx.serialization)
+	api(libs.kotlinx.serialization.json)
+	api(libs.kotlinx.serialization.cbor)
+	api(libs.kotlinx.io)
+	api(libs.kotlinx.io.bytestring)
+	api(libs.kotlinx.datetime)
 
-    testImplementation(libs.kotlin.test)
+	testImplementation(libs.kotlin.test)
+
+	"testmodImplementation"(sourceSets["main"].output)
 }
 
 java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(25))
-    }
+	toolchain {
+		languageVersion.set(JavaLanguageVersion.of(25))
+	}
 }
 
 kotlin {
-    jvmToolchain(25)
+	jvmToolchain(25)
 }
 
 tasks.processResources {
-    val replaceProperties = mapOf(
-        "mod_id" to project.property("mod_id"),
-        "mod_name" to project.property("mod_name"),
-        "mod_version" to project.property("mod_version"),
-        "mod_description" to project.property("mod_description"),
-        "mod_authors" to project.property("mod_authors"),
-        "mod_license" to project.property("mod_license"),
-        "minecraft_version" to project.property("minecraft_version")
-    )
-    inputs.properties(replaceProperties)
-    filesMatching("pandalib.mixins.json") {
-        expand(replaceProperties)
-    }
+	val replaceProperties = mapOf(
+		"mod_id" to project.property("mod_id"),
+		"mod_name" to project.property("mod_name"),
+		"mod_version" to project.property("mod_version"),
+		"mod_description" to project.property("mod_description"),
+		"mod_authors" to project.property("mod_authors"),
+		"mod_license" to project.property("mod_license"),
+		"minecraft_version" to project.property("minecraft_version")
+	)
+	inputs.properties(replaceProperties)
+	filesMatching("pandalib.mixins.json") {
+		expand(replaceProperties)
+	}
 }
 
 publishing {
-    publications {
-        create<MavenPublication>("maven") {
-            from(components["java"])
-            artifactId = "pandalib-common"
-        }
-    }
+	publications {
+		create<MavenPublication>("maven") {
+			from(components["java"])
+			artifactId = "pandalib-common"
+		}
+	}
 
-    repositories {
-        maven {
-            name = "LocalRepo"
-            url = uri(providers.gradleProperty("LocalRepo").getOrElse("${rootProject.layout.buildDirectory.get()}/repo"))
-        }
-    }
+	repositories {
+		maven {
+			name = "LocalRepo"
+			url = uri(providers.gradleProperty("LocalRepo").getOrElse("${rootProject.layout.buildDirectory.get()}/repo"))
+		}
+	}
 }

@@ -1,0 +1,17 @@
+{
+	"schemaVersion": 1,
+	"id": "pandalib_test",
+	"version": "1.0.0",
+	"name": "PandaLib Test",
+	"description": "Test mod for PandaLib",
+	"entrypoints": {
+		"main": [
+			"dev.pandasystems.pandalib.fabric.testmod.FabricTestMod"
+		]
+	},
+	"depends": {
+		"fabricloader": "*",
+		"fabric-api": "*",
+		"minecraft": "*"
+	}
+}

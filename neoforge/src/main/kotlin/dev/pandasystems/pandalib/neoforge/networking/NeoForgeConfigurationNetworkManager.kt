@@ -16,13 +16,10 @@ import net.neoforged.neoforge.network.registration.PayloadRegistrar
 
 @AutoService(ConfigurationNetworkManager::class)
 class NeoForgeConfigurationNetworkManager : ConfigurationNetworkManager {
-	private data class RegisteredPacket<T>(
-		val type: PacketType<T>,
-		val handler: ConfigurationPacketHandler<T>
-	)
-
 	private val packetTypes = mutableMapOf<PacketId, PacketType<*>>()
-	private val deferredPackets = DeferredRegistry.create<RegisteredPacket<*>>()
+
+	private var registrar: PayloadRegistrar? = null
+	private val queuedRegistrations = mutableListOf<(PayloadRegistrar) -> Unit>()
 
 	override fun <T> sendToServer(type: PacketType<T>, value: T) {
 		checkRegistered(type, PacketDirection.CLIENT_TO_SERVER)
@@ -70,35 +67,34 @@ class NeoForgeConfigurationNetworkManager : ConfigurationNetworkManager {
 		require(type.phase == NetworkPhase.CONFIGURATION) {
 			"Packet '${type.id}' has phase ${type.phase}; expected ${NetworkPhase.CONFIGURATION}."
 		}
-
-		val id = type.id.toIdentifier()
-		deferredPackets.register(id) { RegisteredPacket(type, handler) }
 		packetTypes[type.id] = type
-	}
 
-	@Suppress("UNCHECKED_CAST")
-	internal fun registrationEvent(event: RegisterPayloadHandlersEvent) {
-		val registrar = event.registrar("1")
+		val registrationAction: (PayloadRegistrar) -> Unit = { reg ->
+			registerPayload(reg, type, handler)
+		}
 
-		deferredPackets.registerTo { key, entry ->
-			registerPayload(registrar, key, entry)
+		val currentRegistrar = registrar
+		if (currentRegistrar != null) {
+			registrationAction(currentRegistrar)
+		} else {
+			synchronized(queuedRegistrations) {
+				queuedRegistrations.add(registrationAction)
+			}
 		}
 	}
 
 	@Suppress("UNCHECKED_CAST")
 	private fun <T> registerPayload(
-		registrar: PayloadRegistrar,
-		key: Identifier,
-		entry: RegisteredPacket<T>
+		reg: PayloadRegistrar,
+		type: PacketType<T>,
+		handler: ConfigurationPacketHandler<T>
 	) {
-		val (type, handler) = entry
-		val payloadType = NeoForgePacketPayload.type(key)
-		val payloadCodec =
-			NeoForgePacketPayload.codec(payloadType) as StreamCodec<FriendlyByteBuf, NeoForgePacketPayload>
+		val payloadType = NeoForgePacketPayload.type(type.id.toIdentifier())
+		val payloadCodec = NeoForgePacketPayload.codec(payloadType) as StreamCodec<FriendlyByteBuf, NeoForgePacketPayload>
 
 		when (type.direction) {
 			PacketDirection.CLIENT_TO_SERVER -> {
-				registrar.configurationToServer(payloadType, payloadCodec) { payload, context ->
+				reg.configurationToServer(payloadType, payloadCodec) { payload, context ->
 					handler.handle(
 						ConfigurationPacketContextImpl(
 							listener = context.listener() as? ServerConfigurationPacketListenerImpl,
@@ -110,9 +106,8 @@ class NeoForgeConfigurationNetworkManager : ConfigurationNetworkManager {
 					)
 				}
 			}
-
 			PacketDirection.SERVER_TO_CLIENT -> {
-				registrar.configurationToClient(payloadType, payloadCodec) { payload, context ->
+				reg.configurationToClient(payloadType, payloadCodec) { payload, context ->
 					handler.handle(
 						ConfigurationPacketContextImpl(
 							listener = null,
@@ -124,6 +119,15 @@ class NeoForgeConfigurationNetworkManager : ConfigurationNetworkManager {
 					)
 				}
 			}
+		}
+	}
+
+	internal fun registrationEvent(event: RegisterPayloadHandlersEvent) {
+		val reg = event.registrar("1")
+		registrar = reg
+		synchronized(queuedRegistrations) {
+			queuedRegistrations.forEach { it(reg) }
+			queuedRegistrations.clear()
 		}
 	}
 }

@@ -38,7 +38,7 @@ class CompletableDeferredObject<T>(override val key: Identifier) : DeferredObjec
 		}
 	}
 
-	internal fun bind(boundValue: T) {
+	fun bind(boundValue: T) {
 		check(!isBound) { "DeferredObject '$key' is already bound." }
 		value = boundValue
 		isBound = true

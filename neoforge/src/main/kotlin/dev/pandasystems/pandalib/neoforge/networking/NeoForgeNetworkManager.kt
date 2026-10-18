@@ -3,23 +3,32 @@ package dev.pandasystems.pandalib.neoforge.networking
 import com.google.auto.service.AutoService
 import dev.pandasystems.pandalib.core.MinecraftRuntime
 import dev.pandasystems.pandalib.core.RuntimeEnvironment
+import dev.pandasystems.pandalib.core.handles.Identifier
+import dev.pandasystems.pandalib.core.handles.identifier
 import dev.pandasystems.pandalib.core.lifecycles.ServerLifecycle
+import dev.pandasystems.pandalib.neoforge.networking.NeoForgeConfigurationNetworkManager.RegisteredPacket
 import dev.pandasystems.pandalib.networking.*
 import dev.pandasystems.pandalib.registry.DeferredRegistry
 import net.minecraft.network.FriendlyByteBuf
 import net.minecraft.network.codec.StreamCodec
-import net.minecraft.resources.Identifier
 import net.minecraft.server.MinecraftServer
 import net.minecraft.server.level.ServerPlayer
+import net.minecraft.server.network.ServerConfigurationPacketListenerImpl
 import net.minecraft.world.entity.player.Player
 import net.neoforged.neoforge.client.network.ClientPacketDistributor
 import net.neoforged.neoforge.network.PacketDistributor
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent
+import net.neoforged.neoforge.network.registration.PayloadRegistrar
 
 @AutoService(NetworkManager::class)
 class NeoForgeNetworkManager : NetworkManager {
+    private data class RegisteredPacket<T>(
+        val type: PacketType<T>,
+        val handler: PacketHandler<T>
+    )
+
     private val packetTypes = mutableMapOf<PacketId, PacketType<*>>()
-    private val deferredPacketTypes = DeferredRegistry<PacketType<*>, PacketHandler<*>>()
+    private val deferredPackets = DeferredRegistry.create<RegisteredPacket<*>>()
 
     private val server: MinecraftServer? get() = ServerLifecycle.serverInstance
 
@@ -81,7 +90,8 @@ class NeoForgeNetworkManager : NetworkManager {
             "Packet '${type.id}' has phase ${type.phase}; expected ${NetworkPhase.PLAY}."
         }
 
-        deferredPacketTypes.register(type) { handler }
+        val id = type.id.toIdentifier()
+        deferredPackets.register(id) { RegisteredPacket(type, handler) }
         packetTypes[type.id] = type
     }
 
@@ -89,47 +99,50 @@ class NeoForgeNetworkManager : NetworkManager {
     internal fun registrationEvent(event: RegisterPayloadHandlersEvent) {
         val registrar = event.registrar("1")
 
-        deferredPacketTypes.registerAll { type, factory ->
-            val handler = factory() as PacketHandler<Any>
+        deferredPackets.registerTo { key, entry ->
+            registerPayload(registrar, key, entry)
+        }
+    }
 
-            val payloadType = NeoForgePacketPayload.type(type.id.toIdentifier())
-            val payloadCodec = NeoForgePacketPayload.codec(payloadType)
-            when (type.direction) {
-                PacketDirection.CLIENT_TO_SERVER -> {
-                    registrar.playToServer(
-                        payloadType,
-                        payloadCodec as StreamCodec<FriendlyByteBuf, NeoForgePacketPayload>
-                    ) { payload, context ->
-                        handler.handle(
-                            PacketContextImpl(
-                                peer = context.player(),
-                                executor = { task -> context.enqueueWork { task() } },
-                                sender = this,
-                                replyToServer = false
-                            ),
-                            type.codec.decode(payload.data) as Any
-                        )
-                    }
-                }
-                PacketDirection.SERVER_TO_CLIENT -> {
-                    registrar.playToClient(
-                        payloadType,
-                        payloadCodec as StreamCodec<FriendlyByteBuf, NeoForgePacketPayload>
-                    ) { payload, context ->
-                        handler.handle(
-                            PacketContextImpl(
-                                peer = context.player(),
-                                executor = { task -> context.enqueueWork { task() } },
-                                sender = this,
-                                replyToServer = true
-                            ),
-                            type.codec.decode(payload.data) as Any
-                        )
-                    }
+    @Suppress("UNCHECKED_CAST")
+    private fun <T> registerPayload(
+        registrar: PayloadRegistrar,
+        key: Identifier,
+        entry: RegisteredPacket<T>
+    ) {
+        val (type, handler) = entry
+        val payloadType = NeoForgePacketPayload.type(key)
+        val payloadCodec =
+            NeoForgePacketPayload.codec(payloadType) as StreamCodec<FriendlyByteBuf, NeoForgePacketPayload>
+
+        when (type.direction) {
+            PacketDirection.CLIENT_TO_SERVER -> {
+                registrar.playToServer(payloadType, payloadCodec) { payload, context ->
+                    handler.handle(
+                        PacketContextImpl(
+                            peer = context.player(),
+                            executor = { task -> context.enqueueWork { task() } },
+                            sender = this,
+                            replyToServer = false
+                        ),
+                        type.codec.decode(payload.data)
+                    )
                 }
             }
 
-            handler
+            PacketDirection.SERVER_TO_CLIENT -> {
+                registrar.playToClient(payloadType, payloadCodec) { payload, context ->
+                    handler.handle(
+                        PacketContextImpl(
+                            peer = context.player(),
+                            executor = { task -> context.enqueueWork { task() } },
+                            sender = this,
+                            replyToServer = true
+                        ),
+                        type.codec.decode(payload.data)
+                    )
+                }
+            }
         }
     }
 }
@@ -139,7 +152,7 @@ internal fun PacketId.toIdentifier(): Identifier {
         "Packet id '$value' must be namespaced, for example 'examplemod:sync'."
     }
     return try {
-        Identifier.parse(value)
+        identifier(value)
     } catch (exception: IllegalArgumentException) {
         throw IllegalArgumentException(
             "Packet id '$value' is not a valid Minecraft identifier. Use a namespaced id such as 'examplemod:sync'.",

@@ -2,6 +2,7 @@ package dev.pandasystems.pandalib.testmod
 
 import dev.pandasystems.pandalib.core.handles.identifier
 import dev.pandasystems.pandalib.registry.DeferredRegistry
+import dev.pandasystems.pandalib.testmod.networking.NetworkTestManager
 import net.minecraft.core.Registry
 import net.minecraft.core.registries.Registries
 import net.minecraft.world.item.Item
@@ -12,5 +13,6 @@ object CommonTestMod {
 
 	fun init() {
 		items.finalizeRegistration()
+		NetworkTestManager.registerHandlers()
 	}
 }

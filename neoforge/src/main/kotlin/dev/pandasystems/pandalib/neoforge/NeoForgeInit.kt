@@ -3,6 +3,8 @@ package dev.pandasystems.pandalib.neoforge
 import dev.pandasystems.pandalib.core.PandaLibMain
 import dev.pandasystems.pandalib.core.modId
 import dev.pandasystems.pandalib.core.utils.loadService
+import dev.pandasystems.pandalib.event.events.server.ServerConfigurationEvents
+import dev.pandasystems.pandalib.neoforge.event.events.server.ServerConfigurationEventsImpl
 import dev.pandasystems.pandalib.neoforge.networking.NeoForgeConfigurationNetworkManager
 import dev.pandasystems.pandalib.neoforge.networking.NeoForgeNetworkManager
 import dev.pandasystems.pandalib.neoforge.registry.NeoForgePlatformRegistryBridge
@@ -13,9 +15,10 @@ import net.neoforged.fml.common.Mod
 
 @Mod(modId)
 internal class NeoForgeInit(
-    eventBus: IEventBus
+    val eventBus: IEventBus
 ) {
     init {
+        instance = this
         PandaLibMain()
 
         eventBus.addListener(NeoForgePlatformRegistryBridge::onRegisterEvent)
@@ -23,7 +26,15 @@ internal class NeoForgeInit(
         val networkManager = loadService<NetworkManager>() as NeoForgeNetworkManager
         eventBus.addListener(networkManager::registrationEvent)
 
+        val configEvents = loadService<ServerConfigurationEvents>() as ServerConfigurationEventsImpl
+        eventBus.addListener(configEvents::onRegisterConfigurationTasks)
+
         val configNetworkManager = loadService<ConfigurationNetworkManager>() as NeoForgeConfigurationNetworkManager
         eventBus.addListener(configNetworkManager::registrationEvent)
+    }
+
+    companion object {
+        lateinit var instance: NeoForgeInit
+            private set
     }
 }

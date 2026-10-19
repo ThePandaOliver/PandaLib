@@ -10,6 +10,27 @@ import java.util.concurrent.ConcurrentHashMap
 
 @AutoService(PlatformRegistryBridge::class)
 class NeoForgePlatformRegistryBridge : PlatformRegistryBridge {
+	override fun <T : Any> create(registryKey: ResourceKey<out Registry<T>>): DeferredRegistry<T> {
+		return object : DeferredRegistry<T> {
+			override fun register(key: Identifier, provider: (key: ResourceKey<T>) -> T): DeferredObject<T> {
+				val obj = CompletableDeferredObject<T>(key)
+				@Suppress("UNCHECKED_CAST")
+				queue(registryKey, key, obj, provider)
+				return obj
+			}
+
+			override fun finalizeRegistration() {
+				// No-op or touch point: classloading has occurred
+			}
+		}
+	}
+
+	internal class RegistrationEntry<T : Any>(
+		val key: Identifier,
+		val obj: CompletableDeferredObject<T>,
+		val provider: (ResourceKey<T>) -> T
+	)
+
 	companion object {
 		private val registries = ConcurrentHashMap<ResourceKey<out Registry<*>>, MutableList<RegistrationEntry<*>>>()
 
@@ -41,25 +62,4 @@ class NeoForgePlatformRegistryBridge : PlatformRegistryBridge {
 			}
 		}
 	}
-
-	override fun <T : Any> create(registryKey: ResourceKey<out Registry<T>>): DeferredRegistry<T> {
-		return object : DeferredRegistry<T> {
-			override fun register(key: Identifier, provider: (key: ResourceKey<T>) -> T): DeferredObject<T> {
-				val obj = CompletableDeferredObject<T>(key)
-				@Suppress("UNCHECKED_CAST")
-				queue(registryKey, key, obj, provider)
-				return obj
-			}
-
-			override fun finalizeRegistration() {
-				// No-op or touch point: classloading has occurred
-			}
-		}
-	}
-
-	internal class RegistrationEntry<T : Any>(
-		val key: Identifier,
-		val obj: CompletableDeferredObject<T>,
-		val provider: (ResourceKey<T>) -> T
-	)
 }

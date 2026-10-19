@@ -9,7 +9,6 @@ import net.minecraft.resources.ResourceKey
 
 @AutoService(PlatformRegistryBridge::class)
 class FabricPlatformRegistryBridge : PlatformRegistryBridge {
-
     override fun <T : Any> create(registryKey: ResourceKey<out Registry<T>>): DeferredRegistry<T> {
         return object : DeferredRegistry<T> {
             private val entries = mutableListOf<Pair<CompletableDeferredObject<T>, () -> T>>()

@@ -56,6 +56,15 @@ dependencies {
 	implementation("net.fabricmc:fabric-loader:${project.property("fabric_loader_version")}")
 	implementation("net.fabricmc.fabric-api:fabric-api:${project.property("fabric_api_version")}")
 
+	api(libs.kotlin.reflect)
+	api(libs.kotlinx.coroutines)
+	api(libs.kotlinx.serialization)
+	api(libs.kotlinx.serialization.json)
+	api(libs.kotlinx.serialization.cbor)
+	api(libs.kotlinx.io)
+	api(libs.kotlinx.io.bytestring)
+	api(libs.kotlinx.datetime)
+
 	common(project(":common")) { isTransitive = false }
 	shadowCommon(project(":common")) { isTransitive = false }
 

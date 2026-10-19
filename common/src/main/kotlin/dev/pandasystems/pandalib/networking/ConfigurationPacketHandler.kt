@@ -1,13 +1,13 @@
 package dev.pandasystems.pandalib.networking
 
-import net.minecraft.server.network.ServerConfigurationPacketListenerImpl
+import net.minecraft.network.protocol.configuration.ServerConfigurationPacketListener
 
 interface ConfigurationPacketContext {
     /**
      * If handled on server side, the network configuration listener representing the peer.
      * Null if handled on client side.
      */
-    val listener: ServerConfigurationPacketListenerImpl?
+    val listener: ServerConfigurationPacketListener?
 
     val executor: NetworkExecutor
 
@@ -15,7 +15,7 @@ interface ConfigurationPacketContext {
 }
 
 class ConfigurationPacketContextImpl(
-    override val listener: ServerConfigurationPacketListenerImpl?,
+    override val listener: ServerConfigurationPacketListener?,
     override val executor: NetworkExecutor,
     private val sender: ConfigurationPacketSender,
     private val replyToServer: Boolean,

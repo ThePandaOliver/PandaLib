@@ -15,10 +15,10 @@ import net.neoforged.fml.common.Mod
 
 @Mod(modId)
 internal class NeoForgeInit(
-    val eventBus: IEventBus
+    eventBus: IEventBus
 ) {
     init {
-        instance = this
+        Companion.eventBus = eventBus
         PandaLibMain()
 
         eventBus.addListener(NeoForgePlatformRegistryBridge::onRegisterEvent)
@@ -26,15 +26,12 @@ internal class NeoForgeInit(
         val networkManager = loadService<NetworkManager>() as NeoForgeNetworkManager
         eventBus.addListener(networkManager::registrationEvent)
 
-        val configEvents = loadService<ServerConfigurationEvents>() as ServerConfigurationEventsImpl
-        eventBus.addListener(configEvents::onRegisterConfigurationTasks)
-
         val configNetworkManager = loadService<ConfigurationNetworkManager>() as NeoForgeConfigurationNetworkManager
         eventBus.addListener(configNetworkManager::registrationEvent)
     }
 
     companion object {
-        lateinit var instance: NeoForgeInit
+        lateinit var eventBus: IEventBus
             private set
     }
 }

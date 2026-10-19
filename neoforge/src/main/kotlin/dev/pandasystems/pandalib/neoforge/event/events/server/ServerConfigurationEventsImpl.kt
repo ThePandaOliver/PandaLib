@@ -5,17 +5,15 @@ import dev.pandasystems.pandalib.event.Event
 import dev.pandasystems.pandalib.event.event
 import dev.pandasystems.pandalib.event.events.server.ServerConfigurationConnectionEventContext
 import dev.pandasystems.pandalib.event.events.server.ServerConfigurationEvents
+import dev.pandasystems.pandalib.neoforge.NeoForgeInit
+import dev.pandasystems.pandalib.neoforge.event.bindEvent
 import net.minecraft.server.network.ServerConfigurationPacketListenerImpl
 import net.neoforged.neoforge.network.event.RegisterConfigurationTasksEvent
 
 @AutoService(ServerConfigurationEvents::class)
 class ServerConfigurationEventsImpl : ServerConfigurationEvents {
-    override val configurationStart: Event<ServerConfigurationConnectionEventContext> = event()
-
-    internal fun onRegisterConfigurationTasks(event: RegisterConfigurationTasksEvent) {
-        val listener = event.listener
-        if (listener is ServerConfigurationPacketListenerImpl) {
-            configurationStart(ServerConfigurationConnectionEventContext(listener))
-        }
-    }
+    override val configurationStart: Event<ServerConfigurationConnectionEventContext> = NeoForgeInit.eventBus.bindEvent(
+        convertFromCtx = { ctx -> RegisterConfigurationTasksEvent(ctx.listener) },
+        convertToCtx = { event -> ServerConfigurationConnectionEventContext(event.listener) }
+    )
 }

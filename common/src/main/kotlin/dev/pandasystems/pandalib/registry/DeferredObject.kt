@@ -1,6 +1,7 @@
 package dev.pandasystems.pandalib.registry
 
 import dev.pandasystems.pandalib.core.handles.Identifier
+import dev.pandasystems.pandalib.event.event
 import java.util.concurrent.CopyOnWriteArrayList
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
@@ -18,7 +19,7 @@ interface DeferredObject<out T> : ReadOnlyProperty<Any?, T> {
 
 class CompletableDeferredObject<T>(override val key: Identifier) : DeferredObject<T> {
 	private var value: T? = null
-	private val listeners = CopyOnWriteArrayList<(T) -> Unit>()
+	private val listeners = event<T>()
 
 	@Volatile
 	override var isBound: Boolean = false
@@ -34,7 +35,7 @@ class CompletableDeferredObject<T>(override val key: Identifier) : DeferredObjec
 		if (isBound) {
 			listener(get())
 		} else {
-			listeners += listener
+			listeners.subscribe(listener)
 		}
 	}
 
@@ -42,7 +43,6 @@ class CompletableDeferredObject<T>(override val key: Identifier) : DeferredObjec
 		check(!isBound) { "DeferredObject '$key' is already bound." }
 		value = boundValue
 		isBound = true
-		listeners.forEach { it(boundValue) }
-		listeners.clear()
+		listeners(boundValue)
 	}
 }

@@ -10,16 +10,16 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
 import net.fabricmc.loader.api.FabricLoader
-import net.minecraft.resources.Identifier
 import net.minecraft.server.MinecraftServer
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.entity.player.Player
+import dev.pandasystems.pandalib.core.handles.Identifier
 
 @AutoService(NetworkManager::class)
 class FabricNetworkManager : NetworkManager {
-    private val packetTypes = mutableMapOf<PacketId, PacketType<*>>()
+    private val packetTypes = mutableMapOf<Identifier, PacketType<*>>()
 
-    private val server: MinecraftServer? get() = ServerLifecycle.serverInstance
+    private val server: MinecraftServer? get() = ServerLifecycle.instance
 
     override fun <T> sendToServer(type: PacketType<T>, value: T) {
         checkRegistered(type, PacketDirection.CLIENT_TO_SERVER)
@@ -29,9 +29,9 @@ class FabricNetworkManager : NetworkManager {
         ClientPlayNetworking.send(payload(type, value))
     }
 
-    override fun <T> sendToPeer(peer: Player, type: PacketType<T>, value: T) {
+    override fun <T> sendToPlayer(player: Player, type: PacketType<T>, value: T) {
         checkRegistered(type, PacketDirection.SERVER_TO_CLIENT)
-        ServerPlayNetworking.send(peer as ServerPlayer, payload(type, value))
+        ServerPlayNetworking.send(player as ServerPlayer, payload(type, value))
     }
 
     override fun <T> broadcast(
@@ -62,7 +62,7 @@ class FabricNetworkManager : NetworkManager {
     }
 
     private fun <T> payload(type: PacketType<T>, value: T): FabricPacketPayload =
-        FabricPacketPayload(FabricPacketPayload.type(type.id.toIdentifier()), type.codec.encode(value))
+        FabricPacketPayload(FabricPacketPayload.type(type.id), type.codec.encode(value))
 
     override fun <T> register(
         type: PacketType<T>,
@@ -75,7 +75,7 @@ class FabricNetworkManager : NetworkManager {
             "Packet '${type.id}' has phase ${type.phase}; expected ${NetworkPhase.PLAY}."
         }
 
-        val payloadType = FabricPacketPayload.type(type.id.toIdentifier())
+        val payloadType = FabricPacketPayload.type(type.id)
         val payloadCodec = FabricPacketPayload.codec(payloadType)
         when (type.direction) {
             PacketDirection.CLIENT_TO_SERVER -> {
@@ -115,19 +115,5 @@ class FabricNetworkManager : NetworkManager {
             }
         }
         packetTypes[type.id] = type
-    }
-}
-
-internal fun PacketId.toIdentifier(): Identifier {
-    require(':' in value) {
-        "Packet id '$value' must be namespaced, for example 'examplemod:sync'."
-    }
-    return try {
-        Identifier.parse(value)
-    } catch (exception: IllegalArgumentException) {
-        throw IllegalArgumentException(
-            "Packet id '$value' is not a valid Minecraft identifier. Use a namespaced id such as 'examplemod:sync'.",
-            exception,
-        )
     }
 }

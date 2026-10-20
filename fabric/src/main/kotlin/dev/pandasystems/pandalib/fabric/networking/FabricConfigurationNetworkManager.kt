@@ -3,17 +3,19 @@ package dev.pandasystems.pandalib.fabric.networking
 import com.google.auto.service.AutoService
 import dev.pandasystems.pandalib.core.MinecraftRuntime
 import dev.pandasystems.pandalib.core.RuntimeEnvironment
+import dev.pandasystems.pandalib.core.handles.Identifier
 import dev.pandasystems.pandalib.networking.*
 import net.fabricmc.api.EnvType
 import net.fabricmc.fabric.api.client.networking.v1.ClientConfigurationNetworking
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationNetworking
 import net.fabricmc.loader.api.FabricLoader
+import net.minecraft.network.protocol.configuration.ServerConfigurationPacketListener
 import net.minecraft.server.network.ServerConfigurationPacketListenerImpl
 
 @AutoService(ConfigurationNetworkManager::class)
 class FabricConfigurationNetworkManager : ConfigurationNetworkManager {
-	private val packetTypes = mutableMapOf<PacketId, PacketType<*>>()
+	private val packetTypes = mutableMapOf<Identifier, PacketType<*>>()
 
 	override fun <T> sendToServer(type: PacketType<T>, value: T) {
 		checkRegistered(type, PacketDirection.CLIENT_TO_SERVER)
@@ -24,12 +26,12 @@ class FabricConfigurationNetworkManager : ConfigurationNetworkManager {
 	}
 
 	override fun <T> sendToClient(
-		listener: ServerConfigurationPacketListenerImpl,
+		listener: ServerConfigurationPacketListener,
 		type: PacketType<T>,
 		value: T
 	) {
 		checkRegistered(type, PacketDirection.SERVER_TO_CLIENT)
-		ServerConfigurationNetworking.send(listener, payload(type, value))
+		ServerConfigurationNetworking.send(listener as ServerConfigurationPacketListenerImpl, payload(type, value))
 	}
 
 	private fun <T> checkRegistered(type: PacketType<T>, expectedDirection: PacketDirection) {
@@ -45,7 +47,7 @@ class FabricConfigurationNetworkManager : ConfigurationNetworkManager {
 	}
 
 	private fun <T> payload(type: PacketType<T>, value: T): FabricPacketPayload =
-		FabricPacketPayload(FabricPacketPayload.type(type.id.toIdentifier()), type.codec.encode(value))
+		FabricPacketPayload(FabricPacketPayload.type(type.id), type.codec.encode(value))
 
 	override fun <T> register(
 		type: PacketType<T>,
@@ -58,7 +60,7 @@ class FabricConfigurationNetworkManager : ConfigurationNetworkManager {
 			"Packet '${type.id}' has phase ${type.phase}; expected ${NetworkPhase.CONFIGURATION}."
 		}
 
-		val payloadType = FabricPacketPayload.type(type.id.toIdentifier())
+		val payloadType = FabricPacketPayload.type(type.id)
 		val payloadCodec = FabricPacketPayload.codec(payloadType)
 		when (type.direction) {
 			PacketDirection.CLIENT_TO_SERVER -> {

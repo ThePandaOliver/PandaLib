@@ -23,11 +23,8 @@ internal class NeoForgeInit(
 
         eventBus.addListener(NeoForgePlatformRegistryBridge::onRegisterEvent)
 
-        val networkManager = loadService<NetworkManager>() as NeoForgeNetworkManager
-        eventBus.addListener(networkManager::registrationEvent)
-
-        val configNetworkManager = loadService<ConfigurationNetworkManager>() as NeoForgeConfigurationNetworkManager
-        eventBus.addListener(configNetworkManager::registrationEvent)
+        eventBus.addListener(NeoForgeNetworkManager::registrationEvent)
+        eventBus.addListener(NeoForgeConfigurationNetworkManager::registrationEvent)
     }
 
     companion object {

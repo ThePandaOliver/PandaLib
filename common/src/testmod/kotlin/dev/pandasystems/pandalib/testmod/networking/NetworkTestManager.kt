@@ -54,7 +54,7 @@ object NetworkTestManager {
 
         // When a player finishes joining the world, initiate the Play Ping test
         ServerPlayerEvents.playerServerJoin.subscribe { ctx ->
-            NetworkManager.sendToPeer(ctx.player, TestPackets.PLAY_PING, PingPayload(42L, "hello_from_server"))
+            NetworkManager.sendToPlayer(ctx.player, TestPackets.PLAY_PING, PingPayload(42L, "hello_from_server"))
         }
     }
 }

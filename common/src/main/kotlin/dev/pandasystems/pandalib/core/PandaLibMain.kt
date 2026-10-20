@@ -6,7 +6,7 @@ import dev.pandasystems.pandalib.core.lifecycles.ServerLifecycle
 
 class PandaLibMain {
 	init {
-		install(this)
+		instance = this
 		ClientLifecycle.initialize()
 		ServerLifecycle.initialize()
 	}
@@ -14,16 +14,5 @@ class PandaLibMain {
 	companion object {
 		lateinit var instance: PandaLibMain
 			private set
-
-		private fun install(main: PandaLibMain) {
-			if (!::instance.isInitialized) {
-				instance = main
-			} else {
-				logger.warn("""
-					PandaLibMain instance already initialized.
-					This is only intended for testing purposes.
-				""".trimIndent())
-			}
-		}
 	}
 }

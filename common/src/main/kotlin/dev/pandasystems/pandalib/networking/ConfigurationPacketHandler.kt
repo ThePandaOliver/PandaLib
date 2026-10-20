@@ -4,8 +4,7 @@ import net.minecraft.network.protocol.configuration.ServerConfigurationPacketLis
 
 interface ConfigurationPacketContext {
     /**
-     * If handled on server side, the network configuration listener representing the peer.
-     * Null if handled on client side.
+     * The network configuration listener representing the player, or null if handled on client side.
      */
     val listener: ServerConfigurationPacketListener?
 

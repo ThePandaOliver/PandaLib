@@ -4,9 +4,7 @@ import net.minecraft.world.entity.player.Player
 
 interface PacketContext {
     /**
-     * If server side: Represents the sender of the packet
-     *
-     * If client side: Represents the receiver of the packet
+     * Represents the sender if server side, or receiver if client side.
      */
     val peer: Player
 
@@ -23,7 +21,7 @@ class PacketContextImpl(
 ) : PacketContext {
     override fun <T> reply(packet: PacketType<T>, value: T) {
         if (replyToServer) sender.sendToServer(packet, value)
-        else sender.sendToPeer(peer, packet, value)
+        else sender.sendToPlayer(peer, packet, value)
     }
 }
 

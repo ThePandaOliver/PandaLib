@@ -4,7 +4,6 @@ import com.google.auto.service.AutoService
 import dev.pandasystems.pandalib.core.MinecraftRuntime
 import dev.pandasystems.pandalib.core.RuntimeEnvironment
 import dev.pandasystems.pandalib.core.handles.Identifier
-import dev.pandasystems.pandalib.core.handles.identifier
 import dev.pandasystems.pandalib.core.lifecycles.ServerLifecycle
 import dev.pandasystems.pandalib.networking.*
 import net.minecraft.network.FriendlyByteBuf
@@ -19,145 +18,136 @@ import net.neoforged.neoforge.network.registration.PayloadRegistrar
 
 @AutoService(NetworkManager::class)
 class NeoForgeNetworkManager : NetworkManager {
-    private val packetTypes = mutableMapOf<PacketId, PacketType<*>>()
+	override fun <T> sendToServer(type: PacketType<T>, value: T) {
+		checkRegistered(type, PacketDirection.CLIENT_TO_SERVER)
+		check(MinecraftRuntime.environment == RuntimeEnvironment.CLIENT) {
+			"sendToServer can only be called on a client."
+		}
+		ClientPacketDistributor.sendToServer(payload(type, value))
+	}
 
-    private var registrar: PayloadRegistrar? = null
-    private val queuedRegistrations = mutableListOf<(PayloadRegistrar) -> Unit>()
+	override fun <T> sendToPlayer(player: Player, type: PacketType<T>, value: T) {
+		checkRegistered(type, PacketDirection.SERVER_TO_CLIENT)
+		check(MinecraftRuntime.environment == RuntimeEnvironment.SERVER) {
+			"sendToPlayer can only be called on a server."
+		}
+		PacketDistributor.sendToPlayer(player as ServerPlayer, payload(type, value))
+	}
 
-    private val server: MinecraftServer? get() = ServerLifecycle.serverInstance
+	override fun <T> broadcast(
+		type: PacketType<T>,
+		value: T,
+		filter: (Player) -> Boolean,
+	) {
+		checkRegistered(type, PacketDirection.SERVER_TO_CLIENT)
+		val currentServer = checkNotNull(server) {
+			"broadcast can only be called while a Minecraft server is running."
+		}
+		currentServer.playerList.players.forEach { player ->
+			val peer = player
+			if (filter(peer)) PacketDistributor.sendToPlayer(player, payload(type, value))
+		}
+	}
 
-    override fun <T> sendToServer(type: PacketType<T>, value: T) {
-        checkRegistered(type, PacketDirection.CLIENT_TO_SERVER)
-        check(MinecraftRuntime.environment == RuntimeEnvironment.CLIENT) {
-            "sendToServer can only be called on a client."
-        }
-        ClientPacketDistributor.sendToServer(payload(type, value))
-    }
+	override fun <T> register(
+		type: PacketType<T>,
+		handler: PacketHandler<T>
+	) {
+		require(type.id !in packetTypes) {
+			"A packet is already registered with id '${type.id}'."
+		}
+		require(type.phase == NetworkPhase.PLAY) {
+			"Packet '${type.id}' has phase ${type.phase}; expected ${NetworkPhase.PLAY}."
+		}
+		packetTypes[type.id] = type
 
-    override fun <T> sendToPeer(peer: Player, type: PacketType<T>, value: T) {
-        checkRegistered(type, PacketDirection.SERVER_TO_CLIENT)
-        PacketDistributor.sendToPlayer(peer as ServerPlayer, payload(type, value))
-    }
+		val registrationAction: (PayloadRegistrar) -> Unit = { reg ->
+			registerPayload(reg, type, handler)
+		}
 
-    override fun <T> broadcast(
-        type: PacketType<T>,
-        value: T,
-        filter: (Player) -> Boolean,
-    ) {
-        checkRegistered(type, PacketDirection.SERVER_TO_CLIENT)
-        val currentServer = checkNotNull(server) {
-            "broadcast can only be called while a Minecraft server is running."
-        }
-        currentServer.playerList.players.forEach { player ->
-            val peer = player
-            if (filter(peer)) PacketDistributor.sendToPlayer(player, payload(type, value))
-        }
-    }
+		val currentRegistrar = registrar
+		if (currentRegistrar != null) {
+			registrationAction(currentRegistrar)
+		} else {
+			synchronized(queuedRegistrations) {
+				queuedRegistrations.add(registrationAction)
+			}
+		}
+	}
 
-    private fun <T> checkRegistered(type: PacketType<T>, expectedDirection: PacketDirection) {
-        require(type.direction == expectedDirection) {
-            "Packet '${type.id}' has direction ${type.direction}; expected $expectedDirection."
-        }
-        require(type.phase == NetworkPhase.PLAY) {
-            "Packet '${type.id}' has phase ${type.phase}; expected ${NetworkPhase.PLAY}."
-        }
-        check(packetTypes[type.id] === type) {
-            "Packet '${type.id}' must be registered before it can be sent."
-        }
-    }
+	@Suppress("UNCHECKED_CAST")
+	private fun <T> registerPayload(
+		reg: PayloadRegistrar,
+		type: PacketType<T>,
+		handler: PacketHandler<T>
+	) {
+		val payloadType = NeoForgePacketPayload.type(type.id)
+		val payloadCodec = NeoForgePacketPayload.codec(payloadType) as StreamCodec<FriendlyByteBuf, NeoForgePacketPayload>
 
-    private fun <T> payload(type: PacketType<T>, value: T): NeoForgePacketPayload =
-        NeoForgePacketPayload(
-            NeoForgePacketPayload.type(
-                type.id.toIdentifier()
-            ), type.codec.encode(value)
-        )
+		when (type.direction) {
+			PacketDirection.CLIENT_TO_SERVER -> {
+				reg.configurationToServer(payloadType, payloadCodec) { payload, context ->
+					handler.handle(
+						PacketContextImpl(
+							peer = context.player(),
+							executor = { task -> context.enqueueWork { task() } },
+							sender = this,
+							replyToServer = false
+						),
+						type.codec.decode(payload.data)
+					)
+				}
+			}
+			PacketDirection.SERVER_TO_CLIENT -> {
+				reg.configurationToClient(payloadType, payloadCodec) { payload, context ->
+					handler.handle(
+						PacketContextImpl(
+							peer = context.player(),
+							executor = { task -> context.enqueueWork { task() } },
+							sender = this,
+							replyToServer = true
+						),
+						type.codec.decode(payload.data)
+					)
+				}
+			}
+		}
+	}
 
-    override fun <T> register(
-        type: PacketType<T>,
-        handler: PacketHandler<T>
-    ) {
-        require(type.id !in packetTypes) {
-            "A packet is already registered with id '${type.id}'."
-        }
-        require(type.phase == NetworkPhase.PLAY) {
-            "Packet '${type.id}' has phase ${type.phase}; expected ${NetworkPhase.PLAY}."
-        }
-        packetTypes[type.id] = type
+	companion object {
+		private val packetTypes = mutableMapOf<Identifier, PacketType<*>>()
 
-        val registrationAction: (PayloadRegistrar) -> Unit = { reg ->
-            registerPayload(reg, type, handler)
-        }
+		private var registrar: PayloadRegistrar? = null
+		private val queuedRegistrations = mutableListOf<(PayloadRegistrar) -> Unit>()
 
-        val currentRegistrar = registrar
-        if (currentRegistrar != null) {
-            registrationAction(currentRegistrar)
-        } else {
-            synchronized(queuedRegistrations) {
-                queuedRegistrations.add(registrationAction)
-            }
-        }
-    }
+		private val server: MinecraftServer? get() = ServerLifecycle.instance
 
-    @Suppress("UNCHECKED_CAST")
-    private fun <T> registerPayload(
-        reg: PayloadRegistrar,
-        type: PacketType<T>,
-        handler: PacketHandler<T>
-    ) {
-        val payloadType = NeoForgePacketPayload.type(type.id.toIdentifier())
-        val payloadCodec = NeoForgePacketPayload.codec(payloadType) as StreamCodec<FriendlyByteBuf, NeoForgePacketPayload>
+		internal fun registrationEvent(event: RegisterPayloadHandlersEvent) {
+			val reg = event.registrar("1")
+			registrar = reg
+			synchronized(queuedRegistrations) {
+				queuedRegistrations.forEach { it(reg) }
+				queuedRegistrations.clear()
+			}
+		}
 
-        when (type.direction) {
-            PacketDirection.CLIENT_TO_SERVER -> {
-                reg.configurationToServer(payloadType, payloadCodec) { payload, context ->
-                    handler.handle(
-                        PacketContextImpl(
-                            peer = context.player(),
-                            executor = { task -> context.enqueueWork { task() } },
-                            sender = this,
-                            replyToServer = false
-                        ),
-                        type.codec.decode(payload.data)
-                    )
-                }
-            }
-            PacketDirection.SERVER_TO_CLIENT -> {
-                reg.configurationToClient(payloadType, payloadCodec) { payload, context ->
-                    handler.handle(
-                        PacketContextImpl(
-                            peer = context.player(),
-                            executor = { task -> context.enqueueWork { task() } },
-                            sender = this,
-                            replyToServer = true
-                        ),
-                        type.codec.decode(payload.data)
-                    )
-                }
-            }
-        }
-    }
+		private fun <T> checkRegistered(type: PacketType<T>, expectedDirection: PacketDirection) {
+			require(type.direction == expectedDirection) {
+				"Packet '${type.id}' has direction ${type.direction}; expected $expectedDirection."
+			}
+			require(type.phase == NetworkPhase.PLAY) {
+				"Packet '${type.id}' has phase ${type.phase}; expected ${NetworkPhase.PLAY}."
+			}
+			check(packetTypes[type.id] === type) {
+				"Packet '${type.id}' must be registered before it can be sent."
+			}
+		}
 
-    internal fun registrationEvent(event: RegisterPayloadHandlersEvent) {
-        val reg = event.registrar("1")
-        registrar = reg
-        synchronized(queuedRegistrations) {
-            queuedRegistrations.forEach { it(reg) }
-            queuedRegistrations.clear()
-        }
-    }
-}
-
-internal fun PacketId.toIdentifier(): Identifier {
-    require(':' in value) {
-        "Packet id '$value' must be namespaced, for example 'examplemod:sync'."
-    }
-    return try {
-        identifier(value)
-    } catch (exception: IllegalArgumentException) {
-        throw IllegalArgumentException(
-            "Packet id '$value' is not a valid Minecraft identifier. Use a namespaced id such as 'examplemod:sync'.",
-            exception,
-        )
-    }
+		private fun <T> payload(type: PacketType<T>, value: T): NeoForgePacketPayload =
+			NeoForgePacketPayload(
+				NeoForgePacketPayload.type(
+					type.id
+				), type.codec.encode(value)
+			)
+	}
 }

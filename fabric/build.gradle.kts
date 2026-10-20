@@ -90,12 +90,14 @@ loom {
 		named("client") {
 			client()
 			configName = "Fabric Client"
+			ideConfigFolder = "Fabric"
 			ideConfigGenerated(true)
 			runDir("../.runs/client")
 		}
 		named("server") {
 			server()
 			configName = "Fabric Server"
+			ideConfigFolder = "Fabric"
 			ideConfigGenerated(true)
 			runDir("../.runs/server")
 		}
@@ -103,6 +105,7 @@ loom {
 			client()
 			source("testmod")
 			configName = "Test Fabric Client"
+			ideConfigFolder = "Test Fabric"
 			ideConfigGenerated(true)
 			runDir("../.runs/client")
 		}
@@ -110,6 +113,7 @@ loom {
 			server()
 			source("testmod")
 			configName = "Test Fabric Server"
+			ideConfigFolder = "Test Fabric"
 			ideConfigGenerated(true)
 			runDir("../.runs/server")
 		}

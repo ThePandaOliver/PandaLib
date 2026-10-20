@@ -90,23 +90,27 @@ neoForge {
 		create("client") {
 			client()
 			ideName = "NeoForge Client"
+			ideFolderName = "NeoForge"
 			gameDirectory.set(rootProject.file(".runs/client"))
 		}
 		create("server") {
 			server()
 			ideName = "NeoForge Server"
+			ideFolderName = "NeoForge"
 			gameDirectory.set(rootProject.file(".runs/server"))
 		}
 		create("testmodClient") {
 			client()
 			sourceSet = sourceSets["testmod"]
 			ideName = "Test NeoForge Client"
+			ideFolderName = "Test NeoForge"
 			gameDirectory.set(rootProject.file(".runs/client"))
 		}
 		create("testmodServer") {
 			server()
 			sourceSet = sourceSets["testmod"]
 			ideName = "Test NeoForge Server"
+			ideFolderName = "Test NeoForge"
 			gameDirectory.set(rootProject.file(".runs/server"))
 		}
 	}

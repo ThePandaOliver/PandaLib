@@ -1,33 +1,18 @@
 package dev.pandasystems.pandalib.fabric.networking
 
 import com.google.auto.service.AutoService
-import dev.pandasystems.pandalib.core.MinecraftRuntime
-import dev.pandasystems.pandalib.core.RuntimeEnvironment
+import dev.pandasystems.pandalib.core.handles.Identifier
 import dev.pandasystems.pandalib.core.lifecycles.ServerLifecycle
 import dev.pandasystems.pandalib.networking.*
-import net.fabricmc.api.EnvType
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
-import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.server.MinecraftServer
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.entity.player.Player
-import dev.pandasystems.pandalib.core.handles.Identifier
 
 @AutoService(PlayPlayNetworkManager::class)
 class FabricPlayNetworkManager : PlayPlayNetworkManager {
-    private val packetTypes = mutableMapOf<Identifier, PacketType<*>>()
-
     private val server: MinecraftServer? get() = ServerLifecycle.instance
-
-    override fun <T> sendToServer(type: PacketType<T>, value: T) {
-        checkRegistered(type, PacketDirection.CLIENT_TO_SERVER)
-        check(MinecraftRuntime.environment == RuntimeEnvironment.CLIENT) {
-            "sendToServer can only be called on a client."
-        }
-        ClientPlayNetworking.send(payload(type, value))
-    }
 
     override fun <T> sendToPlayer(player: Player, type: PacketType<T>, value: T) {
         checkRegistered(type, PacketDirection.SERVER_TO_CLIENT)
@@ -44,25 +29,26 @@ class FabricPlayNetworkManager : PlayPlayNetworkManager {
             "broadcast can only be called while a Minecraft server is running."
         }
         currentServer.playerList.players.forEach { player ->
-            val peer = player
-            if (filter(peer)) ServerPlayNetworking.send(player, payload(type, value))
+            if (filter(player)) ServerPlayNetworking.send(player, payload(type, value))
         }
     }
 
-    private fun <T> checkRegistered(type: PacketType<T>, expectedDirection: PacketDirection) {
-        require(type.direction == expectedDirection) {
-            "Packet '${type.id}' has direction ${type.direction}; expected $expectedDirection."
+    override fun <T> registerPayload(type: PacketType<T>) {
+        require(type.id !in packetTypes) {
+            "A packet is already registered with id '${type.id}'."
         }
         require(type.phase == NetworkPhase.PLAY) {
             "Packet '${type.id}' has phase ${type.phase}; expected ${NetworkPhase.PLAY}."
         }
-        check(packetTypes[type.id] === type) {
-            "Packet '${type.id}' must be registered before it can be sent."
+        require(type.direction == PacketDirection.SERVER_TO_CLIENT) {
+            "Packet '${type.id}' has direction ${type.direction}; expected ${PacketDirection.SERVER_TO_CLIENT}."
         }
-    }
 
-    private fun <T> payload(type: PacketType<T>, value: T): FabricPacketPayload =
-        FabricPacketPayload(FabricPacketPayload.type(type.id), type.codec.encode(value))
+        val payloadType = FabricPacketPayload.type(type.id)
+        val payloadCodec = FabricPacketPayload.codec(payloadType)
+        PayloadTypeRegistry.clientboundPlay().register(payloadType, payloadCodec)
+        packetTypes[type.id] = type
+    }
 
     override fun <T> register(
         type: PacketType<T>,
@@ -74,46 +60,44 @@ class FabricPlayNetworkManager : PlayPlayNetworkManager {
         require(type.phase == NetworkPhase.PLAY) {
             "Packet '${type.id}' has phase ${type.phase}; expected ${NetworkPhase.PLAY}."
         }
+        require(type.direction == PacketDirection.CLIENT_TO_SERVER) {
+            "Packet '${type.id}' has direction ${type.direction}; expected ${PacketDirection.CLIENT_TO_SERVER}. Use ClientPlayNetworkManager.register for SERVER_TO_CLIENT handlers."
+        }
 
         val payloadType = FabricPacketPayload.type(type.id)
         val payloadCodec = FabricPacketPayload.codec(payloadType)
-        when (type.direction) {
-            PacketDirection.CLIENT_TO_SERVER -> {
-                PayloadTypeRegistry.serverboundPlay().register(payloadType, payloadCodec)
-                check(ServerPlayNetworking.registerGlobalReceiver(payloadType) { payload, context ->
-                    handler.handle(
-                        PlayPacketContextImpl(
-                            player = context.player(),
-                            executor = { task -> context.server().execute(task) },
-                            sender = this,
-                            replyToServer = false,
-                        ),
-                        type.codec.decode(payload.data),
-                    )
-                }) {
-                    "Fabric already has a serverbound receiver for packet '${type.id}'."
-                }
-            }
-
-            PacketDirection.SERVER_TO_CLIENT -> {
-                PayloadTypeRegistry.clientboundPlay().register(payloadType, payloadCodec)
-                if (FabricLoader.getInstance().environmentType == EnvType.CLIENT) {
-                    check(ClientPlayNetworking.registerGlobalReceiver(payloadType) { payload, context ->
-                        handler.handle(
-                            PlayPacketContextImpl(
-                                player = context.player(),
-                                executor = { task -> context.client().execute(task) },
-                                sender = this,
-                                replyToServer = true,
-                            ),
-                            type.codec.decode(payload.data),
-                        )
-                    }) {
-                        "Fabric already has a clientbound receiver for packet '${type.id}'."
-                    }
-                }
-            }
+        PayloadTypeRegistry.serverboundPlay().register(payloadType, payloadCodec)
+        check(ServerPlayNetworking.registerGlobalReceiver(payloadType) { payload, context ->
+            handler.handle(
+                PlayPacketContextImpl(
+                    player = context.player(),
+                    executor = { task -> context.server().execute(task) },
+                    sender = this,
+                ),
+                type.codec.decode(payload.data),
+            )
+        }) {
+            "Fabric already has a serverbound receiver for packet '${type.id}'."
         }
         packetTypes[type.id] = type
+    }
+
+    companion object {
+        private val packetTypes = mutableMapOf<Identifier, PacketType<*>>()
+
+        internal fun <T> checkRegistered(type: PacketType<T>, expectedDirection: PacketDirection) {
+            require(type.direction == expectedDirection) {
+                "Packet '${type.id}' has direction ${type.direction}; expected $expectedDirection."
+            }
+            require(type.phase == NetworkPhase.PLAY) {
+                "Packet '${type.id}' has phase ${type.phase}; expected ${NetworkPhase.PLAY}."
+            }
+            check(packetTypes[type.id] === type) {
+                "Packet '${type.id}' must be registered before it can be used."
+            }
+        }
+
+        internal fun <T> payload(type: PacketType<T>, value: T): FabricPacketPayload =
+            FabricPacketPayload(FabricPacketPayload.type(type.id), type.codec.encode(value))
     }
 }

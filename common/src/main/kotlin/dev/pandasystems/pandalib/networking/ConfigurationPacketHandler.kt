@@ -4,9 +4,9 @@ import net.minecraft.network.protocol.configuration.ServerConfigurationPacketLis
 
 interface ConfigurationPacketContext {
     /**
-     * The network configuration listener representing the player, or null if handled on client side.
+     * The network configuration listener representing the connecting client.
      */
-    val listener: ServerConfigurationPacketListener?
+    val listener: ServerConfigurationPacketListener
 
     val executor: NetworkExecutor
 
@@ -14,20 +14,12 @@ interface ConfigurationPacketContext {
 }
 
 class ConfigurationPacketContextImpl(
-    override val listener: ServerConfigurationPacketListener?,
+    override val listener: ServerConfigurationPacketListener,
     override val executor: NetworkExecutor,
     private val sender: ConfigurationPacketSender,
-    private val replyToServer: Boolean,
 ) : ConfigurationPacketContext {
     override fun <T> reply(packet: PacketType<T>, value: T) {
-        if (replyToServer) {
-            sender.sendToServer(packet, value)
-        } else {
-            val serverListener = checkNotNull(listener) {
-                "Cannot reply to client without a valid ServerConfigurationPacketListenerImpl."
-            }
-            sender.sendToClient(serverListener, packet, value)
-        }
+        sender.sendToClient(listener, packet, value)
     }
 }
 

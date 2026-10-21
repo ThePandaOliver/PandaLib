@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
 	alias(libs.plugins.kotlin.jvm)
 	alias(libs.plugins.kotlin.serialization)
@@ -15,9 +17,18 @@ repositories {
 	mavenCentral()
 }
 
+loom {
+	splitEnvironmentSourceSets()
+}
+
 val testmod = sourceSets.create("testmod") {
 	compileClasspath += sourceSets["main"].output
 	runtimeClasspath += sourceSets["main"].output
+}
+
+val testmodClient = sourceSets.create("testmodClient") {
+	compileClasspath += sourceSets["main"].output + sourceSets["client"].output + testmod.output
+	runtimeClasspath += sourceSets["main"].output + sourceSets["client"].output + testmod.output
 }
 
 configurations {
@@ -26,6 +37,12 @@ configurations {
 	}
 	named("testmodRuntimeClasspath") {
 		extendsFrom(configurations["runtimeClasspath"])
+	}
+	named("testmodClientCompileClasspath") {
+		extendsFrom(configurations["clientCompileClasspath"], configurations["testmodCompileClasspath"])
+	}
+	named("testmodClientRuntimeClasspath") {
+		extendsFrom(configurations["clientRuntimeClasspath"], configurations["testmodRuntimeClasspath"])
 	}
 }
 
@@ -45,6 +62,9 @@ dependencies {
 	testImplementation(libs.kotlin.test)
 
 	"testmodImplementation"(sourceSets["main"].output)
+	"testmodClientImplementation"(sourceSets["main"].output)
+	"testmodClientImplementation"(sourceSets["client"].output)
+	"testmodClientImplementation"(testmod.output)
 }
 
 java {
@@ -55,6 +75,36 @@ java {
 
 kotlin {
 	jvmToolchain(25)
+	target {
+		val mainCompilation = compilations.getByName("main")
+		val clientCompilation = compilations.getByName("client")
+		val testmodCompilation = compilations.getByName("testmod")
+		val testmodClientCompilation = compilations.getByName("testmodClient")
+
+		clientCompilation.associateWith(mainCompilation)
+		testmodCompilation.associateWith(mainCompilation)
+		testmodClientCompilation.associateWith(mainCompilation)
+		testmodClientCompilation.associateWith(clientCompilation)
+		testmodClientCompilation.associateWith(testmodCompilation)
+	}
+}
+
+// Replace the default jar friendPath added by associateWith (which causes a task cycle with Loom's splitEnvironmentSourceSets)
+// with the compiled classes directories directly.
+tasks.named<KotlinCompile>("compileClientKotlin") {
+	friendPaths.setFrom(sourceSets["main"].output.classesDirs)
+}
+
+tasks.named<KotlinCompile>("compileTestmodKotlin") {
+	friendPaths.setFrom(sourceSets["main"].output.classesDirs)
+}
+
+tasks.named<KotlinCompile>("compileTestmodClientKotlin") {
+	friendPaths.setFrom(
+		sourceSets["main"].output.classesDirs,
+		sourceSets["client"].output.classesDirs,
+		testmod.output.classesDirs
+	)
 }
 
 tasks.processResources {

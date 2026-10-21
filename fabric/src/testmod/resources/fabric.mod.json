@@ -7,6 +7,9 @@
 	"entrypoints": {
 		"main": [
 			"dev.pandasystems.pandalib.fabric.testmod.FabricTestMod"
+		],
+		"client": [
+			"dev.pandasystems.pandalib.fabric.testmod.FabricClientTestMod"
 		]
 	},
 	"depends": {

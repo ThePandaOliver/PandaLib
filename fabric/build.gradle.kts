@@ -1,4 +1,5 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
 	alias(libs.plugins.kotlin.jvm)
@@ -9,6 +10,8 @@ plugins {
 	`maven-publish`
 }
 
+evaluationDependsOn(":common")
+
 base {
 	archivesName.set("pandalib-fabric")
 }
@@ -18,7 +21,16 @@ repositories {
 	mavenCentral()
 }
 
-val common = configurations.create("common") {
+loom {
+	splitEnvironmentSourceSets()
+}
+
+val commonMain = configurations.create("commonMain") {
+	isCanBeResolved = true
+	isCanBeConsumed = false
+}
+
+val commonClient = configurations.create("commonClient") {
 	isCanBeResolved = true
 	isCanBeConsumed = false
 }
@@ -28,17 +40,25 @@ val shadowCommon = configurations.create("shadowCommon") {
 	isCanBeConsumed = false
 }
 
-configurations.compileClasspath.get().extendsFrom(common)
-configurations.runtimeClasspath.get().extendsFrom(common)
+configurations.compileClasspath.get().extendsFrom(commonMain)
+configurations.runtimeClasspath.get().extendsFrom(commonMain)
+configurations.named("clientCompileClasspath").get().extendsFrom(commonClient)
+configurations.named("clientRuntimeClasspath").get().extendsFrom(commonClient)
 
 val commonSourceSets = project(":common").extensions.getByType<SourceSetContainer>()
 val commonTestmod = commonSourceSets["testmod"]
-
+val commonTestmodClient = commonSourceSets["testmodClient"]
 
 val testmod = sourceSets.create("testmod") {
-	// 1. Add compiled outputs from both fabric:main and common:testmod
-	compileClasspath += sourceSets["main"].output + commonTestmod.output
-	runtimeClasspath += sourceSets["main"].output + commonTestmod.output
+	compileClasspath += sourceSets["main"].output + commonSourceSets["main"].output + commonTestmod.output
+	runtimeClasspath += sourceSets["main"].output + commonSourceSets["main"].output + commonTestmod.output
+}
+
+val testmodClient = sourceSets.create("testmodClient") {
+	compileClasspath += sourceSets["main"].output + sourceSets["client"].output + testmod.output +
+		commonSourceSets["main"].output + commonSourceSets["client"].output + commonTestmod.output + commonTestmodClient.output
+	runtimeClasspath += sourceSets["main"].output + sourceSets["client"].output + testmod.output +
+		commonSourceSets["main"].output + commonSourceSets["client"].output + commonTestmod.output + commonTestmodClient.output
 }
 
 configurations {
@@ -48,8 +68,13 @@ configurations {
 	named("testmodRuntimeClasspath") {
 		extendsFrom(configurations["runtimeClasspath"])
 	}
+	named("testmodClientCompileClasspath") {
+		extendsFrom(configurations["clientCompileClasspath"], configurations["testmodCompileClasspath"])
+	}
+	named("testmodClientRuntimeClasspath") {
+		extendsFrom(configurations["clientRuntimeClasspath"], configurations["testmodRuntimeClasspath"])
+	}
 }
-
 
 dependencies {
 	minecraft("com.mojang:minecraft:${project.property("minecraft_version")}")
@@ -65,14 +90,23 @@ dependencies {
 	api(libs.kotlinx.io.bytestring)
 	api(libs.kotlinx.datetime)
 
-	common(project(":common")) { isTransitive = false }
+	commonMain(commonSourceSets["main"].output)
+	commonClient(commonSourceSets["client"].output)
 	shadowCommon(project(":common")) { isTransitive = false }
 
 	implementation(libs.autoService.annotations)
+	"clientImplementation"(libs.autoService.annotations)
 	ksp(libs.autoService.ksp)
+	"kspClient"(libs.autoService.ksp)
 
 	"testmodImplementation"(sourceSets["main"].output)
 	"testmodImplementation"(commonTestmod.output)
+
+	"testmodClientImplementation"(sourceSets["main"].output)
+	"testmodClientImplementation"(sourceSets["client"].output)
+	"testmodClientImplementation"(testmod.output)
+	"testmodClientImplementation"(commonTestmod.output)
+	"testmodClientImplementation"(commonTestmodClient.output)
 }
 
 java {
@@ -83,6 +117,43 @@ java {
 
 kotlin {
 	jvmToolchain(25)
+	target {
+		val mainCompilation = compilations.getByName("main")
+		val clientCompilation = compilations.getByName("client")
+		val testmodCompilation = compilations.getByName("testmod")
+		val testmodClientCompilation = compilations.getByName("testmodClient")
+
+		clientCompilation.associateWith(mainCompilation)
+		testmodCompilation.associateWith(mainCompilation)
+		testmodClientCompilation.associateWith(mainCompilation)
+		testmodClientCompilation.associateWith(clientCompilation)
+		testmodClientCompilation.associateWith(testmodCompilation)
+	}
+}
+
+tasks.named<KotlinCompile>("compileClientKotlin") {
+	friendPaths.setFrom(
+		sourceSets["main"].output.classesDirs,
+		commonSourceSets["main"].output.classesDirs,
+		commonSourceSets["client"].output.classesDirs
+	)
+}
+
+tasks.named<KotlinCompile>("compileTestmodKotlin") {
+	friendPaths.setFrom(
+		sourceSets["main"].output.classesDirs,
+		commonSourceSets["main"].output.classesDirs
+	)
+}
+
+tasks.named<KotlinCompile>("compileTestmodClientKotlin") {
+	friendPaths.setFrom(
+		sourceSets["main"].output.classesDirs,
+		sourceSets["client"].output.classesDirs,
+		testmod.output.classesDirs,
+		commonSourceSets["main"].output.classesDirs,
+		commonSourceSets["client"].output.classesDirs
+	)
 }
 
 loom {
@@ -103,7 +174,7 @@ loom {
 		}
 		create("testmodClient") {
 			client()
-			source("testmod")
+			source(testmodClient)
 			configName = "Test Fabric Client"
 			ideConfigFolder = "Test Fabric"
 			ideConfigGenerated(true)
@@ -111,7 +182,7 @@ loom {
 		}
 		create("testmodServer") {
 			server()
-			source("testmod")
+			source(testmod)
 			configName = "Test Fabric Server"
 			ideConfigFolder = "Test Fabric"
 			ideConfigGenerated(true)
@@ -139,8 +210,10 @@ tasks.processResources {
 }
 
 tasks.named<ShadowJar>("shadowJar") {
+	from(sourceSets["client"].output)
 	configurations = listOf(shadowCommon)
 	archiveClassifier.set("")
+	mergeServiceFiles()
 }
 
 tasks.named<Jar>("jar") {

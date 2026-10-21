@@ -12,15 +12,12 @@ object NetworkTestManager {
 
     fun registerHandlers() {
         // --- 1. CONFIGURATION PHASE TEST ---
-        // Server receives Ping -> replies with Pong
-        ConfigurationNetworkManager.register(TestPackets.CONFIG_PING) { ctx, packet ->
-            println("[TestMod] Server received config ping with nonce: ${packet.nonce}")
-            ctx.reply(TestPackets.CONFIG_PONG, PongPayload(packet.nonce, "config_pong_ack"))
-        }
+        // Register clientbound payload type on both sides
+        ConfigurationNetworkManager.registerPayload(TestPackets.CONFIG_PING)
 
-        // Client receives Pong -> validates and records success
-        ConfigurationNetworkManager.register(TestPackets.CONFIG_PONG) { ctx, packet ->
-            println("[TestMod] Client received config pong: ${packet.message}")
+        // Server receives Pong -> validates and records success
+        ConfigurationNetworkManager.register(TestPackets.CONFIG_PONG) { _, packet ->
+            println("[TestMod] Server received config pong: ${packet.message}")
             if (packet.message == "config_pong_ack") {
                 configNetworkPassed.set(true)
             }
@@ -37,11 +34,8 @@ object NetworkTestManager {
         }
 
         // --- 2. PLAY PHASE TEST ---
-        // Client receives Play Ping -> replies with Play Pong
-        PlayPlayNetworkManager.register(TestPackets.PLAY_PING) { ctx, packet ->
-            println("[TestMod] Client received play ping: ${packet.message}")
-            ctx.reply(TestPackets.PLAY_PONG, PongPayload(packet.nonce, "play_pong_ack"))
-        }
+        // Register clientbound payload type on both sides
+        PlayPlayNetworkManager.registerPayload(TestPackets.PLAY_PING)
 
         // Server receives Play Pong -> validates and records success
         PlayPlayNetworkManager.register(TestPackets.PLAY_PONG) { ctx, packet ->

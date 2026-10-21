@@ -17,6 +17,9 @@
 	"entrypoints": {
 		"main": [
 			"dev.pandasystems.pandalib.fabric.FabricInit"
+		],
+		"client": [
+			"dev.pandasystems.pandalib.fabric.FabricClientInit"
 		]
 	},
 	"mixins": [

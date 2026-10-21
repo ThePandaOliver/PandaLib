@@ -4,7 +4,7 @@ import net.minecraft.world.entity.player.Player
 
 interface PlayPacketContext {
     /**
-     * Represents the sender if server side, or receiver if client side.
+     * Represents the player who sent the packet to the server.
      */
     val player: Player
 
@@ -14,14 +14,12 @@ interface PlayPacketContext {
 }
 
 class PlayPacketContextImpl(
-	override val player: Player,
-	override val executor: NetworkExecutor,
-	private val sender: PlayPacketSender,
-	private val replyToServer: Boolean,
+    override val player: Player,
+    override val executor: NetworkExecutor,
+    private val sender: PlayPacketSender,
 ) : PlayPacketContext {
     override fun <T> reply(packet: PacketType<T>, value: T) {
-        if (replyToServer) sender.sendToServer(packet, value)
-        else sender.sendToPlayer(player, packet, value)
+        sender.sendToPlayer(player, packet, value)
     }
 }
 

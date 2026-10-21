@@ -2,14 +2,9 @@ package dev.pandasystems.pandalib.neoforge
 
 import dev.pandasystems.pandalib.core.PandaLibMain
 import dev.pandasystems.pandalib.core.modId
-import dev.pandasystems.pandalib.core.utils.loadService
-import dev.pandasystems.pandalib.event.events.server.ServerConfigurationEvents
-import dev.pandasystems.pandalib.neoforge.event.events.server.ServerConfigurationEventsImpl
 import dev.pandasystems.pandalib.neoforge.networking.NeoForgeConfigurationNetworkManager
-import dev.pandasystems.pandalib.neoforge.networking.NeoForgeNetworkManager
+import dev.pandasystems.pandalib.neoforge.networking.NeoForgePlayNetworkManager
 import dev.pandasystems.pandalib.neoforge.registry.NeoForgePlatformRegistryBridge
-import dev.pandasystems.pandalib.networking.ConfigurationNetworkManager
-import dev.pandasystems.pandalib.networking.NetworkManager
 import net.neoforged.bus.api.IEventBus
 import net.neoforged.fml.common.Mod
 
@@ -23,7 +18,7 @@ internal class NeoForgeInit(
 
         eventBus.addListener(NeoForgePlatformRegistryBridge::onRegisterEvent)
 
-        eventBus.addListener(NeoForgeNetworkManager::registrationEvent)
+        eventBus.addListener(NeoForgePlayNetworkManager::registrationEvent)
         eventBus.addListener(NeoForgeConfigurationNetworkManager::registrationEvent)
     }
 

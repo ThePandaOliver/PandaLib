@@ -3,7 +3,7 @@ package dev.pandasystems.pandalib.testmod.networking
 import dev.pandasystems.pandalib.event.events.server.ServerConfigurationEvents
 import dev.pandasystems.pandalib.event.events.server.ServerPlayerEvents
 import dev.pandasystems.pandalib.networking.ConfigurationNetworkManager
-import dev.pandasystems.pandalib.networking.NetworkManager
+import dev.pandasystems.pandalib.networking.PlayPlayNetworkManager
 import java.util.concurrent.atomic.AtomicBoolean
 
 object NetworkTestManager {
@@ -38,14 +38,14 @@ object NetworkTestManager {
 
         // --- 2. PLAY PHASE TEST ---
         // Client receives Play Ping -> replies with Play Pong
-        NetworkManager.register(TestPackets.PLAY_PING) { ctx, packet ->
+        PlayPlayNetworkManager.register(TestPackets.PLAY_PING) { ctx, packet ->
             println("[TestMod] Client received play ping: ${packet.message}")
             ctx.reply(TestPackets.PLAY_PONG, PongPayload(packet.nonce, "play_pong_ack"))
         }
 
         // Server receives Play Pong -> validates and records success
-        NetworkManager.register(TestPackets.PLAY_PONG) { ctx, packet ->
-            println("[TestMod] Server received play pong from player: ${ctx.peer.scoreboardName}")
+        PlayPlayNetworkManager.register(TestPackets.PLAY_PONG) { ctx, packet ->
+            println("[TestMod] Server received play pong from player: ${ctx.player.scoreboardName}")
             if (packet.message == "play_pong_ack") {
                 playNetworkPassed.set(true)
                 println(">>> ALL NETWORK TESTS PASSED SUCCESSFULLY! <<<")
@@ -54,7 +54,7 @@ object NetworkTestManager {
 
         // When a player finishes joining the world, initiate the Play Ping test
         ServerPlayerEvents.playerServerJoin.subscribe { ctx ->
-            NetworkManager.sendToPlayer(ctx.player, TestPackets.PLAY_PING, PingPayload(42L, "hello_from_server"))
+            PlayPlayNetworkManager.sendToPlayer(ctx.player, TestPackets.PLAY_PING, PingPayload(42L, "hello_from_server"))
         }
     }
 }

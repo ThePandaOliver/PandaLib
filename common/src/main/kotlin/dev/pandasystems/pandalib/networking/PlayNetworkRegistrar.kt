@@ -1,8 +1,8 @@
 package dev.pandasystems.pandalib.networking
 
-interface NetworkRegistrar {
+interface PlayNetworkRegistrar {
     fun <T> register(
         type: PacketType<T>,
-        handler: PacketHandler<T>,
+        handler: PlayPacketHandler<T>,
     )
 }

@@ -2,7 +2,7 @@ package dev.pandasystems.pandalib.networking
 
 import net.minecraft.world.entity.player.Player
 
-interface PacketSender {
+interface PlayPacketSender {
     fun <T> sendToServer(type: PacketType<T>, value: T)
 
     fun <T> sendToPlayer(player: Player, type: PacketType<T>, value: T)

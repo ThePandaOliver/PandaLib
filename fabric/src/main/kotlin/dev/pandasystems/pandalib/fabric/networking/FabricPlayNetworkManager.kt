@@ -15,8 +15,8 @@ import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.entity.player.Player
 import dev.pandasystems.pandalib.core.handles.Identifier
 
-@AutoService(NetworkManager::class)
-class FabricNetworkManager : NetworkManager {
+@AutoService(PlayPlayNetworkManager::class)
+class FabricPlayNetworkManager : PlayPlayNetworkManager {
     private val packetTypes = mutableMapOf<Identifier, PacketType<*>>()
 
     private val server: MinecraftServer? get() = ServerLifecycle.instance
@@ -66,7 +66,7 @@ class FabricNetworkManager : NetworkManager {
 
     override fun <T> register(
         type: PacketType<T>,
-        handler: PacketHandler<T>
+        handler: PlayPacketHandler<T>
     ) {
         require(type.id !in packetTypes) {
             "A packet is already registered with id '${type.id}'."
@@ -82,8 +82,8 @@ class FabricNetworkManager : NetworkManager {
                 PayloadTypeRegistry.serverboundPlay().register(payloadType, payloadCodec)
                 check(ServerPlayNetworking.registerGlobalReceiver(payloadType) { payload, context ->
                     handler.handle(
-                        PacketContextImpl(
-                            peer = context.player(),
+                        PlayPacketContextImpl(
+                            player = context.player(),
                             executor = { task -> context.server().execute(task) },
                             sender = this,
                             replyToServer = false,
@@ -100,8 +100,8 @@ class FabricNetworkManager : NetworkManager {
                 if (FabricLoader.getInstance().environmentType == EnvType.CLIENT) {
                     check(ClientPlayNetworking.registerGlobalReceiver(payloadType) { payload, context ->
                         handler.handle(
-                            PacketContextImpl(
-                                peer = context.player(),
+                            PlayPacketContextImpl(
+                                player = context.player(),
                                 executor = { task -> context.client().execute(task) },
                                 sender = this,
                                 replyToServer = true,

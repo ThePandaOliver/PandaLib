@@ -7,9 +7,7 @@ object ServerLifecycle {
 	var instance: MinecraftServer? = null
 		internal set
 
-	internal fun initialize() = Unit
-
-	init {
+	internal fun initialize() {
 		ServerLifecycleEvents.started.subscribe { context ->
 			instance = context.server
 		}

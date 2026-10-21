@@ -16,8 +16,8 @@ import net.neoforged.neoforge.network.PacketDistributor
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent
 import net.neoforged.neoforge.network.registration.PayloadRegistrar
 
-@AutoService(NetworkManager::class)
-class NeoForgeNetworkManager : NetworkManager {
+@AutoService(PlayPlayNetworkManager::class)
+class NeoForgePlayNetworkManager : PlayPlayNetworkManager {
 	override fun <T> sendToServer(type: PacketType<T>, value: T) {
 		checkRegistered(type, PacketDirection.CLIENT_TO_SERVER)
 		check(MinecraftRuntime.environment == RuntimeEnvironment.CLIENT) {
@@ -51,7 +51,7 @@ class NeoForgeNetworkManager : NetworkManager {
 
 	override fun <T> register(
 		type: PacketType<T>,
-		handler: PacketHandler<T>
+		handler: PlayPacketHandler<T>
 	) {
 		require(type.id !in packetTypes) {
 			"A packet is already registered with id '${type.id}'."
@@ -79,7 +79,7 @@ class NeoForgeNetworkManager : NetworkManager {
 	private fun <T> registerPayload(
 		reg: PayloadRegistrar,
 		type: PacketType<T>,
-		handler: PacketHandler<T>
+		handler: PlayPacketHandler<T>
 	) {
 		val payloadType = NeoForgePacketPayload.type(type.id)
 		val payloadCodec = NeoForgePacketPayload.codec(payloadType) as StreamCodec<FriendlyByteBuf, NeoForgePacketPayload>
@@ -88,8 +88,8 @@ class NeoForgeNetworkManager : NetworkManager {
 			PacketDirection.CLIENT_TO_SERVER -> {
 				reg.configurationToServer(payloadType, payloadCodec) { payload, context ->
 					handler.handle(
-						PacketContextImpl(
-							peer = context.player(),
+						PlayPacketContextImpl(
+							player = context.player(),
 							executor = { task -> context.enqueueWork { task() } },
 							sender = this,
 							replyToServer = false
@@ -101,8 +101,8 @@ class NeoForgeNetworkManager : NetworkManager {
 			PacketDirection.SERVER_TO_CLIENT -> {
 				reg.configurationToClient(payloadType, payloadCodec) { payload, context ->
 					handler.handle(
-						PacketContextImpl(
-							peer = context.player(),
+						PlayPacketContextImpl(
+							player = context.player(),
 							executor = { task -> context.enqueueWork { task() } },
 							sender = this,
 							replyToServer = true

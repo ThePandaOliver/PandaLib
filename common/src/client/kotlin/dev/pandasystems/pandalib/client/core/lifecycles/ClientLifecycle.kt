@@ -1,4 +1,4 @@
-package dev.pandasystems.pandalib.core.lifecycles
+package dev.pandasystems.pandalib.client.core.lifecycles
 
 import net.minecraft.client.Minecraft as MinecraftClient
 

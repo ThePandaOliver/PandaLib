@@ -1,7 +1,7 @@
 package dev.pandasystems.pandalib.testmod.networking
 
-import dev.pandasystems.pandalib.networking.ClientConfigurationNetworkManager
-import dev.pandasystems.pandalib.networking.ClientPlayNetworkManager
+import dev.pandasystems.pandalib.client.networking.ClientConfigurationNetworkManager
+import dev.pandasystems.pandalib.client.networking.ClientPlayNetworkManager
 
 object ClientNetworkTestManager {
     fun registerClientHandlers() {

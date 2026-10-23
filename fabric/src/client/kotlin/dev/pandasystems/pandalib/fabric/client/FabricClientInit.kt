@@ -1,6 +1,6 @@
-package dev.pandasystems.pandalib.fabric
+package dev.pandasystems.pandalib.fabric.client
 
-import dev.pandasystems.pandalib.core.PandaLibClientMain
+import dev.pandasystems.pandalib.client.core.PandaLibClientMain
 import net.fabricmc.api.ClientModInitializer
 
 internal class FabricClientInit : ClientModInitializer {

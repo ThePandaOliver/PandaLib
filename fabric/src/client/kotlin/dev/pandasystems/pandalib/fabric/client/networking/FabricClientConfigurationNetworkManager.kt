@@ -1,6 +1,11 @@
-package dev.pandasystems.pandalib.fabric.networking
+package dev.pandasystems.pandalib.fabric.client.networking
 
 import com.google.auto.service.AutoService
+import dev.pandasystems.pandalib.client.networking.ClientConfigurationNetworkManager
+import dev.pandasystems.pandalib.client.networking.ClientConfigurationPacketContextImpl
+import dev.pandasystems.pandalib.client.networking.ClientConfigurationPacketHandler
+import dev.pandasystems.pandalib.fabric.networking.FabricConfigurationNetworkManager
+import dev.pandasystems.pandalib.fabric.networking.FabricPacketPayload
 import dev.pandasystems.pandalib.networking.*
 import net.fabricmc.fabric.api.client.networking.v1.ClientConfigurationNetworking
 

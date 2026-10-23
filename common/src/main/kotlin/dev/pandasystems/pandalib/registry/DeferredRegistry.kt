@@ -8,7 +8,7 @@ import kotlin.collections.component2
 import kotlin.text.clear
 
 interface DeferredRegistry<T : Any> {
-	fun register(key: Identifier, provider: (key: ResourceKey<T>) -> T): DeferredObject<T>
+	fun <I : T> register(key: Identifier, provider: (key: ResourceKey<T>) -> I): DeferredObject<I>
 
 	fun finalizeRegistration()
 

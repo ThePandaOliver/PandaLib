@@ -1,6 +1,6 @@
-package dev.pandasystems.pandalib.core
+package dev.pandasystems.pandalib.client.core
 
-import dev.pandasystems.pandalib.core.lifecycles.ClientLifecycle
+import dev.pandasystems.pandalib.client.core.lifecycles.ClientLifecycle
 
 class PandaLibClientMain {
 	init {

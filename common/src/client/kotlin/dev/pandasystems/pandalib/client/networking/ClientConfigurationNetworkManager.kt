@@ -1,4 +1,4 @@
-package dev.pandasystems.pandalib.networking
+package dev.pandasystems.pandalib.client.networking
 
 import dev.pandasystems.pandalib.core.utils.loadService
 

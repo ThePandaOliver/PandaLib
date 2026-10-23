@@ -12,10 +12,10 @@ import java.util.concurrent.ConcurrentHashMap
 class NeoForgePlatformRegistryBridge : PlatformRegistryBridge {
 	override fun <T : Any> create(registryKey: ResourceKey<out Registry<T>>): DeferredRegistry<T> {
 		return object : DeferredRegistry<T> {
-			override fun register(key: Identifier, provider: (key: ResourceKey<T>) -> T): DeferredObject<T> {
-				val obj = CompletableDeferredObject<T>(key)
+			override fun <I : T> register(key: Identifier, provider: (key: ResourceKey<T>) -> I): DeferredObject<I> {
+				val obj = CompletableDeferredObject<I>(key)
 				@Suppress("UNCHECKED_CAST")
-				queue(registryKey, key, obj, provider)
+				queue(registryKey, key, obj as CompletableDeferredObject<T>, provider as (ResourceKey<T>) -> T)
 				return obj
 			}
 

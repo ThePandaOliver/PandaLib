@@ -1,28 +1,34 @@
-package dev.pandasystems.pandalib.neoforge.networking
+package dev.pandasystems.pandalib.neoforge.client.networking
 
 import com.google.auto.service.AutoService
+import dev.pandasystems.pandalib.client.networking.ClientPlayNetworkManager
+import dev.pandasystems.pandalib.client.networking.ClientPlayPacketContextImpl
+import dev.pandasystems.pandalib.client.networking.ClientPlayPacketHandler
+import dev.pandasystems.pandalib.neoforge.networking.NeoForgePacketPayload
+import dev.pandasystems.pandalib.neoforge.networking.NeoForgePlayNetworkManager
 import dev.pandasystems.pandalib.networking.*
 import net.neoforged.neoforge.client.network.ClientPacketDistributor
 import net.neoforged.neoforge.client.network.event.RegisterClientPayloadHandlersEvent
 
-@AutoService(ClientConfigurationNetworkManager::class)
-class NeoForgeClientConfigurationNetworkManager : ClientConfigurationNetworkManager {
+@AutoService(ClientPlayNetworkManager::class)
+class NeoForgeClientPlayNetworkManager : ClientPlayNetworkManager {
 	override fun <T> sendToServer(type: PacketType<T>, value: T) {
-		NeoForgeConfigurationNetworkManager.checkRegistered(type, PacketDirection.CLIENT_TO_SERVER)
-		ClientPacketDistributor.sendToServer(NeoForgeConfigurationNetworkManager.payload(type, value))
+		NeoForgePlayNetworkManager.checkRegistered(type, PacketDirection.CLIENT_TO_SERVER)
+		ClientPacketDistributor.sendToServer(NeoForgePlayNetworkManager.payload(type, value))
 	}
 
 	override fun <T> register(
 		type: PacketType<T>,
-		handler: ClientConfigurationPacketHandler<T>,
+		handler: ClientPlayPacketHandler<T>,
 	) {
-		NeoForgeConfigurationNetworkManager.checkRegistered(type, PacketDirection.SERVER_TO_CLIENT)
+		NeoForgePlayNetworkManager.checkRegistered(type, PacketDirection.SERVER_TO_CLIENT)
 
 		val action: (RegisterClientPayloadHandlersEvent) -> Unit = { event ->
 			val payloadType = NeoForgePacketPayload.type(type.id)
 			event.register(payloadType) { payload, context ->
 				handler.handle(
-					ClientConfigurationPacketContextImpl(
+					ClientPlayPacketContextImpl(
+						player = context.player(),
 						executor = { task -> context.enqueueWork { task() } },
 						sender = this,
 					),

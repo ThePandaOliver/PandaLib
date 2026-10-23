@@ -20,17 +20,17 @@ class FabricPlatformRegistryBridge : PlatformRegistryBridge {
                     ?: error("Registry '${registryKey.identifier()}' not found in BuiltInRegistries.")
             }
 
-            override fun register(key: Identifier, provider: (key: ResourceKey<T>) -> T): DeferredObject<T> {
-                val obj = CompletableDeferredObject<T>(key)
+            override fun <I : T> register(key: Identifier, provider: (key: ResourceKey<T>) -> I): DeferredObject<I> {
+                val obj = CompletableDeferredObject<I>(key)
                 val supplier: () -> T = {
-                    provider(ResourceKey.create(registryKey, key)).also { obj.bind(it) }
+	                provider(ResourceKey.create(registryKey, key)).also { obj.bind(it) } as T
                 }
 
                 if (isRegistered) {
                     Registry.register(targetRegistry, key, supplier())
                 } else {
                     @Suppress("UNCHECKED_CAST")
-                    entries.add(obj to supplier)
+                    entries.add((obj to supplier) as Pair<CompletableDeferredObject<T>, () -> T>)
                 }
 
                 return obj

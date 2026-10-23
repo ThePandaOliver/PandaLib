@@ -19,7 +19,7 @@
 			"dev.pandasystems.pandalib.fabric.FabricInit"
 		],
 		"client": [
-			"dev.pandasystems.pandalib.fabric.FabricClientInit"
+			"dev.pandasystems.pandalib.fabric.client.FabricClientInit"
 		]
 	},
 	"mixins": [

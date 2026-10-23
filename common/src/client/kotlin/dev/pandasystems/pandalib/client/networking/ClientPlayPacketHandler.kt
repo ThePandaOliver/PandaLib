@@ -1,5 +1,7 @@
-package dev.pandasystems.pandalib.networking
+package dev.pandasystems.pandalib.client.networking
 
+import dev.pandasystems.pandalib.networking.NetworkExecutor
+import dev.pandasystems.pandalib.networking.PacketType
 import net.minecraft.world.entity.player.Player
 
 interface ClientPlayPacketContext {
@@ -14,9 +16,9 @@ interface ClientPlayPacketContext {
 }
 
 class ClientPlayPacketContextImpl(
-    override val player: Player,
-    override val executor: NetworkExecutor,
-    private val sender: ClientPlayPacketSender,
+	override val player: Player,
+	override val executor: NetworkExecutor,
+	private val sender: ClientPlayPacketSender,
 ) : ClientPlayPacketContext {
     override fun <T> reply(packet: PacketType<T>, value: T) {
         sender.sendToServer(packet, value)

@@ -1,6 +1,11 @@
-package dev.pandasystems.pandalib.fabric.networking
+package dev.pandasystems.pandalib.fabric.client.networking
 
 import com.google.auto.service.AutoService
+import dev.pandasystems.pandalib.client.networking.ClientPlayNetworkManager
+import dev.pandasystems.pandalib.client.networking.ClientPlayPacketContextImpl
+import dev.pandasystems.pandalib.client.networking.ClientPlayPacketHandler
+import dev.pandasystems.pandalib.fabric.networking.FabricPacketPayload
+import dev.pandasystems.pandalib.fabric.networking.FabricPlayNetworkManager
 import dev.pandasystems.pandalib.networking.*
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
 
@@ -12,18 +17,18 @@ class FabricClientPlayNetworkManager : ClientPlayNetworkManager {
     }
 
     override fun <T> register(
-        type: PacketType<T>,
-        handler: ClientPlayPacketHandler<T>,
+	    type: PacketType<T>,
+	    handler: ClientPlayPacketHandler<T>,
     ) {
         FabricPlayNetworkManager.checkRegistered(type, PacketDirection.SERVER_TO_CLIENT)
         val payloadType = FabricPacketPayload.type(type.id)
         check(ClientPlayNetworking.registerGlobalReceiver(payloadType) { payload, context ->
             handler.handle(
-                ClientPlayPacketContextImpl(
-                    player = context.player(),
-                    executor = { task -> context.client().execute(task) },
-                    sender = this,
-                ),
+	            ClientPlayPacketContextImpl(
+		            player = context.player(),
+		            executor = { task -> context.client().execute(task) },
+		            sender = this,
+	            ),
                 type.codec.decode(payload.data),
             )
         }) {

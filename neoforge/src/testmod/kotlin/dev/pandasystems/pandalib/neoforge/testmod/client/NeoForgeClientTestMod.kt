@@ -1,4 +1,4 @@
-package dev.pandasystems.pandalib.neoforge.testmod
+package dev.pandasystems.pandalib.neoforge.testmod.client
 
 import dev.pandasystems.pandalib.testmod.CommonClientTestMod
 import net.neoforged.api.distmarker.Dist

@@ -1,4 +1,4 @@
-package dev.pandasystems.pandalib.fabric.testmod
+package dev.pandasystems.pandalib.fabric.testmod.client
 
 import dev.pandasystems.pandalib.testmod.CommonClientTestMod
 import net.fabricmc.api.ClientModInitializer

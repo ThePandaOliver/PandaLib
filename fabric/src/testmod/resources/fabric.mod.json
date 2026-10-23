@@ -9,7 +9,7 @@
 			"dev.pandasystems.pandalib.fabric.testmod.FabricTestMod"
 		],
 		"client": [
-			"dev.pandasystems.pandalib.fabric.testmod.FabricClientTestMod"
+          "dev.pandasystems.pandalib.fabric.testmod.client.FabricClientTestMod"
 		]
 	},
 	"depends": {
